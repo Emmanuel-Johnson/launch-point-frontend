@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../store/store";
-import { increment, decrement } from "../store/slices/testSlice";
+import type { RootState, AppDispatch } from "../../../app/store/store";
+import { increment, decrement } from "../../auth/authSlice";
 
 function Home() {
   const name = useSelector((state: RootState) => state.test.name);
