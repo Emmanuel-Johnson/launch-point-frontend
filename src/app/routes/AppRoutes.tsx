@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "../../features/courses/pages/Home";
+import LandingPage from "../../features/landing/pages/LandingPage";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<LandingPage />} />
     </Routes>
   );
 };
