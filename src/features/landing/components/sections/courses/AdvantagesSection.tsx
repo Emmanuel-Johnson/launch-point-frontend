@@ -1,5 +1,5 @@
-import AdvantageCard from "../ui/AdvantageCard";
-import { advantages } from "../../data/landingData";
+import AdvantageCard from "../about/AdvantageCard";
+import { advantages } from "../../../data/landingData";
 
 const AdvantagesSection = () => {
   return (

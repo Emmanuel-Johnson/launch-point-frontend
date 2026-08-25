@@ -1,5 +1,5 @@
-import HighlightCard from '../../ui/HighlightCard';
-import { whyChoose } from '../../../data/aboutData';
+import HighlightCard from "./HighlightCard";
+import { whyChoose } from "../../../data/aboutData";
 
 const WhyChooseSection = () => {
   return (

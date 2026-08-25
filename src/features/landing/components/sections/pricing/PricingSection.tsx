@@ -1,5 +1,5 @@
-import PricingCard from "../ui/PricingCard";
-import { pricingPlans } from "../../data/landingData";
+import PricingCard from "./PricingCard";
+import { pricingPlans } from "../../../data/landingData";
 
 const PricingSection = () => {
   return (

@@ -1,5 +1,5 @@
-import AdvantageCard from '../../ui/AdvantageCard';
-import { offerings } from '../../../data/aboutData';
+import AdvantageCard from "./AdvantageCard";
+import { offerings } from "../../../data/aboutData";
 
 const WhatWeOffer = () => {
   return (

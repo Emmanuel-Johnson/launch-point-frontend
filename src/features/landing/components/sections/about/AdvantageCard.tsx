@@ -1,4 +1,4 @@
-import type { Advantage } from "../../types/landing";
+import type { Advantage } from "../../../types/landing";
 
 interface AdvantageCardProps {
   advantage: Advantage;

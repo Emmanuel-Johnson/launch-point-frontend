@@ -1,5 +1,5 @@
-import CourseCard from "../ui/CourseCard";
-import { courses } from "../../data/landingData";
+import CourseCard from "./CourseCard";
+import { courses } from "../../../data/landingData";
 
 const RecommendedCourses = () => {
   return (

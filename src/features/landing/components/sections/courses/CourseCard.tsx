@@ -1,5 +1,5 @@
 import { Star, Users, Clock } from "lucide-react";
-import type { Course } from "../../types/landing";
+import type { Course } from "../../../types/landing";
 
 interface CourseCardProps {
   course: Course;

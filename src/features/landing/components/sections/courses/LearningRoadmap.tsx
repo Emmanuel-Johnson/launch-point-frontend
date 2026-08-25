@@ -1,4 +1,4 @@
-import { roadmapSteps } from "../../data/landingData";
+import { roadmapSteps } from "../../../data/landingData";
 
 const LearningRoadmap = () => {
   const lastIndex = roadmapSteps.length - 1;

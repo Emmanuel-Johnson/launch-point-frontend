@@ -1,5 +1,5 @@
 import { Sparkles, ArrowRight } from "lucide-react";
-import { heroImageUrl } from "../../data/landingData";
+import { heroImageUrl } from "../../../data/landingData";
 
 const HeroSection = () => {
   return (

@@ -1,4 +1,4 @@
-import type { Highlight } from '../../types/landing';
+import type { Highlight } from "../../../types/landing";
 
 interface HighlightCardProps {
   highlight: Highlight;

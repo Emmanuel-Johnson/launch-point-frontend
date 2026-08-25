@@ -1,5 +1,5 @@
 import { IndianRupee, CheckCircle2 } from "lucide-react";
-import type { PricingPlan } from "../../types/landing";
+import type { PricingPlan } from "../../../types/landing";
 
 interface PricingCardProps {
   plan: PricingPlan;
