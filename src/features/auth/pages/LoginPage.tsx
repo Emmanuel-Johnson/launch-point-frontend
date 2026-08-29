@@ -81,6 +81,26 @@ const LoginPage = () => {
             >
               Sign In
             </button>
+            {/* Terms */}
+            <p className="px-2 text-center text-[11px] font-light leading-5 text-gray-600">
+              By continuing, you agree to{" "}
+              <Link
+                to="/terms"
+                className="text-gray-400 transition-colors hover:text-[#8b83ff]"
+                state={{ from: "/login" }}
+              >
+                Terms
+              </Link>{" "}
+              &amp;{" "}
+              <Link
+                to="/privacy-policy"
+                className="text-gray-400 transition-colors hover:text-[#8b83ff]"
+                state={{ from: "/login" }}
+              >
+                Privacy Policy
+              </Link>
+              .
+            </p>
 
             {/* Divider */}
             <div className="flex items-center gap-3 py-2">

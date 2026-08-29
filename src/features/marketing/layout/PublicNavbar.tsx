@@ -29,8 +29,8 @@ const PublicNavbar = () => {
           </div>
 
           <div className="group">
-            <span className="block text-lg font-semibold tracking-tight text-white transition-all duration-500 group-hover:text-indigo-300">
-              Launch Point
+            <span className="block text-sm font-semibold tracking-[3px] text-white transition-all duration-500 group-hover:text-indigo-300">
+              LAUNCH POINT
             </span>
 
             <p className="mt-0.5 hidden text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-all duration-500 group-hover:text-zinc-300 sm:block">

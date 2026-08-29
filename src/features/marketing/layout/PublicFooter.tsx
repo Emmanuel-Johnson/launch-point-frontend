@@ -20,8 +20,8 @@ const PublicFooter = () => {
                 />
               </div>
 
-              <span className="text-lg font-semibold tracking-tight text-white transition-colors duration-500 hover:text-indigo-300">
-                Launch Point
+              <span className="block text-sm font-semibold tracking-[3px] text-white transition-all duration-500 group-hover:text-indigo-300">
+                LAUNCH POINT
               </span>
             </Link>
 

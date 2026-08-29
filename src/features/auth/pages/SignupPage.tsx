@@ -63,7 +63,26 @@ const SignupPage = () => {
             >
               Create Account
             </button>
-
+            {/* Terms */}
+            <p className="px-2 text-center text-[11px] font-light leading-5 text-gray-600">
+              By continuing, you agree to{" "}
+              <Link
+                to="/terms"
+                state={{ from: "/signup" }}
+                className="text-gray-400 transition-colors hover:text-[#8b83ff]"
+              >
+                Terms
+              </Link>{" "}
+              &amp;{" "}
+              <Link
+                to="/privacy-policy"
+                state={{ from: "/signup" }}
+                className="text-gray-400 transition-colors hover:text-[#8b83ff]"
+              >
+                Privacy Policy
+              </Link>
+              .
+            </p>
             {/* Divider */}
             <div className="flex items-center gap-3 py-2">
               <div className="h-px flex-1 bg-white/10" />
