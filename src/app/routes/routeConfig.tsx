@@ -13,7 +13,7 @@ import VerifyEmailPage from "../../features/auth/pages/VerifyEmailPage";
 import VerifyResetCodePage from "../../features/auth/pages/VerifyResetCodePage";
 import ResetPasswordPage from "../../features/auth/pages/ResetPasswordPage";
 
-import PrivacyPolicyPage from "../../features/marketing/pages/PrivacyPolicyPage"
+import PrivacyPolicyPage from "../../features/marketing/pages/PrivacyPolicyPage";
 import TermsPage from "../../features/marketing/pages/TermsPage";
 
 export const routeConfig: RouteObject[] = [
