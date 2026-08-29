@@ -48,23 +48,23 @@ export const routeConfig: RouteObject[] = [
         path: "/signup",
         element: <SignupPage />,
       },
-      {
-        path: "/forgot-password",
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: "/verify-email",
-        element: <VerifyEmailPage />,
-      },
-      {
-        path: "/verify-reset-code",
-        element: <VerifyResetCodePage />,
-      },
-      {
-        path: "/reset-password",
-        element: <ResetPasswordPage />,
-      },
     ],
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmailPage />,
+  },
+  {
+    path: "/verify-reset-code",
+    element: <VerifyResetCodePage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
   },
 
   // Legal routes
