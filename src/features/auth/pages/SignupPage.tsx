@@ -6,13 +6,16 @@ const SignupPage = () => {
       {/* LEFT — Signup Form */}
       <div className="relative flex w-full flex-col justify-center px-8 py-12 sm:px-14 lg:w-1/2">
         {/* Ambient purple glow */}
-        <div className="pointer-events-none absolute -left-30 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
+        <div className="signup-glow pointer-events-none absolute -left-30 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
 
-        <div className="pointer-events-none absolute -bottom-25 -right-25 h-80 w-80 rounded-full bg-purple-600/10 blur-[110px]" />
+        <div className="signup-glow pointer-events-none absolute -bottom-25 -right-25 h-80 w-80 rounded-full bg-purple-600/10 blur-[110px]" />
 
         <div className="relative z-10 mx-auto w-full max-w-sm">
           {/* Heading */}
-          <div className="mb-8">
+          <div
+            className="signup-fade-up mb-8"
+            style={{ animationDelay: "100ms" }}
+          >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[4px] text-[#8b83ff]">
               Join Launch Point
             </p>
@@ -27,7 +30,10 @@ const SignupPage = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-4">
+          <form
+            className="signup-fade-up space-y-4"
+            style={{ animationDelay: "220ms" }}
+          >
             {/* Full Name */}
             <input
               type="text"
@@ -63,6 +69,7 @@ const SignupPage = () => {
             >
               Create Account
             </button>
+
             {/* Terms */}
             <p className="px-2 text-center text-[11px] font-light leading-5 text-gray-600">
               By continuing, you agree to{" "}
@@ -83,6 +90,7 @@ const SignupPage = () => {
               </Link>
               .
             </p>
+
             {/* Divider */}
             <div className="flex items-center gap-3 py-2">
               <div className="h-px flex-1 bg-white/10" />
@@ -120,12 +128,16 @@ const SignupPage = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
+
               Continue with Google
             </button>
           </form>
 
           {/* Login */}
-          <p className="mt-6 text-center text-sm font-light text-gray-500">
+          <p
+            className="signup-fade-up mt-6 text-center text-sm font-light text-gray-500"
+            style={{ animationDelay: "400ms" }}
+          >
             Already have an account?{" "}
             <Link
               to="/login"
@@ -137,7 +149,10 @@ const SignupPage = () => {
         </div>
 
         {/* Footer */}
-        <p className="absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700">
+        <p
+          className="signup-fade-in absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700"
+          style={{ animationDelay: "700ms" }}
+        >
           © {new Date().getFullYear()} Launch Point
         </p>
       </div>
@@ -147,7 +162,7 @@ const SignupPage = () => {
         <img
           src="/signup-learning.png"
           alt="Student learning on a laptop"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="signup-image-in absolute inset-0 h-full w-full object-cover"
         />
 
         {/* Blend image into the dark left side */}

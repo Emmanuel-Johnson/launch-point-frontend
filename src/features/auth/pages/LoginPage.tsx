@@ -8,7 +8,7 @@ const LoginPage = () => {
         <img
           src="/signin-learning.png"
           alt="Student celebrating a successful learning moment"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="signup-image-in absolute inset-0 h-full w-full object-cover"
         />
 
         {/* Dark blend toward the form */}
@@ -25,16 +25,18 @@ const LoginPage = () => {
       </div>
 
       {/* RIGHT — Login Form */}
-      {/* RIGHT — Login Form */}
       <div className="relative flex w-full flex-col justify-center px-8 py-12 sm:px-14 lg:w-1/2">
         {/* Ambient purple glow */}
-        <div className="pointer-events-none absolute -right-30 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
+        <div className="signup-glow pointer-events-none absolute -right-30 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
 
-        <div className="pointer-events-none absolute -bottom-25 -left-25 h-80 w-80 rounded-full bg-purple-600/10 blur-[110px]" />
+        <div className="signup-glow pointer-events-none absolute -bottom-25 -left-25 h-80 w-80 rounded-full bg-purple-600/10 blur-[110px]" />
 
         <div className="relative z-10 mx-auto w-full max-w-sm">
           {/* Heading */}
-          <div className="mb-8">
+          <div
+            className="signup-fade-up mb-8"
+            style={{ animationDelay: "100ms" }}
+          >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[4px] text-[#8b83ff]">
               Welcome Back
             </p>
@@ -49,7 +51,10 @@ const LoginPage = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-4">
+          <form
+            className="signup-fade-up space-y-4"
+            style={{ animationDelay: "220ms" }}
+          >
             {/* Email */}
             <input
               type="email"
@@ -81,6 +86,7 @@ const LoginPage = () => {
             >
               Sign In
             </button>
+
             {/* Terms */}
             <p className="px-2 text-center text-[11px] font-light leading-5 text-gray-600">
               By continuing, you agree to{" "}
@@ -144,7 +150,10 @@ const LoginPage = () => {
           </form>
 
           {/* Signup */}
-          <p className="mt-6 text-center text-sm font-light text-gray-500">
+          <p
+            className="signup-fade-up mt-6 text-center text-sm font-light text-gray-500"
+            style={{ animationDelay: "400ms" }}
+          >
             Don't have an account?{" "}
             <Link
               to="/signup"
@@ -156,7 +165,10 @@ const LoginPage = () => {
         </div>
 
         {/* Footer */}
-        <p className="absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700">
+        <p
+          className="signup-fade-in absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700"
+          style={{ animationDelay: "700ms" }}
+        >
           © {new Date().getFullYear()} Launch Point
         </p>
       </div>

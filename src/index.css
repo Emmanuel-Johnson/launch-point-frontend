@@ -124,3 +124,66 @@ html {
   opacity: 0;
   animation: about-text-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes signup-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes signup-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes signup-image-in {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes signup-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+.signup-fade-up {
+  animation: signup-fade-up 0.7s ease-out both;
+}
+
+.signup-fade-in {
+  animation: signup-fade-in 0.8s ease-out both;
+}
+
+.signup-image-in {
+  animation: signup-image-in 1.2s ease-out both;
+}
+
+.signup-glow {
+  animation: signup-glow 7s ease-in-out infinite;
+}
