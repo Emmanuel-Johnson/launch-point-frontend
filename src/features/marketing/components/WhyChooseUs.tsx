@@ -1,3 +1,5 @@
+import Reveal from "../../../shared/components/Reveal";
+
 const features = [
   {
     number: "01",
@@ -30,53 +32,61 @@ const WhyChooseUs = () => {
     <section className="border-t border-white/10 bg-[#0F0F12] py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-400">
-            Why Choose Us
-          </p>
+        <Reveal delay={100}>
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-400">
+              Why Choose Us
+            </p>
 
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Everything you need to
-            <span className="text-zinc-500"> keep learning.</span>
-          </h2>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Everything you need to
+              <span className="text-zinc-500"> keep learning.</span>
+            </h2>
 
-          <p className="mt-5 max-w-xl text-base leading-7 text-zinc-400 sm:text-lg">
-            A focused learning experience built around practical skills, quality
-            content, and meaningful progress.
-          </p>
-        </div>
+            <p className="mt-5 max-w-xl text-base leading-7 text-zinc-400 sm:text-lg">
+              A focused learning experience built around practical skills,
+              quality content, and meaningful progress.
+            </p>
+          </div>
+        </Reveal>
 
         {/* Feature Cards */}
         <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => (
-            <div
-              key={feature.number}
-              className="group bg-[#0F0F12] p-8
-        transition-all duration-700 ease-out
-        hover:-translate-y-1
-        hover:bg-white/4
-        hover:backdrop-blur-md
-        hover:border-white/10
-        hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)]"
-            >
-              {/* Number */}
-              <span className="text-sm font-medium text-zinc-600 transition-colors duration-700 ease-out group-hover:text-indigo-400">
-                {feature.number}
-              </span>
+          {features.map((feature, index) => (
+            <Reveal key={feature.number} delay={300 + index * 120}>
+              <div
+                className="group h-full bg-[#0F0F12] p-8
+                  transition-all duration-700 ease-out
+                  hover:-translate-y-1
+                  hover:bg-white/4
+                  hover:backdrop-blur-md
+                  hover:border-white/10
+                  hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)]"
+              >
+                {/* Number */}
+                <span className="text-sm font-medium text-zinc-600 transition-colors duration-700 ease-out group-hover:text-indigo-400">
+                  {feature.number}
+                </span>
 
-              {/* Title */}
-              <h3 className="mt-12 text-xl font-semibold text-white">
-                {feature.title}
-              </h3>
+                {/* Title */}
+                <h3 className="mt-12 text-xl font-semibold text-white">
+                  {feature.title}
+                </h3>
 
-              {/* Description */}
-              <p className="mt-4 text-sm leading-7 text-zinc-500">
-                {feature.description}
-              </p>
+                {/* Description */}
+                <p className="mt-4 text-sm leading-7 text-zinc-500">
+                  {feature.description}
+                </p>
 
-              {/* Accent */}
-              <div className="mt-8 h-px w-8 bg-zinc-700 transition-all duration-700 ease-out group-hover:w-14 group-hover:bg-indigo-400" />
-            </div>
+                {/* Accent */}
+                <div
+                  className="mt-8 h-px w-8 bg-zinc-700
+                    transition-all duration-700 ease-out
+                    group-hover:w-14
+                    group-hover:bg-indigo-400"
+                />
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
