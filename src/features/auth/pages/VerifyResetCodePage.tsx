@@ -3,15 +3,24 @@ import { Link } from "react-router-dom";
 
 const VerifyResetCodePage = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [error, setError] = useState("");
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (value: string, index: number) => {
+    // Allow only one digit
     if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
+    // Clear error when user starts entering the code
+    if (error) {
+      setError("");
+    }
+
+    // Move to next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -24,6 +33,49 @@ const VerifyResetCodePage = () => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
+  };
+
+  const handlePaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (!pastedData) return;
+
+    const newOtp = ["", "", "", "", "", ""];
+
+    pastedData.split("").forEach((digit, index) => {
+      newOtp[index] = digit;
+    });
+
+    setOtp(newOtp);
+    setError("");
+
+    // Focus next empty input.
+    // If all six digits were pasted, focus the last input.
+    const nextIndex = Math.min(pastedData.length, 5);
+
+    inputRefs.current[nextIndex]?.focus();
+  };
+
+  const handleVerify = () => {
+    const code = otp.join("");
+
+    if (code.length !== 6) {
+      setError("Please enter the 6-digit verification code.");
+      return;
+    }
+
+    setError("");
+
+    console.log("Reset verification code:", code);
+
+    // Add your reset-code verification API request here.
   };
 
   return (
@@ -80,18 +132,32 @@ const VerifyResetCodePage = () => {
               }}
               type="text"
               inputMode="numeric"
+              autoComplete="one-time-code"
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="h-14 w-12 border border-white/10 bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10"
+              onPaste={handlePaste}
+              className={`h-14 w-12 border ${
+                error
+                  ? "border-red-400/60"
+                  : "border-white/10"
+              } bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
             />
           ))}
         </div>
 
+        {/* Error */}
+        {error && (
+          <p className="mt-2 text-xs text-red-400">
+            {error}
+          </p>
+        )}
+
         {/* Verify */}
         <button
           type="button"
+          onClick={handleVerify}
           className="mt-7 w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
         >
           Verify Code
@@ -100,7 +166,9 @@ const VerifyResetCodePage = () => {
         {/* Resend */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Didn’t receive the code?{" "}
-          <span className="font-medium text-gray-500">Resend in 30s</span>
+          <span className="font-medium text-gray-500">
+            Resend in 30s
+          </span>
         </p>
 
         {/* Change Email */}

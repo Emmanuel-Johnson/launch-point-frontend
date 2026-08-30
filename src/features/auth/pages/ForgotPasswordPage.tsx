@@ -1,6 +1,41 @@
 import { Link } from "react-router-dom";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Validation schema
+const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "Email is required")
+    .max(50, "Email is too long")
+    .email("Enter a valid email")
+    .regex(
+      /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-z0-9.]{3,}@gmail\.com$/,
+      "Enter a valid Gmail address",
+    ),
+});
+
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPasswordPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = (data) => {
+    console.log("Forgot password email:", data);
+
+    // Add your forgot-password API request here.
+  };
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
       {/* Ambient purple glow */}
@@ -42,17 +77,34 @@ const ForgotPasswordPage = () => {
         </p>
 
         {/* Form */}
-        <form className="mt-8 space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="mt-8 space-y-4"
+        >
           {/* Email */}
-          <input
-            type="email"
-            placeholder="Email address"
-            className="w-full border border-white/10 bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10"
-          />
+          <div>
+            <input
+              type="email"
+              placeholder="Email address"
+              {...register("email")}
+              className={`w-full border ${
+                errors.email
+                  ? "border-red-400/60"
+                  : "border-white/10"
+              } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+            />
+
+            {errors.email && (
+              <p className="mt-1 text-left text-xs text-red-400">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
           {/* Send Code */}
           <button
-            type="button"
+            type="submit"
             className="w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
           >
             Send Code
