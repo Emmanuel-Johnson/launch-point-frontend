@@ -1,0 +1,106 @@
+/* ============================================================
+   Launch Point — Toast styling (react-toastify)
+   Aligned to design tokens:
+   - violet-black      #09070F
+   - indigo-violet     #7C5CFF
+   - champagne gold    #E8C67A
+   ============================================================ */
+
+:root {
+  --lp-toast-bg: rgba(13, 11, 22, 0.92);
+  --lp-toast-border: rgba(124, 92, 255, 0.22);
+  --lp-indigo: #7c5cff;
+  --lp-gold: #e8c67a;
+  --lp-red: #ef4444;
+  --lp-blue: #60a5fa;
+}
+
+/* Container: give toasts a touch more room to breathe */
+.Toastify__toast-container {
+  width: clamp(320px, 92vw, 380px);
+}
+
+/* Base toast */
+.Toastify__toast {
+  position: relative;
+  background: var(--lp-toast-bg);
+  color: #f4f2fb;
+  border: 1px solid var(--lp-toast-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  font-family: inherit;          /* keeps Inter */
+  font-size: 0.9rem;
+  line-height: 1.45;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+/* Left accent bar — rendered as a pseudo-element so it hugs the
+   rounded corner instead of a hard border-left seam */
+.Toastify__toast::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--lp-indigo);
+}
+
+.Toastify__toast--success::before { background: var(--lp-indigo); }
+.Toastify__toast--error::before   { background: var(--lp-red); }
+.Toastify__toast--warning::before { background: var(--lp-gold); }
+.Toastify__toast--info::before    { background: var(--lp-blue); }
+
+/* Body + icon */
+.Toastify__toast-body {
+  margin: 0;
+  padding: 0 6px 0 0;
+  color: inherit;
+  font-weight: 500;
+}
+
+.Toastify__toast-icon {
+  width: 20px;
+  margin-inline-end: 12px;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg { fill: var(--lp-indigo); }
+.Toastify__toast--error   .Toastify__toast-icon svg { fill: var(--lp-red); }
+.Toastify__toast--warning .Toastify__toast-icon svg { fill: var(--lp-gold); }
+.Toastify__toast--info    .Toastify__toast-icon svg { fill: var(--lp-blue); }
+
+/* Progress bar */
+.Toastify__progress-bar {
+  height: 2px;
+  opacity: 0.9;
+}
+
+.Toastify__progress-bar--success { background: var(--lp-indigo); }
+.Toastify__progress-bar--error   { background: var(--lp-red); }
+.Toastify__progress-bar--warning { background: var(--lp-gold); }
+.Toastify__progress-bar--info    { background: var(--lp-blue); }
+
+/* Close button */
+.Toastify__close-button {
+  color: #8b8698;
+  opacity: 1;
+  align-self: center;
+  transition: color 0.15s ease;
+}
+
+.Toastify__close-button:hover {
+  color: #ffffff;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .Toastify__toast {
+    transition: none !important;
+    animation: none !important;
+  }
+}

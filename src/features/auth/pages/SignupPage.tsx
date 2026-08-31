@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signup } from "../api/authApi";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 // Validation schema
 const signupSchema = z
@@ -44,9 +47,7 @@ const signupSchema = z
         message: "Must contain at least one special character",
       }),
 
-    confirmPassword: z
-      .string()
-      .min(1, "Confirm password is required"),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -56,6 +57,7 @@ const signupSchema = z
 type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -68,10 +70,32 @@ const SignupPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<SignupFormData> = (data) => {
-    console.log("Signup data:", data);
+  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    try {
+      const result = await signup({
+        full_name: data.fullName,
+        email: data.email,
+        password: data.password,
+      });
 
-    // Add your signup API request here.
+      console.log("Signup successful:", result);
+      toast.success(
+        "We’ve sent a verification code to your email. Please enter it below to verify your account.",
+      );
+
+      navigate("/verify-email");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const emailError = error.response?.data?.email?.[0];
+
+        if (emailError) {
+          toast.error(emailError);
+          return;
+        }
+      }
+
+      toast.error("Unable to create your account. Please try again.");
+    }
   };
 
   return (
@@ -116,9 +140,7 @@ const SignupPage = () => {
                 placeholder="Full name"
                 {...register("fullName")}
                 className={`w-full border ${
-                  errors.fullName
-                    ? "border-red-400/60"
-                    : "border-white/10"
+                  errors.fullName ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
               />
 
@@ -136,9 +158,7 @@ const SignupPage = () => {
                 placeholder="Email address"
                 {...register("email")}
                 className={`w-full border ${
-                  errors.email
-                    ? "border-red-400/60"
-                    : "border-white/10"
+                  errors.email ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
               />
 
@@ -162,9 +182,7 @@ const SignupPage = () => {
                     }
                   }}
                   className={`w-full border ${
-                    errors.password
-                      ? "border-red-400/60"
-                      : "border-white/10"
+                    errors.password ? "border-red-400/60" : "border-white/10"
                   } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
                 />
 
@@ -172,9 +190,7 @@ const SignupPage = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
-                  aria-label={
-                    showPassword ? "Hide password" : "Show password"
-                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <svg
@@ -232,9 +248,7 @@ const SignupPage = () => {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
                   aria-label={
                     showConfirmPassword
@@ -343,7 +357,6 @@ const SignupPage = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-
               Continue with Google
             </button>
           </form>
