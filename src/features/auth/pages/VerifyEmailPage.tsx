@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+import { verifyEmail, resendVerificationCode } from "../api/authApi";
 
 const VerifyEmailPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const email = location.state?.email;
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [resendTimer, setResendTimer] = useState(30);
   const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -18,19 +29,16 @@ const VerifyEmailPage = () => {
   }, [resendTimer]);
 
   const handleChange = (value: string, index: number) => {
-    // Allow only one digit
     if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Clear error when user starts entering the code
     if (error) {
       setError("");
     }
 
-    // Move to next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -45,9 +53,7 @@ const VerifyEmailPage = () => {
     }
   };
 
-  const handlePaste = (
-    e: React.ClipboardEvent<HTMLInputElement>,
-  ) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const pastedData = e.clipboardData
@@ -66,14 +72,12 @@ const VerifyEmailPage = () => {
     setOtp(newOtp);
     setError("");
 
-    // Focus the next empty input.
-    // If all six digits were pasted, focus the last input.
     const nextIndex = Math.min(pastedData.length, 5);
 
     inputRefs.current[nextIndex]?.focus();
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const code = otp.join("");
 
     if (code.length !== 6) {
@@ -81,33 +85,87 @@ const VerifyEmailPage = () => {
       return;
     }
 
-    setError("");
+    if (!email) {
+      toast.error("Email information is missing.");
+      return;
+    }
 
-    console.log("Verification code:", code);
+    try {
+      setIsVerifying(true);
 
-    // Add your email verification API request here.
+      await verifyEmail({
+        email,
+        code,
+      });
+
+      setError("");
+
+      toast.success("Email verified successfully! Welcome to your dashboard.");
+
+      setTimeout(() => {
+        navigate("/student/home");
+      }, 2000);
+    } catch (error) {
+      setIsVerifying(false);
+
+      if (axios.isAxiosError(error)) {
+        const codeError = error.response?.data?.code?.[0];
+        const emailError = error.response?.data?.email?.[0];
+
+        if (codeError) {
+          setError(codeError);
+          return;
+        }
+
+        if (emailError) {
+          toast.error(emailError);
+          return;
+        }
+      }
+
+      toast.error("Unable to verify your email. Please try again.");
+    }
   };
 
-  const handleResend = () => {
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-    setResendTimer(30);
+  const handleResend = async () => {
+    if (!email) {
+      toast.error("Email information is missing.");
+      return;
+    }
 
-    inputRefs.current[0]?.focus();
+    try {
+      await resendVerificationCode({
+        email,
+      });
 
-    // Add your resend-code API request here.
+      setOtp(["", "", "", "", "", ""]);
+      setError("");
+      setResendTimer(30);
+
+      inputRefs.current[0]?.focus();
+
+      toast.success("A new verification code has been sent to your email.");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (message) {
+          toast.error(message);
+          return;
+        }
+      }
+
+      toast.error("Unable to resend the code. Please try again.");
+    }
   };
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
-      {/* Ambient purple glow */}
       <div className="signup-glow pointer-events-none absolute -left-32 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
 
       <div className="signup-glow pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-purple-600/10 blur-[120px]" />
 
-      {/* Content */}
       <div className="signup-fade-up relative z-10 w-full max-w-sm text-center">
-        {/* Icon */}
         <div className="mx-auto mb-7 flex h-16 w-16 items-center justify-center rounded-full border border-[#6c63ff]/20 bg-[#6c63ff]/10">
           <svg
             width="28"
@@ -123,7 +181,6 @@ const VerifyEmailPage = () => {
           </svg>
         </div>
 
-        {/* Heading */}
         <p className="mb-3 text-xs font-semibold uppercase tracking-[4px] text-[#8b83ff]">
           Verify Your Email
         </p>
@@ -136,12 +193,8 @@ const VerifyEmailPage = () => {
           We’ve sent a 6-digit verification code to
         </p>
 
-        {/* Dummy Email */}
-        <p className="mt-2 text-sm font-medium text-gray-300">
-          emma•••@gmail.com
-        </p>
+        <p className="mt-2 text-sm font-medium text-gray-300">{email}</p>
 
-        {/* OTP */}
         <div className="mt-8 flex justify-center gap-2.5">
           {otp.map((digit, index) => (
             <input
@@ -157,32 +210,48 @@ const VerifyEmailPage = () => {
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste}
+              disabled={isVerifying}
               className={`h-14 w-12 border ${
-                error
-                  ? "border-red-400/60"
-                  : "border-white/10"
+                error ? "border-red-400/60" : "border-white/10"
               } bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
             />
           ))}
         </div>
 
-        {/* Error */}
-        {error && (
-          <p className="mt-2 text-xs text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
 
-        {/* Verify */}
         <button
           type="button"
           onClick={handleVerify}
-          className="mt-7 w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+          disabled={isVerifying}
+          className="mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Verify Email
+          {isVerifying ? (
+            <svg
+              className="h-5 w-5 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="opacity-30"
+              />
+              <path
+                d="M21 12a9 9 0 0 0-9-9"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            "Verify Email"
+          )}
         </button>
 
-        {/* Resend */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Didn’t receive the code?{" "}
           {resendTimer > 0 ? (
@@ -200,7 +269,6 @@ const VerifyEmailPage = () => {
           )}
         </p>
 
-        {/* Change Email */}
         <p className="mt-3 text-sm font-light text-gray-600">
           Wrong email?{" "}
           <button
@@ -212,7 +280,6 @@ const VerifyEmailPage = () => {
         </p>
       </div>
 
-      {/* Footer */}
       <p className="absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700">
         © {new Date().getFullYear()} Launch Point
       </p>

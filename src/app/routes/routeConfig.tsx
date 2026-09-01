@@ -16,6 +16,10 @@ import ResetPasswordPage from "../../features/auth/pages/ResetPasswordPage";
 import PrivacyPolicyPage from "../../features/marketing/pages/PrivacyPolicyPage";
 import TermsPage from "../../features/marketing/pages/TermsPage";
 
+// Student
+import StudentLayout from "../../features/student/layout/StudentLayout";
+import Home from "../../features/student/pages/Home";
+
 export const routeConfig: RouteObject[] = [
   // Public / Marketing routes
   {
@@ -50,6 +54,7 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
+
   {
     path: "/forgot-password",
     element: <ForgotPasswordPage />,
@@ -75,5 +80,17 @@ export const routeConfig: RouteObject[] = [
   {
     path: "/terms",
     element: <TermsPage />,
+  },
+
+  // Student dashboard
+  {
+    path: "/student",
+    element: <StudentLayout />,
+    children: [
+      {
+        path: "home",
+        element: <Home />,
+      },
+    ],
   },
 ];

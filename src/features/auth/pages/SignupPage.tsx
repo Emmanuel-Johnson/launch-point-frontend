@@ -60,6 +60,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -71,6 +72,8 @@ const SignupPage = () => {
   });
 
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    setIsLoading(true);
+
     try {
       const result = await signup({
         full_name: data.fullName,
@@ -79,22 +82,37 @@ const SignupPage = () => {
       });
 
       console.log("Signup successful:", result);
+
       toast.success(
-        "We’ve sent a verification code to your email. Please enter it below to verify your account.",
+        "Account created successfully! Please check your email for the verification code.",
       );
 
-      navigate("/verify-email");
+      navigate("/verify-email", {
+        state: {
+          email: data.email,
+        },
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const emailError = error.response?.data?.email?.[0];
 
         if (emailError) {
-          toast.error(emailError);
+          if (
+            emailError.toLowerCase().includes("already exists") ||
+            emailError.toLowerCase().includes("already registered")
+          ) {
+            toast.error("An account with this email already exists.");
+          } else {
+            toast.error(emailError);
+          }
+
           return;
         }
       }
 
       toast.error("Unable to create your account. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -294,9 +312,32 @@ const SignupPage = () => {
             {/* Create Account */}
             <button
               type="submit"
-              className="mt-2 w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+              disabled={isLoading}
+              className="mt-2 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Create Account
+              {isLoading ? (
+                <svg
+                  className="h-5 w-5 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+              ) : (
+                "Create Account"
+              )}
             </button>
 
             {/* Terms */}
