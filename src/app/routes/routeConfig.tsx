@@ -20,8 +20,15 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import Home from "../../features/student/pages/Home";
 
+// Admin
+import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
+import AdminLayout from "../../features/admin/layout/AdminLayout";
+import AdminDashboard from "../../features/admin/pages/AdminDashboard";
+
 export const routeConfig: RouteObject[] = [
+  // =========================
   // Public / Marketing routes
+  // =========================
   {
     element: <PublicLayout />,
     children: [
@@ -40,7 +47,9 @@ export const routeConfig: RouteObject[] = [
     ],
   },
 
+  // =========================
   // Authentication routes
+  // =========================
   {
     element: <AuthLayout />,
     children: [
@@ -72,7 +81,9 @@ export const routeConfig: RouteObject[] = [
     element: <ResetPasswordPage />,
   },
 
+  // =========================
   // Legal routes
+  // =========================
   {
     path: "/privacy-policy",
     element: <PrivacyPolicyPage />,
@@ -82,7 +93,9 @@ export const routeConfig: RouteObject[] = [
     element: <TermsPage />,
   },
 
+  // =========================
   // Student dashboard
+  // =========================
   {
     path: "/student",
     element: <StudentLayout />,
@@ -90,6 +103,28 @@ export const routeConfig: RouteObject[] = [
       {
         path: "home",
         element: <Home />,
+      },
+    ],
+  },
+
+  // =========================
+  // Admin authentication
+  // =========================
+  {
+    path: "/admin/login",
+    element: <AdminLoginPage />,
+  },
+
+  // =========================
+  // Admin dashboard
+  // =========================
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <AdminDashboard />,
       },
     ],
   },
