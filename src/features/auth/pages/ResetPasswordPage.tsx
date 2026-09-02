@@ -8,10 +8,13 @@ const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .trim()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
-      .max(20, "Password is too long")
+      .max(128, "Password is too long")
+      .refine(
+        (password) => password === password.trim(),
+        "Password cannot start or end with spaces",
+      )
       .refine((password) => /[A-Z]/.test(password), {
         message: "Must contain at least one uppercase letter",
       })
@@ -25,7 +28,13 @@ const resetPasswordSchema = z
         message: "Must contain at least one special character",
       }),
 
-    confirmPassword: z.string().min(1, "Confirm password is required"),
+    confirmPassword: z
+      .string()
+      .min(1, "Confirm password is required")
+      .refine(
+        (password) => password === password.trim(),
+        "Password cannot start or end with spaces",
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
