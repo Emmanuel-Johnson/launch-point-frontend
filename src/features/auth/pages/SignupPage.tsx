@@ -14,26 +14,27 @@ const signupSchema = z
       .string()
       .trim()
       .min(1, "Full name is required")
-      .max(50, "Full name is too long"),
+      .min(2, "Full name must be at least 2 characters")
+      .max(50, "Full name is too long")
+      .regex(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u, "Please enter a valid full name"),
 
     email: z
       .string()
       .trim()
       .toLowerCase()
       .min(1, "Email is required")
-      .max(50, "Email is too long")
-      .email("Enter a valid email")
-      .regex(
-        /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-z0-9.]{3,}@gmail\.com$/,
-        "Enter a valid Gmail address",
-      ),
+      .max(254, "Email is too long")
+      .email("Enter a valid email"),
 
     password: z
       .string()
-      .trim()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
       .max(20, "Password is too long")
+      .refine(
+        (password) => password === password.trim(),
+        "Password cannot start or end with spaces",
+      )
       .refine((password) => /[A-Z]/.test(password), {
         message: "Must contain at least one uppercase letter",
       })
@@ -47,7 +48,13 @@ const signupSchema = z
         message: "Must contain at least one special character",
       }),
 
-    confirmPassword: z.string().min(1, "Confirm password is required"),
+    confirmPassword: z
+      .string()
+      .min(1, "Confirm password is required")
+      .refine(
+        (password) => password === password.trim(),
+        "Password cannot start or end with spaces",
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -175,6 +182,11 @@ const SignupPage = () => {
                 type="email"
                 placeholder="Email address"
                 {...register("email")}
+                onKeyDown={(e) => {
+                  if (e.key === " ") {
+                    e.preventDefault();
+                  }
+                }}
                 className={`w-full border ${
                   errors.email ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
@@ -194,11 +206,6 @@ const SignupPage = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create password"
                   {...register("password")}
-                  onKeyDown={(e) => {
-                    if (e.key === " ") {
-                      e.preventDefault();
-                    }
-                  }}
                   className={`w-full border ${
                     errors.password ? "border-red-400/60" : "border-white/10"
                   } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
@@ -252,11 +259,6 @@ const SignupPage = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm password"
                   {...register("confirmPassword")}
-                  onKeyDown={(e) => {
-                    if (e.key === " ") {
-                      e.preventDefault();
-                    }
-                  }}
                   className={`w-full border ${
                     errors.confirmPassword
                       ? "border-red-400/60"
