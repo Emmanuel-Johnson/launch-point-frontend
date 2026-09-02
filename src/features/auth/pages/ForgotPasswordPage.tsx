@@ -10,12 +10,8 @@ const forgotPasswordSchema = z.object({
     .trim()
     .toLowerCase()
     .min(1, "Email is required")
-    .max(50, "Email is too long")
-    .email("Enter a valid email")
-    .regex(
-      /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-z0-9.]{3,}@gmail\.com$/,
-      "Enter a valid Gmail address",
-    ),
+    .max(254, "Email is too long")
+    .email("Enter a valid email"),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -89,9 +85,7 @@ const ForgotPasswordPage = () => {
               placeholder="Email address"
               {...register("email")}
               className={`w-full border ${
-                errors.email
-                  ? "border-red-400/60"
-                  : "border-white/10"
+                errors.email ? "border-red-400/60" : "border-white/10"
               } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
             />
 

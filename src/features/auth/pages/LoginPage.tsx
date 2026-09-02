@@ -102,11 +102,6 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email address"
                 {...register("email")}
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault();
-                  }
-                }}
                 className={`w-full border ${
                   errors.email ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}

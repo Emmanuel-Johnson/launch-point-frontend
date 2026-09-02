@@ -25,9 +25,7 @@ const resetPasswordSchema = z
         message: "Must contain at least one special character",
       }),
 
-    confirmPassword: z
-      .string()
-      .min(1, "Confirm password is required"),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -109,24 +107,15 @@ const ResetPasswordPage = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="New password"
                 {...register("password")}
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault();
-                  }
-                }}
                 className={`w-full border ${
-                  errors.password
-                    ? "border-red-400/60"
-                    : "border-white/10"
+                  errors.password ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={
-                  showPassword ? "Hide password" : "Show password"
-                }
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
               >
                 {showPassword ? (
@@ -171,11 +160,6 @@ const ResetPasswordPage = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm new password"
                 {...register("confirmPassword")}
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault();
-                  }
-                }}
                 className={`w-full border ${
                   errors.confirmPassword
                     ? "border-red-400/60"
@@ -185,9 +169,7 @@ const ResetPasswordPage = () => {
 
               <button
                 type="button"
-                onClick={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 aria-label={
                   showConfirmPassword
                     ? "Hide confirm password"
