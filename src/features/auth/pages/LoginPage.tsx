@@ -11,31 +11,13 @@ const loginSchema = z.object({
     .trim()
     .toLowerCase()
     .min(1, "Email is required")
-    .max(50, "Email is too long")
-    .email("Enter a valid email")
-    .regex(
-      /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-z0-9.]{3,}@gmail\.com$/,
-      "Enter a valid Gmail address",
-    ),
+    .max(254, "Email is too long")
+    .email("Enter a valid email"),
 
   password: z
     .string()
-    .trim()
     .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .max(20, "Password is too long")
-    .refine((password) => /[A-Z]/.test(password), {
-      message: "Must contain at least one uppercase letter",
-    })
-    .refine((password) => /[a-z]/.test(password), {
-      message: "Must contain at least one lowercase letter",
-    })
-    .refine((password) => /[0-9]/.test(password), {
-      message: "Must contain at least one number",
-    })
-    .refine((password) => /[^A-Za-z0-9]/.test(password), {
-      message: "Must contain at least one special character",
-    }),
+    .max(128, "Password is too long"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -120,10 +102,13 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email address"
                 {...register("email")}
+                onKeyDown={(e) => {
+                  if (e.key === " ") {
+                    e.preventDefault();
+                  }
+                }}
                 className={`w-full border ${
-                  errors.email
-                    ? "border-red-400/60"
-                    : "border-white/10"
+                  errors.email ? "border-red-400/60" : "border-white/10"
                 } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
               />
 
@@ -141,15 +126,8 @@ const LoginPage = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   {...register("password")}
-                  onKeyDown={(e) => {
-                    if (e.key === " ") {
-                      e.preventDefault();
-                    }
-                  }}
                   className={`w-full border ${
-                    errors.password
-                      ? "border-red-400/60"
-                      : "border-white/10"
+                    errors.password ? "border-red-400/60" : "border-white/10"
                   } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
                 />
 
@@ -157,9 +135,7 @@ const LoginPage = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
-                  aria-label={
-                    showPassword ? "Hide password" : "Show password"
-                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     /* Eye-off */
@@ -274,7 +250,6 @@ const LoginPage = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53l3.66-2.84z"
                 />
               </svg>
-
               Continue with Google
             </button>
           </form>

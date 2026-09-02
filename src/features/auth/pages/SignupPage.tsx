@@ -30,7 +30,7 @@ const signupSchema = z
       .string()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
-      .max(20, "Password is too long")
+      .max(128, "Password is too long")
       .refine(
         (password) => password === password.trim(),
         "Password cannot start or end with spaces",
