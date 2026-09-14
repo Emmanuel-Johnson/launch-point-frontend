@@ -18,7 +18,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
-import Home from "../../features/student/pages/Home";
+import Dashboard from "../../features/student/pages/Dashboard";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
@@ -101,8 +101,8 @@ export const routeConfig: RouteObject[] = [
     element: <StudentLayout />,
     children: [
       {
-        path: "home",
-        element: <Home />,
+        path: "dashboard",
+        element: <Dashboard />,
       },
     ],
   },

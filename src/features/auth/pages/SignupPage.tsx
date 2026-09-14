@@ -150,7 +150,7 @@ const SignupPage = () => {
 
       toast.success("Google authentication successful!");
 
-      navigate("/student/home");
+      navigate("/student/dashboard");
     } catch (error) {
       console.error("Google authentication failed:", error);
 

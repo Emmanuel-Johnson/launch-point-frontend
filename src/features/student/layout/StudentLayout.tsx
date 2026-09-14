@@ -2,7 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const StudentLayout = () => {
   const navItems = [
-    { name: "Home", path: "/student/home" },
+    { name: "Home", path: "/student/dashboard" },
     { name: "My Courses", path: "/student/courses" },
     { name: "Assignments", path: "/student/assignments" },
     { name: "Attendance", path: "/student/attendance" },

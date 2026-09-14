@@ -68,7 +68,7 @@ const LoginPage = () => {
 
       toast.success("Google login successful!");
 
-      navigate("/student/home");
+      navigate("/student/dashboard");
     } catch (error) {
       console.error("Google authentication failed:", error);
 
