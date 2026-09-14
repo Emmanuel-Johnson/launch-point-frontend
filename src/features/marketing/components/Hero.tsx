@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import Reveal from "../../../shared/components/Reveal";
 
 const Hero = () => {
+  const accessToken = localStorage.getItem("access");
+  const isLoggedIn = !!accessToken;
   return (
     <section className="relative overflow-hidden bg-[#09090B]">
       {/* Background Glow */}
@@ -57,15 +59,27 @@ const Hero = () => {
                 Explore Courses
               </Link>
 
-              <Link
-                to="/signup"
-                className="w-full rounded-lg border border-white/15 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
-                transition-all duration-700 ease-out
-                hover:scale-[1.04] hover:bg-white/8 hover:border-white/25
-                sm:w-auto"
-              >
-                Get Started
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  to="/student/dashboard"
+                  className="w-full rounded-lg border border-white/15 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
+  transition-all duration-700 ease-out
+  hover:scale-[1.04] hover:bg-white/8 hover:border-white/25
+  sm:w-auto"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  to="/signup"
+                  className="w-full rounded-lg border border-white/15 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
+  transition-all duration-700 ease-out
+  hover:scale-[1.04] hover:bg-white/8 hover:border-white/25
+  sm:w-auto"
+                >
+                  Get Started
+                </Link>
+              )}
             </div>
           </Reveal>
 

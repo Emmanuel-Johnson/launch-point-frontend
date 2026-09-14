@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import Reveal from "../../../shared/components/Reveal";
 
 const FinalCTA = () => {
+  const accessToken = localStorage.getItem("access");
+  const isLoggedIn = !!accessToken;
   return (
     <section className="relative overflow-hidden border-t border-white/10 bg-[#0F0F12] py-24">
       {/* Background Glow */}
@@ -51,17 +53,31 @@ const FinalCTA = () => {
                   Explore Courses
                 </Link>
 
-                <Link
-                  to="/signup"
-                  className="w-full rounded-lg border border-white/10 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
-                    transition-all duration-700 ease-out
-                    hover:scale-[1.04]
-                    hover:border-white/20
-                    hover:bg-white/8
-                    sm:w-auto"
-                >
-                  Create Free Account
-                </Link>
+                {isLoggedIn ? (
+                  <Link
+                    to="/student/dashboard"
+                    className="w-full rounded-lg border border-white/10 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
+    transition-all duration-700 ease-out
+    hover:scale-[1.04]
+    hover:border-white/20
+    hover:bg-white/8
+    sm:w-auto"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    to="/signup"
+                    className="w-full rounded-lg border border-white/10 bg-white/4 px-7 py-3.5 text-sm font-semibold text-white
+    transition-all duration-700 ease-out
+    hover:scale-[1.04]
+    hover:border-white/20
+    hover:bg-white/8
+    sm:w-auto"
+                  >
+                    Create Free Account
+                  </Link>
+                )}
               </div>
             </Reveal>
 

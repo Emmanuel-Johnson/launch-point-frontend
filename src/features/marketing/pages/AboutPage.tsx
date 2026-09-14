@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import Reveal from "../../../shared/components/Reveal";
 
 const AboutPage = () => {
+  const accessToken = localStorage.getItem("access");
+  const isLoggedIn = !!accessToken;
   const values = [
     {
       number: "01",
@@ -153,14 +155,25 @@ const AboutPage = () => {
             </p>
           </Reveal>
 
-          <Reveal delay={450}>
-            <Link
-              to="/signup"
-              className="mt-8 inline-flex rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 ease-out hover:scale-105 hover:bg-indigo-400 hover:shadow-xl hover:shadow-indigo-500/30"
-            >
-              Get Started
-            </Link>
-          </Reveal>
+          {isLoggedIn ? (
+            <Reveal delay={450}>
+              <Link
+                to="/student/dashboard"
+                className="mt-8 inline-flex rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 ease-out hover:scale-105 hover:bg-indigo-400 hover:shadow-xl hover:shadow-indigo-500/30"
+              >
+                Dashboard
+              </Link>
+            </Reveal>
+          ) : (
+            <Reveal delay={450}>
+              <Link
+                to="/signup"
+                className="mt-8 inline-flex rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 ease-out hover:scale-105 hover:bg-indigo-400 hover:shadow-xl hover:shadow-indigo-500/30"
+              >
+                Get Started
+              </Link>
+            </Reveal>
+          )}
         </div>
       </section>
     </main>

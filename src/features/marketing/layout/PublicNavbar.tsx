@@ -9,6 +9,9 @@ const navItems = [
 ];
 
 const PublicNavbar = () => {
+  const accessToken = localStorage.getItem("access");
+  const isLoggedIn = !!accessToken;
+
   return (
     <nav className="sticky top-0 z-50 bg-[#050505]">
       {/* Bottom Glass Separator */}
@@ -20,7 +23,7 @@ const PublicNavbar = () => {
           to="/"
           className="flex items-center gap-3 transition-all duration-500 hover:scale-105"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-500 hover:scale-105">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg">
             <img
               src="/logo.png"
               alt="Launch Point Logo"
@@ -76,27 +79,29 @@ const PublicNavbar = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
-          <NavLink
-            to="/login"
-            className={({ isActive }) =>
-              `hidden rounded-lg px-4 py-2 text-sm font-medium transition-all duration-500 sm:block ${
-                isActive
-                  ? "text-white"
-                  : "text-zinc-400 hover:scale-105 hover:bg-white/5 hover:text-white"
-              }`
-            }
-          >
-            Sign in
-          </NavLink>
+        {!isLoggedIn && (
+          <div className="flex items-center gap-3">
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                `hidden rounded-lg px-4 py-2 text-sm font-medium transition-all duration-500 sm:block ${
+                  isActive
+                    ? "text-white"
+                    : "text-zinc-400 hover:scale-105 hover:bg-white/5 hover:text-white"
+                }`
+              }
+            >
+              Sign in
+            </NavLink>
 
-          <Link
-            to="/signup"
-            className="rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-700 hover:scale-105 hover:bg-indigo-400 hover:shadow-indigo-500/30"
-          >
-            Get Started
-          </Link>
-        </div>
+            <Link
+              to="/signup"
+              className="rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-700 hover:scale-105 hover:bg-indigo-400 hover:shadow-indigo-500/30"
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
