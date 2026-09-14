@@ -28,6 +28,8 @@ import AdminDashboard from "../../features/admin/pages/AdminDashboard";
 import ProtectedRoute from "../../shared/guards/ProtectedRoute";
 import PublicRoute from "../../shared/guards/PublicRoute";
 
+import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
+
 export const routeConfig: RouteObject[] = [
   // =========================
   // Public / Marketing routes
@@ -139,5 +141,9 @@ export const routeConfig: RouteObject[] = [
         element: <AdminDashboard />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ];
