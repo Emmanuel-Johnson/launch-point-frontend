@@ -25,6 +25,9 @@ import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
 import AdminDashboard from "../../features/admin/pages/AdminDashboard";
 
+import ProtectedRoute from "../../shared/guards/ProtectedRoute";
+import PublicRoute from "../../shared/guards/PublicRoute";
+
 export const routeConfig: RouteObject[] = [
   // =========================
   // Public / Marketing routes
@@ -54,31 +57,35 @@ export const routeConfig: RouteObject[] = [
     element: <AuthLayout />,
     children: [
       {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/signup",
-        element: <SignupPage />,
+        element: <PublicRoute />,
+        children: [
+          {
+            path: "/login",
+            element: <LoginPage />,
+          },
+          {
+            path: "/signup",
+            element: <SignupPage />,
+          },
+          {
+            path: "/forgot-password",
+            element: <ForgotPasswordPage />,
+          },
+          {
+            path: "/verify-email",
+            element: <VerifyEmailPage />,
+          },
+          {
+            path: "/verify-reset-code",
+            element: <VerifyResetCodePage />,
+          },
+          {
+            path: "/reset-password",
+            element: <ResetPasswordPage />,
+          },
+        ],
       },
     ],
-  },
-
-  {
-    path: "/forgot-password",
-    element: <ForgotPasswordPage />,
-  },
-  {
-    path: "/verify-email",
-    element: <VerifyEmailPage />,
-  },
-  {
-    path: "/verify-reset-code",
-    element: <VerifyResetCodePage />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPasswordPage />,
   },
 
   // =========================
@@ -97,12 +104,17 @@ export const routeConfig: RouteObject[] = [
   // Student dashboard
   // =========================
   {
-    path: "/student",
-    element: <StudentLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "/student",
+        element: <StudentLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+        ],
       },
     ],
   },
