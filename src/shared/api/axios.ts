@@ -100,24 +100,25 @@ api.interceptors.response.use(
     }
 
     try {
-      // Use normal axios here, NOT api,
-      // so this request doesn't trigger the interceptor again
+      // Use normal axios here, NOT api.
+      // This prevents the refresh request from
+      // triggering the response interceptor again.
       const response = await axios.post(
-        "http://localhost:8000/api/token/refresh/",
+        "http://localhost:8000/api/auth/token/refresh/",
         {
           refresh: refreshToken,
         },
       );
 
-      // SimpleJWT rotation returns both tokens
+      // Refresh-token rotation returns both tokens
       const newAccessToken = response.data.access;
       const newRefreshToken = response.data.refresh;
 
-      // Save BOTH new tokens
+      // Save both new tokens
       localStorage.setItem("access", newAccessToken);
       localStorage.setItem("refresh", newRefreshToken);
 
-      // Give the new access token to waiting requests
+      // Resolve all requests waiting for the refresh
       processQueue(null, newAccessToken);
 
       // Retry the original request
@@ -125,14 +126,14 @@ api.interceptors.response.use(
 
       return api(originalRequest);
     } catch (refreshError) {
-      // Tell waiting requests that refresh failed
+      // Reject all waiting requests
       processQueue(refreshError);
 
-      // Refresh token is no longer usable
+      // Clear authentication
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
-      // Send user back to login
+      // Send user to login
       window.location.href = "/login";
 
       return Promise.reject(refreshError);
