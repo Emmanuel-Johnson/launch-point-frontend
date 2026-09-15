@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import api from "../../../shared/axios";
+import api from "../../../shared/api/axios";
 
 // Validation schema
 const loginSchema = z.object({

@@ -1,4 +1,4 @@
-import api from "../../../shared/axios";
+import api from "../../../shared/api/axios";
 
 export type SignupData = {
   full_name: string;

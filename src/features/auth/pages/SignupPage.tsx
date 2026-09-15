@@ -7,7 +7,7 @@ import { signup } from "../api/authApi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
-import api from "../../../shared/axios";
+import api from "../../../shared/api/axios";
 
 // Validation schema
 const signupSchema = z
