@@ -1,4 +1,4 @@
-import api from "../../../shared/api/axios";
+import adminApi from "../../../shared/api/adminAxios";
 
 // ====================
 // Admin Login
@@ -25,7 +25,7 @@ export interface AdminLoginResponse {
 export const adminLogin = async (
   credentials: AdminLoginCredentials,
 ): Promise<AdminLoginResponse> => {
-  const response = await api.post<AdminLoginResponse>(
+  const response = await adminApi.post<AdminLoginResponse>(
     "/auth/admin/login/",
     credentials,
   );

@@ -1,7 +1,4 @@
-import axios, {
-  type AxiosError,
-  type InternalAxiosRequestConfig,
-} from "axios";
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api",
@@ -29,10 +26,7 @@ let failedQueue: {
   reject: (error: unknown) => void;
 }[] = [];
 
-const processQueue = (
-  error: unknown,
-  token: string | null = null,
-) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((promise) => {
     if (error) {
       promise.reject(error);
@@ -64,7 +58,6 @@ api.interceptors.response.use(
     // Don't refresh token for authentication endpoints
     if (
       originalRequest.url?.includes("/auth/login/") ||
-      originalRequest.url?.includes("/auth/admin/login/") ||
       originalRequest.url?.includes("/auth/signup/") ||
       originalRequest.url?.includes("/auth/google/") ||
       originalRequest.url?.includes("/auth/forgot-password/")
