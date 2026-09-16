@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-import { verifyEmail, resendVerificationCode } from "../api/authApi";
+import { verifyEmail, resendVerificationOTP } from "../api/authApi";
 
 const VerifyEmailPage = () => {
   const location = useLocation();
@@ -12,7 +12,7 @@ const VerifyEmailPage = () => {
   const email = location.state?.email;
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [resendTimer, setResendTimer] = useState(30);
+  const [resendTimer, setResendTimer] = useState(60);
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -93,37 +93,42 @@ const VerifyEmailPage = () => {
     try {
       setIsVerifying(true);
 
-      await verifyEmail({
+      const result = await verifyEmail({
         email,
-        code,
+        otp: code,
       });
 
       setError("");
 
+      // Store JWT tokens after successful email verification
+      localStorage.setItem("access", result.tokens.access);
+      localStorage.setItem("refresh", result.tokens.refresh);
+
       toast.success("Email verified successfully! Welcome to your dashboard.");
 
-      setTimeout(() => {
-        navigate("/student/dashboard");
-      }, 2000);
+      navigate("/student/dashboard", { replace: true });
     } catch (error) {
-      setIsVerifying(false);
-
       if (axios.isAxiosError(error)) {
-        const codeError = error.response?.data?.code?.[0];
-        const emailError = error.response?.data?.email?.[0];
+        const responseData = error.response?.data;
 
-        if (codeError) {
-          setError(codeError);
-          return;
-        }
+        const otpError = responseData?.otp?.[0];
+        const emailError = responseData?.email?.[0];
+        const detailError = responseData?.detail;
 
-        if (emailError) {
-          toast.error(emailError);
+        const errorMessage =
+          otpError ||
+          emailError ||
+          (typeof detailError === "string" ? detailError : null);
+
+        if (errorMessage) {
+          setError(errorMessage);
           return;
         }
       }
 
-      toast.error("Unable to verify your email. Please try again.");
+      setError("Unable to verify your email. Please try again.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -134,23 +139,32 @@ const VerifyEmailPage = () => {
     }
 
     try {
-      await resendVerificationCode({
+      const result = await resendVerificationOTP({
         email,
       });
 
       setOtp(["", "", "", "", "", ""]);
       setError("");
-      setResendTimer(30);
+      setResendTimer(60);
 
       inputRefs.current[0]?.focus();
 
-      toast.success("A new verification code has been sent to your email.");
+      toast.success(result.message);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
+        const responseData = error.response?.data;
 
-        if (message) {
-          toast.error(message);
+        const emailError = responseData?.email?.[0];
+        const detailError = responseData?.detail;
+        const messageError = responseData?.message;
+
+        const errorMessage =
+          emailError ||
+          (typeof detailError === "string" ? detailError : null) ||
+          (typeof messageError === "string" ? messageError : null);
+
+        if (errorMessage) {
+          toast.error(errorMessage);
           return;
         }
       }
@@ -273,6 +287,7 @@ const VerifyEmailPage = () => {
           Wrong email?{" "}
           <button
             type="button"
+            onClick={() => navigate("/signup")}
             className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff]"
           >
             Change email

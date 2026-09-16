@@ -61,3 +61,59 @@ export const signup = async (
 
   return response.data;
 };
+
+// ====================
+// Verify Email
+// ====================
+
+export type VerifyEmailData = {
+  email: string;
+  otp: string;
+};
+
+export type VerifyEmailResponse = {
+  message: string;
+  user: {
+    id: number;
+    full_name: string;
+    email: string;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
+  };
+};
+
+export const verifyEmail = async (
+  data: VerifyEmailData,
+): Promise<VerifyEmailResponse> => {
+  const response = await api.post<VerifyEmailResponse>(
+    "/auth/verify-email/",
+    data,
+  );
+
+  return response.data;
+};
+
+// ====================
+// Resend Verification OTP
+// ====================
+
+export type ResendVerificationOTPData = {
+  email: string;
+};
+
+export type ResendVerificationOTPResponse = {
+  message: string;
+};
+
+export const resendVerificationOTP = async (
+  data: ResendVerificationOTPData,
+): Promise<ResendVerificationOTPResponse> => {
+  const response = await api.post<ResendVerificationOTPResponse>(
+    "/auth/resend-verification-otp/",
+    data,
+  );
+
+  return response.data;
+};
