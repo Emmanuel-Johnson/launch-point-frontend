@@ -15,6 +15,7 @@ const VerifyEmailPage = () => {
   const [resendTimer, setResendTimer] = useState(60);
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   useEffect(() => {
@@ -143,6 +144,8 @@ const VerifyEmailPage = () => {
     }
 
     try {
+      setIsResending(true);
+
       const result = await resendVerificationOTP({
         email,
       });
@@ -174,6 +177,8 @@ const VerifyEmailPage = () => {
       }
 
       toast.error("Unable to resend the code. Please try again.");
+    } finally {
+      setIsResending(false);
     }
   };
   if (!email) {
@@ -282,9 +287,10 @@ const VerifyEmailPage = () => {
             <button
               type="button"
               onClick={handleResend}
-              className="font-medium text-white transition-colors hover:text-[#8b83ff]"
+              disabled={isResending}
+              className="font-medium text-white transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Resend
+              {isResending ? "Sending..." : "Resend"}
             </button>
           )}
         </p>
