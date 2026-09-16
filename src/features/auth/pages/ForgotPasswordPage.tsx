@@ -23,6 +23,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -111,10 +112,11 @@ const ForgotPasswordPage = () => {
             <input
               type="email"
               placeholder="Email address"
+              disabled={isLoading}
               {...register("email")}
               className={`w-full border ${
                 errors.email ? "border-red-400/60" : "border-white/10"
-              } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+              } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-60`}
             />
 
             {errors.email && (
@@ -137,12 +139,18 @@ const ForgotPasswordPage = () => {
         {/* Back to Login */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Remember your password?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-white transition-colors hover:text-[#8b83ff]"
-          >
-            Sign in
-          </Link>
+          {isLoading ? (
+            <span className="cursor-not-allowed font-medium text-gray-600">
+              Sign in
+            </span>
+          ) : (
+            <Link
+              to="/login"
+              className="font-medium text-white transition-colors hover:text-[#8b83ff]"
+            >
+              Sign in
+            </Link>
+          )}
         </p>
       </div>
 
@@ -155,3 +163,4 @@ const ForgotPasswordPage = () => {
 };
 
 export default ForgotPasswordPage;
+
