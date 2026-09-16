@@ -30,6 +30,9 @@ import PublicRoute from "../../shared/guards/PublicRoute";
 
 import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
 
+import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
+import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
+
 export const routeConfig: RouteObject[] = [
   // =========================
   // Public / Marketing routes
@@ -125,20 +128,30 @@ export const routeConfig: RouteObject[] = [
   // Admin authentication
   // =========================
   {
-    path: "/admin/login",
-    element: <AdminLoginPage />,
+    element: <AdminPublicRoute />,
+    children: [
+      {
+        path: "/admin/login",
+        element: <AdminLoginPage />,
+      },
+    ],
   },
 
   // =========================
   // Admin dashboard
   // =========================
   {
-    path: "/admin",
-    element: <AdminLayout />,
+    element: <AdminProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        element: <AdminDashboard />,
+        path: "/admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <AdminDashboard />,
+          },
+        ],
       },
     ],
   },
