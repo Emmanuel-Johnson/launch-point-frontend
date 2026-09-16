@@ -17,7 +17,11 @@ const VerifyEmailPage = () => {
   const [isVerifying, setIsVerifying] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+  useEffect(() => {
+    if (!email) {
+      navigate("/signup", { replace: true });
+    }
+  }, [email, navigate]);
   useEffect(() => {
     if (resendTimer === 0) return;
 
@@ -172,7 +176,9 @@ const VerifyEmailPage = () => {
       toast.error("Unable to resend the code. Please try again.");
     }
   };
-
+  if (!email) {
+    return null;
+  }
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
       <div className="signup-glow pointer-events-none absolute -left-32 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
@@ -287,7 +293,7 @@ const VerifyEmailPage = () => {
           Wrong email?{" "}
           <button
             type="button"
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/signup", { replace: true })}
             className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff]"
           >
             Change email
