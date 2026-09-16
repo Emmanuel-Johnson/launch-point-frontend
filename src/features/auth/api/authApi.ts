@@ -137,3 +137,26 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
 
   return response.data;
 };
+
+// ====================
+// Forgot Password
+// ====================
+
+export type ForgotPasswordData = {
+  email: string;
+};
+
+export type ForgotPasswordResponse = {
+  message: string;
+};
+
+export const forgotPassword = async (
+  data: ForgotPasswordData,
+): Promise<ForgotPasswordResponse> => {
+  const response = await api.post<ForgotPasswordResponse>(
+    "/auth/forgot-password/",
+    data,
+  );
+
+  return response.data;
+};

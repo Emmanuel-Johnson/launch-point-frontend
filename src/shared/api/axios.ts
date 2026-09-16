@@ -65,7 +65,8 @@ api.interceptors.response.use(
     if (
       originalRequest.url?.includes("/auth/login/") ||
       originalRequest.url?.includes("/auth/signup/") ||
-      originalRequest.url?.includes("/auth/google/")
+      originalRequest.url?.includes("/auth/google/") ||
+      originalRequest.url?.includes("/auth/forgot-password/")
     ) {
       return Promise.reject(error);
     }
