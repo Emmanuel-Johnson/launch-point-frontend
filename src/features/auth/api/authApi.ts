@@ -208,3 +208,27 @@ export const resendPasswordResetOTP = async (
 
   return response.data;
 };
+
+// ====================
+// Reset Password
+// ====================
+
+export type ResetPasswordData = {
+  reset_token: string;
+  new_password: string;
+};
+
+export type ResetPasswordResponse = {
+  message: string;
+};
+
+export const resetPassword = async (
+  data: ResetPasswordData,
+): Promise<ResetPasswordResponse> => {
+  const response = await api.post<ResetPasswordResponse>(
+    "/auth/reset-password/",
+    data,
+  );
+
+  return response.data;
+};
