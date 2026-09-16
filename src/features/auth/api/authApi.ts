@@ -24,10 +24,7 @@ export type GoogleLoginResponse = {
 export const googleLogin = async (
   data: GoogleLoginData,
 ): Promise<GoogleLoginResponse> => {
-  const response = await api.post<GoogleLoginResponse>(
-    "/auth/google/",
-    data,
-  );
+  const response = await api.post<GoogleLoginResponse>("/auth/google/", data);
 
   return response.data;
 };
@@ -51,13 +48,8 @@ export type SignupResponse = {
   };
 };
 
-export const signup = async (
-  data: SignupData,
-): Promise<SignupResponse> => {
-  const response = await api.post<SignupResponse>(
-    "/auth/signup/",
-    data,
-  );
+export const signup = async (data: SignupData): Promise<SignupResponse> => {
+  const response = await api.post<SignupResponse>("/auth/signup/", data);
 
   return response.data;
 };
@@ -114,6 +106,34 @@ export const resendVerificationOTP = async (
     "/auth/resend-verification-otp/",
     data,
   );
+
+  return response.data;
+};
+
+// ====================
+// Login
+// ====================
+
+export type LoginData = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  message: string;
+  user: {
+    id: number;
+    full_name: string;
+    email: string;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
+  };
+};
+
+export const login = async (data: LoginData): Promise<LoginResponse> => {
+  const response = await api.post<LoginResponse>("/auth/login/", data);
 
   return response.data;
 };
