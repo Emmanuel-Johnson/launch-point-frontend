@@ -160,3 +160,51 @@ export const forgotPassword = async (
 
   return response.data;
 };
+
+// ====================
+// Verify Password Reset OTP
+// ====================
+
+export type VerifyPasswordResetOTPData = {
+  email: string;
+  otp: string;
+};
+
+export type VerifyPasswordResetOTPResponse = {
+  message: string;
+  reset_token: string;
+};
+
+export const verifyPasswordResetOTP = async (
+  data: VerifyPasswordResetOTPData,
+): Promise<VerifyPasswordResetOTPResponse> => {
+  const response = await api.post<VerifyPasswordResetOTPResponse>(
+    "/auth/verify-password-reset-otp/",
+    data,
+  );
+
+  return response.data;
+};
+
+// ====================
+// Resend Password Reset OTP
+// ====================
+
+export type ResendPasswordResetOTPData = {
+  email: string;
+};
+
+export type ResendPasswordResetOTPResponse = {
+  message: string;
+};
+
+export const resendPasswordResetOTP = async (
+  data: ResendPasswordResetOTPData,
+): Promise<ResendPasswordResetOTPResponse> => {
+  const response = await api.post<ResendPasswordResetOTPResponse>(
+    "/auth/resend-password-reset-otp/",
+    data,
+  );
+
+  return response.data;
+};

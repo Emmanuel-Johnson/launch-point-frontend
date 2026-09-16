@@ -1,31 +1,141 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+import { resendPasswordResetOTP, verifyPasswordResetOTP } from "../api/authApi";
+
+const RESEND_COOLDOWN = 60;
+
+type LocationState = {
+  email?: string;
+};
 
 const VerifyResetCodePage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { email } = (location.state as LocationState) || {};
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [resendTimer, setResendTimer] = useState(60);
   const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  /*
+   * ---------------------------------------------------------
+   * Redirect if email is missing
+   * ---------------------------------------------------------
+   */
+  useEffect(() => {
+    if (!email) {
+      navigate("/forgot-password", { replace: true });
+    }
+  }, [email, navigate]);
+
+  /*
+   * ---------------------------------------------------------
+   * Resend timer
+   *
+   * The timestamp is stored in localStorage.
+   *
+   * This means the timer does NOT restart when:
+   *
+   * - Browser Back is pressed
+   * - Browser Forward is pressed
+   * - The component remounts
+   * - The page is refreshed
+   * ---------------------------------------------------------
+   */
+  useEffect(() => {
+    if (!email) return;
+
+    const storageKey = `password_reset_resend_available_at_${email}`;
+
+    let expiryTime = Number(localStorage.getItem(storageKey));
+
+    /*
+     * If there is no existing expiry time, create one.
+     *
+     * This handles the first time the user reaches
+     * the verification page after requesting an OTP.
+     */
+    if (!expiryTime || expiryTime <= Date.now()) {
+      expiryTime = Date.now() + RESEND_COOLDOWN * 1000;
+
+      localStorage.setItem(storageKey, expiryTime.toString());
+    }
+
+    const updateTimer = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((expiryTime - Date.now()) / 1000),
+      );
+
+      setResendTimer(remaining);
+
+      /*
+       * Remove the timestamp after cooldown finishes.
+       */
+      if (remaining === 0) {
+        localStorage.removeItem(storageKey);
+      }
+    };
+
+    /*
+     * Update immediately.
+     */
+    updateTimer();
+
+    /*
+     * Update every second.
+     */
+    const timer = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(timer);
+  }, [email]);
+
+  /*
+   * ---------------------------------------------------------
+   * OTP input change
+   * ---------------------------------------------------------
+   */
   const handleChange = (value: string, index: number) => {
-    // Allow only one digit
     if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
+
     newOtp[index] = value;
+
     setOtp(newOtp);
 
-    // Clear error when user starts entering the code
     if (error) {
       setError("");
     }
 
-    // Move to next input
+    /*
+     * Move to next input.
+     */
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
+
+    /*
+     * Automatically verify when all 6 digits are entered.
+     */
+    if (newOtp.join("").length === 6) {
+      handleVerify(newOtp.join(""));
+    }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Backspace handling
+   * ---------------------------------------------------------
+   */
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
@@ -35,9 +145,12 @@ const VerifyResetCodePage = () => {
     }
   };
 
-  const handlePaste = (
-    e: React.ClipboardEvent<HTMLInputElement>,
-  ) => {
+  /*
+   * ---------------------------------------------------------
+   * Paste OTP
+   * ---------------------------------------------------------
+   */
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const pastedData = e.clipboardData
@@ -56,27 +169,187 @@ const VerifyResetCodePage = () => {
     setOtp(newOtp);
     setError("");
 
-    // Focus next empty input.
-    // If all six digits were pasted, focus the last input.
     const nextIndex = Math.min(pastedData.length, 5);
 
     inputRefs.current[nextIndex]?.focus();
+
+    /*
+     * Automatically verify pasted 6-digit OTP.
+     */
+    if (pastedData.length === 6) {
+      handleVerify(pastedData);
+    }
   };
 
-  const handleVerify = () => {
-    const code = otp.join("");
+  /*
+   * ---------------------------------------------------------
+   * Verify password reset OTP
+   * ---------------------------------------------------------
+   */
+  const handleVerify = async (enteredOtp?: string) => {
+    if (isVerifying || isResending) return;
+
+    const code = enteredOtp ?? otp.join("");
 
     if (code.length !== 6) {
       setError("Please enter the 6-digit verification code.");
       return;
     }
 
-    setError("");
+    if (!email) {
+      toast.error("Email information is missing.");
+      return;
+    }
 
-    console.log("Reset verification code:", code);
+    try {
+      setIsVerifying(true);
 
-    // Add your reset-code verification API request here.
+      const response = await verifyPasswordResetOTP({
+        email,
+        otp: code,
+      });
+
+      setError("");
+
+      /*
+       * OTP has been successfully verified.
+       *
+       * Remove the resend timer because the user
+       * is moving to the next step.
+       */
+      localStorage.removeItem(`password_reset_resend_available_at_${email}`);
+
+      toast.success(response.message);
+
+      /*
+       * Pass the reset token to ResetPasswordPage.
+       */
+      navigate("/reset-password", {
+        replace: true,
+        state: {
+          resetToken: response.reset_token,
+        },
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const otpError = responseData?.otp?.[0];
+        const emailError = responseData?.email?.[0];
+        const detailError = responseData?.detail;
+
+        const errorMessage =
+          otpError ||
+          emailError ||
+          (typeof detailError === "string" ? detailError : null);
+
+        if (errorMessage) {
+          setError(errorMessage);
+          return;
+        }
+      }
+
+      setError("Unable to verify the password reset code. Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
   };
+
+  /*
+   * ---------------------------------------------------------
+   * Resend password reset OTP
+   * ---------------------------------------------------------
+   */
+  const handleResend = async () => {
+    if (!email) {
+      toast.error("Email information is missing.");
+      return;
+    }
+
+    /*
+     * Prevent resend while cooldown is active.
+     */
+    if (resendTimer > 0) {
+      return;
+    }
+
+    /*
+     * Prevent multiple resend requests.
+     */
+    if (isResending || isVerifying) {
+      return;
+    }
+
+    try {
+      setIsResending(true);
+
+      const response = await resendPasswordResetOTP({
+        email,
+      });
+
+      /*
+       * Clear old OTP.
+       */
+      setOtp(["", "", "", "", "", ""]);
+      setError("");
+
+      /*
+       * Create a new 60-second cooldown.
+       */
+      const expiryTime = Date.now() + RESEND_COOLDOWN * 1000;
+
+      localStorage.setItem(
+        `password_reset_resend_available_at_${email}`,
+        expiryTime.toString(),
+      );
+
+      /*
+       * Update state because this happened
+       * from the user's resend action.
+       */
+      setResendTimer(RESEND_COOLDOWN);
+
+      /*
+       * Focus first OTP input.
+       */
+      inputRefs.current[0]?.focus();
+
+      toast.success(response.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const emailError = responseData?.email?.[0];
+        const detailError = responseData?.detail;
+        const messageError = responseData?.message;
+
+        const errorMessage =
+          emailError ||
+          (typeof detailError === "string" ? detailError : null) ||
+          (typeof messageError === "string" ? messageError : null);
+
+        if (errorMessage) {
+          toast.error(errorMessage);
+          return;
+        }
+      }
+
+      toast.error("Unable to resend the code. Please try again.");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  /*
+   * ---------------------------------------------------------
+   * Prevent rendering when email doesn't exist.
+   * ---------------------------------------------------------
+   */
+  if (!email) {
+    return null;
+  }
+
+  const isBusy = isVerifying || isResending;
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
@@ -117,9 +390,9 @@ const VerifyResetCodePage = () => {
           We’ve sent a 6-digit verification code to
         </p>
 
-        {/* Dummy Email */}
-        <p className="mt-2 text-sm font-medium text-gray-300">
-          emma•••@gmail.com
+        {/* Email */}
+        <p className="mt-2 break-all text-sm font-medium text-gray-300">
+          {email}
         </p>
 
         {/* OTP */}
@@ -138,48 +411,85 @@ const VerifyResetCodePage = () => {
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste}
+              disabled={isBusy}
               className={`h-14 w-12 border ${
-                error
-                  ? "border-red-400/60"
-                  : "border-white/10"
-              } bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+                error ? "border-red-400/60" : "border-white/10"
+              } bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-60`}
             />
           ))}
         </div>
 
         {/* Error */}
-        {error && (
-          <p className="mt-2 text-xs text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
 
         {/* Verify */}
         <button
           type="button"
-          onClick={handleVerify}
-          className="mt-7 w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+          onClick={() => handleVerify()}
+          disabled={isBusy}
+          className="mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
         >
-          Verify Code
+          {isVerifying ? (
+            <svg
+              className="h-5 w-5 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="opacity-30"
+              />
+
+              <path
+                d="M21 12a9 9 0 0 0-9-9"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            "Verify Code"
+          )}
         </button>
 
         {/* Resend */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Didn’t receive the code?{" "}
-          <span className="font-medium text-gray-500">
-            Resend in 30s
-          </span>
+          {resendTimer > 0 ? (
+            <span className="font-medium text-gray-500">
+              Resend in {resendTimer}s
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={isBusy}
+              className="font-medium text-[#8b83ff] transition-colors hover:text-[#a39eff] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isResending ? "Resending..." : "Resend code"}
+            </button>
+          )}
         </p>
 
         {/* Change Email */}
         <p className="mt-3 text-sm font-light text-gray-600">
           Wrong email?{" "}
-          <Link
-            to="/forgot-password"
-            className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff]"
-          >
-            Change email
-          </Link>
+          {isBusy ? (
+            <span className="cursor-not-allowed font-medium text-gray-700">
+              Change email
+            </span>
+          ) : (
+            <Link
+              to="/forgot-password"
+              className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff]"
+            >
+              Change email
+            </Link>
+          )}
         </p>
       </div>
 
