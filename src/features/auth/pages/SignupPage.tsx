@@ -3,11 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signup } from "../api/authApi";
+import { signup, googleLogin } from "../api/authApi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
-import api from "../../../shared/api/axios";
 
 // Validation schema
 const signupSchema = z
@@ -138,15 +137,14 @@ const SignupPage = () => {
 
       console.log("Google ID token received");
 
-      const response = await api.post("/auth/google/", {
+      const result = await googleLogin({
         id_token: idToken,
       });
 
-      console.log("Google authentication successful:", response.data);
+      console.log("Google authentication successful:", result);
 
-      localStorage.setItem("access", response.data.tokens.access);
-
-      localStorage.setItem("refresh", response.data.tokens.refresh);
+      localStorage.setItem("access", result.tokens.access);
+      localStorage.setItem("refresh", result.tokens.refresh);
 
       toast.success("Google authentication successful!");
 
