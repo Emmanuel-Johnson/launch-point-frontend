@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -64,6 +64,11 @@ const ResetPasswordPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetToken = (location.state as LocationState | null)?.resetToken;
+  useEffect(() => {
+    if (!resetToken) {
+      navigate("/forgot-password", { replace: true });
+    }
+  }, [resetToken, navigate]);
 
   const {
     register,
@@ -125,7 +130,9 @@ const ResetPasswordPage = () => {
       setIsSubmitting(false);
     }
   };
-
+  if (!resetToken) {
+    return null;
+  }
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
       {/* Ambient purple glow */}
