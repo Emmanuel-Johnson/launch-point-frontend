@@ -5,7 +5,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import api from "../../../shared/api/axios";
+import axios from "axios";
+import { login, googleLogin } from "../api/authApi";
 
 // Validation schema
 const loginSchema = z.object({
@@ -28,6 +29,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -38,10 +40,41 @@ const LoginPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    console.log("Login data:", data);
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    setIsLoading(true);
 
-    // Add your login API request here.
+    try {
+      const result = await login({
+        email: data.email,
+        password: data.password,
+      });
+
+      console.log("Login successful:", result);
+
+      localStorage.setItem("access", result.tokens.access);
+      localStorage.setItem("refresh", result.tokens.refresh);
+
+      toast.success("Login successful!");
+
+      navigate("/student/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const detailError = responseData?.detail;
+
+        if (detailError) {
+          toast.error(detailError);
+          return;
+        }
+      }
+
+      toast.error("Unable to login. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse: {
@@ -57,14 +90,14 @@ const LoginPage = () => {
 
       console.log("Google ID token received");
 
-      const response = await api.post("/auth/google/", {
+      const response = await googleLogin({
         id_token: idToken,
       });
 
-      console.log("Google authentication successful:", response.data);
+      console.log("Google authentication successful:", response);
 
-      localStorage.setItem("access", response.data.tokens.access);
-      localStorage.setItem("refresh", response.data.tokens.refresh);
+      localStorage.setItem("access", response.tokens.access);
+      localStorage.setItem("refresh", response.tokens.refresh);
 
       toast.success("Google login successful!");
 
@@ -242,9 +275,33 @@ const LoginPage = () => {
               {/* Sign In */}
               <button
                 type="submit"
-                className="w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Sign In
+                {isLoading ? (
+                  <svg
+                    className="h-5 w-5 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                ) : (
+                  "Sign In"
+                )}
               </button>
 
               {/* Terms */}

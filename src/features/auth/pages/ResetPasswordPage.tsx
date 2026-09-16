@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-// Validation schema
+import { resetPassword } from "../api/authApi";
+
+// ====================
+// Validation Schema
+// ====================
+
 const resetPasswordSchema = z
   .object({
     password: z
@@ -43,9 +51,19 @@ const resetPasswordSchema = z
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
+type LocationState = {
+  resetToken?: string;
+};
+
 const ResetPasswordPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const resetToken = (location.state as LocationState | null)?.resetToken;
 
   const {
     register,
@@ -56,10 +74,56 @@ const ResetPasswordPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<ResetPasswordFormData> = (data) => {
-    console.log("Reset password data:", data);
+  // ====================
+  // Reset Password
+  // ====================
 
-    // Add your reset-password API request here.
+  const onSubmit: SubmitHandler<ResetPasswordFormData> = async (data) => {
+    if (!resetToken) {
+      toast.error("Password reset session has expired. Please try again.");
+      navigate("/forgot-password", { replace: true });
+      return;
+    }
+
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await resetPassword({
+        reset_token: resetToken,
+        new_password: data.password,
+      });
+
+      toast.success(response.message || "Password reset successfully.");
+
+      navigate("/login", { replace: true });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const message =
+          responseData?.new_password ||
+          responseData?.reset_token ||
+          responseData?.detail ||
+          responseData?.message ||
+          "Unable to reset password. Please try again.";
+
+        toast.error(
+          Array.isArray(message)
+            ? message[0]
+            : typeof message === "string"
+              ? message
+              : "Unable to reset password. Please try again.",
+        );
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -115,17 +179,19 @@ const ResetPasswordPage = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="New password"
+                disabled={isSubmitting}
                 {...register("password")}
                 className={`w-full border ${
                   errors.password ? "border-red-400/60" : "border-white/10"
-                } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+                } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-60`}
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isSubmitting}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {showPassword ? (
                   <svg
@@ -168,23 +234,25 @@ const ResetPasswordPage = () => {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm new password"
+                disabled={isSubmitting}
                 {...register("confirmPassword")}
                 className={`w-full border ${
                   errors.confirmPassword
                     ? "border-red-400/60"
                     : "border-white/10"
-                } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+                } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-60`}
               />
 
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={isSubmitting}
                 aria-label={
                   showConfirmPassword
                     ? "Hide confirm password"
                     : "Show confirm password"
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {showConfirmPassword ? (
                   <svg
@@ -224,9 +292,36 @@ const ResetPasswordPage = () => {
           {/* Reset Password */}
           <button
             type="submit"
-            className="mt-2 w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+            disabled={isSubmitting}
+            className="mt-2 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
           >
-            Reset Password
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="mr-2 h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                Resetting...
+              </>
+            ) : (
+              "Reset Password"
+            )}
           </button>
         </form>
       </div>

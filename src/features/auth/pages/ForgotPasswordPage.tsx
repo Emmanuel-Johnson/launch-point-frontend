@@ -1,7 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import axios from "axios";
+import { forgotPassword } from "../api/authApi";
+import { toast } from "react-toastify";
 
 // Validation schema
 const forgotPasswordSchema = z.object({
@@ -17,6 +21,9 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPasswordPage = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -26,10 +33,32 @@ const ForgotPasswordPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<ForgotPasswordFormData> = (data) => {
-    console.log("Forgot password email:", data);
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
+    setIsLoading(true);
 
-    // Add your forgot-password API request here.
+    try {
+      const response = await forgotPassword({
+        email: data.email,
+      });
+
+      toast.success(response.message);
+
+      navigate("/verify-reset-code", {
+        state: {
+          email: data.email,
+        },
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.detail;
+
+        toast.error(message || "Unable to send reset code.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,10 +112,11 @@ const ForgotPasswordPage = () => {
             <input
               type="email"
               placeholder="Email address"
+              disabled={isLoading}
               {...register("email")}
               className={`w-full border ${
                 errors.email ? "border-red-400/60" : "border-white/10"
-              } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
+              } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-60`}
             />
 
             {errors.email && (
@@ -99,21 +129,28 @@ const ForgotPasswordPage = () => {
           {/* Send Code */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99]"
+            disabled={isLoading}
+            className="w-full rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
           >
-            Send Code
+            {isLoading ? "Sending..." : "Send Code"}
           </button>
         </form>
 
         {/* Back to Login */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Remember your password?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-white transition-colors hover:text-[#8b83ff]"
-          >
-            Sign in
-          </Link>
+          {isLoading ? (
+            <span className="cursor-not-allowed font-medium text-gray-600">
+              Sign in
+            </span>
+          ) : (
+            <Link
+              to="/login"
+              className="font-medium text-white transition-colors hover:text-[#8b83ff]"
+            >
+              Sign in
+            </Link>
+          )}
         </p>
       </div>
 
