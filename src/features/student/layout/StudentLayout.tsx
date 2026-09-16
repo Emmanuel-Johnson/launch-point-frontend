@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import api from "../../../shared/api/axios";
 
 const StudentLayout = () => {
   const navItems = [
@@ -86,20 +87,16 @@ const StudentLayout = () => {
   ];
 
   const handleLogout = async () => {
-    const accessToken = localStorage.getItem("access");
     const refreshToken = localStorage.getItem("refresh");
 
     try {
-      await fetch("http://localhost:8000/api/logout/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
+      if (refreshToken) {
+        await api.post("/auth/logout/", {
           refresh: refreshToken,
-        }),
-      });
+        });
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
     } finally {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
