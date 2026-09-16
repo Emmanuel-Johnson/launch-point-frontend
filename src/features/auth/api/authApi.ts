@@ -1,5 +1,41 @@
 import api from "../../../shared/api/axios";
 
+// ====================
+// Google Authentication
+// ====================
+
+export type GoogleLoginData = {
+  id_token: string;
+};
+
+export type GoogleLoginResponse = {
+  message: string;
+  user: {
+    id: number;
+    full_name: string;
+    email: string;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
+  };
+};
+
+export const googleLogin = async (
+  data: GoogleLoginData,
+): Promise<GoogleLoginResponse> => {
+  const response = await api.post<GoogleLoginResponse>(
+    "/auth/google/",
+    data,
+  );
+
+  return response.data;
+};
+
+// ====================
+// Signup
+// ====================
+
 export type SignupData = {
   full_name: string;
   email: string;
@@ -15,19 +51,37 @@ export type SignupResponse = {
   };
 };
 
-export const signup = async (data: SignupData): Promise<SignupResponse> => {
-  const response = await api.post<SignupResponse>("/auth/signup/", data);
+export const signup = async (
+  data: SignupData,
+): Promise<SignupResponse> => {
+  const response = await api.post<SignupResponse>(
+    "/auth/signup/",
+    data,
+  );
 
   return response.data;
 };
 
+// ====================
+// Verify Email
+// ====================
+
 export type VerifyEmailData = {
   email: string;
-  code: string;
+  otp: string;
 };
 
 export type VerifyEmailResponse = {
   message: string;
+  user: {
+    id: number;
+    full_name: string;
+    email: string;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
+  };
 };
 
 export const verifyEmail = async (
@@ -41,19 +95,23 @@ export const verifyEmail = async (
   return response.data;
 };
 
-export type ResendVerificationCodeData = {
+// ====================
+// Resend Verification OTP
+// ====================
+
+export type ResendVerificationOTPData = {
   email: string;
 };
 
-export type ResendVerificationCodeResponse = {
+export type ResendVerificationOTPResponse = {
   message: string;
 };
 
-export const resendVerificationCode = async (
-  data: ResendVerificationCodeData,
-): Promise<ResendVerificationCodeResponse> => {
-  const response = await api.post<ResendVerificationCodeResponse>(
-    "/auth/resend-verification-code/",
+export const resendVerificationOTP = async (
+  data: ResendVerificationOTPData,
+): Promise<ResendVerificationOTPResponse> => {
+  const response = await api.post<ResendVerificationOTPResponse>(
+    "/auth/resend-verification-otp/",
     data,
   );
 
