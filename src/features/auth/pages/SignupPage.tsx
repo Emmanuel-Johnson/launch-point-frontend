@@ -102,16 +102,24 @@ const SignupPage = () => {
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const emailError = error.response?.data?.email?.[0];
+        const responseData = error.response?.data;
 
-        if (emailError) {
+        // Field-level error
+        const emailError = responseData?.email?.[0];
+
+        // General backend error
+        const detailError = responseData?.detail;
+
+        const errorMessage = emailError || detailError;
+
+        if (errorMessage) {
           if (
-            emailError.toLowerCase().includes("already exists") ||
-            emailError.toLowerCase().includes("already registered")
+            errorMessage.toLowerCase().includes("already exists") ||
+            errorMessage.toLowerCase().includes("already registered")
           ) {
             toast.error("An account with this email already exists.");
           } else {
-            toast.error(emailError);
+            toast.error(errorMessage);
           }
 
           return;
