@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 
 import { verifyEmail, resendVerificationOTP } from "../api/authApi";
 
+const RESEND_COOLDOWN = 60;
+
 const VerifyEmailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,26 +21,90 @@ const VerifyEmailPage = () => {
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  /*
+   * ---------------------------------------------------------
+   * Redirect if email is missing
+   * ---------------------------------------------------------
+   */
   useEffect(() => {
     if (!email) {
       navigate("/signup", { replace: true });
     }
   }, [email, navigate]);
 
+  /*
+   * ---------------------------------------------------------
+   * Resend timer
+   *
+   * The timestamp is stored in localStorage.
+   *
+   * This means the timer does NOT restart when:
+   *
+   * - Browser Back is pressed
+   * - Browser Forward is pressed
+   * - The component remounts
+   * - The page is refreshed
+   * ---------------------------------------------------------
+   */
   useEffect(() => {
-    if (resendTimer === 0) return;
+    if (!email) return;
 
-    const timer = setInterval(() => {
-      setResendTimer((prev) => prev - 1);
-    }, 1000);
+    const storageKey = `resend_available_at_${email}`;
+
+    let expiryTime = Number(localStorage.getItem(storageKey));
+
+    /*
+     * If there is no existing expiry time, create one.
+     *
+     * IMPORTANT:
+     * We don't call setResendTimer() here.
+     * The timer state will be updated by updateTimer().
+     */
+    if (!expiryTime || expiryTime <= Date.now()) {
+      expiryTime = Date.now() + RESEND_COOLDOWN * 1000;
+
+      localStorage.setItem(storageKey, expiryTime.toString());
+    }
+
+    const updateTimer = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((expiryTime - Date.now()) / 1000),
+      );
+
+      setResendTimer(remaining);
+
+      /*
+       * Remove the timestamp after cooldown finishes.
+       */
+      if (remaining === 0) {
+        localStorage.removeItem(storageKey);
+      }
+    };
+
+    /*
+     * Update immediately.
+     */
+    updateTimer();
+
+    /*
+     * Update every second.
+     */
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
-  }, [resendTimer]);
+  }, [email]);
 
+  /*
+   * ---------------------------------------------------------
+   * OTP input change
+   * ---------------------------------------------------------
+   */
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
+
     newOtp[index] = value;
 
     setOtp(newOtp);
@@ -47,16 +113,26 @@ const VerifyEmailPage = () => {
       setError("");
     }
 
+    /*
+     * Move to next input.
+     */
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Automatically verify when all 6 digits are entered
+    /*
+     * Automatically verify when all 6 digits are entered.
+     */
     if (newOtp.join("").length === 6) {
       handleVerify(newOtp.join(""));
     }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Backspace handling
+   * ---------------------------------------------------------
+   */
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
@@ -66,6 +142,11 @@ const VerifyEmailPage = () => {
     }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Paste OTP
+   * ---------------------------------------------------------
+   */
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
 
@@ -89,12 +170,19 @@ const VerifyEmailPage = () => {
 
     inputRefs.current[nextIndex]?.focus();
 
-    // Automatically verify pasted 6-digit OTP
+    /*
+     * Automatically verify pasted 6-digit OTP.
+     */
     if (pastedData.length === 6) {
       handleVerify(pastedData);
     }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Verify email
+   * ---------------------------------------------------------
+   */
   const handleVerify = async (enteredOtp?: string) => {
     if (isVerifying) return;
 
@@ -120,12 +208,25 @@ const VerifyEmailPage = () => {
 
       setError("");
 
-      // Store JWT tokens after successful email verification
+      /*
+       * Store JWT tokens after successful email verification.
+       */
       localStorage.setItem("access", result.tokens.access);
       localStorage.setItem("refresh", result.tokens.refresh);
 
-      toast.success("Email verified successfully! Welcome to your dashboard.");
+      /*
+       * Remove resend timer because verification succeeded.
+       */
+      localStorage.removeItem(`resend_available_at_${email}`);
 
+      toast.success(
+        "Email verified successfully! Welcome to your dashboard.",
+      );
+
+      /*
+       * Replace prevents the verification page from
+       * remaining in browser history.
+       */
       navigate("/student/dashboard", { replace: true });
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -152,9 +253,21 @@ const VerifyEmailPage = () => {
     }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Resend OTP
+   * ---------------------------------------------------------
+   */
   const handleResend = async () => {
     if (!email) {
       toast.error("Email information is missing.");
+      return;
+    }
+
+    /*
+     * Prevent resend while cooldown is active.
+     */
+    if (resendTimer > 0) {
       return;
     }
 
@@ -167,7 +280,22 @@ const VerifyEmailPage = () => {
 
       setOtp(["", "", "", "", "", ""]);
       setError("");
-      setResendTimer(60);
+
+      /*
+       * Create a new 60-second cooldown.
+       */
+      const expiryTime = Date.now() + RESEND_COOLDOWN * 1000;
+
+      localStorage.setItem(
+        `resend_available_at_${email}`,
+        expiryTime.toString(),
+      );
+
+      /*
+       * This state update happens because of the user's
+       * resend action, not synchronously during an effect.
+       */
+      setResendTimer(RESEND_COOLDOWN);
 
       inputRefs.current[0]?.focus();
 
@@ -197,17 +325,44 @@ const VerifyEmailPage = () => {
     }
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Change email
+   * ---------------------------------------------------------
+   */
+  const handleChangeEmail = () => {
+    if (!email) return;
+
+    /*
+     * Remove cooldown associated with the old email.
+     */
+    localStorage.removeItem(`resend_available_at_${email}`);
+
+    /*
+     * Replace prevents VerifyEmailPage from remaining
+     * in browser history.
+     */
+    navigate("/signup", { replace: true });
+  };
+
+  /*
+   * ---------------------------------------------------------
+   * Prevent rendering when email doesn't exist.
+   * ---------------------------------------------------------
+   */
   if (!email) {
     return null;
   }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
+      {/* Background glow */}
       <div className="signup-glow pointer-events-none absolute -left-32 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
 
       <div className="signup-glow pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-purple-600/10 blur-[120px]" />
 
       <div className="signup-fade-up relative z-10 w-full max-w-sm text-center">
+        {/* Email icon */}
         <div className="mx-auto mb-7 flex h-16 w-16 items-center justify-center rounded-full border border-[#6c63ff]/20 bg-[#6c63ff]/10">
           <svg
             width="28"
@@ -223,6 +378,7 @@ const VerifyEmailPage = () => {
           </svg>
         </div>
 
+        {/* Heading */}
         <p className="mb-3 text-xs font-semibold uppercase tracking-[4px] text-[#8b83ff]">
           Verify Your Email
         </p>
@@ -235,8 +391,12 @@ const VerifyEmailPage = () => {
           We’ve sent a 6-digit verification code to
         </p>
 
-        <p className="mt-2 text-sm font-medium text-gray-300">{email}</p>
+        {/* Email */}
+        <p className="mt-2 text-sm font-medium text-gray-300">
+          {email}
+        </p>
 
+        {/* OTP inputs */}
         <div className="mt-8 flex justify-center gap-2.5">
           {otp.map((digit, index) => (
             <input
@@ -260,8 +420,14 @@ const VerifyEmailPage = () => {
           ))}
         </div>
 
-        {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
+        {/* Error */}
+        {error && (
+          <p className="mt-2 text-xs text-red-400">
+            {error}
+          </p>
+        )}
 
+        {/* Verify button */}
         <button
           type="button"
           onClick={() => handleVerify()}
@@ -282,6 +448,7 @@ const VerifyEmailPage = () => {
                 strokeWidth="3"
                 className="opacity-30"
               />
+
               <path
                 d="M21 12a9 9 0 0 0-9-9"
                 stroke="currentColor"
@@ -294,6 +461,7 @@ const VerifyEmailPage = () => {
           )}
         </button>
 
+        {/* Resend */}
         <p className="mt-6 text-sm font-light text-gray-500">
           Didn’t receive the code?{" "}
           {resendTimer > 0 ? (
@@ -312,11 +480,12 @@ const VerifyEmailPage = () => {
           )}
         </p>
 
+        {/* Change email */}
         <p className="mt-3 text-sm font-light text-gray-600">
           Wrong email?{" "}
           <button
             type="button"
-            onClick={() => navigate("/signup", { replace: true })}
+            onClick={handleChangeEmail}
             disabled={isVerifying || isResending}
             className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
           >
@@ -325,6 +494,7 @@ const VerifyEmailPage = () => {
         </p>
       </div>
 
+      {/* Footer */}
       <p className="absolute bottom-5 left-0 right-0 text-center text-[10px] font-light uppercase tracking-[3px] text-gray-700">
         © {new Date().getFullYear()} Launch Point
       </p>
