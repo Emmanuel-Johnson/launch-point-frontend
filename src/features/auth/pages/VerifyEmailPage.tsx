@@ -103,7 +103,7 @@ const VerifyEmailPage = () => {
       toast.success("Email verified successfully! Welcome to your dashboard.");
 
       setTimeout(() => {
-        navigate("/student/home");
+        navigate("/student/dashboard");
       }, 2000);
     } catch (error) {
       setIsVerifying(false);

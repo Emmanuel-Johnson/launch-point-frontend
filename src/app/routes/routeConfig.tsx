@@ -18,12 +18,17 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
-import Home from "../../features/student/pages/Home";
+import Dashboard from "../../features/student/pages/Dashboard";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
 import AdminDashboard from "../../features/admin/pages/AdminDashboard";
+
+import ProtectedRoute from "../../shared/guards/ProtectedRoute";
+import PublicRoute from "../../shared/guards/PublicRoute";
+
+import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -54,31 +59,35 @@ export const routeConfig: RouteObject[] = [
     element: <AuthLayout />,
     children: [
       {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/signup",
-        element: <SignupPage />,
+        element: <PublicRoute />,
+        children: [
+          {
+            path: "/login",
+            element: <LoginPage />,
+          },
+          {
+            path: "/signup",
+            element: <SignupPage />,
+          },
+          {
+            path: "/forgot-password",
+            element: <ForgotPasswordPage />,
+          },
+          {
+            path: "/verify-email",
+            element: <VerifyEmailPage />,
+          },
+          {
+            path: "/verify-reset-code",
+            element: <VerifyResetCodePage />,
+          },
+          {
+            path: "/reset-password",
+            element: <ResetPasswordPage />,
+          },
+        ],
       },
     ],
-  },
-
-  {
-    path: "/forgot-password",
-    element: <ForgotPasswordPage />,
-  },
-  {
-    path: "/verify-email",
-    element: <VerifyEmailPage />,
-  },
-  {
-    path: "/verify-reset-code",
-    element: <VerifyResetCodePage />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPasswordPage />,
   },
 
   // =========================
@@ -97,12 +106,17 @@ export const routeConfig: RouteObject[] = [
   // Student dashboard
   // =========================
   {
-    path: "/student",
-    element: <StudentLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "home",
-        element: <Home />,
+        path: "/student",
+        element: <StudentLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+        ],
       },
     ],
   },
@@ -127,5 +141,9 @@ export const routeConfig: RouteObject[] = [
         element: <AdminDashboard />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ];
