@@ -18,11 +18,13 @@ const VerifyEmailPage = () => {
   const [isResending, setIsResending] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   useEffect(() => {
     if (!email) {
       navigate("/signup", { replace: true });
     }
   }, [email, navigate]);
+
   useEffect(() => {
     if (resendTimer === 0) return;
 
@@ -38,6 +40,7 @@ const VerifyEmailPage = () => {
 
     const newOtp = [...otp];
     newOtp[index] = value;
+
     setOtp(newOtp);
 
     if (error) {
@@ -46,6 +49,11 @@ const VerifyEmailPage = () => {
 
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
+    }
+
+    // Automatically verify when all 6 digits are entered
+    if (newOtp.join("").length === 6) {
+      handleVerify(newOtp.join(""));
     }
   };
 
@@ -80,10 +88,17 @@ const VerifyEmailPage = () => {
     const nextIndex = Math.min(pastedData.length, 5);
 
     inputRefs.current[nextIndex]?.focus();
+
+    // Automatically verify pasted 6-digit OTP
+    if (pastedData.length === 6) {
+      handleVerify(pastedData);
+    }
   };
 
-  const handleVerify = async () => {
-    const code = otp.join("");
+  const handleVerify = async (enteredOtp?: string) => {
+    if (isVerifying) return;
+
+    const code = enteredOtp ?? otp.join("");
 
     if (code.length !== 6) {
       setError("Please enter the 6-digit verification code.");
@@ -181,9 +196,11 @@ const VerifyEmailPage = () => {
       setIsResending(false);
     }
   };
+
   if (!email) {
     return null;
   }
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
       <div className="signup-glow pointer-events-none absolute -left-32 top-[20%] h-96 w-96 rounded-full bg-[#6c63ff]/15 blur-[120px]" />
@@ -235,7 +252,7 @@ const VerifyEmailPage = () => {
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste}
-              disabled={isVerifying}
+              disabled={isVerifying || isResending}
               className={`h-14 w-12 border ${
                 error ? "border-red-400/60" : "border-white/10"
               } bg-white/3 text-center text-lg font-medium text-white outline-none transition-all duration-300 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10`}
@@ -247,8 +264,8 @@ const VerifyEmailPage = () => {
 
         <button
           type="button"
-          onClick={handleVerify}
-          disabled={isVerifying}
+          onClick={() => handleVerify()}
+          disabled={isVerifying || isResending}
           className="mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isVerifying ? (
@@ -287,7 +304,7 @@ const VerifyEmailPage = () => {
             <button
               type="button"
               onClick={handleResend}
-              disabled={isResending}
+              disabled={isResending || isVerifying}
               className="font-medium text-white transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isResending ? "Sending..." : "Resend"}
@@ -300,7 +317,8 @@ const VerifyEmailPage = () => {
           <button
             type="button"
             onClick={() => navigate("/signup", { replace: true })}
-            className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff]"
+            disabled={isVerifying || isResending}
+            className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Change email
           </button>
