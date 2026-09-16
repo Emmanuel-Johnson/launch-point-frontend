@@ -1,26 +1,82 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { adminLogin } from "../api/adminApi";
+
+// Validation schema
+const adminLoginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "Email is required")
+    .max(254, "Email is too long")
+    .email("Enter a valid email"),
+
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .max(128, "Password is too long"),
+});
+
+type AdminLoginFormData = z.infer<typeof adminLoginSchema>;
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AdminLoginFormData>({
+    resolver: zodResolver(adminLoginSchema),
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<AdminLoginFormData> = async (data) => {
+    if (isLoading) {
+      return;
+    }
 
     setIsLoading(true);
 
-    console.log({ email, password });
+    try {
+      const response = await adminLogin({
+        email: data.email,
+        password: data.password,
+      });
 
-    // Connect your Django admin login API here
-    setTimeout(() => {
+      localStorage.setItem("access", response.tokens.access);
+      localStorage.setItem("refresh", response.tokens.refresh);
+
+      toast.success("Login successful!");
+
+      navigate("/admin/dashboard", {
+        replace: true,
+      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const message =
+          responseData?.detail ||
+          responseData?.message ||
+          "Invalid email or password.";
+
+        toast.error(message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
       setIsLoading(false);
-      navigate("/admin/dashboard");
-    }, 800);
+    }
   };
 
   return (
@@ -50,17 +106,28 @@ const AdminLoginPage = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="space-y-4"
+          >
             {/* Email */}
             <div>
               <input
                 type="email"
                 placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full border border-white/10 bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10"
+                {...register("email")}
+                disabled={isLoading}
+                className={`w-full border ${
+                  errors.email ? "border-red-400/60" : "border-white/10"
+                } bg-white/3 px-4 py-3.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-70`}
               />
+
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-400">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Password */}
@@ -69,19 +136,19 @@ const AdminLoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full border border-white/10 bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10"
+                  {...register("password")}
+                  disabled={isLoading}
+                  className={`w-full border ${
+                    errors.password ? "border-red-400/60" : "border-white/10"
+                  } bg-white/3 px-4 py-3.5 pr-11 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#6c63ff]/60 focus:bg-white/5 focus:ring-2 focus:ring-[#6c63ff]/10 disabled:cursor-not-allowed disabled:opacity-70`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff]"
-                  aria-label={
-                    showPassword ? "Hide password" : "Show password"
-                  }
+                  disabled={isLoading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <svg
@@ -110,6 +177,12 @@ const AdminLoginPage = () => {
                   )}
                 </button>
               </div>
+
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-400">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             {/* Login Button */}
@@ -166,6 +239,7 @@ const AdminLoginPage = () => {
                 viewBox="0 0 24 24"
               >
                 <rect x="3" y="11" width="18" height="10" rx="2" />
+
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
 
