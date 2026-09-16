@@ -61,6 +61,15 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Don't refresh token for authentication endpoints
+    if (
+      originalRequest.url?.includes("/auth/login/") ||
+      originalRequest.url?.includes("/auth/signup/") ||
+      originalRequest.url?.includes("/auth/google/")
+    ) {
+      return Promise.reject(error);
+    }
+
     // Don't refresh the refresh-token request itself
     if (originalRequest.url?.includes("/token/refresh/")) {
       return Promise.reject(error);
@@ -102,7 +111,7 @@ api.interceptors.response.use(
     try {
       // Use normal axios here, NOT api.
       // This prevents the refresh request from
-      // triggering the response interceptor again.
+      // triggering this response interceptor.
       const response = await axios.post(
         "http://localhost:8000/api/auth/token/refresh/",
         {
