@@ -18,7 +18,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
-import Dashboard from "../../features/student/pages/Dashboard";
+import Dashboard from "../../features/student/pages/DashboardPage";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
