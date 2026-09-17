@@ -81,6 +81,14 @@ adminApi.interceptors.response.use(
     }
 
     // -------------------------------------------------------
+    // Don't refresh token for admin logout
+    // -------------------------------------------------------
+
+    if (originalRequest.url?.includes("/auth/admin/logout/")) {
+      return Promise.reject(error);
+    }
+
+    // -------------------------------------------------------
     // Don't refresh the refresh-token request itself
     // -------------------------------------------------------
 
@@ -135,8 +143,8 @@ adminApi.interceptors.response.use(
       // -----------------------------------------------------
       // Refresh admin token
       //
-      // Use normal axios instead of adminApi so that
-      // this request does not trigger this interceptor.
+      // Use normal axios instead of adminApi so this request
+      // does not trigger the admin response interceptor.
       // -----------------------------------------------------
 
       const response = await axios.post(

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import StudentNavbar from "../components/StudentNavbar";
+import StudentNavbar from "../components/StudentHeader";
 import StudentSidebar from "../components/StudentSidebar";
 
 const StudentLayout = () => {

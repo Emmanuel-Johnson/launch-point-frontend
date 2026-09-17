@@ -23,7 +23,6 @@ import Dashboard from "../../features/student/pages/DashboardPage";
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
-import AdminDashboard from "../../features/admin/pages/AdminDashboard";
 
 import ProtectedRoute from "../../shared/guards/ProtectedRoute";
 import PublicRoute from "../../shared/guards/PublicRoute";
@@ -32,6 +31,7 @@ import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
 
 import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
 import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
+import AdminDashboardPage from "../../features/admin/pages/AdminDashboardPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -149,7 +149,7 @@ export const routeConfig: RouteObject[] = [
         children: [
           {
             path: "dashboard",
-            element: <AdminDashboard />,
+            element: <AdminDashboardPage />,
           },
         ],
       },
