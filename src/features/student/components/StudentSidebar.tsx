@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 const StudentSidebar = () => {
+  const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -106,7 +107,7 @@ const StudentSidebar = () => {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
-      window.location.href = "/login";
+      navigate("/login", { replace: true });
     }
   };
 
