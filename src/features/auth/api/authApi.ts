@@ -232,3 +232,19 @@ export const resetPassword = async (
 
   return response.data;
 };
+
+// ====================
+// Logout
+// ====================
+
+export type LogoutResponse = {
+  message: string;
+};
+
+export const logoutUser = async (refresh: string): Promise<LogoutResponse> => {
+  const response = await api.post<LogoutResponse>("/auth/logout/", {
+    refresh,
+  });
+
+  return response.data;
+};

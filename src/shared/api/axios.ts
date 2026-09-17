@@ -1,7 +1,4 @@
-import axios, {
-  type AxiosError,
-  type InternalAxiosRequestConfig,
-} from "axios";
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api",
@@ -29,10 +26,7 @@ let failedQueue: {
   reject: (error: unknown) => void;
 }[] = [];
 
-const processQueue = (
-  error: unknown,
-  token: string | null = null,
-) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((promise) => {
     if (error) {
       promise.reject(error);

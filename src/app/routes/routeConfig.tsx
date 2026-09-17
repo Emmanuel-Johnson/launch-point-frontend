@@ -18,17 +18,20 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
-import Dashboard from "../../features/student/pages/Dashboard";
+import Dashboard from "../../features/student/pages/DashboardPage";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
-import AdminDashboard from "../../features/admin/pages/AdminDashboard";
 
 import ProtectedRoute from "../../shared/guards/ProtectedRoute";
 import PublicRoute from "../../shared/guards/PublicRoute";
 
 import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
+
+import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
+import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
+import AdminDashboardPage from "../../features/admin/pages/AdminDashboardPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -125,20 +128,30 @@ export const routeConfig: RouteObject[] = [
   // Admin authentication
   // =========================
   {
-    path: "/admin/login",
-    element: <AdminLoginPage />,
+    element: <AdminPublicRoute />,
+    children: [
+      {
+        path: "/admin/login",
+        element: <AdminLoginPage />,
+      },
+    ],
   },
 
   // =========================
   // Admin dashboard
   // =========================
   {
-    path: "/admin",
-    element: <AdminLayout />,
+    element: <AdminProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        element: <AdminDashboard />,
+        path: "/admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <AdminDashboardPage />,
+          },
+        ],
       },
     ],
   },
