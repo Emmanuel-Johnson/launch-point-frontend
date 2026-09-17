@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import api from "../../../shared/api/axios";
+import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 const StudentSidebar = () => {
@@ -98,9 +98,7 @@ const StudentSidebar = () => {
 
     try {
       if (refreshToken) {
-        await api.post("/auth/logout/", {
-          refresh: refreshToken,
-        });
+        await logoutUser(refreshToken);
       }
     } catch (error) {
       console.error("Logout failed:", error);
