@@ -187,3 +187,170 @@ html {
 .signup-glow {
   animation: signup-glow 7s ease-in-out infinite;
 }
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.student-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.student-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.student-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+.student-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.student-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* ========================================
+   Premium Page Entrance Animation
+======================================== */
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.995);
+    filter: blur(3px);
+  }
+
+  60% {
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-page-enter {
+  animation: page-enter 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ========================================
+   Premium Dashboard Item Animation
+======================================== */
+
+@keyframes page-item {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-item {
+  opacity: 0;
+  animation: page-item 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-item {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-item {
+  opacity: 0;
+  animation: page-item 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ========================================
+   Premium Sidebar Entrance
+======================================== */
+
+@keyframes sidebar-enter {
+  0% {
+    opacity: 0;
+    transform: translateX(-18px);
+    filter: blur(3px);
+  }
+
+  60% {
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+.student-sidebar {
+  animation: sidebar-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ========================================
+   Sidebar Sections
+======================================== */
+
+@keyframes sidebar-section {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-sidebar-section {
+  opacity: 0;
+  animation: sidebar-section 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ========================================
+   Sidebar Navigation Items
+======================================== */
+
+@keyframes sidebar-item {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-sidebar-item {
+  opacity: 0;
+  animation: sidebar-item 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
