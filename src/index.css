@@ -198,3 +198,25 @@ html {
     display: none;
   }
 }
+
+.student-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.student-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.student-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+.student-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.student-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}

@@ -1,10 +1,16 @@
-import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
+import { useState } from "react";
 
-const StudentSidebar = () => {
+interface StudentSidebarProps {
+  isCollapsed: boolean;
+  onToggle: () => void;
+}
+
+const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
   const navigate = useNavigate();
+
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -235,38 +241,102 @@ const StudentSidebar = () => {
 
   return (
     <>
-      <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/10 bg-[#080808]">
-        {/* Logo */}
-        <div className="flex h-20 shrink-0 items-center border-b border-white/10 px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6c63ff] shadow-lg shadow-[#6c63ff]/20">
-              <span className="text-sm font-bold text-white">LP</span>
+      <aside
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/10 bg-[#080808] transition-all duration-300 ${
+          isCollapsed ? "w-20" : "w-[280px]"
+        }`}
+      >
+        {/* Logo / Toggle */}
+        <div
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/10 ${
+            isCollapsed ? "justify-center px-3" : "px-6"
+          }`}
+        >
+          <div
+            className={`flex min-w-0 cursor-pointer items-center ${
+              isCollapsed ? "justify-center" : "gap-3"
+            }`}
+          >
+            {/* Logo */}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
+              <img
+                src="/logo.png"
+                alt="Launch Point Logo"
+                className="h-full w-full rounded-lg object-contain"
+              />
             </div>
 
-            <div>
-              <p className="text-sm font-semibold text-white">Launch Point</p>
+            {/* Brand */}
+            {!isCollapsed && (
+              <div className="group min-w-0">
+                <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-indigo-300">
+                  LAUNCH POINT
+                </span>
 
-              <p className="text-xs text-gray-500">Student Portal</p>
-            </div>
+                <p className="mt-0.5 whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-colors duration-300 group-hover:text-zinc-300">
+                  Student Portal
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* Toggle Button */}
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
+            title={isCollapsed ? "Open sidebar" : "Close sidebar"}
+            className={`flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center rounded-lg text-gray-500 transition-all duration-200 hover:bg-white/[0.06] hover:text-white ${
+              isCollapsed
+                ? "absolute -right-4 border border-white/10 bg-[#111111]"
+                : "ml-auto"
+            }`}
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              {isCollapsed ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m9 6 6 6-6 6"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m15 6-6 6 6 6"
+                />
+              )}
+            </svg>
+          </button>
         </div>
 
         {/* Navigation */}
-        <div className="scrollbar-hide flex-1 overflow-y-auto px-4 py-6">
+        <div className="scrollbar-hide flex-1 overflow-y-auto px-3 py-6">
           <nav className="space-y-6">
             {navSections.map((section) => (
               <div key={section.title}>
-                <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
-                  {section.title}
-                </p>
+                {!isCollapsed && (
+                  <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
+                    {section.title}
+                  </p>
+                )}
 
                 <div className="space-y-1">
                   {section.items.map((item) => (
                     <NavLink
                       key={item.path}
                       to={item.path}
+                      title={isCollapsed ? item.name : undefined}
                       className={({ isActive }) =>
-                        `group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all ${
+                        `group relative flex items-center rounded-xl py-3 text-sm font-medium transition-all duration-200 ${
+                          isCollapsed ? "justify-center px-3" : "gap-3 px-3"
+                        } ${
                           isActive
                             ? "bg-[#6c63ff]/10 text-[#9b94ff]"
                             : "text-gray-500 hover:bg-white/[0.04] hover:text-gray-200"
@@ -283,13 +353,13 @@ const StudentSidebar = () => {
                             className={
                               isActive
                                 ? "text-[#8b83ff]"
-                                : "text-gray-600 group-hover:text-gray-300"
+                                : "text-gray-600 transition-colors group-hover:text-gray-300"
                             }
                           >
                             {item.icon}
                           </span>
 
-                          <span>{item.name}</span>
+                          {!isCollapsed && <span>{item.name}</span>}
                         </>
                       )}
                     </NavLink>
@@ -306,10 +376,13 @@ const StudentSidebar = () => {
             type="button"
             onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-gray-500 transition-all hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+            title={isCollapsed ? "Logout" : undefined}
+            className={`group flex w-full cursor-pointer items-center rounded-xl py-3 text-sm font-medium text-gray-500 transition-all hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
+              isCollapsed ? "justify-center px-3" : "gap-3 px-3"
+            }`}
           >
             <svg
-              className="h-5 w-5 transition-transform group-hover:-translate-x-0.5"
+              className="h-5 w-5 shrink-0 transition-transform group-hover:-translate-x-0.5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -328,7 +401,7 @@ const StudentSidebar = () => {
               />
             </svg>
 
-            <span>Logout</span>
+            {!isCollapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>

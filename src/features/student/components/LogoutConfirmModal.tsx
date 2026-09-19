@@ -66,15 +66,16 @@ const LogoutConfirmModal = ({
             type="button"
             disabled={isLoading}
             onClick={onCancel}
-            className="flex-1 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-400 transition-all hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 cursor-pointer rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-400 transition-all hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
+
           <button
             type="button"
             disabled={isLoading}
             onClick={onConfirm}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? (
               <svg

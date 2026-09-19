@@ -1,11 +1,19 @@
-const StudentHeader = () => {
+interface StudentHeaderProps {
+  isSidebarCollapsed: boolean;
+}
+
+const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   return (
-    <header className="flex h-20 items-center justify-between border-b border-white/10 bg-[#050505] px-8">
+    <header
+      className={`fixed right-0 top-0 z-30 flex h-20 items-center justify-between border-b border-white/10 bg-[#050505] px-8 transition-all duration-300 ${
+        isSidebarCollapsed ? "left-20" : "left-[280px]"
+      }`}
+    >
       {/* Search */}
       <div className="mx-8 flex max-w-md flex-1">
         <div className="relative w-full">
           <svg
-            className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+            className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-gray-500"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -23,12 +31,12 @@ const StudentHeader = () => {
         </div>
       </div>
 
-      {/* Right side */}
-      <div className="flex items-center gap-3">
+      {/* Right Side */}
+      <div className="flex shrink-0 items-center gap-3">
         {/* Become Instructor */}
         <button
           type="button"
-          className="rounded-xl border border-[#6c63ff]/30 bg-[#6c63ff]/10 px-4 py-2 text-sm font-medium text-[#a39eff] transition-all hover:bg-[#6c63ff]/20"
+          className="cursor-pointer rounded-xl border border-[#6c63ff]/30 bg-[#6c63ff]/10 px-4 py-2 text-sm font-medium text-[#a39eff] transition-all hover:bg-[#6c63ff]/20"
         >
           Become Instructor
         </button>
@@ -37,7 +45,7 @@ const StudentHeader = () => {
         <button
           type="button"
           aria-label="Wishlist"
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-white/[0.05] hover:text-white"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-white/[0.05] hover:text-white"
         >
           <svg
             className="h-5 w-5"
@@ -54,11 +62,11 @@ const StudentHeader = () => {
           </svg>
         </button>
 
-        {/* Notification */}
+        {/* Notifications */}
         <button
           type="button"
           aria-label="Notifications"
-          className="relative flex h-10 w-10 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-white/[0.05] hover:text-white"
+          className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-white/[0.05] hover:text-white"
         >
           <svg
             className="h-5 w-5"
@@ -89,7 +97,7 @@ const StudentHeader = () => {
         {/* Profile */}
         <button
           type="button"
-          className="flex items-center gap-3 rounded-xl px-2 py-1.5 transition-all hover:bg-white/[0.05]"
+          className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 transition-all hover:bg-white/[0.05]"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6c63ff]/20 text-sm font-semibold text-[#9b94ff] ring-1 ring-[#6c63ff]/20">
             C
@@ -97,6 +105,7 @@ const StudentHeader = () => {
 
           <div className="hidden text-left sm:block">
             <p className="text-sm font-medium text-white">Cristiano Ronaldo</p>
+
             <p className="text-xs text-gray-500">Student</p>
           </div>
         </button>
