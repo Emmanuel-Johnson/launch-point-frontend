@@ -40,7 +40,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
 
   return (
     <header
-      className={`fixed right-0 top-0 z-30 flex h-20 items-center justify-between border-b border-white/10 bg-[#050505] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+      className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/10 bg-[#050505] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
         isSidebarCollapsed ? "left-20" : "left-[280px]"
       }`}
     >

@@ -28,6 +28,9 @@ const StudentLayout = () => {
         {/* Header */}
         <StudentHeader isSidebarCollapsed={isSidebarCollapsed} />
 
+        {/* Fixed Black Separator */}
+        <div className="fixed left-0 right-0 top-20 z-40 h-[30px] bg-[#050505]" />
+
         {/* Page Content */}
         <main className="student-scrollbar min-h-0 flex-1 overflow-y-auto">
           <div
