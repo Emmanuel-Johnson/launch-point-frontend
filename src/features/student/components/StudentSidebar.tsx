@@ -242,23 +242,23 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
   return (
     <>
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/10 bg-[#080808] transition-all duration-300 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/10 bg-[#080808] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
         {/* Logo / Toggle */}
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-white/10 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/10 transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
           <div
-            className={`flex min-w-0 cursor-pointer items-center ${
+            className={`flex min-w-0 cursor-pointer items-center transition-all duration-500 ${
               isCollapsed ? "justify-center" : "gap-3"
             }`}
           >
             {/* Logo */}
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center transition-transform duration-500 hover:scale-105">
               <img
                 src="/logo.png"
                 alt="Launch Point Logo"
@@ -267,17 +267,23 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             </div>
 
             {/* Brand */}
-            {!isCollapsed && (
-              <div className="group min-w-0">
-                <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-indigo-300">
+            <div
+              className={`grid overflow-hidden transition-all duration-500 ease-out ${
+                isCollapsed
+                  ? "max-w-0 -translate-x-2 opacity-0"
+                  : "max-w-[180px] translate-x-0 opacity-100"
+              }`}
+            >
+              <div className="min-w-[160px]">
+                <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 hover:text-indigo-300">
                   LAUNCH POINT
                 </span>
 
-                <p className="mt-0.5 whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-colors duration-300 group-hover:text-zinc-300">
+                <p className="mt-0.5 whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-colors duration-300 hover:text-zinc-300">
                   Student Portal
                 </p>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Toggle Button */}
@@ -286,14 +292,14 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center rounded-lg text-gray-500 transition-all duration-200 hover:bg-white/[0.06] hover:text-white ${
+            className={`group flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center rounded-lg text-gray-500 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
               isCollapsed
                 ? "absolute -right-4 border border-white/10 bg-[#111111]"
                 : "ml-auto"
             }`}
           >
             <svg
-              className="h-4 w-4"
+              className="h-4 w-4 transition-transform duration-500 ease-out group-hover:scale-110"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -321,11 +327,16 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
           <nav className="space-y-6">
             {navSections.map((section) => (
               <div key={section.title}>
-                {!isCollapsed && (
-                  <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
+                {/* Section title */}
+                <div
+                  className={`mb-2 overflow-hidden transition-all duration-300 ${
+                    isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
+                  }`}
+                >
+                  <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
                     {section.title}
                   </p>
-                )}
+                </div>
 
                 <div className="space-y-1">
                   {section.items.map((item) => (
@@ -334,32 +345,47 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
                       to={item.path}
                       title={isCollapsed ? item.name : undefined}
                       className={({ isActive }) =>
-                        `group relative flex items-center rounded-xl py-3 text-sm font-medium transition-all duration-200 ${
+                        `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 ${
                           isCollapsed ? "justify-center px-3" : "gap-3 px-3"
                         } ${
                           isActive
                             ? "bg-[#6c63ff]/10 text-[#9b94ff]"
-                            : "text-gray-500 hover:bg-white/[0.04] hover:text-gray-200"
+                            : "text-gray-500 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-gray-200"
                         }`
                       }
                     >
                       {({ isActive }) => (
                         <>
-                          {isActive && (
-                            <span className="absolute left-0 h-6 w-0.5 rounded-full bg-[#6c63ff]" />
-                          )}
-
+                          {/* Active indicator */}
                           <span
-                            className={
+                            className={`absolute left-0 rounded-full bg-[#6c63ff] transition-all duration-300 ${
                               isActive
-                                ? "text-[#8b83ff]"
-                                : "text-gray-600 transition-colors group-hover:text-gray-300"
-                            }
+                                ? "h-6 w-0.5 opacity-100"
+                                : "h-0 w-0 opacity-0"
+                            }`}
+                          />
+
+                          {/* Icon */}
+                          <span
+                            className={`shrink-0 transition-all duration-300 ${
+                              isActive
+                                ? "scale-105 text-[#8b83ff]"
+                                : "text-gray-600 group-hover:scale-110 group-hover:text-gray-300"
+                            }`}
                           >
                             {item.icon}
                           </span>
 
-                          {!isCollapsed && <span>{item.name}</span>}
+                          {/* Label */}
+                          <span
+                            className={`whitespace-nowrap overflow-hidden transition-all duration-300 ease-out ${
+                              isCollapsed
+                                ? "max-w-0 translate-x-2 opacity-0"
+                                : "max-w-[180px] translate-x-0 opacity-100"
+                            }`}
+                          >
+                            {item.name}
+                          </span>
                         </>
                       )}
                     </NavLink>
@@ -377,12 +403,12 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
             title={isCollapsed ? "Logout" : undefined}
-            className={`group flex w-full cursor-pointer items-center rounded-xl py-3 text-sm font-medium text-gray-500 transition-all hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`group flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-gray-500 transition-all duration-300 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
               isCollapsed ? "justify-center px-3" : "gap-3 px-3"
             }`}
           >
             <svg
-              className="h-5 w-5 shrink-0 transition-transform group-hover:-translate-x-0.5"
+              className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -401,7 +427,15 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
               />
             </svg>
 
-            {!isCollapsed && <span>Logout</span>}
+            <span
+              className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${
+                isCollapsed
+                  ? "max-w-0 translate-x-2 opacity-0"
+                  : "max-w-[100px] translate-x-0 opacity-100"
+              }`}
+            >
+              Logout
+            </span>
           </button>
         </div>
       </aside>

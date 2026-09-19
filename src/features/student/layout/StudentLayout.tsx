@@ -18,7 +18,7 @@ const StudentLayout = () => {
       />
 
       <div
-        className={`flex h-screen flex-col transition-all duration-300 ${
+        className={`flex h-screen flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isSidebarCollapsed ? "ml-20" : "ml-[280px]"
         }`}
       >
