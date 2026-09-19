@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import StudentNavbar from "../components/StudentHeader";
+import StudentHeader from "../components/StudentHeader";
 import StudentSidebar from "../components/StudentSidebar";
 
 const StudentLayout = () => {
@@ -8,7 +8,7 @@ const StudentLayout = () => {
       <StudentSidebar />
 
       <div className="ml-64 min-h-screen">
-        <StudentNavbar />
+        <StudentHeader />
 
         <main className="p-8">
           <Outlet />
