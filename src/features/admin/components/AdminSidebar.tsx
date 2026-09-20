@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import { logoutAdmin } from "../api/adminApi";
-import AdminLogoutConfirmModal from "./AdminLogoutConfirmModal";
+import AdminLogoutConfirmModal from "./LogoutConfirmModal";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();

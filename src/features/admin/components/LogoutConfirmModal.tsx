@@ -1,16 +1,16 @@
-type AdminLogoutConfirmModalProps = {
+type LogoutConfirmModalProps = {
   isOpen: boolean;
   isLoading: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 };
 
-const AdminLogoutConfirmModal = ({
+const LogoutConfirmModal = ({
   isOpen,
   isLoading,
   onCancel,
   onConfirm,
-}: AdminLogoutConfirmModalProps) => {
+}: LogoutConfirmModalProps) => {
   if (!isOpen) {
     return null;
   }
@@ -98,4 +98,4 @@ const AdminLogoutConfirmModal = ({
   );
 };
 
-export default AdminLogoutConfirmModal;
+export default LogoutConfirmModal;

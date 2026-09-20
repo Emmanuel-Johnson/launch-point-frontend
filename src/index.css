@@ -382,3 +382,24 @@ html {
   scrollbar-width: thin;
   scrollbar-color: #333333 #050505;
 }
+.instructor-sidebar-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.instructor-sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.instructor-sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #0d2744;
+  border-radius: 9999px;
+}
+
+.instructor-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #12375d;
+}
+
+.instructor-sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0d2744 transparent;
+}
