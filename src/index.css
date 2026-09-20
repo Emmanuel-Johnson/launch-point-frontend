@@ -354,3 +354,31 @@ html {
   opacity: 0;
   animation: sidebar-item 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* ================================
+   Custom Dark Scrollbar
+================================ */
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #262626, #333333);
+  border-radius: 999px;
+  border: 2px solid #050505;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3f3f46, #52525b);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 #050505;
+}
