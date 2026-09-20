@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface StudentSidebarProps {
   isCollapsed: boolean;
@@ -264,7 +265,9 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
           {/* =====================================================
               BRAND
           ====================================================== */}
-          <div
+
+          <Link
+            to="/"
             className={`flex min-w-0 items-center transition-all duration-500 ${
               isCollapsed ? "justify-center" : "gap-3"
             }`}
@@ -299,8 +302,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
                 </p>
               </div>
             </div>
-          </div>
-
+          </Link>
           {/* =====================================================
               TOGGLE
           ====================================================== */}

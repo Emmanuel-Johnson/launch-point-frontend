@@ -61,26 +61,20 @@ const LogoutConfirmModal = ({
         </div>
 
         {/* Actions */}
-        <div className="mt-6 flex gap-3">
-          <button
-            type="button"
-            disabled={isLoading}
-            onClick={onCancel}
-            className="flex-1 cursor-pointer rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-400 transition-all duration-700 ease-out hover:scale-[1.04] hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-          >
-            {" "}
-            Cancel{" "}
-          </button>
-
+        <div className="mt-6 flex flex-col gap-3">
+          {/* Logout Button */}
           <button
             type="button"
             disabled={isLoading}
             onClick={onConfirm}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-700 ease-out hover:scale-[1.04] hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            className="group relative flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-700 ease-out hover:scale-[1.04] hover:bg-red-500/20 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
+            {/* Glass Shine */}
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-300/[0.12] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+
             {isLoading ? (
               <svg
-                className="h-4 w-4 animate-spin"
+                className="relative z-10 h-4 w-4 animate-spin"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -90,8 +84,22 @@ const LogoutConfirmModal = ({
                 <path d="M21 12a9 9 0 0 0-9-9" strokeLinecap="round" />
               </svg>
             ) : (
-              "Logout"
+              <span className="relative z-10">Logout</span>
             )}
+          </button>
+
+          {/* Cancel Button */}
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={onCancel}
+            className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-400 transition-all duration-700 ease-out hover:scale-[1.04] hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+          >
+            {/* Glass Shine */}
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+
+            {/* Label */}
+            <span className="relative z-10">Cancel</span>
           </button>
         </div>
       </div>

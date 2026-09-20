@@ -4,13 +4,15 @@ import PublicFooter from "./PublicFooter";
 
 const PublicLayout = () => {
   return (
-    <>
+    <div className="min-h-screen bg-[#050505] text-white">
       <PublicNavbar />
 
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
 
       <PublicFooter />
-    </>
+    </div>
   );
 };
 
