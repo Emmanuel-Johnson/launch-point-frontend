@@ -403,3 +403,25 @@ html {
   scrollbar-width: thin;
   scrollbar-color: #0d2744 transparent;
 }
+
+.student-sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #35204f transparent;
+}
+
+.student-sidebar-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.student-sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.student-sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #35204f;
+  border-radius: 9999px;
+}
+
+.student-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6d3fa0;
+}

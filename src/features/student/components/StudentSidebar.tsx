@@ -347,7 +347,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
         {/* =====================================================
             NAVIGATION
         ====================================================== */}
-        <div className="scrollbar-hide flex-1 overflow-y-auto px-3 py-6">
+        <div className="student-sidebar-scrollbar flex-1 overflow-y-auto px-3 py-6">
           <nav className="space-y-6">
             {navSections.map((section, sectionIndex) => (
               <div
