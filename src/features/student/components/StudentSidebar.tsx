@@ -275,7 +275,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             {/* Logo */}
             <div className="group relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg">
               <img
-                src="/logo.png"
+                src="/student_logo.png"
                 alt="Launch Point Logo"
                 className="h-full w-full rounded-lg object-contain transition-all duration-500 group-hover:scale-105 group-hover:rotate-1"
               />

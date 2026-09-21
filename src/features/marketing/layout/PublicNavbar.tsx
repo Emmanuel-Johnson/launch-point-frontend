@@ -25,7 +25,7 @@ const PublicNavbar = () => {
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-lg">
             <img
-              src="/logo.png"
+              src="/student_logo.png"
               alt="Launch Point Logo"
               className="h-full w-full rounded-lg object-contain"
             />

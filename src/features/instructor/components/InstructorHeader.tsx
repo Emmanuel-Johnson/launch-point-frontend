@@ -39,29 +39,31 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
 
   return (
     <header
-      className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-blue-400/10 bg-[#07111f] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+      className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/10 bg-[#080808] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
         isSidebarCollapsed ? "left-20" : "left-[280px]"
       }`}
     >
-      {/* Search */}
+      {/* =====================================================
+          SEARCH
+      ====================================================== */}
       <div className="mx-8 flex max-w-lg flex-1">
         <div className="group relative w-full">
           <div
             className="
               relative overflow-hidden rounded-2xl
-              border border-blue-400/[0.08]
-              bg-[#0b1728]
+              border border-white/[0.08]
+              bg-[#111111]
               transition-all duration-300
               hover:-translate-y-0.5
               hover:border-blue-400/25
-              hover:bg-[#0d1b2d]
+              hover:bg-[#121212]
               hover:shadow-[0_8px_30px_rgba(37,99,235,0.10)]
               focus-within:border-blue-400/40
-              focus-within:bg-[#0d1b2d]
+              focus-within:bg-[#121212]
               focus-within:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]
             "
           >
-            {/* Blue shine */}
+            {/* Blue Shine */}
             <span
               className="
                 pointer-events-none absolute inset-0 z-20
@@ -93,6 +95,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               strokeWidth="1.8"
             >
               <circle cx="11" cy="11" r="7" />
+
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -121,7 +124,9 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
         </div>
       </div>
 
-      {/* Right Side */}
+      {/* =====================================================
+          RIGHT SIDE
+      ====================================================== */}
       <div className="flex shrink-0 items-center gap-3">
         {/* Notifications */}
         <button
@@ -190,9 +195,11 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
         </button>
 
         {/* Divider */}
-        <div className="mx-1 h-8 w-px bg-blue-400/10" />
+        <div className="mx-1 h-8 w-px bg-white/10" />
 
-        {/* Profile */}
+        {/* =====================================================
+            PROFILE
+        ====================================================== */}
         <div ref={profileRef} className="relative">
           <button
             type="button"
@@ -274,16 +281,18 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
             </svg>
           </button>
 
-          {/* Dropdown */}
+          {/* =====================================================
+              PROFILE DROPDOWN
+          ====================================================== */}
           <div
-            className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-blue-400/[0.08] bg-[#0b1728] shadow-2xl shadow-black/50 transition-all duration-200 ease-out ${
+            className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] shadow-2xl shadow-black/50 transition-all duration-200 ease-out ${
               isProfileOpen
                 ? "translate-y-0 scale-100 opacity-100"
                 : "pointer-events-none -translate-y-2 scale-95 opacity-0"
             }`}
           >
             {/* User Info */}
-            <div className="border-b border-blue-400/[0.08] px-5 py-5">
+            <div className="border-b border-white/[0.08] px-5 py-5">
               <div className="flex items-center gap-3.5">
                 <div
                   className="
@@ -360,6 +369,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                       strokeLinejoin="round"
                       d="M20 21a8 8 0 0 0-16 0"
                     />
+
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
@@ -397,7 +407,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
             </div>
 
             {/* Divider */}
-            <div className="border-t border-blue-400/[0.08]" />
+            <div className="border-t border-white/[0.08]" />
 
             {/* Logout */}
             <div className="p-2">
