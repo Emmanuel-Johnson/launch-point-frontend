@@ -14,7 +14,7 @@ const PublicFooter = () => {
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-500 hover:scale-105">
                 <img
-                  src="/logo.png"
+                  src="/student_logo.png"
                   alt="Launch Point Logo"
                   className="h-full w-full rounded-lg object-contain"
                 />

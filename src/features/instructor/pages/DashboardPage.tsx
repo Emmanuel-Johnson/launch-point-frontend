@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const DashboardPage = () => {
+const InstructorDashboard = () => {
   const navigate = useNavigate();
 
   return (
@@ -9,10 +9,10 @@ const DashboardPage = () => {
           Welcome Section
       ======================================== */}
       <section className="animate-page-item" style={{ animationDelay: "80ms" }}>
-        <div className="relative overflow-hidden rounded-3xl border border-blue-400/10 bg-gradient-to-br from-[#0d1b2e] via-[#091522] to-[#07111f] p-8">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#111318] via-[#0b0c10] to-[#080808] p-8">
           {/* Background Glow */}
           <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-blue-400/5 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-blue-600/5 blur-3xl" />
 
           <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
             <div>
@@ -26,14 +26,14 @@ const DashboardPage = () => {
 
               <p className="mt-3 max-w-xl text-sm leading-6 text-gray-500">
                 Manage your courses, support your students, and continue
-                building meaningful learning experiences.
+                creating meaningful learning experiences.
               </p>
             </div>
 
             <button
               type="button"
               onClick={() => navigate("/instructor/courses/create")}
-              className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-blue-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-xl hover:shadow-blue-500/20 active:translate-y-0"
+              className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-blue-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-600/20 active:translate-y-0"
             >
               Create Course
               <svg
@@ -58,20 +58,20 @@ const DashboardPage = () => {
           Stats
       ======================================== */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Total Courses */}
+        {/* Courses */}
         <div
-          className="animate-page-item group rounded-2xl border border-blue-400/10 bg-[#0b1728] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/20 hover:bg-[#0d1b2e]"
+          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
           style={{ animationDelay: "160ms" }}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
                 Total Courses
               </p>
 
               <p className="mt-3 text-3xl font-semibold text-white">12</p>
 
-              <p className="mt-1 text-xs text-blue-400">8 published</p>
+              <p className="mt-1 text-xs text-gray-500">8 published</p>
             </div>
 
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
@@ -99,12 +99,12 @@ const DashboardPage = () => {
 
         {/* Students */}
         <div
-          className="animate-page-item group rounded-2xl border border-blue-400/10 bg-[#0b1728] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/20 hover:bg-[#0d1b2e]"
+          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
           style={{ animationDelay: "220ms" }}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
                 Total Students
               </p>
 
@@ -130,7 +130,7 @@ const DashboardPage = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M16 4.5a4 4 0 0 1 0 7.5"
+                  d="M16 5a4 4 0 0 1 0 6"
                 />
                 <path
                   strokeLinecap="round"
@@ -144,12 +144,12 @@ const DashboardPage = () => {
 
         {/* Revenue */}
         <div
-          className="animate-page-item group rounded-2xl border border-blue-400/10 bg-[#0b1728] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/20 hover:bg-[#0d1b2e]"
+          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
           style={{ animationDelay: "280ms" }}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
                 Total Revenue
               </p>
 
@@ -183,18 +183,18 @@ const DashboardPage = () => {
 
         {/* Rating */}
         <div
-          className="animate-page-item group rounded-2xl border border-blue-400/10 bg-[#0b1728] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/20 hover:bg-[#0d1b2e]"
+          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
           style={{ animationDelay: "340ms" }}
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
                 Average Rating
               </p>
 
               <p className="mt-3 text-3xl font-semibold text-white">4.8</p>
 
-              <p className="mt-1 text-xs text-blue-400">From 326 reviews</p>
+              <p className="mt-1 text-xs text-gray-500">326 reviews</p>
             </div>
 
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
@@ -222,7 +222,7 @@ const DashboardPage = () => {
       <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         {/* Course Performance */}
         <div
-          className="animate-page-item rounded-2xl border border-blue-400/10 bg-[#0b1728] p-6"
+          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
           style={{ animationDelay: "400ms" }}
         >
           <div className="mb-6 flex items-center justify-between">
@@ -231,8 +231,8 @@ const DashboardPage = () => {
                 Course Performance
               </h2>
 
-              <p className="mt-1 text-xs text-gray-500">
-                Your top performing courses
+              <p className="mt-1 text-xs text-gray-600">
+                Pick up where you left off
               </p>
             </div>
 
@@ -245,106 +245,106 @@ const DashboardPage = () => {
             </button>
           </div>
 
-          <div className="space-y-4">
-            {/* Course 1 */}
-            <div className="group rounded-2xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]">
-              <div className="flex gap-4">
-                <div className="flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/25 via-blue-400/10 to-[#07111f]">
-                  <svg
-                    className="h-8 w-8 text-blue-400 transition-transform duration-500 group-hover:scale-110"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"
-                    />
-                  </svg>
+          <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.035]">
+            <div className="flex gap-4">
+              <div className="flex h-24 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/30 via-blue-600/15 to-[#111318]">
+                <svg
+                  className="h-10 w-10 text-blue-400 transition-transform duration-500 group-hover:scale-110"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"
+                  />
+                </svg>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Full Stack Web Development
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-600">
+                      Python · Django · React
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
+                    Published
+                  </span>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        Full Stack Web Development
-                      </p>
+                <div className="mt-5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[11px] text-gray-600">Students</span>
 
-                      <p className="mt-1 text-xs text-gray-500">
-                        Python · Django · React
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
-                      Published
+                    <span className="text-[11px] font-medium text-gray-400">
+                      482
                     </span>
                   </div>
 
-                  <div className="mt-4 flex items-center gap-5">
-                    <span className="text-[11px] text-gray-500">
-                      482 students
-                    </span>
-
-                    <span className="text-[11px] text-gray-500">
-                      ₹32,400 revenue
-                    </span>
-
-                    <span className="text-[11px] text-amber-400">★ 4.9</span>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div className="h-full w-[82%] rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Course 2 */}
-            <div className="group rounded-2xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]">
-              <div className="flex gap-4">
-                <div className="flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-400/20 via-blue-500/10 to-[#07111f]">
-                  <svg
-                    className="h-8 w-8 text-blue-400 transition-transform duration-500 group-hover:scale-110"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <rect x="4" y="4" width="16" height="16" rx="2" />
-                    <path strokeLinecap="round" d="M8 9h8M8 13h5M8 17h8" />
-                  </svg>
+          <div className="mt-3 group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.035]">
+            <div className="flex gap-4">
+              <div className="flex h-24 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/25 via-blue-400/10 to-[#111318]">
+                <svg
+                  className="h-10 w-10 text-blue-400 transition-transform duration-500 group-hover:scale-110"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                  <path strokeLinecap="round" d="M8 9h8M8 13h5M8 17h8" />
+                </svg>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Advanced React Development
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-600">
+                      React · Redux · TypeScript
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
+                    Published
+                  </span>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        Advanced React Development
-                      </p>
+                <div className="mt-5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[11px] text-gray-600">Students</span>
 
-                      <p className="mt-1 text-xs text-gray-500">
-                        React · Redux · TypeScript
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
-                      Published
+                    <span className="text-[11px] font-medium text-gray-400">
+                      318
                     </span>
                   </div>
 
-                  <div className="mt-4 flex items-center gap-5">
-                    <span className="text-[11px] text-gray-500">
-                      318 students
-                    </span>
-
-                    <span className="text-[11px] text-gray-500">
-                      ₹24,800 revenue
-                    </span>
-
-                    <span className="text-[11px] text-amber-400">★ 4.8</span>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div className="h-full w-[68%] rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
                   </div>
                 </div>
               </div>
@@ -352,144 +352,74 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Today's Goal */}
         <div
-          className="animate-page-item rounded-2xl border border-blue-400/10 bg-[#0b1728] p-6"
+          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
           style={{ animationDelay: "460ms" }}
         >
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-white">Quick Actions</h2>
+            <h2 className="text-lg font-semibold text-white">
+              Today&apos;s Goal
+            </h2>
 
-            <p className="mt-1 text-xs text-gray-500">
-              Manage your teaching workspace
+            <p className="mt-1 text-xs text-gray-600">
+              Keep your instructor workspace moving
             </p>
           </div>
 
-          <div className="space-y-3">
-            {/* Create Course */}
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/courses/create")}
-              className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
+          <div className="flex items-center gap-6">
+            {/* Circular Progress */}
+            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center">
+              <svg className="h-28 w-28 -rotate-90" viewBox="0 0 100 100">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 5v14M5 12h14"
-                  />
-                </svg>
-              </div>
+                  strokeWidth="7"
+                  className="text-white/[0.05]"
+                />
 
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-200">
-                  Create Course
-                </p>
-
-                <p className="mt-1 text-xs text-gray-500">
-                  Start building a new course
-                </p>
-              </div>
-
-              <span className="text-gray-600 transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </button>
-
-            {/* Students */}
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/students")}
-              className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <circle cx="9" cy="8" r="4" />
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  strokeDasharray="264"
+                  strokeDashoffset="66"
+                  className="text-blue-500"
+                />
+              </svg>
 
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                  />
-
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 5a4 4 0 0 1 0 6"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-200">
-                  View Students
-                </p>
-
-                <p className="mt-1 text-xs text-gray-500">
-                  Track student progress
+              <div className="absolute text-center">
+                <p className="text-xl font-semibold text-white">75%</p>
+                <p className="text-[9px] uppercase tracking-wider text-gray-600">
+                  Complete
                 </p>
               </div>
+            </div>
 
-              <span className="text-gray-600 transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </button>
+            <div>
+              <p className="text-sm font-medium text-white">
+                6 tasks completed
+              </p>
 
-            {/* Analytics */}
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/analytics")}
-              className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 19V5M4 19h16"
-                  />
+              <p className="mt-2 text-xs leading-5 text-gray-600">
+                Your goal is 8 instructor tasks today. Keep going!
+              </p>
 
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m7 15 4-4 3 2 5-6"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-200">
-                  View Analytics
-                </p>
-
-                <p className="mt-1 text-xs text-gray-500">
-                  Review course performance
-                </p>
-              </div>
-
-              <span className="text-gray-600 transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={() => navigate("/instructor/courses")}
+                className="mt-4 cursor-pointer text-xs font-medium text-blue-400 transition-colors hover:text-blue-300"
+              >
+                Continue →
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -500,7 +430,7 @@ const DashboardPage = () => {
       <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         {/* Recent Activity */}
         <div
-          className="animate-page-item rounded-2xl border border-blue-400/10 bg-[#0b1728] p-6"
+          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
           style={{ animationDelay: "520ms" }}
         >
           <div className="mb-6">
@@ -508,8 +438,8 @@ const DashboardPage = () => {
               Recent Activity
             </h2>
 
-            <p className="mt-1 text-xs text-gray-500">
-              Latest activity across your courses
+            <p className="mt-1 text-xs text-gray-600">
+              Your latest instructor activity
             </p>
           </div>
 
@@ -540,7 +470,7 @@ const DashboardPage = () => {
                   </span>
                 </p>
 
-                <p className="mt-1 text-[11px] text-gray-600">1 hour ago</p>
+                <p className="mt-1 text-[11px] text-gray-600">2 hours ago</p>
               </div>
             </div>
 
@@ -559,7 +489,6 @@ const DashboardPage = () => {
                     strokeLinejoin="round"
                     d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
                   />
-
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -570,7 +499,7 @@ const DashboardPage = () => {
 
               <div className="flex-1">
                 <p className="text-sm text-gray-300">
-                  Published a new lesson in{" "}
+                  Published a lesson in{" "}
                   <span className="font-medium text-white">
                     Advanced React Development
                   </span>
@@ -611,79 +540,110 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Pending Actions */}
+        {/* Up Next */}
         <div
-          className="animate-page-item rounded-2xl border border-blue-400/10 bg-[#0b1728] p-6"
+          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
           style={{ animationDelay: "580ms" }}
         >
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-white">
-              Pending Actions
-            </h2>
+            <h2 className="text-lg font-semibold text-white">Up Next</h2>
 
-            <p className="mt-1 text-xs text-gray-500">
-              Items that need your attention
+            <p className="mt-1 text-xs text-gray-600">
+              Continue managing your courses
             </p>
           </div>
 
           <div className="space-y-3">
-            {/* Draft Courses */}
             <button
               type="button"
               onClick={() => navigate("/instructor/courses")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
+              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
             >
               <div>
                 <p className="text-sm font-medium text-gray-200">
-                  Draft Courses
+                  Manage Courses
                 </p>
 
-                <p className="mt-1 text-xs text-gray-500">
-                  2 courses waiting to be completed
+                <p className="mt-1 text-xs text-gray-600">
+                  Review your 12 courses
                 </p>
               </div>
 
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-blue-500/10 px-2 text-xs font-medium text-blue-400">
-                2
-              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9 18 6-6-6-6"
+                  />
+                </svg>
+              </div>
             </button>
 
-            {/* Assessments */}
             <button
               type="button"
               onClick={() => navigate("/instructor/assessments")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
+              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
             >
               <div>
                 <p className="text-sm font-medium text-gray-200">Assessments</p>
 
-                <p className="mt-1 text-xs text-gray-500">
-                  3 assessments need updates
+                <p className="mt-1 text-xs text-gray-600">
+                  Review your assessments
                 </p>
               </div>
 
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-blue-500/10 px-2 text-xs font-medium text-blue-400">
-                3
-              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9 18 6-6-6-6"
+                  />
+                </svg>
+              </div>
             </button>
 
-            {/* Community */}
             <button
               type="button"
-              onClick={() => navigate("/instructor/community")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-blue-400/[0.08] bg-blue-400/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-400/20 hover:bg-blue-400/[0.04]"
+              onClick={() => navigate("/instructor/students")}
+              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
             >
               <div>
-                <p className="text-sm font-medium text-gray-200">Community</p>
+                <p className="text-sm font-medium text-gray-200">My Students</p>
 
-                <p className="mt-1 text-xs text-gray-500">
-                  5 student questions waiting
+                <p className="mt-1 text-xs text-gray-600">
+                  Track student activity
                 </p>
               </div>
 
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-blue-500/10 px-2 text-xs font-medium text-blue-400">
-                5
-              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9 18 6-6-6-6"
+                  />
+                </svg>
+              </div>
             </button>
           </div>
         </div>
@@ -692,4 +652,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default InstructorDashboard;
