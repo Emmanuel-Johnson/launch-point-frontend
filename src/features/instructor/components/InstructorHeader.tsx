@@ -282,32 +282,37 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
           </button>
 
           {/* =====================================================
-              PROFILE DROPDOWN
-          ====================================================== */}
+    PROFILE DROPDOWN
+====================================================== */}
           <div
-            className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] shadow-2xl shadow-black/50 transition-all duration-200 ease-out ${
+            className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0d] shadow-2xl shadow-black/50 transition-all duration-200 ease-out ${
               isProfileOpen
                 ? "translate-y-0 scale-100 opacity-100"
                 : "pointer-events-none -translate-y-2 scale-95 opacity-0"
             }`}
           >
-            {/* User Info */}
-            <div className="border-b border-white/[0.08] px-5 py-5">
+            {/* =====================================================
+      USER INFO
+  ====================================================== */}
+            <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
               <div className="flex items-center gap-3.5">
+                {/* Avatar */}
                 <div
                   className="
-                    flex h-12 w-12 shrink-0
-                    items-center justify-center
-                    rounded-full
-                    bg-gradient-to-br
-                    from-blue-600 to-blue-400
-                    text-sm font-semibold text-white
-                    shadow-lg shadow-blue-600/20
-                  "
+          flex h-12 w-12 shrink-0 items-center justify-center
+          rounded-full
+          bg-gradient-to-br from-blue-600 to-blue-400
+          text-sm font-semibold text-white
+          shadow-lg shadow-blue-600/20
+          transition-all duration-300
+          hover:scale-105
+          hover:shadow-blue-600/30
+        "
                 >
                   EJ
                 </div>
 
+                {/* User Details */}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px] font-semibold text-white">
                     Emmanuel Johnson
@@ -316,10 +321,10 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                   <div className="mt-1 flex items-center gap-1.5">
                     <span
                       className="
-                        h-1.5 w-1.5 animate-pulse
-                        rounded-full bg-emerald-400
-                        shadow-[0_0_6px_rgba(52,211,153,0.5)]
-                      "
+              h-1.5 w-1.5 animate-pulse rounded-full
+              bg-emerald-400
+              shadow-[0_0_6px_rgba(52,211,153,0.5)]
+            "
                     />
 
                     <span className="text-xs font-medium text-gray-500">
@@ -330,35 +335,53 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               </div>
             </div>
 
-            {/* Profile */}
+            {/* =====================================================
+      MY PROFILE
+  ====================================================== */}
             <div className="p-2">
               <button
                 type="button"
                 onClick={() => navigate("/instructor/profile")}
                 className="
-                  group relative flex w-full cursor-pointer
-                  items-center gap-3 overflow-hidden
-                  rounded-xl px-3 py-3 text-left
-                  transition-all duration-300
-                  hover:translate-x-0.5
-                  hover:bg-blue-500/[0.06]
-                "
+        group relative flex w-full cursor-pointer
+        items-center gap-3 overflow-hidden
+        rounded-xl px-3 py-3 text-left
+        transition-all duration-300
+        hover:translate-x-0.5
+        hover:bg-blue-500/[0.06]
+      "
               >
+                {/* Shine */}
+                <span
+                  className="
+          pointer-events-none absolute inset-0
+          -translate-x-full
+          bg-gradient-to-r
+          from-transparent
+          via-blue-400/10
+          to-transparent
+          transition-transform duration-700
+          group-hover:translate-x-full
+        "
+                />
+
+                {/* Icon */}
                 <div
                   className="
-                    relative z-10 flex h-11 w-11 shrink-0
-                    items-center justify-center
-                    rounded-xl
-                    bg-white/[0.04]
-                    text-gray-500
-                    transition-all duration-300
-                    group-hover:scale-105
-                    group-hover:bg-blue-500/10
-                    group-hover:text-blue-400
-                  "
+          relative z-10 flex h-11 w-11 shrink-0
+          items-center justify-center
+          rounded-xl
+          bg-white/[0.04]
+          text-gray-500
+          transition-all duration-300
+          group-hover:scale-105
+          group-hover:bg-blue-500/10
+          group-hover:text-blue-400
+          group-hover:shadow-[0_0_16px_rgba(59,130,246,0.08)]
+        "
                 >
                   <svg
-                    className="h-5 w-5"
+                    className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -374,24 +397,26 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                   </svg>
                 </div>
 
+                {/* Text */}
                 <div className="relative z-10 min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-200">
+                  <p className="text-sm font-medium text-gray-200 transition-colors duration-200 group-hover:text-white">
                     My Profile
                   </p>
 
-                  <p className="mt-0.5 text-xs text-gray-500">
+                  <p className="mt-0.5 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
                     View and edit your profile
                   </p>
                 </div>
 
+                {/* Arrow */}
                 <svg
                   className="
-                    relative z-10 h-4 w-4 shrink-0
-                    text-gray-600
-                    transition-all duration-300
-                    group-hover:translate-x-1
-                    group-hover:text-blue-400
-                  "
+          relative z-10 h-4 w-4 shrink-0
+          text-gray-600
+          transition-all duration-300
+          group-hover:translate-x-1
+          group-hover:text-blue-400
+        "
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -409,34 +434,163 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
             {/* Divider */}
             <div className="border-t border-white/[0.08]" />
 
-            {/* Logout */}
+            {/* =====================================================
+      SWITCH TO STUDENT
+  ====================================================== */}
+            <div className="p-2">
+              <button
+                type="button"
+                onClick={() => navigate("/student/dashboard")}
+                className="
+        group relative flex w-full cursor-pointer
+        items-center gap-3 overflow-hidden
+        rounded-xl px-3 py-3 text-left
+        transition-all duration-300
+        hover:translate-x-0.5
+        hover:bg-blue-500/[0.06]
+      "
+              >
+                {/* Shine */}
+                <span
+                  className="
+          pointer-events-none absolute inset-0
+          -translate-x-full
+          bg-gradient-to-r
+          from-transparent
+          via-blue-400/10
+          to-transparent
+          transition-transform duration-700
+          group-hover:translate-x-full
+        "
+                />
+
+                {/* Icon */}
+                <div
+                  className="
+          relative z-10 flex h-11 w-11 shrink-0
+          items-center justify-center
+          rounded-xl
+          bg-blue-500/[0.07]
+          text-blue-400
+          transition-all duration-300
+          group-hover:scale-105
+          group-hover:bg-blue-500/[0.12]
+          group-hover:text-blue-300
+          group-hover:shadow-[0_0_16px_rgba(59,130,246,0.10)]
+        "
+                >
+                  <svg
+                    className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  >
+                    {/* Graduation Cap */}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m3 9 9-5 9 5-9 5-9-5Z"
+                    />
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7 11.2V16c0 1.8 2.2 3.5 5 3.5s5-1.7 5-3.5v-4.8"
+                    />
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 9v5"
+                    />
+                  </svg>
+                </div>
+
+                {/* Text */}
+                <div className="relative z-10 min-w-0 flex-1">
+                  <p className="text-sm font-medium text-blue-400 transition-colors duration-200 group-hover:text-white">
+                    Switch to Student
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
+                    Continue learning as a student
+                  </p>
+                </div>
+
+                {/* Arrow */}
+                <svg
+                  className="
+          relative z-10 h-4 w-4 shrink-0
+          text-blue-500/60
+          transition-all duration-300
+          group-hover:translate-x-1
+          group-hover:text-blue-300
+        "
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9 18 6-6-6-6"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/[0.08]" />
+
+            {/* =====================================================
+      LOGOUT
+  ====================================================== */}
             <div className="p-2">
               <button
                 type="button"
                 onClick={handleLogout}
                 className="
-                  group relative flex w-full cursor-pointer
-                  items-center gap-3 overflow-hidden
-                  rounded-xl px-3 py-3 text-left
-                  transition-all duration-300
-                  hover:translate-x-0.5
-                  hover:bg-red-500/[0.06]
-                "
+        group relative flex w-full cursor-pointer
+        items-center gap-3 overflow-hidden
+        rounded-xl px-3 py-3 text-left
+        transition-all duration-300
+        hover:translate-x-0.5
+        hover:bg-red-500/[0.06]
+      "
               >
+                {/* Red Shine */}
+                <span
+                  className="
+          pointer-events-none absolute inset-0
+          -translate-x-full
+          bg-gradient-to-r
+          from-transparent
+          via-red-400/10
+          to-transparent
+          transition-transform duration-700
+          group-hover:translate-x-full
+        "
+                />
+
+                {/* Icon */}
                 <div
                   className="
-                    relative z-10 flex h-11 w-11 shrink-0
-                    items-center justify-center
-                    rounded-xl
-                    bg-red-500/[0.06]
-                    text-red-400
-                    transition-all duration-300
-                    group-hover:scale-105
-                    group-hover:bg-red-500/10
-                  "
+          relative z-10 flex h-11 w-11 shrink-0
+          items-center justify-center
+          rounded-xl
+          bg-red-500/[0.06]
+          text-red-400
+          transition-all duration-300
+          group-hover:scale-105
+          group-hover:bg-red-500/10
+          group-hover:text-red-300
+          group-hover:shadow-[0_0_16px_rgba(239,68,68,0.08)]
+        "
                 >
                   <svg
-                    className="h-5 w-5"
+                    className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-0.5"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -462,8 +616,11 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                   </svg>
                 </div>
 
+                {/* Text */}
                 <div className="relative z-10 flex-1">
-                  <p className="text-sm font-medium text-red-400">Logout</p>
+                  <p className="text-sm font-medium text-red-400 transition-colors duration-200 group-hover:text-red-300">
+                    Logout
+                  </p>
                 </div>
               </button>
             </div>
