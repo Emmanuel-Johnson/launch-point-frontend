@@ -13,29 +13,36 @@ const StudentLayout = () => {
 
   return (
     <div className="h-screen overflow-hidden bg-[#050505] text-white">
-      {/* Sidebar */}
+      {/* =====================================================
+          SIDEBAR
+      ====================================================== */}
       <StudentSidebar
         isCollapsed={isSidebarCollapsed}
         onToggle={toggleSidebar}
       />
 
-      {/* Main Area */}
+      {/* =====================================================
+          MAIN APPLICATION AREA
+      ====================================================== */}
       <div
         className={`flex h-screen flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isSidebarCollapsed ? "ml-20" : "ml-[280px]"
         }`}
       >
-        {/* Header */}
+        {/* =====================================================
+            HEADER
+        ====================================================== */}
         <StudentHeader isSidebarCollapsed={isSidebarCollapsed} />
 
-        {/* Fixed Black Separator */}
-        <div className="fixed left-0 right-0 top-20 z-40 h-[30px] bg-[#050505]" />
-
-        {/* Page Content */}
-        <main className="student-scrollbar min-h-0 flex-1 overflow-y-auto">
+        {/* =====================================================
+            CONTENT
+        ====================================================== */}
+        <main className="student-scrollbar min-h-0 flex-1 overflow-y-auto bg-[#171126]">
+          {" "}
+          {/* Top spacing for fixed header */}
           <div
             key={location.pathname}
-            className="animate-page-enter px-8 pb-8 pt-28"
+            className="animate-page-enter px-8 pb-10 pt-28"
           >
             <Outlet />
           </div>
