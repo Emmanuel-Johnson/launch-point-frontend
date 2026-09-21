@@ -18,7 +18,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
-import Dashboard from "../../features/student/pages/DashboardPage";
+import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
@@ -31,7 +31,11 @@ import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
 
 import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
 import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
-import AdminDashboardPage from "../../features/admin/pages/AdminDashboardPage";
+import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
+
+// Instructor
+import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
+import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -117,7 +121,24 @@ export const routeConfig: RouteObject[] = [
         children: [
           {
             path: "dashboard",
-            element: <Dashboard />,
+            element: <StudentDashboardPage />,
+          },
+        ],
+      },
+    ],
+  },
+
+  // Instructor
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/instructor",
+        element: <InstructorLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <InstructorDashboardPage />,
           },
         ],
       },

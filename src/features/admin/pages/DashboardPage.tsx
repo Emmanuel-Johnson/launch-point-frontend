@@ -1,6 +1,6 @@
 import { Users, GraduationCap, BookOpen, IndianRupee } from "lucide-react";
 
-const AdminDashboardPage = () => {
+const DashboardPage = () => {
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -164,4 +164,4 @@ const AdminDashboardPage = () => {
   );
 };
 
-export default AdminDashboardPage;
+export default DashboardPage;
