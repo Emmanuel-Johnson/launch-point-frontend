@@ -12,7 +12,7 @@ const InstructorLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#07111f] text-white">
+    <div className="h-screen overflow-hidden bg-[#07111f] text-white">
       {/* Instructor Sidebar */}
       <InstructorSidebar
         isCollapsed={isSidebarCollapsed}
@@ -21,7 +21,7 @@ const InstructorLayout = () => {
 
       {/* Main Application Area */}
       <div
-        className={`min-h-screen transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`relative h-screen transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isSidebarCollapsed ? "ml-20" : "ml-[280px]"
         }`}
       >
@@ -29,7 +29,7 @@ const InstructorLayout = () => {
         <InstructorHeader isSidebarCollapsed={isSidebarCollapsed} />
 
         {/* Page Content */}
-        <main className="min-h-screen bg-[#07111f] px-6 pb-10 pt-28 lg:px-8">
+        <main className="instructor-page-scrollbar absolute bottom-0 left-0 right-0 top-1 overflow-y-auto bg-[#07111f] px-6 pb-10 pt-28 lg:px-8">
           <Outlet />
         </main>
       </div>
