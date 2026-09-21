@@ -42,7 +42,7 @@ const InstructorSidebar = ({
     },
 
     {
-      title: "Course Management",
+      title: "Courses",
       items: [
         {
           name: "My Courses",
@@ -69,8 +69,8 @@ const InstructorSidebar = ({
           ),
         },
         {
-          name: "Assessments",
-          path: "/instructor/assessments",
+          name: "Submissions",
+          path: "/instructor/submissions",
           icon: (
             <svg
               className="h-5 w-5"
@@ -87,7 +87,12 @@ const InstructorSidebar = ({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M9 9h6M9 13h6M9 17h4"
+                d="M9 4V3h6v1"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m9 13 2 2 4-4"
               />
             </svg>
           ),
@@ -122,6 +127,41 @@ const InstructorSidebar = ({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 d="M14 15.5a5 5 0 0 1 6.5 4.5"
+              />
+            </svg>
+          ),
+        },
+        {
+          name: "Doubts",
+          path: "/instructor/doubts",
+          icon: (
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              <path
+                d="M9.75 9a2.25 2.25 0 1 1 4.05 1.35c-.65.82-1.8 1.15-1.8 2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              <circle
+                cx="12"
+                cy="16.5"
+                r="0.7"
+                fill="currentColor"
+                stroke="none"
               />
             </svg>
           ),
