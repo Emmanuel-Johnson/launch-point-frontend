@@ -425,3 +425,20 @@ html {
 .student-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #6d3fa0;
 }
+
+.instructor-page-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.instructor-page-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.instructor-page-scrollbar::-webkit-scrollbar-thumb {
+  background: #263241;
+  border-radius: 9999px;
+}
+
+.instructor-page-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
