@@ -4,6 +4,12 @@ import { Outlet } from "react-router-dom";
 import InstructorHeader from "../components/InstructorHeader";
 import InstructorSidebar from "../components/InstructorSidebar";
 
+/*
+  The shell is true black (#000000) to match the dashboard content area.
+  The sidebar and header sit one step above at #0A0A0A, so they read as an
+  elevated chrome frame around the black content rather than merging into it.
+*/
+
 const InstructorLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -12,7 +18,7 @@ const InstructorLayout = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#07111f] text-white">
+    <div className="h-screen overflow-hidden bg-black text-white">
       {/* Instructor Sidebar */}
       <InstructorSidebar
         isCollapsed={isSidebarCollapsed}
@@ -28,7 +34,7 @@ const InstructorLayout = () => {
         {/* Instructor Header */}
         <InstructorHeader isSidebarCollapsed={isSidebarCollapsed} />
 
-        {/* Page Content */}
+        {/* Page Content — pt-28 clears the fixed h-20 header */}
         <main className="instructor-page-scrollbar absolute bottom-0 left-0 right-0 top-1 overflow-y-auto bg-black px-6 pb-10 pt-28 lg:px-8">
           <Outlet />
         </main>
