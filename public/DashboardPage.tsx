@@ -219,7 +219,9 @@ const DashboardPage = () => {
               <div
                 key={stat.title}
                 className={`animate-page-item group relative overflow-hidden rounded-2xl border bg-[#0A0A0A] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-[#34D399]/40 hover:bg-[#0E0E0E] ${
-                  stat.highlight ? "border-[#34D399]/30" : "border-white/[0.08]"
+                  stat.highlight
+                    ? "border-[#34D399]/30"
+                    : "border-white/[0.08]"
                 }`}
                 style={{ animationDelay: `${160 + index * 60}ms` }}
               >
@@ -405,10 +407,7 @@ const DashboardPage = () => {
                       </p>
                     </div>
 
-                    <Icon
-                      className="h-5 w-5 text-[#34D399]"
-                      strokeWidth={1.8}
-                    />
+                    <Icon className="h-5 w-5 text-[#34D399]" strokeWidth={1.8} />
                   </div>
 
                   <p className="mt-1 text-xs text-white/55">{card.status}</p>

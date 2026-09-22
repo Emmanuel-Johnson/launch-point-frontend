@@ -403,10 +403,9 @@ html {
   scrollbar-width: thin;
   scrollbar-color: #0d2744 transparent;
 }
-
 .student-sidebar-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #35204f transparent;
+  scrollbar-color: #29183f transparent;
 }
 
 .student-sidebar-scrollbar::-webkit-scrollbar {
@@ -418,14 +417,13 @@ html {
 }
 
 .student-sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #35204f;
+  background: #29183f;
   border-radius: 9999px;
 }
 
 .student-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6d3fa0;
+  background: #5a3485;
 }
-
 .instructor-page-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
@@ -441,4 +439,32 @@ html {
 
 .instructor-page-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #334155;
+}
+
+/* =========================================================
+   ADMIN SIDEBAR SCROLLBAR
+   ========================================================= */
+
+.admin-sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0d2418 transparent;
+}
+
+/* Chrome / Edge / Safari */
+.admin-sidebar-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #0d2418;
+  border-radius: 999px;
+  transition: background 0.3s ease;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #153522;
 }

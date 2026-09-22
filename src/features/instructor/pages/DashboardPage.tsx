@@ -1,229 +1,388 @@
+import {
+  Activity,
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  ClipboardList,
+  Clock,
+  FileText,
+  IndianRupee,
+  MessageSquare,
+  Plus,
+  Star,
+  TrendingUp,
+  UserPlus,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+/*
+  BLUE & BLACK THEME — palette (matches the Admin / Student dashboard treatment)
+  -----------------------------------------------------------------
+  Page canvas   #000000   true black
+  Card surface  #0A0A0A   near-black, lifted just enough to separate
+  Primary       #3B82F6   royal blue — the single accent colour
+  Deep blue     #1D4ED8   gradient end for progress bars
+  Hover blue    #60A5FA   lighter step for hover states
+
+  One accent only. Hierarchy is created with blue vs white, not a second hue:
+  the money metric (Total Earnings) and the top course carry a blue-tinted
+  border and a blue value (`highlight`); everything else stays white on black.
+
+  NOTE: the page is intentionally true black. If the surrounding app shell is
+  ALSO pure black, this dashboard's outer edge will merge into it — give the
+  shell a hairline border or a slightly different tone if that happens.
+
+  Blue values are inlined as static Tailwind classes (#3B82F6 / #1D4ED8 /
+  #60A5FA) because the JIT can't see a colour held in a JS variable.
+*/
+
+interface StatCard {
+  title: string;
+  value: string;
+  description: string;
+  trend: string;
+  icon: LucideIcon;
+  highlight: boolean;
+}
+
+interface ActivityItem {
+  title: string;
+  time: string;
+  icon: LucideIcon;
+}
+
+interface PendingAction {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}
+
+interface CourseCard {
+  title: string;
+  value: string;
+  status: string;
+  metaLabel: string;
+  percent: number;
+  icon: LucideIcon;
+  highlight: boolean;
+}
 
 const InstructorDashboard = () => {
   const navigate = useNavigate();
 
+  const stats: StatCard[] = [
+    {
+      title: "Total Students",
+      value: "3,482",
+      description: "across all courses",
+      trend: "+6.4%",
+      icon: Users,
+      highlight: false,
+    },
+    {
+      title: "Active Courses",
+      value: "12",
+      description: "2 pending review",
+      trend: "+8.3%",
+      icon: BookOpen,
+      highlight: false,
+    },
+    {
+      title: "Avg. Rating",
+      value: "4.8",
+      description: "1,204 reviews",
+      trend: "+0.2",
+      icon: Star,
+      highlight: false,
+    },
+    {
+      title: "Total Earnings",
+      value: "₹4.6L",
+      description: "this month",
+      trend: "+18.3%",
+      icon: IndianRupee,
+      highlight: true,
+    },
+  ];
+
+  const activities: ActivityItem[] = [
+    {
+      title: "New student enrolled in Advanced React",
+      time: "5 minutes ago",
+      icon: UserPlus,
+    },
+    {
+      title: "New 5-star review on Django REST Framework",
+      time: "1 hour ago",
+      icon: Star,
+    },
+    {
+      title: "You published a new lesson in Full Stack Web Dev",
+      time: "3 hours ago",
+      icon: FileText,
+    },
+  ];
+
+  const pendingActions: PendingAction[] = [
+    {
+      title: "Student Questions",
+      description: "7 awaiting your reply",
+      icon: MessageSquare,
+    },
+    {
+      title: "Assignments to Grade",
+      description: "12 submissions",
+      icon: ClipboardList,
+    },
+    {
+      title: "Course Under Review",
+      description: "2 in moderation",
+      icon: Clock,
+    },
+  ];
+
+  const courses: CourseCard[] = [
+    {
+      title: "Full Stack Web Development",
+      value: "1,248",
+      status: "Students enrolled",
+      metaLabel: "Completion rate",
+      percent: 72,
+      icon: BookOpen,
+      highlight: true,
+    },
+    {
+      title: "Advanced React",
+      value: "864",
+      status: "Students enrolled",
+      metaLabel: "Completion rate",
+      percent: 65,
+      icon: BookOpen,
+      highlight: false,
+    },
+    {
+      title: "Django REST Framework",
+      value: "612",
+      status: "Students enrolled",
+      metaLabel: "Completion rate",
+      percent: 58,
+      icon: BookOpen,
+      highlight: false,
+    },
+  ];
+
   return (
-    <div className="space-y-8">
-      {/* ========================================
-          Welcome Section
-      ======================================== */}
-      <section className="animate-page-item" style={{ animationDelay: "80ms" }}>
-        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#111318] via-[#0b0c10] to-[#080808] p-8">
-          {/* Background Glow */}
-          <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-blue-600/5 blur-3xl" />
-
-          <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
-            <div>
-              <p className="mb-2 text-sm font-medium text-blue-400">
-                Welcome back 👋
-              </p>
-
-              <h1 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
-                Emmanuel Johnson
-              </h1>
-
-              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-500">
-                Manage your courses, support your students, and continue
-                creating meaningful learning experiences.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/courses/create")}
-              className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-blue-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-600/20 active:translate-y-0"
-            >
-              Create Course
-              <svg
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 5v14m-7-7h14"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================
-          Stats
-      ======================================== */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Courses */}
-        <div
-          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
-          style={{ animationDelay: "160ms" }}
+    <div className="min-h-full w-full bg-black text-white">
+      <div className="space-y-8">
+        {/* =====================================================
+            WELCOME SECTION
+        ====================================================== */}
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "80ms" }}
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
-                Total Courses
-              </p>
+          <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/20 bg-[#0A0A0A] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
+            {/* Soft blue glow — one restrained accent, not busy motion. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#3B82F6]/20 blur-3xl"
+            />
+            {/* Hairline top highlight for a premium edge. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/50 to-transparent"
+            />
 
-              <p className="mt-3 text-3xl font-semibold text-white">12</p>
+            <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
+              <div>
+                <p className="mb-2 text-sm font-medium text-[#3B82F6]">
+                  Welcome back
+                </p>
 
-              <p className="mt-1 text-xs text-gray-500">8 published</p>
-            </div>
+                <h1 className="bg-gradient-to-r from-white via-white to-[#3B82F6] bg-clip-text text-3xl font-semibold tracking-tight text-transparent md:text-4xl">
+                  Emmanuel Johnson
+                </h1>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
+                  Here&apos;s how your courses and students are doing today.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate("/instructor/courses/new")}
+                className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl bg-[#3B82F6] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#3B82F6]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#5691F7] hover:shadow-xl hover:shadow-[#3B82F6]/30 active:translate-y-0"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"
+                <Plus
+                  className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
+                  strokeWidth={2}
                 />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"
-                />
-              </svg>
+                New Course
+              </button>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Students */}
-        <div
-          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
-          style={{ animationDelay: "220ms" }}
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
-                Total Students
-              </p>
+        {/* =====================================================
+            STATISTICS
+        ====================================================== */}
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
 
-              <p className="mt-3 text-3xl font-semibold text-white">1,248</p>
+            return (
+              <div
+                key={stat.title}
+                className={`animate-page-item group relative overflow-hidden rounded-2xl border bg-[#0A0A0A] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-[#3B82F6]/40 hover:bg-[#0E0E0E] ${
+                  stat.highlight ? "border-[#3B82F6]/30" : "border-white/[0.08]"
+                }`}
+                style={{ animationDelay: `${160 + index * 60}ms` }}
+              >
+                {/* Ambient blue glow that reveals on hover. */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[#3B82F6]/25 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+                />
 
-              <p className="mt-1 text-xs text-emerald-400">+18% this month</p>
+                <div className="relative flex items-start justify-between">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wider text-white/50">
+                      {stat.title}
+                    </p>
+
+                    <p
+                      className={`mt-3 text-3xl font-semibold ${
+                        stat.highlight ? "text-[#3B82F6]" : "text-white"
+                      }`}
+                    >
+                      {stat.value}
+                    </p>
+
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#3B82F6]/10 px-2 py-0.5 text-[11px] font-medium text-[#3B82F6]">
+                        <TrendingUp className="h-3 w-3" strokeWidth={2} />
+                        {stat.trend}
+                      </span>
+                      <span className="text-xs text-white/45">
+                        {stat.description}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#3B82F6] ring-1 ring-inset ring-[#3B82F6]/20 transition-transform duration-300 group-hover:scale-110">
+                    <Icon className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </section>
+
+        {/* =====================================================
+            MAIN GRID
+        ====================================================== */}
+        <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+          {/* Recent Activity */}
+          <div
+            className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+            style={{ animationDelay: "420ms" }}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">
+                  Recent Activity
+                </h2>
+
+                <p className="mt-1 text-xs text-white/50">
+                  Latest activity across your courses
+                </p>
+              </div>
+
+              <Activity className="h-5 w-5 text-[#3B82F6]" strokeWidth={1.8} />
             </div>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-              >
-                <circle cx="9" cy="8" r="4" />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16 5a4 4 0 0 1 0 6"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M18 15c1.8.9 3 2.8 3 5"
-                />
-              </svg>
+            <div className="space-y-5">
+              {activities.map((activity) => {
+                const Icon = activity.icon;
+
+                return (
+                  <div key={activity.title} className="flex items-start gap-4">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#3B82F6] ring-1 ring-inset ring-[#3B82F6]/20">
+                      <Icon className="h-4 w-4" strokeWidth={1.8} />
+                    </div>
+
+                    <div className="flex-1">
+                      <p className="text-sm text-white/80">{activity.title}</p>
+
+                      <p className="mt-1 text-[11px] text-white/45">
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Revenue */}
-        <div
-          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
-          style={{ animationDelay: "280ms" }}
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
-                Total Revenue
+          {/* Pending Actions */}
+          <div
+            className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+            style={{ animationDelay: "480ms" }}
+          >
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-white">
+                Pending Actions
+              </h2>
+
+              <p className="mt-1 text-xs text-white/50">
+                Items requiring your attention
               </p>
-
-              <p className="mt-3 text-3xl font-semibold text-white">₹84,250</p>
-
-              <p className="mt-1 text-xs text-emerald-400">+14% this month</p>
             </div>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 3v18"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 7.5C17 5.6 14.8 4 12 4S7 5.6 7 7.5 9.2 11 12 11s5 1.6 5 3.5S14.8 18 12 18s-5-1.6-5-3.5"
-                />
-              </svg>
+            <div className="space-y-3">
+              {pendingActions.map((action) => {
+                const Icon = action.icon;
+
+                return (
+                  <div
+                    key={action.title}
+                    className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-[#3B82F6]/30 hover:bg-[#3B82F6]/[0.06]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3B82F6]/10 text-[#3B82F6] ring-1 ring-inset ring-[#3B82F6]/20">
+                        <Icon className="h-4 w-4" strokeWidth={1.8} />
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-medium text-white/90">
+                          {action.title}
+                        </p>
+
+                        <p className="mt-1 text-xs text-white/55">
+                          {action.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <ArrowRight
+                      className="h-4 w-4 text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#3B82F6]"
+                      strokeWidth={1.8}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Rating */}
-        <div
-          className="animate-page-item group rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-[#0d0d11]"
-          style={{ animationDelay: "340ms" }}
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-600">
-                Average Rating
-              </p>
-
-              <p className="mt-3 text-3xl font-semibold text-white">4.8</p>
-
-              <p className="mt-1 text-xs text-gray-500">326 reviews</p>
-            </div>
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-transform duration-300 group-hover:scale-110">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================
-          Main Grid
-      ======================================== */}
-      <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-        {/* Course Performance */}
-        <div
-          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
-          style={{ animationDelay: "400ms" }}
+        {/* =====================================================
+            COURSE PERFORMANCE
+        ====================================================== */}
+        <section
+          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+          style={{ animationDelay: "540ms" }}
         >
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -231,423 +390,72 @@ const InstructorDashboard = () => {
                 Course Performance
               </h2>
 
-              <p className="mt-1 text-xs text-gray-600">
-                Pick up where you left off
+              <p className="mt-1 text-xs text-white/50">
+                Your top courses by enrollment
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/courses")}
-              className="cursor-pointer text-xs font-medium text-blue-400 transition-colors hover:text-blue-300"
-            >
-              View all
-            </button>
+            <BarChart3 className="h-5 w-5 text-[#3B82F6]" strokeWidth={1.8} />
           </div>
 
-          <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.035]">
-            <div className="flex gap-4">
-              <div className="flex h-24 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/30 via-blue-600/15 to-[#111318]">
-                <svg
-                  className="h-10 w-10 text-blue-400 transition-transform duration-500 group-hover:scale-110"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
+          <div className="grid gap-6 md:grid-cols-3">
+            {courses.map((course) => {
+              const Icon = course.icon;
+
+              return (
+                <div
+                  key={course.title}
+                  className={`rounded-2xl border bg-white/[0.02] p-5 transition-colors duration-300 hover:border-[#3B82F6]/25 ${
+                    course.highlight
+                      ? "border-[#3B82F6]/25"
+                      : "border-white/[0.06]"
+                  }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"
-                  />
-                </svg>
-              </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-white/50">
+                        {course.title}
+                      </p>
 
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      Full Stack Web Development
-                    </p>
+                      <p
+                        className={`mt-3 text-2xl font-semibold ${
+                          course.highlight ? "text-[#3B82F6]" : "text-white"
+                        }`}
+                      >
+                        {course.value}
+                      </p>
+                    </div>
 
-                    <p className="mt-1 text-xs text-gray-600">
-                      Python · Django · React
-                    </p>
+                    <Icon
+                      className="h-5 w-5 text-[#3B82F6]"
+                      strokeWidth={1.8}
+                    />
                   </div>
 
-                  <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
-                    Published
-                  </span>
-                </div>
+                  <p className="mt-1 text-xs text-white/55">{course.status}</p>
 
-                <div className="mt-5">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[11px] text-gray-600">Students</span>
+                  <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8]"
+                      style={{ width: `${course.percent}%` }}
+                    />
+                  </div>
 
-                    <span className="text-[11px] font-medium text-gray-400">
-                      482
+                  <div className="mt-2 flex justify-between">
+                    <span className="text-[11px] text-white/45">
+                      {course.metaLabel}
+                    </span>
+
+                    <span className="text-[11px] font-medium text-white/70">
+                      {course.percent}%
                     </span>
                   </div>
-
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div className="h-full w-[82%] rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
-                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
-
-          <div className="mt-3 group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.035]">
-            <div className="flex gap-4">
-              <div className="flex h-24 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/25 via-blue-400/10 to-[#111318]">
-                <svg
-                  className="h-10 w-10 text-blue-400 transition-transform duration-500 group-hover:scale-110"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <rect x="4" y="4" width="16" height="16" rx="2" />
-                  <path strokeLinecap="round" d="M8 9h8M8 13h5M8 17h8" />
-                </svg>
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      Advanced React Development
-                    </p>
-
-                    <p className="mt-1 text-xs text-gray-600">
-                      React · Redux · TypeScript
-                    </p>
-                  </div>
-
-                  <span className="shrink-0 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
-                    Published
-                  </span>
-                </div>
-
-                <div className="mt-5">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[11px] text-gray-600">Students</span>
-
-                    <span className="text-[11px] font-medium text-gray-400">
-                      318
-                    </span>
-                  </div>
-
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div className="h-full w-[68%] rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Today's Goal */}
-        <div
-          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
-          style={{ animationDelay: "460ms" }}
-        >
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-white">
-              Today&apos;s Goal
-            </h2>
-
-            <p className="mt-1 text-xs text-gray-600">
-              Keep your instructor workspace moving
-            </p>
-          </div>
-
-          <div className="flex items-center gap-6">
-            {/* Circular Progress */}
-            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center">
-              <svg className="h-28 w-28 -rotate-90" viewBox="0 0 100 100">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="7"
-                  className="text-white/[0.05]"
-                />
-
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="7"
-                  strokeLinecap="round"
-                  strokeDasharray="264"
-                  strokeDashoffset="66"
-                  className="text-blue-500"
-                />
-              </svg>
-
-              <div className="absolute text-center">
-                <p className="text-xl font-semibold text-white">75%</p>
-                <p className="text-[9px] uppercase tracking-wider text-gray-600">
-                  Complete
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-white">
-                6 tasks completed
-              </p>
-
-              <p className="mt-2 text-xs leading-5 text-gray-600">
-                Your goal is 8 instructor tasks today. Keep going!
-              </p>
-
-              <button
-                type="button"
-                onClick={() => navigate("/instructor/courses")}
-                className="mt-4 cursor-pointer text-xs font-medium text-blue-400 transition-colors hover:text-blue-300"
-              >
-                Continue →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================
-          Bottom Grid
-      ======================================== */}
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        {/* Recent Activity */}
-        <div
-          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
-          style={{ animationDelay: "520ms" }}
-        >
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-white">
-              Recent Activity
-            </h2>
-
-            <p className="mt-1 text-xs text-gray-600">
-              Your latest instructor activity
-            </p>
-          </div>
-
-          <div className="space-y-5">
-            {/* Activity 1 */}
-            <div className="flex items-start gap-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m5 12 4 4L19 6"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm text-gray-300">
-                  New student enrolled in{" "}
-                  <span className="font-medium text-white">
-                    Full Stack Web Development
-                  </span>
-                </p>
-
-                <p className="mt-1 text-[11px] text-gray-600">2 hours ago</p>
-              </div>
-            </div>
-
-            {/* Activity 2 */}
-            <div className="flex items-start gap-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm text-gray-300">
-                  Published a lesson in{" "}
-                  <span className="font-medium text-white">
-                    Advanced React Development
-                  </span>
-                </p>
-
-                <p className="mt-1 text-[11px] text-gray-600">Yesterday</p>
-              </div>
-            </div>
-
-            {/* Activity 3 */}
-            <div className="flex items-start gap-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm text-gray-300">
-                  Received a{" "}
-                  <span className="font-medium text-white">5-star review</span>{" "}
-                  on your course
-                </p>
-
-                <p className="mt-1 text-[11px] text-gray-600">2 days ago</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Up Next */}
-        <div
-          className="animate-page-item rounded-2xl border border-white/[0.08] bg-[#0b0b0d] p-6"
-          style={{ animationDelay: "580ms" }}
-        >
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-white">Up Next</h2>
-
-            <p className="mt-1 text-xs text-gray-600">
-              Continue managing your courses
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/courses")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
-            >
-              <div>
-                <p className="text-sm font-medium text-gray-200">
-                  Manage Courses
-                </p>
-
-                <p className="mt-1 text-xs text-gray-600">
-                  Review your 12 courses
-                </p>
-              </div>
-
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9 18 6-6-6-6"
-                  />
-                </svg>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/assessments")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
-            >
-              <div>
-                <p className="text-sm font-medium text-gray-200">Assessments</p>
-
-                <p className="mt-1 text-xs text-gray-600">
-                  Review your assessments
-                </p>
-              </div>
-
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9 18 6-6-6-6"
-                  />
-                </svg>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/students")}
-              className="group flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-all duration-300 hover:border-blue-500/20 hover:bg-white/[0.04]"
-            >
-              <div>
-                <p className="text-sm font-medium text-gray-200">My Students</p>
-
-                <p className="mt-1 text-xs text-gray-600">
-                  Track student activity
-                </p>
-              </div>
-
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-transform group-hover:translate-x-1">
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9 18 6-6-6-6"
-                  />
-                </svg>
-              </div>
-            </button>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

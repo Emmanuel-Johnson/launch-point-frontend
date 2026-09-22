@@ -29,7 +29,7 @@ const InstructorLayout = () => {
         <InstructorHeader isSidebarCollapsed={isSidebarCollapsed} />
 
         {/* Page Content */}
-        <main className="instructor-page-scrollbar absolute bottom-0 left-0 right-0 top-1 overflow-y-auto bg-[#07111f] px-6 pb-10 pt-28 lg:px-8">
+        <main className="instructor-page-scrollbar absolute bottom-0 left-0 right-0 top-1 overflow-y-auto bg-black px-6 pb-10 pt-28 lg:px-8">
           <Outlet />
         </main>
       </div>

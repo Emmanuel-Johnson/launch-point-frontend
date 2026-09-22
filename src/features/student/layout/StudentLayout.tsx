@@ -37,7 +37,7 @@ const StudentLayout = () => {
         {/* =====================================================
             CONTENT
         ====================================================== */}
-        <main className="student-scrollbar min-h-0 flex-1 overflow-y-auto bg-[#171126]">
+        <main className="student-scrollbar min-h-0 flex-1 overflow-y-auto bg-black">
           {" "}
           {/* Top spacing for fixed header */}
           <div

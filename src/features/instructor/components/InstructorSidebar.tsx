@@ -1,11 +1,99 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  Bell,
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardCheck,
+  HelpCircle,
+  IndianRupee,
+  LayoutDashboard,
+  LineChart,
+  LogOut,
+  MessageCircle,
+  UserRound,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 interface InstructorSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
 }
+
+interface NavItem {
+  name: string;
+  path: string;
+  icon: LucideIcon;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+/*
+  BLUE & BLACK THEME (matches the Instructor dashboard)
+  -----------------------------------------------------------------
+  Rail surface  #0A0A0A   near-black — sits one step above the #000000
+                          dashboard so the sidebar reads as an elevated
+                          rail rather than merging into the page.
+  Primary       #3B82F6   royal blue — the single accent colour
+  Hover blue    #60A5FA   lighter step for hover states
+
+  The logout action stays red — a semantic destructive signal, intentionally
+  not folded into the blue palette.
+*/
+const navSections: NavSection[] = [
+  {
+    title: "Overview",
+    items: [
+      {
+        name: "Dashboard",
+        path: "/instructor/dashboard",
+        icon: LayoutDashboard,
+      },
+    ],
+  },
+  {
+    title: "Courses",
+    items: [
+      { name: "My Courses", path: "/instructor/courses", icon: BookOpen },
+      {
+        name: "Submissions",
+        path: "/instructor/submissions",
+        icon: ClipboardCheck,
+      },
+    ],
+  },
+  {
+    title: "Students",
+    items: [
+      { name: "My Students", path: "/instructor/students", icon: Users },
+      { name: "Doubts", path: "/instructor/doubts", icon: HelpCircle },
+    ],
+  },
+  {
+    title: "Community",
+    items: [
+      { name: "Community", path: "/instructor/community", icon: MessageCircle },
+      { name: "Notifications", path: "/instructor/notifications", icon: Bell },
+    ],
+  },
+  {
+    title: "Finance",
+    items: [
+      { name: "Revenue", path: "/instructor/revenue", icon: IndianRupee },
+      { name: "Analytics", path: "/instructor/analytics", icon: LineChart },
+    ],
+  },
+  {
+    title: "Account",
+    items: [{ name: "Profile", path: "/instructor/profile", icon: UserRound }],
+  },
+];
 
 const InstructorSidebar = ({
   isCollapsed,
@@ -15,288 +103,6 @@ const InstructorSidebar = ({
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const navSections = [
-    {
-      title: "Overview",
-      items: [
-        {
-          name: "Dashboard",
-          path: "/instructor/dashboard",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-            </svg>
-          ),
-        },
-      ],
-    },
-
-    {
-      title: "Courses",
-      items: [
-        {
-          name: "My Courses",
-          path: "/instructor/courses",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"
-              />
-            </svg>
-          ),
-        },
-        {
-          name: "Submissions",
-          path: "/instructor/submissions",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 4h8a2 2 0 0 1 2 2v14H6V6a2 2 0 0 1 2-2Z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 4V3h6v1"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m9 13 2 2 4-4"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-
-    {
-      title: "Students",
-      items: [
-        {
-          name: "My Students",
-          path: "/instructor/students",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <circle cx="9" cy="8" r="3" />
-              <circle cx="17" cy="9" r="2.5" />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.5 20a5.5 5.5 0 0 1 11 0"
-              />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M14 15.5a5 5 0 0 1 6.5 4.5"
-              />
-            </svg>
-          ),
-        },
-        {
-          name: "Doubts",
-          path: "/instructor/doubts",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="9"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              <path
-                d="M9.75 9a2.25 2.25 0 1 1 4.05 1.35c-.65.82-1.8 1.15-1.8 2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              <circle
-                cx="12"
-                cy="16.5"
-                r="0.7"
-                fill="currentColor"
-                stroke="none"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-
-    {
-      title: "Community",
-      items: [
-        {
-          name: "Community",
-          path: "/instructor/community",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.7 9.7 0 0 1-4-.8L3 21l1.8-4.2A8.2 8.2 0 0 1 3 11.5 8.5 8.5 0 1 1 21 11.5Z"
-              />
-            </svg>
-          ),
-        },
-        {
-          name: "Notifications",
-          path: "/instructor/notifications",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
-              />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.73 21a2 2 0 0 1-3.46 0"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-
-    {
-      title: "Finance",
-      items: [
-        {
-          name: "Revenue",
-          path: "/instructor/revenue",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18" />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17 7.5c0-1.4-1.8-2.5-5-2.5S7 6.1 7 7.5 8.8 10 12 10s5 1.1 5 2.5-1.8 2.5-5 2.5-5-1.1-5-2.5"
-              />
-            </svg>
-          ),
-        },
-
-        {
-          name: "Analytics",
-          path: "/instructor/analytics",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 19V5" />
-
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 19h16" />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m7 15 3-4 3 2 5-6"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-
-    {
-      title: "Account",
-      items: [
-        {
-          name: "Profile",
-          path: "/instructor/profile",
-          icon: (
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <circle cx="12" cy="8" r="4" />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 21a7 7 0 0 1 14 0"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-  ];
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -316,7 +122,7 @@ const InstructorSidebar = ({
   return (
     <>
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/10 bg-[#080808] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
@@ -324,7 +130,7 @@ const InstructorSidebar = ({
             LOGO / TOGGLE
         ====================================================== */}
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-white/10 transition-all duration-500 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -343,7 +149,7 @@ const InstructorSidebar = ({
               />
 
               {/* Logo Shine */}
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-400/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </div>
 
             {/* Brand */}
@@ -355,11 +161,11 @@ const InstructorSidebar = ({
               }`}
             >
               <div className="group min-w-[160px] cursor-pointer">
-                <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-all duration-300 group-hover:text-zinc-200">
+                <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-all duration-300 group-hover:text-white/80">
                   LAUNCH POINT
                 </span>
 
-                <p className="mt-0.5 whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-all duration-300 group-hover:text-zinc-300">
+                <p className="mt-0.5 whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.25em] text-white/45 transition-all duration-300 group-hover:text-[#3B82F6]">
                   Instructor Portal
                 </p>
               </div>
@@ -372,36 +178,26 @@ const InstructorSidebar = ({
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-gray-500 transition-all duration-300 hover:bg-white/[0.06] hover:text-blue-400 ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
               isCollapsed
-                ? "absolute -right-4 border border-white/10 bg-[#111111] shadow-lg shadow-black/30"
+                ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/50"
                 : "ml-auto"
             }`}
           >
             {/* Toggle Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
-            <svg
-              className="relative z-10 h-4 w-4 transition-transform duration-500 ease-out group-hover:scale-110"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              {isCollapsed ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m9 6 6 6-6 6"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m15 6-6 6 6 6"
-                />
-              )}
-            </svg>
+            {isCollapsed ? (
+              <ChevronRight
+                className="relative z-10 h-4 w-4 transition-transform duration-500 ease-out group-hover:scale-110"
+                strokeWidth={2}
+              />
+            ) : (
+              <ChevronLeft
+                className="relative z-10 h-4 w-4 transition-transform duration-500 ease-out group-hover:scale-110"
+                strokeWidth={2}
+              />
+            )}
           </button>
         </div>
 
@@ -414,9 +210,7 @@ const InstructorSidebar = ({
               <div
                 key={section.title}
                 className="animate-sidebar-section"
-                style={{
-                  animationDelay: `${120 + sectionIndex * 80}ms`,
-                }}
+                style={{ animationDelay: `${120 + sectionIndex * 80}ms` }}
               >
                 {/* Section Title */}
                 <div
@@ -424,74 +218,78 @@ const InstructorSidebar = ({
                     isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
                   }`}
                 >
-                  <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
+                  <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-white/40">
                     {section.title}
                   </p>
                 </div>
 
                 {/* Items */}
                 <div className="space-y-1">
-                  {section.items.map((item, itemIndex) => (
-                    <NavLink
-                      key={item.path}
-                      to={item.path}
-                      title={isCollapsed ? item.name : undefined}
-                      style={{
-                        animationDelay: `${
-                          160 + sectionIndex * 100 + itemIndex * 45
-                        }ms`,
-                      }}
-                      className={({ isActive }) =>
-                        `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 animate-sidebar-item ${
-                          isCollapsed ? "justify-center px-3" : "gap-3 px-3"
-                        } ${
-                          isActive
-                            ? "bg-blue-500/10 text-blue-400 shadow-[0_4px_20px_rgba(37,99,235,0.08)]"
-                            : "text-gray-500 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-gray-200"
-                        }`
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          {/* Shine Effect */}
-                          {!isActive && (
-                            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                          )}
+                  {section.items.map((item, itemIndex) => {
+                    const Icon = item.icon;
 
-                          {/* Active Indicator */}
-                          <span
-                            className={`absolute left-0 rounded-full bg-blue-500 transition-all duration-300 ${
-                              isActive
-                                ? "h-6 w-0.5 opacity-100 shadow-[0_0_8px_rgba(59,130,246,0.8)]"
-                                : "h-0 w-0 opacity-0"
-                            }`}
-                          />
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        title={isCollapsed ? item.name : undefined}
+                        style={{
+                          animationDelay: `${
+                            160 + sectionIndex * 100 + itemIndex * 45
+                          }ms`,
+                        }}
+                        className={({ isActive }) =>
+                          `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 animate-sidebar-item ${
+                            isCollapsed ? "justify-center px-3" : "gap-3 px-3"
+                          } ${
+                            isActive
+                              ? "bg-[#3B82F6]/10 text-white ring-1 ring-inset ring-[#3B82F6]/20"
+                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            {/* Shine Effect */}
+                            {!isActive && (
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                            )}
 
-                          {/* Icon */}
-                          <span
-                            className={`relative z-10 shrink-0 transition-all duration-300 ${
-                              isActive
-                                ? "scale-105 text-blue-400"
-                                : "text-gray-600 group-hover:scale-110 group-hover:text-blue-300"
-                            }`}
-                          >
-                            {item.icon}
-                          </span>
+                            {/* Active Indicator */}
+                            <span
+                              className={`absolute left-0 rounded-full bg-[#3B82F6] transition-all duration-300 ${
+                                isActive
+                                  ? "h-6 w-0.5 opacity-100"
+                                  : "h-0 w-0 opacity-0"
+                              }`}
+                            />
 
-                          {/* Label */}
-                          <span
-                            className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
-                              isCollapsed
-                                ? "max-w-0 translate-x-2 opacity-0"
-                                : "max-w-[180px] translate-x-0 opacity-100"
-                            }`}
-                          >
-                            {item.name}
-                          </span>
-                        </>
-                      )}
-                    </NavLink>
-                  ))}
+                            {/* Icon */}
+                            <span
+                              className={`relative z-10 shrink-0 transition-all duration-300 ${
+                                isActive
+                                  ? "scale-105 text-[#3B82F6]"
+                                  : "text-white/45 group-hover:scale-110 group-hover:text-white/80"
+                              }`}
+                            >
+                              <Icon className="h-5 w-5" strokeWidth={1.8} />
+                            </span>
+
+                            {/* Label */}
+                            <span
+                              className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
+                                isCollapsed
+                                  ? "max-w-0 translate-x-2 opacity-0"
+                                  : "max-w-[180px] translate-x-0 opacity-100"
+                              }`}
+                            >
+                              {item.name}
+                            </span>
+                          </>
+                        )}
+                      </NavLink>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -501,13 +299,13 @@ const InstructorSidebar = ({
         {/* =====================================================
             LOGOUT
         ====================================================== */}
-        <div className="shrink-0 border-t border-white/10 p-3">
+        <div className="shrink-0 border-t border-white/[0.08] p-3">
           <button
             type="button"
             onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
             title={isCollapsed ? "Logout" : undefined}
-            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-gray-500 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-white/55 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
               isCollapsed ? "justify-center px-3" : "gap-3 px-3"
             }`}
           >
@@ -515,25 +313,10 @@ const InstructorSidebar = ({
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
-            <svg
+            <LogOut
               className="relative z-10 h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 12H3m0 0 4-4m-4 4 4 4"
-              />
-
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 5V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-1"
-              />
-            </svg>
+              strokeWidth={1.8}
+            />
 
             {/* Label */}
             <span
