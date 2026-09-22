@@ -6,11 +6,13 @@ import {
   GraduationCap,
   BookOpen,
   Tags,
-  TicketPercent,
   IndianRupee,
-  BarChart3,
   Bell,
   UserRound,
+  FileCheck,
+  WalletCards,
+  CreditCard,
+  BarChart3,
   LogOut,
 } from "lucide-react";
 
@@ -28,56 +30,99 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const navItems = [
+  // =========================================================
+  // Admin Navigation Sections
+  // =========================================================
+
+  const navSections = [
     {
-      name: "Dashboard",
-      path: "/admin/dashboard",
-      icon: LayoutDashboard,
+      title: "Overview",
+      items: [
+        {
+          name: "Dashboard",
+          path: "/admin/dashboard",
+          icon: LayoutDashboard,
+        },
+      ],
     },
+
     {
-      name: "Students",
-      path: "/admin/students",
-      icon: Users,
+      title: "Management",
+      items: [
+        {
+          name: "Students",
+          path: "/admin/students",
+          icon: Users,
+        },
+        {
+          name: "Instructors",
+          path: "/admin/instructors",
+          icon: GraduationCap,
+        },
+        {
+          name: "Applications",
+          path: "/admin/applications",
+          icon: FileCheck,
+        },
+        {
+          name: "Courses",
+          path: "/admin/courses",
+          icon: BookOpen,
+        },
+        {
+          name: "Categories",
+          path: "/admin/categories",
+          icon: Tags,
+        },
+      ],
     },
+
     {
-      name: "Instructors",
-      path: "/admin/instructors",
-      icon: GraduationCap,
+      title: "Finance",
+      items: [
+        {
+          name: "Revenue",
+          path: "/admin/revenue",
+          icon: IndianRupee,
+        },
+        {
+          name: "Financials",
+          path: "/admin/financials",
+          icon: WalletCards,
+        },
+        {
+          name: "Subscriptions",
+          path: "/admin/subscriptions",
+          icon: CreditCard,
+        },
+      ],
     },
+
     {
-      name: "Courses",
-      path: "/admin/courses",
-      icon: BookOpen,
+      title: "Insights",
+      items: [
+        {
+          name: "Analytics & Reports",
+          path: "/admin/analytics-and-reports",
+          icon: BarChart3,
+        },
+      ],
     },
+
     {
-      name: "Categories",
-      path: "/admin/categories",
-      icon: Tags,
-    },
-    {
-      name: "Coupons",
-      path: "/admin/coupons",
-      icon: TicketPercent,
-    },
-    {
-      name: "Revenue",
-      path: "/admin/revenue",
-      icon: IndianRupee,
-    },
-    {
-      name: "Reports",
-      path: "/admin/reports",
-      icon: BarChart3,
-    },
-    {
-      name: "Notifications",
-      path: "/admin/notifications",
-      icon: Bell,
-    },
-    {
-      name: "Profile",
-      path: "/admin/profile",
-      icon: UserRound,
+      title: "System",
+      items: [
+        {
+          name: "Notifications",
+          path: "/admin/notifications",
+          icon: Bell,
+        },
+        {
+          name: "Profile",
+          path: "/admin/profile",
+          icon: UserRound,
+        },
+      ],
     },
   ];
 
@@ -125,6 +170,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           {/* =====================================================
               BRAND
           ====================================================== */}
+
           <Link
             to="/admin/dashboard"
             className={`flex min-w-0 items-center transition-all duration-500 ${
@@ -134,39 +180,40 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             {/* Logo */}
             <div
               className="
-    group relative flex h-9 w-9 shrink-0
-    cursor-pointer items-center justify-center
-    overflow-hidden rounded-xl
-    bg-[#050505]
-    transition-all duration-500
-    hover:scale-105
-  "
+                group relative flex h-9 w-9 shrink-0
+                cursor-pointer items-center justify-center
+                overflow-hidden rounded-xl
+                bg-[#050505]
+                transition-all duration-500
+                hover:scale-105
+              "
             >
               <img
                 src="/admin_logo.png"
                 alt="Launch Point Admin"
                 className="
-      h-full w-full
-      object-cover
-      transition-transform duration-500
-      group-hover:scale-105
-    "
+                  h-full w-full
+                  object-cover
+                  transition-transform duration-500
+                  group-hover:scale-105
+                "
               />
 
               {/* Logo Shine */}
               <span
                 className="
-      pointer-events-none absolute inset-0
-      -translate-x-full
-      bg-gradient-to-r
-      from-transparent
-      via-[oklch(52.7%_0.154_150.069)]/10
-      to-transparent
-      transition-transform duration-700
-      group-hover:translate-x-full
-    "
+                  pointer-events-none absolute inset-0
+                  -translate-x-full
+                  bg-gradient-to-r
+                  from-transparent
+                  via-[oklch(52.7%_0.154_150.069)]/10
+                  to-transparent
+                  transition-transform duration-700
+                  group-hover:translate-x-full
+                "
               />
             </div>
+
             {/* Brand */}
             <div
               className={`grid overflow-hidden transition-all duration-500 ease-out ${
@@ -271,112 +318,144 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             px-3 py-6
           "
         >
-          {/* Section Title */}
-          <div
-            className={`mb-3 overflow-hidden transition-all duration-300 ${
-              isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
-            }`}
-          >
-            <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-700">
-              Main Menu
-            </p>
-          </div>
-
-          <nav className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  title={isCollapsed ? item.name : undefined}
-                  className={({ isActive }) =>
-                    `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 ${
-                      isCollapsed ? "justify-center px-3" : "gap-3 px-3"
-                    } ${
-                      isActive
-                        ? "bg-[oklch(52.7%_0.154_150.069)]/[0.10] text-[oklch(65%_0.15_150)]"
-                        : "text-gray-600 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-gray-300"
-                    }`
-                  }
+          <nav className="space-y-6">
+            {navSections.map((section, sectionIndex) => (
+              <div
+                key={section.title}
+                className="animate-sidebar-section"
+                style={{
+                  animationDelay: `${120 + sectionIndex * 80}ms`,
+                }}
+              >
+                {/* =================================================
+                    SECTION TITLE
+                ================================================= */}
+                <div
+                  className={`mb-2 overflow-hidden transition-all duration-300 ${
+                    isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
+                  }`}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {/* =================================================
-                          Hover Shine
-                      ================================================= */}
-                      {!isActive && (
-                        <span
-                          className="
-                            pointer-events-none absolute inset-0
-                            -translate-x-full
-                            bg-gradient-to-r
-                            from-transparent
-                            via-[oklch(52.7%_0.154_150.069)]/10
-                            to-transparent
-                            transition-transform duration-700
-                            group-hover:translate-x-full
-                          "
-                        />
-                      )}
+                  <p
+                    className="
+                      cursor-default
+                      px-3
+                      text-[10px]
+                      font-semibold
+                      uppercase
+                      tracking-[2px]
+                      text-gray-700
+                    "
+                  >
+                    {section.title}
+                  </p>
+                </div>
 
-                      {/* =================================================
-                          Active Indicator
-                      ================================================= */}
-                      <span
-                        className={`absolute left-0 rounded-full bg-[oklch(52.7%_0.154_150.069)] transition-all duration-300 ${
-                          isActive
-                            ? "h-6 w-0.5 opacity-100"
-                            : "h-0 w-0 opacity-0"
-                        }`}
-                      />
+                {/* =================================================
+                    SECTION ITEMS
+                ================================================= */}
+                <div className="space-y-1">
+                  {section.items.map((item, itemIndex) => {
+                    const Icon = item.icon;
 
-                      {/* =================================================
-                          Icon
-                      ================================================= */}
-                      <span
-                        className={`relative z-10 shrink-0 transition-all duration-300 ${
-                          isActive
-                            ? "scale-105 text-[oklch(65%_0.15_150)]"
-                            : "text-gray-600 group-hover:scale-110 group-hover:text-[oklch(60%_0.14_150)]"
-                        }`}
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        title={isCollapsed ? item.name : undefined}
+                        style={{
+                          animationDelay: `${
+                            160 + sectionIndex * 100 + itemIndex * 45
+                          }ms`,
+                        }}
+                        className={({ isActive }) =>
+                          `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 animate-sidebar-item ${
+                            isCollapsed ? "justify-center px-3" : "gap-3 px-3"
+                          } ${
+                            isActive
+                              ? "bg-[oklch(52.7%_0.154_150.069)]/[0.10] text-[oklch(65%_0.15_150)]"
+                              : "text-gray-600 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-gray-300"
+                          }`
+                        }
                       >
-                        <Icon size={20} strokeWidth={1.8} />
-                      </span>
+                        {({ isActive }) => (
+                          <>
+                            {/* =================================================
+                                Hover Shine
+                            ================================================= */}
+                            {!isActive && (
+                              <span
+                                className="
+                                  pointer-events-none absolute inset-0
+                                  -translate-x-full
+                                  bg-gradient-to-r
+                                  from-transparent
+                                  via-[oklch(52.7%_0.154_150.069)]/10
+                                  to-transparent
+                                  transition-transform duration-700
+                                  group-hover:translate-x-full
+                                "
+                              />
+                            )}
 
-                      {/* =================================================
-                          Label
-                      ================================================= */}
-                      <span
-                        className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
-                          isCollapsed
-                            ? "max-w-0 translate-x-2 opacity-0"
-                            : "max-w-[180px] translate-x-0 opacity-100"
-                        }`}
-                      >
-                        {item.name}
-                      </span>
+                            {/* =================================================
+                                Active Indicator
+                            ================================================= */}
+                            <span
+                              className={`absolute left-0 rounded-full bg-[oklch(52.7%_0.154_150.069)] transition-all duration-300 ${
+                                isActive
+                                  ? "h-6 w-0.5 opacity-100"
+                                  : "h-0 w-0 opacity-0"
+                              }`}
+                            />
 
-                      {/* =================================================
-                          Active Glow
-                      ================================================= */}
-                      {isActive && !isCollapsed && (
-                        <span
-                          className="
-                            pointer-events-none absolute right-3
-                            h-1.5 w-1.5 rounded-full
-                            bg-[oklch(52.7%_0.154_150.069)]
-                            opacity-80
-                            shadow-[0_0_8px_oklch(52.7%_0.154_150.069_/_0.5)]
-                          "
-                        />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              );
-            })}
+                            {/* =================================================
+                                Icon
+                            ================================================= */}
+                            <span
+                              className={`relative z-10 shrink-0 transition-all duration-300 ${
+                                isActive
+                                  ? "scale-105 text-[oklch(65%_0.15_150)]"
+                                  : "text-gray-600 group-hover:scale-110 group-hover:text-[oklch(60%_0.14_150)]"
+                              }`}
+                            >
+                              <Icon size={20} strokeWidth={1.8} />
+                            </span>
+
+                            {/* =================================================
+                                Label
+                            ================================================= */}
+                            <span
+                              className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
+                                isCollapsed
+                                  ? "max-w-0 translate-x-2 opacity-0"
+                                  : "max-w-[180px] translate-x-0 opacity-100"
+                              }`}
+                            >
+                              {item.name}
+                            </span>
+
+                            {/* =================================================
+                                Active Glow
+                            ================================================= */}
+                            {isActive && !isCollapsed && (
+                              <span
+                                className="
+                                  pointer-events-none absolute right-3
+                                  h-1.5 w-1.5 rounded-full
+                                  bg-[oklch(52.7%_0.154_150.069)]
+                                  opacity-80
+                                  shadow-[0_0_8px_oklch(52.7%_0.154_150.069_/_0.5)]
+                                "
+                              />
+                            )}
+                          </>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </nav>
         </div>
 
