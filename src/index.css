@@ -426,53 +426,19 @@ html {
   background: #6d3fa0;
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes imageReveal {
-  from {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* =========================================================
-   ADMIN SIDEBAR SCROLLBAR
-   ========================================================= */
-
-.admin-sidebar-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #172b1d #050806;
-}
-
-.admin-sidebar-scrollbar::-webkit-scrollbar {
+.instructor-page-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
 
-.admin-sidebar-scrollbar::-webkit-scrollbar-track {
-  background: #050806;
+.instructor-page-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.admin-sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #172b1d;
+.instructor-page-scrollbar::-webkit-scrollbar-thumb {
+  background: #263241;
   border-radius: 9999px;
-  border: 1px solid #0b140e;
 }
 
-.admin-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #213b28;
+.instructor-page-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
