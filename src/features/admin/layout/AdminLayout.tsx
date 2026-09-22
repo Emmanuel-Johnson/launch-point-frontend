@@ -50,7 +50,7 @@ const AdminLayout = () => {
             className="
               animate-page-enter
               min-h-full
-              bg-[#07100a]
+              bg-black
               px-8
               pb-10
               pt-28
