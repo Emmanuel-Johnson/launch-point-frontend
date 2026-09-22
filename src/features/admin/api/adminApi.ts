@@ -1,8 +1,8 @@
 import adminApi from "../../../shared/api/adminAxios";
 
-// ====================
+// =========================================================
 // Admin Login
-// ====================
+// =========================================================
 
 export interface AdminLoginCredentials {
   email: string;
@@ -33,14 +33,23 @@ export const adminLogin = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Admin Logout
-// ====================
+// =========================================================
 
-export const logoutAdmin = async (refreshToken: string) => {
-  const response = await adminApi.post("/auth/admin/logout/", {
-    admin_refresh: refreshToken,
-  });
+export interface AdminLogoutResponse {
+  message: string;
+}
+
+export const logoutAdmin = async (
+  refreshToken: string,
+): Promise<AdminLogoutResponse> => {
+  const response = await adminApi.post<AdminLogoutResponse>(
+    "/auth/admin/logout/",
+    {
+      admin_refresh: refreshToken,
+    },
+  );
 
   return response.data;
 };

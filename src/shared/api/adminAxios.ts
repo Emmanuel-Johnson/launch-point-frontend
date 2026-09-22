@@ -129,6 +129,7 @@ adminApi.interceptors.response.use(
     // -------------------------------------------------------
 
     if (!refreshToken) {
+      processQueue(error);
       isRefreshing = false;
 
       localStorage.removeItem("admin_access");
