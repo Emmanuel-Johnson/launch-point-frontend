@@ -144,8 +144,11 @@ const StudentDashboard = () => {
                   Welcome back
                 </p>
 
-                <h1 className="bg-gradient-to-r from-white via-white to-[#7C5CFF] bg-clip-text text-3xl font-semibold tracking-tight text-transparent md:text-4xl">
-                  Emmanuel Johnson
+                <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+                  <span className="text-white">Emmanuel </span>
+                  <span className="bg-gradient-to-r from-[#EDE9FE] via-[#A78BFA] to-[#7C5CFF] bg-clip-text text-transparent">
+                    Johnson
+                  </span>
                 </h1>
 
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">

@@ -196,8 +196,11 @@ const DashboardPage = () => {
             <div className="relative">
               <p className="mb-2 text-sm font-medium text-[#34D399]">{today}</p>
 
-              <h1 className="bg-gradient-to-r from-white via-white to-[#34D399] bg-clip-text text-3xl font-semibold tracking-tight text-transparent md:text-4xl">
-                Welcome back, Admin
+              <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+                <span className="text-white">Welcome back, </span>
+                <span className="bg-gradient-to-r from-[#ECFDF5] via-[#6EE7B7] to-[#34D399] bg-clip-text text-transparent">
+                  Admin
+                </span>
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/60">

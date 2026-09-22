@@ -4,6 +4,12 @@ import { Outlet, useLocation } from "react-router-dom";
 import AdminHeader from "../components/AdminHeader";
 import AdminSidebar from "../components/AdminSidebar";
 
+/*
+  The shell is true black (#000000) to match the dashboard content area.
+  The sidebar and header sit one step above at #0A0A0A, so they read as an
+  elevated chrome frame around the black content rather than merging into it.
+*/
+
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -14,7 +20,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#07100a] text-white">
+    <div className="h-screen overflow-hidden bg-black text-white">
       {/* =====================================================
           SIDEBAR
       ====================================================== */}
@@ -35,26 +41,12 @@ const AdminLayout = () => {
 
         {/* =====================================================
             CONTENT
+            pt-28 clears the fixed h-20 header.
         ====================================================== */}
-        <main
-          className="
-            admin-scrollbar
-            min-h-0
-            flex-1
-            overflow-y-auto
-            bg-[#07100a]
-          "
-        >
+        <main className="admin-scrollbar min-h-0 flex-1 overflow-y-auto bg-black">
           <div
             key={location.pathname}
-            className="
-              animate-page-enter
-              min-h-full
-              bg-black
-              px-8
-              pb-10
-              pt-28
-            "
+            className="animate-page-enter min-h-full bg-black px-8 pb-10 pt-28"
           >
             <Outlet />
           </div>
