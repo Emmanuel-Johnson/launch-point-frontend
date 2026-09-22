@@ -449,3 +449,30 @@ html {
     transform: scale(1);
   }
 }
+
+/* =========================================================
+   ADMIN SIDEBAR SCROLLBAR
+   ========================================================= */
+
+.admin-sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #172b1d #050806;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #050806;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #172b1d;
+  border-radius: 9999px;
+  border: 1px solid #0b140e;
+}
+
+.admin-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #213b28;
+}

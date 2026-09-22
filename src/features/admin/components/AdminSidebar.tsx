@@ -314,8 +314,10 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         <div
           className="
             admin-sidebar-scrollbar
-            flex-1 overflow-y-auto
-            px-3 py-6
+            flex-1
+            overflow-y-auto
+            px-3
+            py-6
           "
         >
           <nav className="space-y-6">
@@ -379,9 +381,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                       >
                         {({ isActive }) => (
                           <>
-                            {/* =================================================
-                                Hover Shine
-                            ================================================= */}
+                            {/* Hover Shine */}
                             {!isActive && (
                               <span
                                 className="
@@ -397,9 +397,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                               />
                             )}
 
-                            {/* =================================================
-                                Active Indicator
-                            ================================================= */}
+                            {/* Active Indicator */}
                             <span
                               className={`absolute left-0 rounded-full bg-[oklch(52.7%_0.154_150.069)] transition-all duration-300 ${
                                 isActive
@@ -408,9 +406,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                               }`}
                             />
 
-                            {/* =================================================
-                                Icon
-                            ================================================= */}
+                            {/* Icon */}
                             <span
                               className={`relative z-10 shrink-0 transition-all duration-300 ${
                                 isActive
@@ -421,9 +417,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                               <Icon size={20} strokeWidth={1.8} />
                             </span>
 
-                            {/* =================================================
-                                Label
-                            ================================================= */}
+                            {/* Label */}
                             <span
                               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
                                 isCollapsed
@@ -434,9 +428,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                               {item.name}
                             </span>
 
-                            {/* =================================================
-                                Active Glow
-                            ================================================= */}
+                            {/* Active Glow */}
                             {isActive && !isCollapsed && (
                               <span
                                 className="
