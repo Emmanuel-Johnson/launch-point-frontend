@@ -14,7 +14,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#050806] text-white">
+    <div className="h-screen overflow-hidden bg-[#07100a] text-white">
       {/* =====================================================
           SIDEBAR
       ====================================================== */}
@@ -42,13 +42,19 @@ const AdminLayout = () => {
             min-h-0
             flex-1
             overflow-y-auto
-            bg-[#050806]
+            bg-[#07100a]
           "
         >
-          {/* Top spacing for fixed header */}
           <div
             key={location.pathname}
-            className="animate-page-enter px-8 pb-10 pt-28"
+            className="
+              animate-page-enter
+              min-h-full
+              bg-[#07100a]
+              px-8
+              pb-10
+              pt-28
+            "
           >
             <Outlet />
           </div>

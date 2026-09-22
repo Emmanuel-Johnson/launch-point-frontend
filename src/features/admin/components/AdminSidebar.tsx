@@ -110,7 +110,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           SIDEBAR
       ====================================================== */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-[#17251b] bg-[#070b08] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-black transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
@@ -118,7 +118,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             LOGO / TOGGLE
         ====================================================== */}
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-[#17251b] transition-all duration-500 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -137,9 +137,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
     group relative flex h-9 w-9 shrink-0
     cursor-pointer items-center justify-center
     overflow-hidden rounded-xl
-    border border-[#294d35]
-    bg-[#102318]
-    shadow-[0_0_18px_rgba(30,70,43,0.12)]
+    bg-[#050505]
     transition-all duration-500
     hover:scale-105
   "
@@ -162,14 +160,13 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
       -translate-x-full
       bg-gradient-to-r
       from-transparent
-      via-[#6f9f7c]/[0.08]
+      via-[oklch(52.7%_0.154_150.069)]/10
       to-transparent
       transition-transform duration-700
       group-hover:translate-x-full
     "
               />
             </div>
-
             {/* Brand */}
             <div
               className={`grid overflow-hidden transition-all duration-500 ease-out ${
@@ -185,7 +182,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                     text-sm font-semibold
                     tracking-[3px] text-white
                     transition-all duration-300
-                    group-hover:text-[#d0d9d2]
+                    group-hover:text-[oklch(78%_0.12_150)]
                   "
                 >
                   LAUNCH POINT
@@ -195,9 +192,10 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                   className="
                     mt-0.5 whitespace-nowrap
                     text-[9px] font-medium uppercase
-                    tracking-[0.25em] text-[#536158]
+                    tracking-[0.25em]
+                    text-gray-600
                     transition-all duration-300
-                    group-hover:text-[#708078]
+                    group-hover:text-gray-500
                   "
                 >
                   Admin Portal
@@ -214,9 +212,9 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-[#4f5c53] transition-all duration-300 hover:bg-[#101812] hover:text-[#8a9f8f] ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-gray-600 transition-all duration-300 hover:bg-[oklch(52.7%_0.154_150.069)]/[0.06] hover:text-[oklch(65%_0.15_150)] ${
               isCollapsed
-                ? "absolute -right-4 border border-[#1d3023] bg-[#0c120e] shadow-lg shadow-black/30"
+                ? "absolute -right-4 border border-white/[0.08] bg-black shadow-lg shadow-black/50"
                 : "ml-auto"
             }`}
           >
@@ -227,7 +225,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                 -translate-x-full
                 bg-gradient-to-r
                 from-transparent
-                via-[#315f3d]/[0.08]
+                via-[oklch(52.7%_0.154_150.069)]/10
                 to-transparent
                 transition-transform duration-700
                 group-hover:translate-x-full
@@ -279,7 +277,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
               isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
             }`}
           >
-            <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-[#465249]">
+            <p className="cursor-default px-3 text-[10px] font-semibold uppercase tracking-[2px] text-gray-700">
               Main Menu
             </p>
           </div>
@@ -298,8 +296,8 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                       isCollapsed ? "justify-center px-3" : "gap-3 px-3"
                     } ${
                       isActive
-                        ? "bg-[#163020] text-[#7f9b86]"
-                        : "text-[#526057] hover:translate-x-0.5 hover:bg-[#0e160f] hover:text-[#b3beb5]"
+                        ? "bg-[oklch(52.7%_0.154_150.069)]/[0.10] text-[oklch(65%_0.15_150)]"
+                        : "text-gray-600 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-gray-300"
                     }`
                   }
                 >
@@ -315,7 +313,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                             -translate-x-full
                             bg-gradient-to-r
                             from-transparent
-                            via-[#315f3d]/[0.08]
+                            via-[oklch(52.7%_0.154_150.069)]/10
                             to-transparent
                             transition-transform duration-700
                             group-hover:translate-x-full
@@ -327,7 +325,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                           Active Indicator
                       ================================================= */}
                       <span
-                        className={`absolute left-0 rounded-full bg-[#52785d] transition-all duration-300 ${
+                        className={`absolute left-0 rounded-full bg-[oklch(52.7%_0.154_150.069)] transition-all duration-300 ${
                           isActive
                             ? "h-6 w-0.5 opacity-100"
                             : "h-0 w-0 opacity-0"
@@ -340,8 +338,8 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                       <span
                         className={`relative z-10 shrink-0 transition-all duration-300 ${
                           isActive
-                            ? "scale-105 text-[#78917e]"
-                            : "text-[#465249] group-hover:scale-110 group-hover:text-[#819487]"
+                            ? "scale-105 text-[oklch(65%_0.15_150)]"
+                            : "text-gray-600 group-hover:scale-110 group-hover:text-[oklch(60%_0.14_150)]"
                         }`}
                       >
                         <Icon size={20} strokeWidth={1.8} />
@@ -364,7 +362,15 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                           Active Glow
                       ================================================= */}
                       {isActive && !isCollapsed && (
-                        <span className="pointer-events-none absolute right-3 h-1.5 w-1.5 rounded-full bg-[#52785d] opacity-60 shadow-[0_0_8px_rgba(82,120,93,0.35)]" />
+                        <span
+                          className="
+                            pointer-events-none absolute right-3
+                            h-1.5 w-1.5 rounded-full
+                            bg-[oklch(52.7%_0.154_150.069)]
+                            opacity-80
+                            shadow-[0_0_8px_oklch(52.7%_0.154_150.069_/_0.5)]
+                          "
+                        />
                       )}
                     </>
                   )}
@@ -377,13 +383,13 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         {/* =====================================================
             LOGOUT
         ====================================================== */}
-        <div className="shrink-0 border-t border-[#17251b] p-3">
+        <div className="shrink-0 border-t border-white/[0.08] bg-black p-3">
           <button
             type="button"
             onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
             title={isCollapsed ? "Logout" : undefined}
-            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-[#526057] transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-gray-600 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
               isCollapsed ? "justify-center px-3" : "gap-3 px-3"
             }`}
           >
