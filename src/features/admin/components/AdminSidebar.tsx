@@ -76,6 +76,10 @@ const AdminSidebar = () => {
     },
   ];
 
+  // =========================================================
+  // Admin Logout
+  // =========================================================
+
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem("admin_refresh");
 
@@ -98,7 +102,10 @@ const AdminSidebar = () => {
   return (
     <>
       <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/10 bg-[#080808]">
-        {/* Logo */}
+        {/* =====================================================
+            Logo
+        ===================================================== */}
+
         <div className="flex h-20 items-center border-b border-white/10 px-6">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6c63ff] shadow-lg shadow-[#6c63ff]/20">
@@ -113,7 +120,10 @@ const AdminSidebar = () => {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* =====================================================
+            Navigation
+        ===================================================== */}
+
         <div className="flex-1 overflow-y-auto px-4 py-7">
           <p className="mb-3 px-2 text-[10px] font-semibold uppercase tracking-[2px] text-gray-600">
             Main Menu
@@ -137,10 +147,12 @@ const AdminSidebar = () => {
                 >
                   {({ isActive }) => (
                     <>
+                      {/* Active indicator */}
                       {isActive && (
                         <span className="absolute left-0 h-6 w-0.5 rounded-full bg-[#6c63ff]" />
                       )}
 
+                      {/* Icon */}
                       <Icon
                         size={20}
                         strokeWidth={1.8}
@@ -151,6 +163,7 @@ const AdminSidebar = () => {
                         }
                       />
 
+                      {/* Label */}
                       <span>{item.name}</span>
                     </>
                   )}
@@ -160,7 +173,10 @@ const AdminSidebar = () => {
           </nav>
         </div>
 
-        {/* Logout */}
+        {/* =====================================================
+            Logout
+        ===================================================== */}
+
         <div className="border-t border-white/10 p-3">
           <button
             type="button"
@@ -174,10 +190,14 @@ const AdminSidebar = () => {
               className="transition-transform group-hover:-translate-x-0.5"
             />
 
-            <span>Logout</span>
+            <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
           </button>
         </div>
       </aside>
+
+      {/* =======================================================
+          Logout Confirmation Modal
+      ======================================================= */}
 
       <AdminLogoutConfirmModal
         isOpen={showLogoutConfirm}
