@@ -1,475 +1,5 @@
 @import "tailwindcss";
 
-html {
-  scroll-behavior: auto;
-}
-
-@keyframes hero-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-fade-up {
-  animation: hero-fade-up 1.2s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes hero-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.hero-fade-in {
-  animation: hero-fade-in 1.8s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes section-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.section-fade-up {
-  opacity: 0;
-  animation: section-fade-up 1.2s ease-out forwards;
-}
-
-@keyframes section-line {
-  from {
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-
-  to {
-    opacity: 1;
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-}
-
-.section-line {
-  animation: section-line 1.5s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes cta-glow {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.12);
-  }
-}
-
-.cta-glow {
-  animation: cta-glow 7s ease-in-out infinite;
-}
-
-@keyframes cta-card {
-  from {
-    opacity: 0;
-    transform: translateY(35px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.cta-card {
-  animation: cta-card 1.3s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes about-text-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(35px);
-    filter: blur(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-.about-text-reveal {
-  opacity: 0;
-  animation: about-text-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes signup-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes signup-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes signup-image-in {
-  from {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes signup-glow {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.7;
-    transform: scale(1.08);
-  }
-}
-
-.signup-fade-up {
-  animation: signup-fade-up 0.7s ease-out both;
-}
-
-.signup-fade-in {
-  animation: signup-fade-in 0.8s ease-out both;
-}
-
-.signup-image-in {
-  animation: signup-image-in 1.2s ease-out both;
-}
-
-.signup-glow {
-  animation: signup-glow 7s ease-in-out infinite;
-}
-
-@layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.student-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.student-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.student-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-}
-
-.student-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.student-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-}
-
-/* ========================================
-   Premium Page Entrance Animation
-======================================== */
-
-@keyframes page-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(14px) scale(0.995);
-    filter: blur(3px);
-  }
-
-  60% {
-    opacity: 0.9;
-    filter: blur(0.5px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-.animate-page-enter {
-  animation: page-enter 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ========================================
-   Premium Dashboard Item Animation
-======================================== */
-
-@keyframes page-item {
-  0% {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-item {
-  opacity: 0;
-  animation: page-item 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes page-item {
-  0% {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-item {
-  opacity: 0;
-  animation: page-item 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ========================================
-   Premium Sidebar Entrance
-======================================== */
-
-@keyframes sidebar-enter {
-  0% {
-    opacity: 0;
-    transform: translateX(-18px);
-    filter: blur(3px);
-  }
-
-  60% {
-    opacity: 0.9;
-    filter: blur(0.5px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0);
-  }
-}
-
-.student-sidebar {
-  animation: sidebar-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ========================================
-   Sidebar Sections
-======================================== */
-
-@keyframes sidebar-section {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-sidebar-section {
-  opacity: 0;
-  animation: sidebar-section 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ========================================
-   Sidebar Navigation Items
-======================================== */
-
-@keyframes sidebar-item {
-  0% {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-sidebar-item {
-  opacity: 0;
-  animation: sidebar-item 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-/* ================================
-   Custom Dark Scrollbar
-================================ */
-
-::-webkit-scrollbar {
-  width: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #262626, #333333);
-  border-radius: 999px;
-  border: 2px solid #050505;
-  transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #3f3f46, #52525b);
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #333333 #050505;
-}
-.instructor-sidebar-scrollbar::-webkit-scrollbar {
-  width: 3px;
-}
-
-.instructor-sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.instructor-sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #0d2744;
-  border-radius: 9999px;
-}
-
-.instructor-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #12375d;
-}
-
-.instructor-sidebar-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #0d2744 transparent;
-}
-.student-sidebar-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #29183f transparent;
-}
-
-.student-sidebar-scrollbar::-webkit-scrollbar {
-  width: 3px;
-}
-
-.student-sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.student-sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #29183f;
-  border-radius: 9999px;
-}
-
-.student-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #5a3485;
-}
-.instructor-page-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.instructor-page-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.instructor-page-scrollbar::-webkit-scrollbar-thumb {
-  background: #263241;
-  border-radius: 9999px;
-}
-
-.instructor-page-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-
-/* =========================================================
-   ADMIN SIDEBAR SCROLLBAR
-   ========================================================= */
-
-.admin-sidebar-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #0d2418 transparent;
-}
-
-/* Chrome / Edge / Safari */
-.admin-sidebar-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.admin-sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.admin-sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background: #0d2418;
-  border-radius: 999px;
-  transition: background 0.3s ease;
-}
-
-.admin-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #153522;
-}
-@import "tailwindcss";
-
 /* =========================================================
    BASE
    ========================================================= */
@@ -800,14 +330,15 @@ html {
   }
 }
 
-/* ---- Student (violet) ---- */
+/* ---- Student Page Scrollbar ---- */
+
 .student-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  scrollbar-color: #29183f transparent;
 }
 
 .student-scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
 }
 
 .student-scrollbar::-webkit-scrollbar-track {
@@ -815,12 +346,13 @@ html {
 }
 
 .student-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: #29183f;
   border-radius: 9999px;
+  transition: background 0.3s ease;
 }
 
 .student-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: #5a3485;
 }
 
 .student-sidebar-scrollbar {
@@ -845,9 +377,15 @@ html {
   background: #5a3485;
 }
 
-/* ---- Instructor (blue) ---- */
+/* ---- Instructor Page Scrollbar (blue) ---- */
+
+.instructor-page-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0d2744 transparent;
+}
+
 .instructor-page-scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
 }
 
 .instructor-page-scrollbar::-webkit-scrollbar-track {
@@ -855,13 +393,16 @@ html {
 }
 
 .instructor-page-scrollbar::-webkit-scrollbar-thumb {
-  background: #263241;
+  background: #0d2744;
   border-radius: 9999px;
+  transition: background 0.3s ease;
 }
 
 .instructor-page-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #12375d;
 }
+
+/* ---- Instructor Sidebar Scrollbar (matches the page blue) ---- */
 
 .instructor-sidebar-scrollbar {
   scrollbar-width: thin;
@@ -879,6 +420,7 @@ html {
 .instructor-sidebar-scrollbar::-webkit-scrollbar-thumb {
   background: #0d2744;
   border-radius: 9999px;
+  transition: background 0.3s ease;
 }
 
 .instructor-sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
