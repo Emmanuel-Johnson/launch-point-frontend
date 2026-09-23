@@ -12,7 +12,7 @@ export interface AdminLoginCredentials {
 export interface AdminLoginResponse {
   message: string;
   user: {
-    id: string;
+    id: number;
     full_name: string;
     email: string;
     role: "admin";

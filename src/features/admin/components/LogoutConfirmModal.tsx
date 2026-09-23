@@ -45,39 +45,57 @@ const LogoutConfirmModal = ({
       aria-modal="true"
       aria-labelledby="admin-logout-modal-title"
       aria-describedby="admin-logout-modal-description"
-      className="lpc-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-md"
+      className="lpc-backdrop fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 px-4 backdrop-blur-md"
       onClick={() => {
         if (!isLoading) {
           onCancel();
         }
       }}
     >
-      {/*
-        Entrance runs once on mount (the modal unmounts on close, so it remounts
-        on every open). Pure CSS keeps state out of the render path, and the
-        reduced-motion query disables it without touching layout.
-      */}
+      {/* Modal animations */}
       <style>{`
         @keyframes lpc-fade {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
+
         @keyframes lpc-rise {
-          from { opacity: 0; transform: translateY(12px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+          from {
+            opacity: 0;
+            transform: translateY(12px) scale(0.97);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
-        .lpc-backdrop { animation: lpc-fade 0.4s ease-out; }
-        .lpc-card { animation: lpc-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .lpc-backdrop {
+          animation: lpc-fade 0.4s ease-out;
+        }
+
+        .lpc-card {
+          animation: lpc-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .lpc-backdrop, .lpc-card { animation: none; }
+          .lpc-backdrop,
+          .lpc-card {
+            animation: none;
+          }
         }
       `}</style>
 
+      {/* Modal Card */}
       <div
         onClick={(event) => event.stopPropagation()}
         className="lpc-card relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-[#0C0C0C] to-[#060606] p-7 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]"
       >
-        {/* Soft spotlight — the single depth cue on black */}
+        {/* Soft spotlight */}
         <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-white/[0.06] blur-3xl" />
 
         {/* Top hairline highlight */}
@@ -145,6 +163,7 @@ const LogoutConfirmModal = ({
                 strokeWidth="2"
               >
                 <circle cx="12" cy="12" r="9" className="opacity-25" />
+
                 <path d="M21 12a9 9 0 0 0-9-9" strokeLinecap="round" />
               </svg>
             ) : (
