@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAppSelector } from "../../../app/store/hooks";
 
 type LogoutConfirmModalProps = {
   isOpen: boolean;
@@ -13,6 +14,7 @@ const LogoutConfirmModal = ({
   onCancel,
   onConfirm,
 }: LogoutConfirmModalProps) => {
+  const admin = useAppSelector((state) => state.admin.admin);
   // Escape to dismiss + lock background scroll while the modal is open.
   useEffect(() => {
     if (!isOpen) {
@@ -130,7 +132,7 @@ const LogoutConfirmModal = ({
             id="admin-logout-modal-title"
             className="font-['Space_Grotesk'] text-xl font-semibold tracking-tight text-white"
           >
-            Log out?
+            Log out, {admin?.full_name ?? "Admin"}?
           </h3>
 
           <p

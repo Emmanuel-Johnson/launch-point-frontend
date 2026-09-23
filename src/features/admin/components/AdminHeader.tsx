@@ -1,6 +1,7 @@
 import { Bell, ChevronDown, LogOut, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../app/store/hooks";
 
 interface AdminHeaderProps {
   isSidebarCollapsed: boolean;
@@ -20,6 +21,7 @@ interface AdminHeaderProps {
 
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const navigate = useNavigate();
+  const admin = useAppSelector((state) => state.admin.admin);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -130,11 +132,11 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
             {/* Admin Info */}
             <div className="relative z-10 hidden text-left sm:block">
               <p className="text-sm font-medium text-white transition-colors duration-200 group-hover:text-[#6EE7B7]">
-                Admin
+                {admin?.full_name ?? "Admin"}
               </p>
 
               <p className="text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
-                Administrator
+                {admin?.role ?? "Administrator"}
               </p>
             </div>
 
@@ -170,7 +172,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
                 {/* Admin Details */}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px] font-semibold text-white">
-                    Administrator
+                    {admin?.full_name ?? "Admin"}
                   </p>
 
                   <div className="mt-1 flex items-center gap-1.5">
@@ -178,7 +180,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#34D399] shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
 
                     <span className="text-xs font-medium text-white/55">
-                      Admin
+                      {admin?.email ?? "Administrator"}
                     </span>
                   </div>
                 </div>

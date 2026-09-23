@@ -7,6 +7,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { adminLogin } from "../api/adminApi";
 
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setAdminCredentials } from "../slices/adminSlice";
+
 // =========================================================
 // Validation schema
 // =========================================================
@@ -30,6 +33,7 @@ type AdminLoginFormData = z.infer<typeof adminLoginSchema>;
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +71,8 @@ const AdminLoginPage = () => {
       localStorage.setItem("admin_access", response.tokens.access);
 
       localStorage.setItem("admin_refresh", response.tokens.refresh);
+
+      dispatch(setAdminCredentials(response.user));
 
       toast.success("Login successful!");
 
