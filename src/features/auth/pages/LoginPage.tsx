@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { login, googleLogin } from "../api/authApi";
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setCredentials } from "../slices/authSlice";
 
 // Validation schema
 const loginSchema = z.object({
@@ -28,6 +30,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,6 +56,8 @@ const LoginPage = () => {
 
       localStorage.setItem("access", result.tokens.access);
       localStorage.setItem("refresh", result.tokens.refresh);
+
+      dispatch(setCredentials(result.user));
 
       toast.success("Login successful!");
 
@@ -98,6 +103,8 @@ const LoginPage = () => {
 
       localStorage.setItem("access", response.tokens.access);
       localStorage.setItem("refresh", response.tokens.refresh);
+
+      dispatch(setCredentials(response.user));
 
       toast.success("Google login successful!");
 

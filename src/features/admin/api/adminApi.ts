@@ -15,6 +15,7 @@ export interface AdminLoginResponse {
     id: string;
     full_name: string;
     email: string;
+    role: "admin";
   };
   tokens: {
     access: string;

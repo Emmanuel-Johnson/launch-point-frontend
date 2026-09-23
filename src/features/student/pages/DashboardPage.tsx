@@ -11,6 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../app/store/hooks";
 
 /*
   VIOLET & BLACK THEME — palette (matches the Admin dashboard treatment)
@@ -55,6 +56,11 @@ interface UpNextItem {
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const nameParts = user?.full_name.trim().split(" ") ?? [];
+  const firstName = nameParts[0] ?? "";
+  const lastName = nameParts.slice(1).join(" ");
 
   const stats: StatCard[] = [
     {
@@ -145,9 +151,10 @@ const StudentDashboard = () => {
                 </p>
 
                 <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-                  <span className="text-white">Emmanuel </span>
+                  <span className="text-white">{firstName} </span>
+
                   <span className="bg-gradient-to-r from-[#EDE9FE] via-[#A78BFA] to-[#7C5CFF] bg-clip-text text-transparent">
-                    Johnson
+                    {lastName}
                   </span>
                 </h1>
 

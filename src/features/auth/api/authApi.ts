@@ -14,6 +14,7 @@ export type GoogleLoginResponse = {
     id: number;
     full_name: string;
     email: string;
+    role: "student" | "instructor";
   };
   tokens: {
     access: string;
@@ -45,6 +46,7 @@ export type SignupResponse = {
     id: number;
     full_name: string;
     email: string;
+    role: "student" | "instructor";
   };
 };
 
@@ -69,6 +71,7 @@ export type VerifyEmailResponse = {
     id: number;
     full_name: string;
     email: string;
+    role: "student" | "instructor";
   };
   tokens: {
     access: string;
@@ -125,6 +128,7 @@ export type LoginResponse = {
     id: number;
     full_name: string;
     email: string;
+    role: "student" | "instructor";
   };
   tokens: {
     access: string;
