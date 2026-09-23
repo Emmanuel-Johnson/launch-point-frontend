@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../app/store/hooks";
 
 interface StudentHeaderProps {
   isSidebarCollapsed: boolean;
@@ -29,6 +30,7 @@ interface StudentHeaderProps {
 
 const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -149,11 +151,11 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
             {/* User Info */}
             <div className="relative z-10 hidden text-left sm:block">
               <p className="text-sm font-medium text-white transition-colors duration-200 group-hover:text-[#9D82FF]">
-                Emmanuel Johnson
+                {user?.full_name}
               </p>
 
               <p className="text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
-                Student
+                <p>{user?.role}</p>
               </p>
             </div>
 
@@ -187,7 +189,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                 {/* User Details */}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[15px] font-semibold text-white">
-                    Emmanuel Johnson
+                    {user?.full_name}
                   </p>
 
                   <div className="mt-1 flex items-center gap-1.5">
@@ -195,7 +197,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
 
                     <span className="text-xs font-medium text-white/55">
-                      Student
+                      {user?.email}
                     </span>
                   </div>
                 </div>
