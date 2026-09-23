@@ -1,8 +1,21 @@
 import api from "../../../shared/api/axios";
 
-// ====================
+// =========================================================
+// Shared Types
+// =========================================================
+
+export type UserRole = "student" | "instructor" | "admin";
+
+export type AuthUser = {
+  id: number;
+  full_name: string;
+  email: string;
+  role: UserRole;
+};
+
+// =========================================================
 // Google Authentication
-// ====================
+// =========================================================
 
 export type GoogleLoginData = {
   id_token: string;
@@ -10,12 +23,7 @@ export type GoogleLoginData = {
 
 export type GoogleLoginResponse = {
   message: string;
-  user: {
-    id: number;
-    full_name: string;
-    email: string;
-    role: "student" | "instructor";
-  };
+  user: AuthUser;
   tokens: {
     access: string;
     refresh: string;
@@ -30,9 +38,9 @@ export const googleLogin = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Signup
-// ====================
+// =========================================================
 
 export type SignupData = {
   full_name: string;
@@ -42,12 +50,7 @@ export type SignupData = {
 
 export type SignupResponse = {
   message: string;
-  user: {
-    id: number;
-    full_name: string;
-    email: string;
-    role: "student" | "instructor";
-  };
+  user: AuthUser;
 };
 
 export const signup = async (data: SignupData): Promise<SignupResponse> => {
@@ -56,9 +59,9 @@ export const signup = async (data: SignupData): Promise<SignupResponse> => {
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Verify Email
-// ====================
+// =========================================================
 
 export type VerifyEmailData = {
   email: string;
@@ -67,12 +70,7 @@ export type VerifyEmailData = {
 
 export type VerifyEmailResponse = {
   message: string;
-  user: {
-    id: number;
-    full_name: string;
-    email: string;
-    role: "student" | "instructor";
-  };
+  user: AuthUser;
   tokens: {
     access: string;
     refresh: string;
@@ -90,9 +88,9 @@ export const verifyEmail = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Resend Verification OTP
-// ====================
+// =========================================================
 
 export type ResendVerificationOTPData = {
   email: string;
@@ -113,9 +111,9 @@ export const resendVerificationOTP = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Login
-// ====================
+// =========================================================
 
 export type LoginData = {
   email: string;
@@ -124,12 +122,7 @@ export type LoginData = {
 
 export type LoginResponse = {
   message: string;
-  user: {
-    id: number;
-    full_name: string;
-    email: string;
-    role: "student" | "instructor";
-  };
+  user: AuthUser;
   tokens: {
     access: string;
     refresh: string;
@@ -142,9 +135,9 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Forgot Password
-// ====================
+// =========================================================
 
 export type ForgotPasswordData = {
   email: string;
@@ -165,9 +158,9 @@ export const forgotPassword = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Verify Password Reset OTP
-// ====================
+// =========================================================
 
 export type VerifyPasswordResetOTPData = {
   email: string;
@@ -190,9 +183,9 @@ export const verifyPasswordResetOTP = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Resend Password Reset OTP
-// ====================
+// =========================================================
 
 export type ResendPasswordResetOTPData = {
   email: string;
@@ -213,9 +206,9 @@ export const resendPasswordResetOTP = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Reset Password
-// ====================
+// =========================================================
 
 export type ResetPasswordData = {
   reset_token: string;
@@ -237,9 +230,9 @@ export const resetPassword = async (
   return response.data;
 };
 
-// ====================
+// =========================================================
 // Logout
-// ====================
+// =========================================================
 
 export type LogoutResponse = {
   message: string;
