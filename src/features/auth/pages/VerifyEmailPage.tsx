@@ -4,12 +4,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import { verifyEmail, resendVerificationOTP } from "../api/authApi";
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setCredentials } from "../slices/authSlice";
 
 const RESEND_COOLDOWN = 60;
 
 const VerifyEmailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const email = location.state?.email;
 
@@ -214,14 +217,14 @@ const VerifyEmailPage = () => {
       localStorage.setItem("access", result.tokens.access);
       localStorage.setItem("refresh", result.tokens.refresh);
 
+      dispatch(setCredentials(result.user));
+
       /*
        * Remove resend timer because verification succeeded.
        */
       localStorage.removeItem(`resend_available_at_${email}`);
 
-      toast.success(
-        "Email verified successfully! Welcome to your dashboard.",
-      );
+      toast.success("Email verified successfully! Welcome to your dashboard.");
 
       /*
        * Replace prevents the verification page from
@@ -392,9 +395,7 @@ const VerifyEmailPage = () => {
         </p>
 
         {/* Email */}
-        <p className="mt-2 text-sm font-medium text-gray-300">
-          {email}
-        </p>
+        <p className="mt-2 text-sm font-medium text-gray-300">{email}</p>
 
         {/* OTP inputs */}
         <div className="mt-8 flex justify-center gap-2.5">
@@ -421,11 +422,7 @@ const VerifyEmailPage = () => {
         </div>
 
         {/* Error */}
-        {error && (
-          <p className="mt-2 text-xs text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
 
         {/* Verify button */}
         <button
