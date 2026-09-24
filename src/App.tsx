@@ -3,8 +3,10 @@ import ScrollToTop from "./app/routes/ScrollToTop";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./shared/toast.css";
+import useFavicon from "./shared/hooks/useFavicon";
 
 function App() {
+  useFavicon();
   return (
     <>
       <ScrollToTop />
