@@ -9,13 +9,15 @@ const useFavicon = () => {
 
     if (!favicon) return;
 
+    const firstSegment = pathname.split("/")[1];
+
     let faviconPath = "/student_logo.png";
 
-    if (pathname.includes("/instructor")) {
-      faviconPath = "/instructor_logo.png";
-    } else if (pathname.includes("/admin")) {
+    if (firstSegment === "admin") {
       faviconPath = "/admin_logo.png";
-    } else if (pathname.includes("/student")) {
+    } else if (firstSegment === "instructor") {
+      faviconPath = "/instructor_logo.png";
+    } else if (firstSegment === "student") {
       faviconPath = "/student_logo.png";
     }
 
