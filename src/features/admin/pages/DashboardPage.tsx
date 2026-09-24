@@ -10,6 +10,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import { useAppSelector } from "../../../app/store/hooks";
 
 /*
   GREEN & BLACK THEME — palette
@@ -63,6 +64,7 @@ interface OverviewCard {
 }
 
 const DashboardPage = () => {
+  const admin = useAppSelector((state) => state.admin.admin);
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -199,7 +201,7 @@ const DashboardPage = () => {
               <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
                 <span className="text-white">Welcome back, </span>
                 <span className="bg-gradient-to-r from-[#ECFDF5] via-[#6EE7B7] to-[#34D399] bg-clip-text text-transparent">
-                  Admin
+                  {admin?.full_name ?? "Admin"}
                 </span>
               </h1>
 
