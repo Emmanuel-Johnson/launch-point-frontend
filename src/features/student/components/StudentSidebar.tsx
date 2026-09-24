@@ -165,7 +165,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
               isCollapsed
                 ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/40"
                 : "ml-auto"

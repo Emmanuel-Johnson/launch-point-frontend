@@ -491,3 +491,89 @@ html {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   GLOBAL ANIMATIONS
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Fade Up
+   Used for login page content
+   --------------------------------------------------------- */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------
+   Image Reveal
+   Used for admin login image
+   --------------------------------------------------------- */
+
+@keyframes imageReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------------------------------------------------------
+   Optional: Green Glow Pulse
+   Can be used for ambient admin UI elements
+   --------------------------------------------------------- */
+
+@keyframes greenGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(1.05);
+  }
+}
+
+/* ---------------------------------------------------------
+   Optional: Soft Floating Animation
+   --------------------------------------------------------- */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
