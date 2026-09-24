@@ -8,7 +8,6 @@ import {
   Tags,
   IndianRupee,
   Bell,
-  UserRound,
   FileCheck,
   WalletCards,
   CreditCard,
@@ -132,11 +131,11 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           path: "/admin/notifications",
           icon: Bell,
         },
-        {
-          name: "Profile",
-          path: "/admin/profile",
-          icon: UserRound,
-        },
+        // {
+        //   name: "Profile",
+        //   path: "/admin/profile",
+        //   icon: UserRound,
+        // },
       ],
     },
   ];
@@ -231,7 +230,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-ew-resize items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
               isCollapsed
                 ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/50"
                 : "ml-auto"

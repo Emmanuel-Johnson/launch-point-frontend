@@ -127,7 +127,7 @@ const LogoutConfirmModal = ({
         </div>
 
         {/* Content */}
-        <div className="relative mt-5 text-center">
+        <div className="relative mt-5 text-center cursor-default">
           <h3
             id="admin-logout-modal-title"
             className="font-['Space_Grotesk'] text-xl font-semibold tracking-tight text-white"
