@@ -243,7 +243,13 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                   </div>
 
                   {/* Text */}
-                  <div className="relative z-10 min-w-0 flex-1">
+                  <div
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate("/student/profile");
+                    }}
+                    className="relative z-10 min-w-0 flex-1 cursor-pointer"
+                  >
                     <p className="text-sm font-medium text-white/90 transition-colors duration-200 group-hover:text-white">
                       My Profile
                     </p>
