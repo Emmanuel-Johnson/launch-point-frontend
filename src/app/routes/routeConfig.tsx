@@ -37,6 +37,8 @@ import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
 
+import StudentProfilePage from "../../features/student/pages/StudentProfilePage"
+
 export const routeConfig: RouteObject[] = [
   // =========================
   // Public / Marketing routes
@@ -122,6 +124,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "dashboard",
             element: <StudentDashboardPage />,
+          },
+          {
+            path: "profile",
+            element: <StudentProfilePage />,
           },
         ],
       },
