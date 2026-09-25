@@ -7,3 +7,11 @@ export const getStudentProfile = async (): Promise<StudentProfile> => {
 
   return response.data;
 };
+
+export const updateStudentProfile = async (
+  data: Partial<StudentProfile>,
+): Promise<StudentProfile> => {
+  const response = await api.patch<StudentProfile>("/students/profile/", data);
+
+  return response.data;
+};

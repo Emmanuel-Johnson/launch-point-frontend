@@ -18,6 +18,7 @@ import {
 
 import type { StudentProfile } from "../types/studentProfile";
 import { getStudentProfile } from "../api/studentProfileApi";
+import EditProfileModal from "../components/EditProfileModal";
 
 /*
   ============================================================================
@@ -270,16 +271,14 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
 
 /* ============================================================ MAIN COMPONENT */
 
-interface ViewProfileProps {
-  onEdit?: () => void;
-}
-
-const ViewProfile = ({ onEdit }: ViewProfileProps) => {
+const ViewProfile = () => {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState<string | null>(null);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -329,268 +328,281 @@ const ViewProfile = ({ onEdit }: ViewProfileProps) => {
   const imageSrc = resolveImage(profile.profile_image);
 
   return (
-    <div className="min-h-full w-full bg-black text-white">
-      <div className="space-y-6">
-        {/* =========================================================
+    <>
+      <div className="min-h-full w-full bg-black text-white">
+        <div className="space-y-6">
+          {/* =========================================================
             PAGE HEADER
         ========================================================= */}
 
-        <section
-          className="animate-page-item flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
-          style={{ animationDelay: "80ms" }}
-        >
-          <div className="cursor-default">
-            <p className="mb-2 text-sm font-medium text-[#7C5CFF]">Account</p>
-
-            <h1
-              className="cursor-default bg-gradient-to-r from-white via-white to-[#9B7CFF] bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-4xl"
-              style={{ fontFamily: DISPLAY_FONT }}
-            >
-              My Profile
-            </h1>
-          </div>
-
-          <button
-            type="button"
-            onClick={onEdit}
-            className="group inline-flex w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-5 py-3 text-sm font-medium text-[#9D82FF] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/50 hover:bg-[#7C5CFF]/15 hover:text-white hover:shadow-[0_10px_30px_rgba(124,92,255,0.18)]"
+          <section
+            className="animate-page-item flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+            style={{ animationDelay: "80ms" }}
           >
-            <Edit3
-              className="h-4 w-4 transition-transform duration-300 group-hover:rotate-6"
-              strokeWidth={1.8}
-            />
-            Edit Profile
-          </button>
-        </section>
+            <div className="cursor-default">
+              <p className="mb-2 text-sm font-medium text-[#7C5CFF]">Account</p>
 
-        {/* =========================================================
+              <h1
+                className="cursor-default bg-gradient-to-r from-white via-white to-[#9B7CFF] bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-4xl"
+                style={{ fontFamily: DISPLAY_FONT }}
+              >
+                My Profile
+              </h1>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsEditModalOpen(true)}
+              className="group inline-flex w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-5 py-3 text-sm font-medium text-[#9D82FF] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/50 hover:bg-[#7C5CFF]/15 hover:text-white hover:shadow-[0_10px_30px_rgba(124,92,255,0.18)]"
+            >
+              <Edit3
+                className="h-4 w-4 transition-transform duration-300 group-hover:rotate-6"
+                strokeWidth={1.8}
+              />
+              Edit Profile
+            </button>
+          </section>
+
+          {/* =========================================================
             HERO + ABOUT
         ========================================================= */}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_3fr]">
-          {/* HERO */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_3fr]">
+            {/* HERO */}
 
-          <section
-            className="animate-page-item"
-            style={{ animationDelay: "150ms" }}
-          >
-            <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
-              <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A]">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7C5CFF]/20 blur-3xl"
-                />
+            <section
+              className="animate-page-item"
+              style={{ animationDelay: "150ms" }}
+            >
+              <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+                <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A]">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7C5CFF]/20 blur-3xl"
+                  />
 
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
-                />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
+                  />
 
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
-                />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
+                  />
 
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
-                />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
+                  />
 
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
-                  style={{
-                    backgroundImage: `url("${GRAIN_URL}")`,
-                  }}
-                />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+                    style={{
+                      backgroundImage: `url("${GRAIN_URL}")`,
+                    }}
+                  />
 
-                <div className="relative flex flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
-                  {/* Avatar */}
+                  <div className="relative flex flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
+                    {/* Avatar */}
 
-                  <div className="relative">
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7C5CFF]/25 blur-2xl"
-                    />
+                    <div className="relative">
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7C5CFF]/25 blur-2xl"
+                      />
 
-                    <ProfileAvatar src={imageSrc} initials={initials} />
-                  </div>
+                      <ProfileAvatar src={imageSrc} initials={initials} />
+                    </div>
 
-                  {/* Name */}
+                    {/* Name */}
 
-                  <div className="mt-7 w-full max-w-full overflow-hidden">
-                    {profile.full_name.length > 16 ? (
-                      <div className="relative h-[38px] overflow-hidden sm:h-[42px]">
-                        <div
-                          className="absolute left-0 w-full animate-name-scroll text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                    <div className="mt-7 w-full max-w-full overflow-hidden">
+                      {profile.full_name.length > 16 ? (
+                        <div className="relative h-[38px] overflow-hidden sm:h-[42px]">
+                          <div
+                            className="absolute left-0 w-full animate-name-scroll text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                            style={{
+                              fontFamily: DISPLAY_FONT,
+                            }}
+                          >
+                            {profile.full_name}
+                          </div>
+                        </div>
+                      ) : (
+                        <h2
+                          className="text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
                           style={{
                             fontFamily: DISPLAY_FONT,
                           }}
                         >
                           {profile.full_name}
-                        </div>
-                      </div>
-                    ) : (
-                      <h2
-                        className="text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
-                        style={{
-                          fontFamily: DISPLAY_FONT,
-                        }}
-                      >
-                        {profile.full_name}
-                      </h2>
-                    )}
-                  </div>
+                        </h2>
+                      )}
+                    </div>
 
-                  {/* Joined */}
+                    {/* Joined */}
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
-                    <CalendarDays
-                      className="h-4 w-4 text-[#9D82FF]"
-                      strokeWidth={1.8}
-                    />
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
+                      <CalendarDays
+                        className="h-4 w-4 text-[#9D82FF]"
+                        strokeWidth={1.8}
+                      />
 
-                    <span>Joined {formatMonthYear(profile.created_at)}</span>
+                      <span>Joined {formatMonthYear(profile.created_at)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          {/* ABOUT */}
+            {/* ABOUT */}
 
-          <section
-            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
-            style={{ animationDelay: "230ms" }}
-          >
-            <SectionHeader
-              icon={FileText}
-              title="About"
-              description="A short introduction."
-            />
+            <section
+              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              style={{ animationDelay: "230ms" }}
+            >
+              <SectionHeader
+                icon={FileText}
+                title="About"
+                description="A short introduction."
+              />
 
-            <div className="relative mt-6 flex flex-1 flex-col justify-center pl-10">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -top-3 left-0 select-none text-6xl leading-none text-[#E8C67A]/25"
-                style={{
-                  fontFamily: SERIF_FONT,
-                }}
-              >
-                &ldquo;
-              </span>
+              <div className="relative mt-6 flex flex-1 flex-col justify-center pl-10">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -top-3 left-0 select-none text-6xl leading-none text-[#E8C67A]/25"
+                  style={{
+                    fontFamily: SERIF_FONT,
+                  }}
+                >
+                  &ldquo;
+                </span>
 
-              <blockquote
-                className="max-w-2xl text-lg italic leading-relaxed text-white/70 sm:text-xl"
-                style={{
-                  fontFamily: SERIF_FONT,
-                }}
-              >
-                {profile.bio || "No bio added yet."}
-              </blockquote>
-            </div>
-          </section>
-        </div>
+                <blockquote
+                  className="max-w-2xl text-lg italic leading-relaxed text-white/70 sm:text-xl"
+                  style={{
+                    fontFamily: SERIF_FONT,
+                  }}
+                >
+                  {profile.bio || "No bio added yet."}
+                </blockquote>
+              </div>
+            </section>
+          </div>
 
-        {/* =========================================================
+          {/* =========================================================
             DETAILS + SOCIAL
         ========================================================= */}
 
-        <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-          {/* PERSONAL INFORMATION */}
+          <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+            {/* PERSONAL INFORMATION */}
 
-          <section
-            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
-            style={{ animationDelay: "310ms" }}
-          >
-            <SectionHeader
-              icon={User}
-              title="Personal Information"
-              description="Your account details."
-            />
-
-            <div className="mt-7 grid gap-5 sm:grid-cols-2">
-              <DetailField
+            <section
+              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              style={{ animationDelay: "310ms" }}
+            >
+              <SectionHeader
                 icon={User}
-                label="Full Name"
-                value={profile.full_name}
+                title="Personal Information"
+                description="Your account details."
               />
 
-              <DetailField
-                icon={MapPin}
-                label="Location"
-                value={profile.location}
-              />
-
-              <DetailField
-                icon={GraduationCap}
-                label="Education"
-                value={profile.education}
-              />
-
-              <DetailField
-                icon={Briefcase}
-                label="Occupation"
-                value={profile.occupation}
-              />
-
-              <div className="sm:col-span-2">
+              <div className="mt-7 grid gap-5 sm:grid-cols-2">
                 <DetailField
-                  icon={Mail}
-                  label="Email Address"
-                  value={profile.email}
+                  icon={User}
+                  label="Full Name"
+                  value={profile.full_name}
+                />
+
+                <DetailField
+                  icon={MapPin}
+                  label="Location"
+                  value={profile.location}
+                />
+
+                <DetailField
+                  icon={GraduationCap}
+                  label="Education"
+                  value={profile.education}
+                />
+
+                <DetailField
+                  icon={Briefcase}
+                  label="Occupation"
+                  value={profile.occupation}
+                />
+
+                <div className="sm:col-span-2">
+                  <DetailField
+                    icon={Mail}
+                    label="Email Address"
+                    value={profile.email}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
+                <Clock3 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
+                Last updated {formatFullDate(profile.updated_at)}
+              </div>
+            </section>
+
+            {/* SOCIAL LINKS */}
+
+            <section
+              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              style={{ animationDelay: "390ms" }}
+            >
+              <SectionHeader
+                icon={LinkIcon}
+                title="Social Links"
+                description="Connected profiles."
+              />
+
+              <div className="mt-7 space-y-3">
+                <SocialRow
+                  icon={GithubIcon}
+                  label="GitHub"
+                  url={profile.github_url}
+                />
+
+                <SocialRow
+                  icon={LinkedinIcon}
+                  label="LinkedIn"
+                  url={profile.linkedin_url}
+                />
+
+                <SocialRow
+                  icon={Globe}
+                  label="Portfolio"
+                  url={profile.portfolio_url}
                 />
               </div>
-            </div>
 
-            <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
-              <Clock3 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
-              Last updated {formatFullDate(profile.updated_at)}
-            </div>
-          </section>
-
-          {/* SOCIAL LINKS */}
-
-          <section
-            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
-            style={{ animationDelay: "390ms" }}
-          >
-            <SectionHeader
-              icon={LinkIcon}
-              title="Social Links"
-              description="Connected profiles."
-            />
-
-            <div className="mt-7 space-y-3">
-              <SocialRow
-                icon={GithubIcon}
-                label="GitHub"
-                url={profile.github_url}
-              />
-
-              <SocialRow
-                icon={LinkedinIcon}
-                label="LinkedIn"
-                url={profile.linkedin_url}
-              />
-
-              <SocialRow
-                icon={Globe}
-                label="Portfolio"
-                url={profile.portfolio_url}
-              />
-            </div>
-
-            <div className="flex flex-1 items-end">
-              <div className="mt-6 flex w-full items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
-                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Links open in a new tab
+              <div className="flex flex-1 items-end">
+                <div className="mt-6 flex w-full items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
+                  <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.8} />
+                  Links open in a new tab
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </div>
-    </div>
+      {isEditModalOpen && (
+        <EditProfileModal
+          profile={profile}
+          isOpen={true}
+          onClose={() => setIsEditModalOpen(false)}
+          onSaved={(updatedProfile) => {
+            setProfile(updatedProfile);
+            setIsEditModalOpen(false);
+          }}
+        />
+      )}
+    </>
   );
 };
 
