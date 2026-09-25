@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Briefcase,
+  Camera,
   GraduationCap,
   Link as LinkIcon,
   MapPin,
@@ -11,6 +12,8 @@ import {
 
 import type { StudentProfile } from "../types/studentProfile";
 import { updateStudentProfile } from "../api/studentProfileApi";
+
+const MEDIA_BASE_URL = "http://localhost:8000";
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
@@ -32,12 +35,40 @@ interface FormData {
   portfolio_url: string;
 }
 
+const resolveImage = (path: string | null): string | null => {
+  if (!path) {
+    return null;
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  return `${MEDIA_BASE_URL}${path}`;
+};
+
+const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return "?";
+  }
+
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 const EditProfileModal = ({
   profile,
   isOpen,
   onClose,
   onSaved,
 }: EditProfileModalProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState<FormData>({
     full_name: profile.full_name || "",
     bio: profile.bio || "",
@@ -48,6 +79,12 @@ const EditProfileModal = ({
     linkedin_url: profile.linkedin_url || "",
     portfolio_url: profile.portfolio_url || "",
   });
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    resolveImage(profile.profile_image),
+  );
 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +142,50 @@ const EditProfileModal = ({
 
   /*
    * --------------------------------------------------------------
+   * Profile image
+   * --------------------------------------------------------------
+   */
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image.");
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      setError("Profile image must be smaller than 5 MB.");
+      return;
+    }
+
+    setSelectedImage(file);
+    setPreviewImage(URL.createObjectURL(file));
+    setError(null);
+
+    event.target.value = "";
+  };
+
+  /*
+   * --------------------------------------------------------------
+   * Remove selected image
+   * --------------------------------------------------------------
+   */
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setPreviewImage(null);
+    setError(null);
+  };
+
+  /*
+   * --------------------------------------------------------------
    * Save profile
    * --------------------------------------------------------------
    */
@@ -134,13 +215,53 @@ const EditProfileModal = ({
         github_url: formData.github_url.trim(),
         linkedin_url: formData.linkedin_url.trim(),
         portfolio_url: formData.portfolio_url.trim(),
+        profile_image: selectedImage,
       });
 
       onSaved(updatedProfile);
-    } catch (error) {
-      console.error("Failed to update student profile:", error);
+    } catch (error: unknown) {
+      console.error("UPDATE PROFILE ERROR:", error);
 
-      setError("Failed to update profile. Please try again.");
+      if (error && typeof error === "object" && "response" in error) {
+        const response = (
+          error as {
+            response?: {
+              status?: number;
+              data?: unknown;
+            };
+          }
+        ).response;
+
+        console.error("STATUS:", response?.status);
+
+        console.error("BACKEND RESPONSE:", response?.data);
+
+        const backendError = response?.data;
+
+        if (typeof backendError === "string") {
+          setError(backendError);
+        } else if (backendError && typeof backendError === "object") {
+          const messages = Object.entries(backendError).map(
+            ([field, value]) => {
+              const message = Array.isArray(value)
+                ? value.join(", ")
+                : String(value);
+
+              return `${field}: ${message}`;
+            },
+          );
+
+          setError(
+            messages.length > 0
+              ? messages.join(" | ")
+              : "Failed to update profile.",
+          );
+        } else {
+          setError("Failed to update profile. Please try again.");
+        }
+      } else {
+        setError("Failed to update profile. Please try again.");
+      }
     } finally {
       setIsSaving(false);
     }
@@ -148,11 +269,16 @@ const EditProfileModal = ({
 
   /*
    * --------------------------------------------------------------
+   * Profile image display
+   * --------------------------------------------------------------
+   */
+
+  const initials = getInitials(formData.full_name);
+
+  /*
+   * --------------------------------------------------------------
    * Modal
    * --------------------------------------------------------------
-   *
-   * Render directly into document.body so the modal is completely
-   * outside StudentLayout, StudentHeader and StudentSidebar.
    */
 
   return createPortal(
@@ -169,10 +295,6 @@ const EditProfileModal = ({
         }
       }}
     >
-      {/* ==========================================================
-          MODAL
-      ========================================================== */}
-
       <div
         className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
         role="dialog"
@@ -204,7 +326,9 @@ const EditProfileModal = ({
             <h2
               id="edit-profile-title"
               className="text-xl font-semibold text-white"
-              style={{ fontFamily: DISPLAY_FONT }}
+              style={{
+                fontFamily: DISPLAY_FONT,
+              }}
             >
               Edit Profile
             </h2>
@@ -232,6 +356,107 @@ const EditProfileModal = ({
         <div className="relative overflow-y-auto px-6 py-6 sm:px-7">
           <div className="space-y-6">
             {/* ====================================================
+                PROFILE PHOTO
+            ==================================================== */}
+
+            <section>
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
+                  <Camera className="h-4 w-4" strokeWidth={1.8} />
+                </div>
+
+                <div>
+                  <h3
+                    className="text-sm font-semibold text-white"
+                    style={{
+                      fontFamily: DISPLAY_FONT,
+                    }}
+                  >
+                    Profile Photo
+                  </h3>
+
+                  <p className="text-xs text-white/35">
+                    Choose a photo for your profile.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
+                {/* Avatar */}
+
+                <div className="relative shrink-0">
+                  <div className="rounded-full bg-gradient-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
+                    <div className="rounded-full bg-[#0A0A0A] p-[3px]">
+                      <div className="relative h-20 w-20 overflow-hidden rounded-full">
+                        <div
+                          className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"
+                          style={{
+                            fontFamily: DISPLAY_FONT,
+                          }}
+                        >
+                          {initials}
+                        </div>
+
+                        {previewImage && (
+                          <img
+                            src={previewImage}
+                            alt="Profile preview"
+                            className="absolute inset-0 h-full w-full object-cover"
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-white">
+                    Profile picture
+                  </p>
+
+                  <p className="mt-1 text-xs leading-relaxed text-white/35">
+                    JPG, PNG or WEBP. Maximum size 5 MB.
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isSaving}
+                      className="cursor-pointer rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-4 py-2 text-xs font-medium text-[#9D82FF] transition-all duration-200 hover:border-[#7C5CFF]/45 hover:bg-[#7C5CFF]/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {selectedImage ? "Change Photo" : "Choose Photo"}
+                    </button>
+
+                    {previewImage && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        disabled={isSaving}
+                        className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/45 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* ====================================================
                 PERSONAL INFORMATION
             ==================================================== */}
 
@@ -258,16 +483,12 @@ const EditProfileModal = ({
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                {/* Full Name */}
-
                 <FormField
                   label="Full Name"
                   value={formData.full_name}
                   onChange={(value) => handleChange("full_name", value)}
                   placeholder="Enter your full name"
                 />
-
-                {/* Location */}
 
                 <FormField
                   label="Location"
@@ -277,8 +498,6 @@ const EditProfileModal = ({
                   placeholder="Kerala, India"
                 />
 
-                {/* Education */}
-
                 <FormField
                   label="Education"
                   icon={GraduationCap}
@@ -286,8 +505,6 @@ const EditProfileModal = ({
                   onChange={(value) => handleChange("education", value)}
                   placeholder="B.Tech Computer Science"
                 />
-
-                {/* Occupation */}
 
                 <FormField
                   label="Occupation"
@@ -355,8 +572,6 @@ const EditProfileModal = ({
               </div>
 
               <div className="space-y-4">
-                {/* GitHub */}
-
                 <FormField
                   label="GitHub"
                   value={formData.github_url}
@@ -364,16 +579,12 @@ const EditProfileModal = ({
                   placeholder="https://github.com/username"
                 />
 
-                {/* LinkedIn */}
-
                 <FormField
                   label="LinkedIn"
                   value={formData.linkedin_url}
                   onChange={(value) => handleChange("linkedin_url", value)}
                   placeholder="https://linkedin.com/in/username"
                 />
-
-                {/* Portfolio */}
 
                 <FormField
                   label="Portfolio"

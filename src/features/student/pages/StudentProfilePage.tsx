@@ -34,13 +34,12 @@ import EditProfileModal from "../components/EditProfileModal";
   throughout this page.
   ==========================================================================*/
 
-/* ------------------------------------------------------------------ constants */
-
 const MEDIA_BASE_URL = "http://localhost:8000";
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
 const SERIF_FONT = '"Fraunces", ui-serif, Georgia, "Times New Roman", serif';
+
 const GRAIN_URL =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
 
@@ -123,7 +122,7 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
     aria-hidden="true"
     className={className}
   >
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1-4.125 0 2.062 2.062 0 0 1 4.125 0zM3.555 9h3.564v11.452H3.555zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774.792 0 1.771 0h20.454z" />
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1-4.125 0 2.062 2.062 0 0 1 4.125 0zM3.555 9h3.564v11.452H3.555zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C23.2.774 22.408 0 21.433 0h-20.4z" />
   </svg>
 );
 
@@ -367,15 +366,15 @@ const ViewProfile = () => {
             HERO + ABOUT
         ========================================================= */}
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_3fr]">
+          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1fr_3fr]">
             {/* HERO */}
 
             <section
               className="animate-page-item"
               style={{ animationDelay: "150ms" }}
             >
-              <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
-                <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A]">
+              <div className="h-full rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+                <div className="relative h-full overflow-hidden rounded-[25px] bg-[#0A0A0A]">
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7C5CFF]/20 blur-3xl"
@@ -404,7 +403,7 @@ const ViewProfile = () => {
                     }}
                   />
 
-                  <div className="relative flex flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
+                  <div className="relative flex h-full flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
                     {/* Avatar */}
 
                     <div className="relative">
@@ -418,28 +417,18 @@ const ViewProfile = () => {
 
                     {/* Name */}
 
-                    <div className="mt-7 w-full max-w-full overflow-hidden">
-                      {profile.full_name.length > 16 ? (
-                        <div className="relative h-[38px] overflow-hidden sm:h-[42px]">
-                          <div
-                            className="absolute left-0 w-full animate-name-scroll text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
-                            style={{
-                              fontFamily: DISPLAY_FONT,
-                            }}
-                          >
-                            {profile.full_name}
-                          </div>
-                        </div>
-                      ) : (
-                        <h2
-                          className="text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
-                          style={{
-                            fontFamily: DISPLAY_FONT,
-                          }}
-                        >
-                          {profile.full_name}
-                        </h2>
-                      )}
+                    <div className="mt-7 w-full overflow-hidden">
+                      <h2
+                        className="w-[260px] truncate text-2xl font-semibold tracking-tight text-white sm:w-[320px] sm:text-[30px]"
+                        style={{
+                          fontFamily: DISPLAY_FONT,
+                        }}
+                        title={profile.full_name}
+                      >
+                        {profile.full_name.length > 16
+                          ? `${profile.full_name.slice(0, 16)}...`
+                          : profile.full_name}
+                      </h2>
                     </div>
 
                     {/* Joined */}
@@ -460,7 +449,7 @@ const ViewProfile = () => {
             {/* ABOUT */}
 
             <section
-              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              className="animate-page-item flex min-w-0 flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
               style={{ animationDelay: "230ms" }}
             >
               <SectionHeader
@@ -469,7 +458,7 @@ const ViewProfile = () => {
                 description="A short introduction."
               />
 
-              <div className="relative mt-6 flex flex-1 flex-col justify-center pl-10">
+              <div className="relative mt-6 flex min-w-0 flex-1 flex-col justify-center pl-10">
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute -top-3 left-0 select-none text-6xl leading-none text-[#E8C67A]/25"
@@ -481,7 +470,7 @@ const ViewProfile = () => {
                 </span>
 
                 <blockquote
-                  className="max-w-2xl text-lg italic leading-relaxed text-white/70 sm:text-xl"
+                  className="w-full min-w-0 whitespace-normal break-words text-lg italic leading-relaxed text-white/70 sm:text-xl"
                   style={{
                     fontFamily: SERIF_FONT,
                   }}
@@ -591,6 +580,7 @@ const ViewProfile = () => {
           </div>
         </div>
       </div>
+
       {isEditModalOpen && (
         <EditProfileModal
           profile={profile}
