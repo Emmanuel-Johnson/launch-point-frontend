@@ -14,7 +14,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-
 /*
   ============================================================================
   STUDENT · VIEW PROFILE  (read-only)  ·  premium pass
@@ -81,12 +80,11 @@ const GRAIN_URL =
 
 const SAMPLE_PROFILE: StudentProfile = {
   id: 2,
-  full_name: "Alex MorganAlex MorganAlex Morgan",
-  email: "emmanuel.johnson.pro@gmail.com",
+  full_name: "Alex Morgan",
+  email: "alex.morgan@example.com",
   profile_image: "/media/student_profiles/Yuta_.jpeg",
-  bio: "I am a passionate software developer who enjoys building modern, scalable, and user-friendly web applications. I have a strong interest in backend development and enjoy working with technologies like Python, Django, and REST APIs. I’m always curious to learn new tools and technologies, solve challenging problems, and turn ideas into practical solutions. I believe in continuous learning, writing clean and maintainable code, and improving my skills through hands-on projects and real-world experiences.",
-  location:
-    "Bangalore, KarnatakaBangalore, KarnatakaBangalore, KarnatakaBangalore, KarnatakaBangalore, Karnataka",
+  bio: "Passionate software developer focused on building modern and user-friendly web applications. I enjoy working with Python, Django, React, and REST APIs while continuously improving my development skills.",
+  location: "Bangalore, Karnataka",
   education: "MCA in Computer Applications",
   occupation: "Software Engineer",
   github_url: "https://github.com/alexmorgan",
@@ -248,9 +246,10 @@ const DetailField = ({ icon: Icon, label, value }: DetailFieldProps) => {
         {label}
       </p>
 
-      <div className="flex min-h-[52px] items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 transition-colors duration-300 hover:border-white/[0.1] hover:bg-white/[0.03]">
+      <div className="flex min-h-[52px] items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 transition-colors duration-300 hover:border-white/[0.1] hover:bg-white/[0.03]">
         <Icon className="h-4 w-4 shrink-0 text-white/30" strokeWidth={1.8} />
-        <span className="truncate text-sm text-white/75">
+
+        <span className="min-w-0 whitespace-normal break-words text-sm text-white/75">
           {value || "Not provided"}
         </span>
       </div>
@@ -497,11 +496,13 @@ const ViewProfile = ({
                 label="Full Name"
                 value={profile.full_name}
               />
+
               <DetailField
                 icon={MapPin}
                 label="Location"
                 value={profile.location}
               />
+
               <DetailField
                 icon={GraduationCap}
                 label="Education"
@@ -513,6 +514,7 @@ const ViewProfile = ({
                 label="Occupation"
                 value={profile.occupation}
               />
+
               <div className="sm:col-span-2">
                 <DetailField
                   icon={Mail}
@@ -523,7 +525,7 @@ const ViewProfile = ({
             </div>
 
             <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
-              <Clock3 className="h-3.5 w-3.5" strokeWidth={1.8} />
+              <Clock3 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
               Last updated {formatFullDate(profile.updated_at)}
             </div>
           </section>
