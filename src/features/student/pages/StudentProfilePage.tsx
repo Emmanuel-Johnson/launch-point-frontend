@@ -5,6 +5,7 @@ import {
   Clock3,
   Edit3,
   FileText,
+  Globe,
   GraduationCap,
   Link as LinkIcon,
   Mail,
@@ -35,6 +36,15 @@ import {
   padding (px-8 pt-8 pb-10) and the page-enter animation. So the root here is
   a plain `min-h-full w-full bg-black` — no max-width, no top offset.
 
+  Layout note: the hero identity card and the About section share a two-column
+  row at `lg` and up — profile on the left (1fr), About on the right (3fr).
+  Below `lg` they stack. Grid items stretch to equal height, so the About box
+  fills down to match the profile card; its content is vertically centered.
+
+  The Details + Social row also stretches both cards to equal height: Social
+  Links is `flex flex-col` with a bottom-anchored footer so it fills down to
+  match the taller Personal Information card rather than floating short.
+
   Only the fields returned by GET /student/profile/ are shown. Swap
   SAMPLE_PROFILE for your fetched data (prop, Redux, or loader) — the shape
   is the StudentProfile interface below.
@@ -51,6 +61,7 @@ interface StudentProfile {
   occupation: string;
   github_url: string;
   linkedin_url: string;
+  portfolio_url: string;
   created_at: string;
   updated_at: string;
 }
@@ -72,12 +83,14 @@ const SAMPLE_PROFILE: StudentProfile = {
   full_name: "Alex Morgan",
   email: "emmanuel.johnson.pro@gmail.com",
   profile_image: "/media/student_profiles/Yuta_.jpeg",
-  bio: "Passionate software developer focused on building scalable web applications.",
-  location: "Bangalore, Karnataka",
+  bio: "I am a passionate software developer who enjoys building modern, scalable, and user-friendly web applications. I have a strong interest in backend development and enjoy working with technologies like Python, Django, and REST APIs. I’m always curious to learn new tools and technologies, solve challenging problems, and turn ideas into practical solutions. I believe in continuous learning, writing clean and maintainable code, and improving my skills through hands-on projects and real-world experiences.",
+  location:
+    "Bangalore, KarnatakaBangalore, KarnatakaBangalore, KarnatakaBangalore, KarnatakaBangalore, Karnataka",
   education: "MCA in Computer Applications",
   occupation: "Software Engineer",
   github_url: "https://github.com/alexmorgan",
   linkedin_url: "https://www.linkedin.com/in/alexmorgan",
+  portfolio_url: "https://alexmorgan.dev",
   created_at: "2026-09-25T01:44:24.860307+05:30",
   updated_at: "2026-09-25T14:39:31.634892+05:30",
 };
@@ -117,7 +130,8 @@ const formatFullDate = (iso: string): string => {
    lucide-react dropped its brand glyphs (Github / Linkedin) in newer versions,
    so we ship the marks inline. They're fill-based (currentColor), which is why
    SocialRow types its icon as a plain className component rather than a
-   LucideIcon. */
+   LucideIcon. (Portfolio has no brand mark, so it uses lucide's stroke-based
+   Globe — the shared BrandIcon type accepts both.) */
 
 type BrandIcon = React.ComponentType<{ className?: string }>;
 
@@ -339,112 +353,122 @@ const ViewProfile = ({
         </section>
 
         {/* =========================================================
-            HERO IDENTITY CARD — centered, vertical, the one bold moment
-            avatar (with spotlight) → name → Joined
-            gradient-hairline border + grain + triple-ring avatar
+            HERO (left, 1fr) + ABOUT (right, 3fr) — 1:3 at lg and up,
+            stacked below. Grid items stretch to equal height, so the
+            About box fills down to match the profile card.
         ========================================================= */}
-        <section
-          className="animate-page-item"
-          style={{ animationDelay: "150ms" }}
-        >
-          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
-            <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A]">
-              {/* Ambient glows — violet crown top-center, faint violet base,
-                  and a single near-invisible gold wash (premium signal) */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7C5CFF]/20 blur-3xl"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
-              />
-              {/* Top hairline highlight */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
-              />
-              {/* Film grain */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
-                style={{ backgroundImage: `url("${GRAIN_URL}")` }}
-              />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_3fr]">
+          {/* -----------------------------------------------------
+              HERO IDENTITY CARD — centered, vertical, the one bold moment
+              avatar (with spotlight) → name → Joined
+              gradient-hairline border + grain + triple-ring avatar
+          ----------------------------------------------------- */}
+          <section
+            className="animate-page-item"
+            style={{ animationDelay: "150ms" }}
+          >
+            <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+              <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A]">
+                {/* Ambient glows — violet crown top-center, faint violet base,
+                    and a single near-invisible gold wash (premium signal) */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7C5CFF]/20 blur-3xl"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
+                />
+                {/* Top hairline highlight */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
+                />
+                {/* Film grain */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+                  style={{ backgroundImage: `url("${GRAIN_URL}")` }}
+                />
 
-              <div className="relative flex flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
-                {/* Avatar + soft spotlight halo behind it */}
-                <div className="relative">
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7C5CFF]/25 blur-2xl"
-                  />
-                  <ProfileAvatar src={imageSrc} initials={initials} />
-                </div>
+                <div className="relative flex flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
+                  {/* Avatar + soft spotlight halo behind it */}
+                  <div className="relative">
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7C5CFF]/25 blur-2xl"
+                    />
+                    <ProfileAvatar src={imageSrc} initials={initials} />
+                  </div>
 
-                {/* Name */}
-                <h2
-                  className="mt-7 max-w-full truncate text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
-                  style={{ fontFamily: DISPLAY_FONT }}
-                >
-                  {profile.full_name}
-                </h2>
+                  {/* Name */}
+                  <h2
+                    className="mt-7 max-w-full truncate text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                    style={{ fontFamily: DISPLAY_FONT }}
+                  >
+                    {profile.full_name}
+                  </h2>
 
-                {/* Joined — single centered pill */}
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
-                  <CalendarDays
-                    className="h-4 w-4 text-[#9D82FF]"
-                    strokeWidth={1.8}
-                  />
-                  <span>Joined {formatMonthYear(profile.created_at)}</span>
+                  {/* Joined — single centered pill */}
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
+                    <CalendarDays
+                      className="h-4 w-4 text-[#9D82FF]"
+                      strokeWidth={1.8}
+                    />
+                    <span>Joined {formatMonthYear(profile.created_at)}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* =========================================================
-            ABOUT — Fraunces editorial pull-quote
-        ========================================================= */}
-        <section
-          className="animate-page-item rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
-          style={{ animationDelay: "230ms" }}
-        >
-          <SectionHeader
-            icon={FileText}
-            title="About"
-            description="A short introduction."
-          />
+          {/* -----------------------------------------------------
+              ABOUT — Fraunces editorial pull-quote
+          ----------------------------------------------------- */}
+          <section
+            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+            style={{ animationDelay: "230ms" }}
+          >
+            <SectionHeader
+              icon={FileText}
+              title="About"
+              description="A short introduction."
+            />
 
-          <div className="relative mt-6 pl-10">
-            {/* Oversized quote mark — the second, final gold touch */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-3 left-0 select-none text-6xl leading-none text-[#E8C67A]/25"
-              style={{ fontFamily: SERIF_FONT }}
-            >
-              &ldquo;
-            </span>
+            <div className="relative mt-6 flex flex-1 flex-col justify-center pl-10">
+              {/* Oversized quote mark — the second, final gold touch */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-3 left-0 select-none text-6xl leading-none text-[#E8C67A]/25"
+                style={{ fontFamily: SERIF_FONT }}
+              >
+                &ldquo;
+              </span>
 
-            <blockquote
-              className="max-w-2xl text-lg italic leading-relaxed text-white/70 sm:text-xl"
-              style={{ fontFamily: SERIF_FONT }}
-            >
-              {profile.bio || "No bio added yet."}
-            </blockquote>
-          </div>
-        </section>
+              <blockquote
+                className="max-w-2xl text-lg italic leading-relaxed text-white/70 sm:text-xl"
+                style={{ fontFamily: SERIF_FONT }}
+              >
+                {profile.bio || "No bio added yet."}
+              </blockquote>
+            </div>
+          </section>
+        </div>
 
         {/* =========================================================
             DETAILS + SOCIAL
+            Both cards stretch to equal height (grid default). Social Links
+            is flex-col with a bottom-anchored footer so it fills down to
+            match the taller Personal Information card.
         ========================================================= */}
         <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
           {/* Personal information */}
           <section
-            className="animate-page-item rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
             style={{ animationDelay: "310ms" }}
           >
             <SectionHeader
@@ -490,9 +514,11 @@ const ViewProfile = ({
             </div>
           </section>
 
-          {/* Social links */}
+          {/* Social links — flex-col so it stretches to the row height; the
+              footer is pushed to the bottom by the flex-1 spacer, giving the
+              card a filled, structured feel that lines up with the card above. */}
           <section
-            className="animate-page-item h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+            className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
             style={{ animationDelay: "390ms" }}
           >
             <SectionHeader
@@ -512,6 +538,20 @@ const ViewProfile = ({
                 label="LinkedIn"
                 url={profile.linkedin_url}
               />
+              <SocialRow
+                icon={Globe}
+                label="Portfolio"
+                url={profile.portfolio_url}
+              />
+            </div>
+
+            {/* Spacer fills the remaining height and anchors the footer,
+                mirroring the "Last updated" footer on the card to the left. */}
+            <div className="flex flex-1 items-end">
+              <div className="mt-6 flex w-full items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
+                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.8} />
+                Links open in a new tab
+              </div>
             </div>
           </section>
         </div>
