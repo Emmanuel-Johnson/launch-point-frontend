@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+
 /*
   ============================================================================
   STUDENT · VIEW PROFILE  (read-only)  ·  premium pass
@@ -80,7 +81,7 @@ const GRAIN_URL =
 
 const SAMPLE_PROFILE: StudentProfile = {
   id: 2,
-  full_name: "Alex Morgan",
+  full_name: "Alex MorganAlex MorganAlex Morgan",
   email: "emmanuel.johnson.pro@gmail.com",
   profile_image: "/media/student_profiles/Yuta_.jpeg",
   bio: "I am a passionate software developer who enjoys building modern, scalable, and user-friendly web applications. I have a strong interest in backend development and enjoy working with technologies like Python, Django, and REST APIs. I’m always curious to learn new tools and technologies, solve challenging problems, and turn ideas into practical solutions. I believe in continuous learning, writing clean and maintainable code, and improving my skills through hands-on projects and real-world experiences.",
@@ -406,12 +407,25 @@ const ViewProfile = ({
                   </div>
 
                   {/* Name */}
-                  <h2
-                    className="mt-7 max-w-full truncate text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
-                    style={{ fontFamily: DISPLAY_FONT }}
-                  >
-                    {profile.full_name}
-                  </h2>
+                  <div className="mt-7 w-full max-w-full overflow-hidden">
+                    {profile.full_name.length > 16 ? (
+                      <div className="relative h-[38px] overflow-hidden sm:h-[42px]">
+                        <div
+                          className="absolute left-0 w-full animate-name-scroll text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                          style={{ fontFamily: DISPLAY_FONT }}
+                        >
+                          {profile.full_name}
+                        </div>
+                      </div>
+                    ) : (
+                      <h2
+                        className="text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                        style={{ fontFamily: DISPLAY_FONT }}
+                      >
+                        {profile.full_name}
+                      </h2>
+                    )}
+                  </div>
 
                   {/* Joined — single centered pill */}
                   <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">

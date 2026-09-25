@@ -577,3 +577,24 @@ html {
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes name-scroll {
+  0%,
+  25% {
+    transform: translateY(0);
+  }
+
+  50%,
+  75% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-name-scroll {
+  animation: name-scroll 10s ease-in-out infinite;
+}
+
