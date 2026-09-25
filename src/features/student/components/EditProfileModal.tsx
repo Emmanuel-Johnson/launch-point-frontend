@@ -125,19 +125,51 @@ const profileSchema = z.object({
     .string()
     .trim()
     .min(1, "GitHub URL is required")
-    .url("Enter a valid GitHub URL"),
+    .url("Enter a valid GitHub URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "github.com" || url.hostname === "www.github.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "GitHub URL must be from github.com"),
 
   linkedin_url: z
     .string()
     .trim()
     .min(1, "LinkedIn URL is required")
-    .url("Enter a valid LinkedIn URL"),
+    .url("Enter a valid LinkedIn URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "linkedin.com" ||
+            url.hostname === "www.linkedin.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "LinkedIn URL must be from linkedin.com"),
 
   portfolio_url: z
     .string()
     .trim()
     .min(1, "Portfolio URL is required")
-    .url("Enter a valid portfolio URL"),
+    .url("Enter a valid portfolio URL")
+    .refine((value) => {
+      try {
+        return new URL(value).protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "Portfolio URL must use HTTPS"),
 });
 
 type FormData = z.infer<typeof profileSchema>;
