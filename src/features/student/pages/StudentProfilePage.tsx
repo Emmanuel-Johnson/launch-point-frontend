@@ -329,10 +329,11 @@ const ViewProfile = ({
           className="animate-page-item flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
           style={{ animationDelay: "80ms" }}
         >
-          <div>
+          <div className="cursor-default">
             <p className="mb-2 text-sm font-medium text-[#7C5CFF]">Account</p>
+
             <h1
-              className="text-3xl font-semibold tracking-tight text-white md:text-4xl"
+              className="cursor-default bg-gradient-to-r from-white via-white to-[#9B7CFF] bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-4xl"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               My Profile
@@ -342,7 +343,7 @@ const ViewProfile = ({
           <button
             type="button"
             onClick={onEdit}
-            className="group inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-5 py-3 text-sm font-medium text-[#9D82FF] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/50 hover:bg-[#7C5CFF]/15 hover:text-white hover:shadow-[0_10px_30px_rgba(124,92,255,0.18)]"
+            className="group inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-5 py-3 text-sm font-medium text-[#9D82FF] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/50 hover:bg-[#7C5CFF]/15 hover:text-white hover:shadow-[0_10px_30px_rgba(124,92,255,0.18)] cursor-pointer"
           >
             <Edit3
               className="h-4 w-4 transition-transform duration-300 group-hover:rotate-6"
