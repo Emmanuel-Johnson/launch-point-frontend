@@ -59,9 +59,11 @@ const getInitials = (name: string): string => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const resolveImage = (path: string | null): string | null => {
+const DEFAULT_PROFILE_IMAGE = `${MEDIA_BASE_URL}/media/profile_images/default_profile.png`;
+
+const resolveImage = (path: string | null): string => {
   if (!path) {
-    return null;
+    return DEFAULT_PROFILE_IMAGE;
   }
 
   if (/^https?:\/\//i.test(path)) {

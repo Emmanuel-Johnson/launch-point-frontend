@@ -14,7 +14,7 @@ import type { StudentProfile } from "../types/studentProfile";
 import { updateStudentProfile } from "../api/studentProfileApi";
 
 const MEDIA_BASE_URL = "http://localhost:8000";
-
+const DEFAULT_PROFILE_IMAGE = `${MEDIA_BASE_URL}/media/profile_images/default_profile.png`;
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
 interface EditProfileModalProps {
@@ -35,9 +35,9 @@ interface FormData {
   portfolio_url: string;
 }
 
-const resolveImage = (path: string | null): string | null => {
+const resolveImage = (path: string | null): string => {
   if (!path) {
-    return null;
+    return DEFAULT_PROFILE_IMAGE;
   }
 
   if (/^https?:\/\//i.test(path)) {
@@ -67,6 +67,7 @@ const EditProfileModal = ({
   onClose,
   onSaved,
 }: EditProfileModalProps) => {
+  const [removeProfileImage, setRemoveProfileImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<FormData>({
@@ -166,6 +167,7 @@ const EditProfileModal = ({
     }
 
     setSelectedImage(file);
+    setRemoveProfileImage(false);
     setPreviewImage(URL.createObjectURL(file));
     setError(null);
 
@@ -180,7 +182,8 @@ const EditProfileModal = ({
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
-    setPreviewImage(null);
+    setRemoveProfileImage(true);
+    setPreviewImage(DEFAULT_PROFILE_IMAGE);
     setError(null);
   };
 
@@ -216,6 +219,7 @@ const EditProfileModal = ({
         linkedin_url: formData.linkedin_url.trim(),
         portfolio_url: formData.portfolio_url.trim(),
         profile_image: selectedImage,
+        remove_profile_image: removeProfileImage,
       });
 
       onSaved(updatedProfile);

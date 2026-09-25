@@ -18,6 +18,7 @@ interface UpdateStudentProfileData {
   linkedin_url?: string;
   portfolio_url?: string;
   profile_image?: File | null;
+  remove_profile_image?: boolean;
 }
 
 export const updateStudentProfile = async (
@@ -59,6 +60,10 @@ export const updateStudentProfile = async (
 
   if (data.profile_image) {
     formData.append("profile_image", data.profile_image);
+  }
+
+  if (data.remove_profile_image !== undefined) {
+    formData.append("remove_profile_image", String(data.remove_profile_image));
   }
 
   const response = await api.patch<StudentProfile>(
