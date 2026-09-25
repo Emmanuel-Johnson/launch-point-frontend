@@ -219,49 +219,10 @@ const EditProfileModal = ({
       });
 
       onSaved(updatedProfile);
-    } catch (error: unknown) {
-      console.error("UPDATE PROFILE ERROR:", error);
+    } catch (error) {
+      console.error("Failed to update student profile:", error);
 
-      if (error && typeof error === "object" && "response" in error) {
-        const response = (
-          error as {
-            response?: {
-              status?: number;
-              data?: unknown;
-            };
-          }
-        ).response;
-
-        console.error("STATUS:", response?.status);
-
-        console.error("BACKEND RESPONSE:", response?.data);
-
-        const backendError = response?.data;
-
-        if (typeof backendError === "string") {
-          setError(backendError);
-        } else if (backendError && typeof backendError === "object") {
-          const messages = Object.entries(backendError).map(
-            ([field, value]) => {
-              const message = Array.isArray(value)
-                ? value.join(", ")
-                : String(value);
-
-              return `${field}: ${message}`;
-            },
-          );
-
-          setError(
-            messages.length > 0
-              ? messages.join(" | ")
-              : "Failed to update profile.",
-          );
-        } else {
-          setError("Failed to update profile. Please try again.");
-        }
-      } else {
-        setError("Failed to update profile. Please try again.");
-      }
+      setError("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
