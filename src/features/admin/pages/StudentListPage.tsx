@@ -7,7 +7,7 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Student {
@@ -459,6 +459,7 @@ const StudentListPage = () => {
   const [studentList, setStudentList] = useState(students);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const studentsListRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
 
   const filteredStudents = useMemo(() => {
@@ -535,16 +536,42 @@ const StudentListPage = () => {
     setCurrentPage(1);
   };
 
+  const scrollToStudentsList = () => {
+    studentsListRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const handlePreviousPage = () => {
-    setCurrentPage((page) => Math.max(page - 1, 1));
+    setCurrentPage((page) => {
+      const nextPage = Math.max(page - 1, 1);
+
+      if (nextPage !== page) {
+        setTimeout(scrollToStudentsList, 0);
+      }
+
+      return nextPage;
+    });
   };
 
   const handleNextPage = () => {
-    setCurrentPage((page) => Math.min(page + 1, totalPages));
+    setCurrentPage((page) => {
+      const nextPage = Math.min(page + 1, totalPages);
+
+      if (nextPage !== page) {
+        setTimeout(scrollToStudentsList, 0);
+      }
+
+      return nextPage;
+    });
   };
 
   const handlePageChange = (page: number) => {
+    if (page === currentPage) return;
+
     setCurrentPage(page);
+    setTimeout(scrollToStudentsList, 0);
   };
 
   const getPageNumbers = () => {
@@ -689,7 +716,11 @@ const StudentListPage = () => {
         </section>
 
         {/* Student Table */}
-        <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
+        <section
+          ref={studentsListRef}
+          className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
+        >
+          {" "}
           {/* Table Header */}
           <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
             <div className="cursor-default">
@@ -718,7 +749,6 @@ const StudentListPage = () => {
               />
             </div>
           </div>
-
           {/* Desktop Table */}
           <div className="hidden overflow-x-auto md:block">
             {/* table-fixed + explicit column widths keep every column in the
@@ -876,7 +906,6 @@ const StudentListPage = () => {
               </tbody>
             </table>
           </div>
-
           {/* Mobile Cards */}
           <div className="divide-y divide-white/[0.06] md:hidden">
             {paginatedStudents.map((student, index) => (
@@ -989,7 +1018,6 @@ const StudentListPage = () => {
               </div>
             ))}
           </div>
-
           {/* Pagination */}
           {filteredStudents.length > 0 && totalPages > 1 && (
             <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between cursor-default">
@@ -1052,7 +1080,6 @@ const StudentListPage = () => {
               </div>
             </div>
           )}
-
           {/* Empty State */}
           {filteredStudents.length === 0 && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
