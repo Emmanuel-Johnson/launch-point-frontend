@@ -12,6 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const student = {
   id: 85,
@@ -57,6 +58,11 @@ const LinkedinMark = () => (
 
 const StudentDetailPage = () => {
   const navigate = useNavigate();
+  const [isActive, setIsActive] = useState(student.is_active);
+
+  const handleToggleStatus = () => {
+    setIsActive((currentStatus) => !currentStatus);
+  };
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleString("en-IN", {
@@ -105,18 +111,36 @@ const StudentDetailPage = () => {
             Back to Students
           </button>
 
-          <div className="flex shrink-0 items-center gap-2">
-            {student.is_active ? (
-              <span className="flex items-center gap-2 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-3 py-1.5 text-xs font-medium text-[#34D399]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
-                Active
-              </span>
-            ) : (
-              <span className="flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
-                Inactive
-              </span>
-            )}
+          <div className="flex shrink-0 items-center gap-5">
+            {/* Status */}
+            <span
+              className={`inline-flex h-9 w-24 items-center justify-center gap-2 rounded-full text-xs font-medium ring-1 ring-inset ${
+                isActive
+                  ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                  : "bg-red-400/10 text-red-400 ring-red-400/20"
+              }`}
+            >
+              <span
+                className={`h-2 w-2 rounded-full ${
+                  isActive ? "bg-[#34D399]" : "bg-red-400"
+                }`}
+              />
+
+              {isActive ? "Active" : "Inactive"}
+            </span>
+
+            {/* Action */}
+            <button
+              type="button"
+              onClick={handleToggleStatus}
+              className={`inline-flex h-10 w-40 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-all ${
+                isActive
+                  ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                  : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+              }`}
+            >
+              {isActive ? "Deactivate Account" : "Activate Account"}
+            </button>
           </div>
         </div>
 
@@ -479,12 +503,12 @@ const StudentDetailPage = () => {
                 <div className="flex items-start gap-3">
                   <div
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${
-                      student.is_active
+                      isActive
                         ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
                         : "bg-red-400/10 text-red-400 ring-red-400/20"
                     }`}
                   >
-                    {student.is_active ? (
+                    {isActive ? (
                       <CheckCircle2 size={16} strokeWidth={1.8} />
                     ) : (
                       <XCircle size={16} strokeWidth={1.8} />
@@ -495,10 +519,10 @@ const StudentDetailPage = () => {
                     <p className="text-xs text-white/35">Account Status</p>
                     <p
                       className={`mt-1 text-sm font-medium ${
-                        student.is_active ? "text-[#34D399]" : "text-red-400"
+                        isActive ? "text-[#34D399]" : "text-red-400"
                       }`}
                     >
-                      {student.is_active ? "Active" : "Inactive"}
+                      {isActive ? "Active" : "Inactive"}
                     </p>
                   </div>
                 </div>
