@@ -451,22 +451,6 @@ const students: Student[] = [
     date_joined: "2026-09-16T12:15:38.910000+05:30",
     is_active: false,
   },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
 ];
 
 const STUDENTS_PER_PAGE = 10;
@@ -499,6 +483,14 @@ const StudentListPage = () => {
 
     return filteredStudents.slice(startIndex, endIndex);
   }, [filteredStudents, currentPage]);
+
+  // Reserve the height of a full page so the layout below (pagination,
+  // page edges) never shifts when the last page has fewer rows. Only kicks
+  // in while pagination is active, so single-page searches stay natural.
+  const placeholderCount =
+    totalPages > 1
+      ? Math.max(STUDENTS_PER_PAGE - paginatedStudents.length, 0)
+      : 0;
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-IN", {
@@ -580,20 +572,25 @@ const StudentListPage = () => {
       <div className="space-y-6">
         {/* Header */}
         <section>
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] p-7 shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
+          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#34D399]/15 blur-3xl"
+              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
+            />
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
             />
 
             <div className="relative cursor-default">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#34D399]/25">
                   <Users className="h-5 w-5" strokeWidth={1.8} />
                 </div>
 
@@ -614,14 +611,19 @@ const StudentListPage = () => {
         {/* Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {/* Total Students */}
-          <div className="cursor-default rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
+          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+            />
+
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                   Total Students
                 </p>
 
-                <p className="mt-3 text-3xl font-semibold text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-white">
                   {studentList.length}
                 </p>
               </div>
@@ -633,14 +635,24 @@ const StudentListPage = () => {
           </div>
 
           {/* Active Students */}
-          <div className="cursor-default rounded-2xl border border-[#34D399]/20 bg-[#0A0A0A] p-5">
-            <div className="flex items-center justify-between">
+          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+            />
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#34D399]/[0.08] blur-3xl"
+            />
+
+            <div className="relative flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                   Active Students
                 </p>
 
-                <p className="mt-3 text-3xl font-semibold text-[#34D399]">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-[#34D399]">
                   {studentList.filter((student) => student.is_active).length}
                 </p>
               </div>
@@ -652,14 +664,19 @@ const StudentListPage = () => {
           </div>
 
           {/* Showing */}
-          <div className="cursor-default rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
+          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+            />
+
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                   Showing
                 </p>
 
-                <p className="mt-3 text-3xl font-semibold text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-white">
                   {filteredStudents.length}
                 </p>
               </div>
@@ -672,11 +689,13 @@ const StudentListPage = () => {
         </section>
 
         {/* Student Table */}
-        <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+        <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
           {/* Table Header */}
           <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
             <div className="cursor-default">
-              <h2 className="text-lg font-semibold">All Students</h2>
+              <h2 className="text-lg font-semibold tracking-tight">
+                All Students
+              </h2>
 
               <p className="mt-1 text-xs text-white/45">
                 View and manage registered student accounts.
@@ -695,44 +714,52 @@ const StudentListPage = () => {
                 value={searchQuery}
                 onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Search students..."
-                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.04] focus:ring-2 focus:ring-[#34D399]/10"
+                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
               />
             </div>
           </div>
 
           {/* Desktop Table */}
           <div className="hidden overflow-x-auto md:block">
-            <table className="w-full">
+            {/* table-fixed + explicit column widths keep every column in the
+                exact same position across pages, regardless of cell content. */}
+            <table className="w-full table-fixed">
               <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] text-left">
-                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                  <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Student
                   </th>
 
-                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[30%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Email
                   </th>
 
-                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Joined
                   </th>
 
-                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Status
                   </th>
 
-                  <th className="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Action
+                  {/* "Action" label aligned to the start (left edge) of the
+                      action button that sits below it. */}
+                  <th className="w-[14%] px-6 py-4">
+                    <div className="flex justify-end">
+                      <span className="w-28 text-left text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Action
+                      </span>
+                    </div>
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="cursor-pointer">
-                {paginatedStudents.map((student) => (
+              <tbody>
+                {paginatedStudents.map((student, index) => (
                   <tr
-                    key={student.id}
+                    key={`${student.id}-${index}`}
                     onClick={() => navigate(`/admin/students/${student.id}`)}
-                    className="cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.03]"
+                    className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
                   >
                     {/* Student */}
                     <td className="px-6 py-4">
@@ -755,13 +782,13 @@ const StudentListPage = () => {
 
                         <div className="min-w-0">
                           <p
-                            className="max-w-[220px] truncate text-sm font-medium text-white"
+                            className="truncate text-sm font-medium text-white"
                             title={student.full_name}
                           >
                             {truncateText(student.full_name)}
                           </p>
 
-                          <p className="mt-0.5 text-xs text-white/35">
+                          <p className="mt-0.5 text-xs tabular-nums text-white/35">
                             ID #{student.id}
                           </p>
                         </div>
@@ -773,10 +800,7 @@ const StudentListPage = () => {
                       <div className="flex items-center gap-2 text-sm text-white/60">
                         <Mail className="h-4 w-4 shrink-0 text-white/30" />
 
-                        <span
-                          className="max-w-[240px] truncate"
-                          title={student.email}
-                        >
+                        <span className="truncate" title={student.email}>
                           {truncateText(student.email)}
                         </span>
                       </div>
@@ -784,20 +808,22 @@ const StudentListPage = () => {
 
                     {/* Joined */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm text-white/55">
+                      <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
                         <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
 
-                        {formatDate(student.date_joined)}
+                        <span className="truncate">
+                          {formatDate(student.date_joined)}
+                        </span>
                       </div>
                     </td>
 
                     {/* Status */}
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ${
+                        className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
                           student.is_active
-                            ? "bg-[#34D399]/10 text-[#34D399]"
-                            : "bg-red-400/10 text-red-400"
+                            ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                            : "bg-red-400/10 text-red-400 ring-red-400/20"
                         }`}
                       >
                         <span
@@ -814,7 +840,10 @@ const StudentListPage = () => {
                     <td className="px-6 py-4 text-right">
                       <button
                         type="button"
-                        onClick={() => handleToggleStatus(student.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleToggleStatus(student.id);
+                        }}
                         className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all ${
                           student.is_active
                             ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
@@ -826,15 +855,33 @@ const StudentListPage = () => {
                     </td>
                   </tr>
                 ))}
+
+                {/* Height-reserving placeholder rows keep the page structure
+                    fixed when the last page is partially filled. */}
+                {Array.from({ length: placeholderCount }).map((_, index) => (
+                  <tr
+                    key={`placeholder-${index}`}
+                    aria-hidden="true"
+                    className="border-b border-white/[0.03]"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="h-11" />
+                    </td>
+                    <td className="px-6 py-4" />
+                    <td className="px-6 py-4" />
+                    <td className="px-6 py-4" />
+                    <td className="px-6 py-4" />
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
           {/* Mobile Cards */}
           <div className="divide-y divide-white/[0.06] md:hidden">
-            {paginatedStudents.map((student) => (
+            {paginatedStudents.map((student, index) => (
               <div
-                key={student.id}
+                key={`${student.id}-${index}`}
                 className="p-5 transition-colors hover:bg-white/[0.02]"
               >
                 <div className="flex items-start gap-3">
@@ -874,10 +921,10 @@ const StudentListPage = () => {
 
                       {/* Mobile Status */}
                       <span
-                        className={`inline-flex h-7 w-20 shrink-0 items-center justify-center gap-1.5 rounded-full text-[10px] font-medium ${
+                        className={`inline-flex h-7 w-20 shrink-0 items-center justify-center gap-1.5 rounded-full text-[10px] font-medium ring-1 ring-inset ${
                           student.is_active
-                            ? "bg-[#34D399]/10 text-[#34D399]"
-                            : "bg-red-400/10 text-red-400"
+                            ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                            : "bg-red-400/10 text-red-400 ring-red-400/20"
                         }`}
                       >
                         <span
@@ -891,14 +938,17 @@ const StudentListPage = () => {
                     </div>
 
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-xs text-white/35">
+                      <span className="flex items-center gap-1.5 text-xs tabular-nums text-white/35">
                         <CalendarDays className="h-3.5 w-3.5" />
                         Joined {formatDate(student.date_joined)}
                       </span>
 
                       <button
                         type="button"
-                        onClick={() => handleToggleStatus(student.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleToggleStatus(student.id);
+                        }}
                         className={`inline-flex h-9 w-28 items-center justify-center rounded-lg text-xs font-medium transition-all ${
                           student.is_active
                             ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
@@ -912,6 +962,32 @@ const StudentListPage = () => {
                 </div>
               </div>
             ))}
+
+            {/* Height-reserving placeholder cards mirror a real card's layout
+                so the mobile list keeps a constant height across pages. */}
+            {Array.from({ length: placeholderCount }).map((_, index) => (
+              <div
+                key={`placeholder-mobile-${index}`}
+                aria-hidden="true"
+                className="p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="h-11 w-11 shrink-0 rounded-full" />
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="h-4" />
+                        <div className="mt-0.5 h-4" />
+                      </div>
+                      <div className="h-7 w-20 shrink-0" />
+                    </div>
+
+                    <div className="mt-4 h-9" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Pagination */}
@@ -920,10 +996,15 @@ const StudentListPage = () => {
               {/* Showing range */}
               <p className="text-xs text-white/40">
                 Showing{" "}
-                <span className="font-medium text-white/70">{startItem}</span>{" "}
-                to <span className="font-medium text-white/70">{endItem}</span>{" "}
+                <span className="font-medium tabular-nums text-white/70">
+                  {startItem}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium tabular-nums text-white/70">
+                  {endItem}
+                </span>{" "}
                 of{" "}
-                <span className="font-medium text-white/70">
+                <span className="font-medium tabular-nums text-white/70">
                   {filteredStudents.length}
                 </span>{" "}
                 students
@@ -948,7 +1029,7 @@ const StudentListPage = () => {
                     key={page}
                     type="button"
                     onClick={() => handlePageChange(page)}
-                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium transition-all ${
+                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
                       currentPage === page
                         ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
                         : "text-white/45 hover:bg-white/[0.04] hover:text-white"
