@@ -1,0 +1,448 @@
+import { CalendarDays, Mail, Search, UserCheck, Users } from "lucide-react";
+import { useMemo, useState } from "react";
+
+interface Student {
+  id: number;
+  full_name: string;
+  email: string;
+  profile_image: string | null;
+  date_joined: string;
+  is_active: boolean;
+}
+
+const students: Student[] = [
+  {
+    id: 86,
+    full_name: "Emmanuel Johnson",
+    email: "emmanuelj.swe@gmail.com",
+    profile_image: null,
+    date_joined: "2026-09-26T19:35:11.566680+05:30",
+    is_active: true,
+  },
+  {
+    id: 85,
+    full_name: "Cristiano Ronaldossd cc",
+    email: "emmanuel.johnson.pro@gmail.com",
+    profile_image: null,
+    date_joined: "2026-09-26T17:45:18.920094+05:30",
+    is_active: true,
+  },
+];
+
+const StudentListPage = () => {
+  const [studentList, setStudentList] = useState(students);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredStudents = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+
+    if (!query) {
+      return studentList;
+    }
+
+    return studentList.filter(
+      (student) =>
+        student.full_name.toLowerCase().includes(query) ||
+        student.email.toLowerCase().includes(query),
+    );
+  }, [searchQuery, studentList]);
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .slice(0, 2)
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
+  };
+
+  const truncateText = (text: string, maxLength = 35) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    return `${text.slice(0, maxLength - 3)}...`;
+  };
+
+  const handleToggleStatus = (studentId: number) => {
+    setStudentList((currentStudents) =>
+      currentStudents.map((student) =>
+        student.id === studentId
+          ? {
+              ...student,
+              is_active: !student.is_active,
+            }
+          : student,
+      ),
+    );
+  };
+
+  return (
+    <div className="min-h-full w-full bg-black text-white">
+      <div className="space-y-6">
+        {/* Header */}
+        <section>
+          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] p-7 shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#34D399]/15 blur-3xl"
+            />
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+            />
+
+            <div className="relative cursor-default">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                  <Users className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+
+                <div>
+                  <h1 className="text-2xl font-semibold tracking-tight">
+                    Students
+                  </h1>
+
+                  <p className="mt-1 text-sm text-white/50">
+                    Manage and view all registered students.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Statistics */}
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {/* Total Students */}
+          <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 cursor-default">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                  Total Students
+                </p>
+
+                <p className="mt-3 text-3xl font-semibold text-white">
+                  {studentList.length}
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                <Users className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+            </div>
+          </div>
+
+          {/* Active Students */}
+          <div className="rounded-2xl border border-[#34D399]/20 bg-[#0A0A0A] p-5 cursor-default">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                  Active Students
+                </p>
+
+                <p className="mt-3 text-3xl font-semibold text-[#34D399]">
+                  {studentList.filter((student) => student.is_active).length}
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                <UserCheck className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+            </div>
+          </div>
+
+          {/* Showing */}
+          <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 cursor-default">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                  Showing
+                </p>
+
+                <p className="mt-3 text-3xl font-semibold text-white">
+                  {filteredStudents.length}
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] text-white/60">
+                <Search className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Student Table */}
+        <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+          {/* Table Header */}
+          <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
+            <div className="cursor-default">
+              <h2 className="text-lg font-semibold">All Students</h2>
+
+              <p className="mt-1 text-xs text-white/45">
+                View and manage registered student accounts.
+              </p>
+            </div>
+
+            {/* Search */}
+            <div className="relative w-full md:w-80">
+              <Search
+                className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35 cursor-pointer"
+                strokeWidth={1.8}
+              />
+
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search students..."
+                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.04] focus:ring-2 focus:ring-[#34D399]/10"
+              />
+            </div>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full">
+              <thead className="cursor-default">
+                <tr className="border-b border-white/[0.06] text-left">
+                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                    Student
+                  </th>
+
+                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                    Email
+                  </th>
+
+                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                    Joined
+                  </th>
+
+                  <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                    Status
+                  </th>
+
+                  <th className="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="cursor-pointer">
+                {filteredStudents.map((student) => (
+                  <tr
+                    key={student.id}
+                    className="group border-b border-white/[0.05] transition-colors duration-200 last:border-b-0 hover:bg-[#34D399]/[0.025]"
+                  >
+                    {/* Student */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        {student.id === 85 ? (
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-bold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                            CR
+                          </div>
+                        ) : student.profile_image ? (
+                          <img
+                            src={student.profile_image}
+                            alt={student.full_name}
+                            className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+                          />
+                        ) : (
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                            {getInitials(student.full_name)}
+                          </div>
+                        )}
+
+                        <div className="min-w-0">
+                          <p
+                            className="max-w-[220px] truncate text-sm font-medium text-white"
+                            title={student.full_name}
+                          >
+                            {truncateText(student.full_name)}
+                          </p>
+
+                          <p className="mt-0.5 text-xs text-white/35">
+                            ID #{student.id}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Email */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-white/60">
+                        <Mail className="h-4 w-4 shrink-0 text-white/30" />
+
+                        <span
+                          className="max-w-[240px] truncate"
+                          title={student.email}
+                        >
+                          {truncateText(student.email)}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Joined */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-white/55">
+                        <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
+
+                        {formatDate(student.date_joined)}
+                      </div>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ${
+                          student.is_active
+                            ? "bg-[#34D399]/10 text-[#34D399]"
+                            : "bg-red-400/10 text-red-400"
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            student.is_active ? "bg-[#34D399]" : "bg-red-400"
+                          }`}
+                        />
+
+                        {student.is_active ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+
+                    {/* Action */}
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleStatus(student.id)}
+                        className={`inline-flex h-9 w-28 items-center justify-center rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                          student.is_active
+                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                        }`}
+                      >
+                        {student.is_active ? "Deactivate" : "Activate"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="divide-y divide-white/[0.06] md:hidden">
+            {filteredStudents.map((student) => (
+              <div
+                key={student.id}
+                className="p-5 transition-colors hover:bg-white/[0.02]"
+              >
+                <div className="flex items-start gap-3">
+                  {student.id === 85 ? (
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-bold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      CR
+                    </div>
+                  ) : student.profile_image ? (
+                    <img
+                      src={student.profile_image}
+                      alt={student.full_name}
+                      className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+                    />
+                  ) : (
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      {getInitials(student.full_name)}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p
+                          className="max-w-[200px] truncate text-sm font-medium text-white"
+                          title={student.full_name}
+                        >
+                          {truncateText(student.full_name)}
+                        </p>
+
+                        <p
+                          className="max-w-[220px] truncate text-xs text-white/40"
+                          title={student.email}
+                        >
+                          {truncateText(student.email)}
+                        </p>
+                      </div>
+
+                      {/* Mobile Status */}
+                      <span
+                        className={`inline-flex h-7 w-20 shrink-0 items-center justify-center gap-1.5 rounded-full text-[10px] font-medium ${
+                          student.is_active
+                            ? "bg-[#34D399]/10 text-[#34D399]"
+                            : "bg-red-400/10 text-red-400"
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            student.is_active ? "bg-[#34D399]" : "bg-red-400"
+                          }`}
+                        />
+
+                        {student.is_active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-xs text-white/35">
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        Joined {formatDate(student.date_joined)}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => handleToggleStatus(student.id)}
+                        className={`inline-flex h-9 w-28 items-center justify-center rounded-lg text-xs font-medium transition-all ${
+                          student.is_active
+                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                        }`}
+                      >
+                        {student.is_active ? "Deactivate" : "Activate"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredStudents.length === 0 && (
+            <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
+                <Users className="h-6 w-6" />
+              </div>
+
+              <h3 className="mt-4 text-sm font-medium text-white">
+                No students found
+              </h3>
+
+              <p className="mt-1 text-xs text-white/40">
+                Try searching with a different name or email.
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default StudentListPage;

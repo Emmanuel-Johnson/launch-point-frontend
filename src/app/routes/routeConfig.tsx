@@ -33,11 +33,13 @@ import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
 import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
 import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
 
+import StudentListPage from "../../features/admin/pages/StudentListPage";
+
 // Instructor
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
 
-import StudentProfilePage from "../../features/student/pages/StudentProfilePage"
+import StudentProfilePage from "../../features/student/pages/StudentProfilePage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -177,6 +179,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "dashboard",
             element: <AdminDashboardPage />,
+          },
+          {
+            path: "students",
+            element: <StudentListPage />,
           },
         ],
       },
