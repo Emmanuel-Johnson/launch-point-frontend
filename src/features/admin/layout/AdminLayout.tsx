@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import AdminHeader from "../components/AdminHeader";
@@ -12,6 +12,17 @@ const AdminLayout = () => {
   const toggleSidebar = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };
+
+  useEffect(() => {
+    const mainElement = document.querySelector(".admin-scrollbar");
+
+    if (mainElement) {
+      mainElement.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    }
+  }, [location.pathname]);
 
   return (
     <div className="h-screen overflow-hidden bg-black text-white">

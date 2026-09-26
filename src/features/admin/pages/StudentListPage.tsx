@@ -844,7 +844,7 @@ const StudentListPage = () => {
                           event.stopPropagation();
                           handleToggleStatus(student.id);
                         }}
-                        className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all ${
+                        className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
                           student.is_active
                             ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
                             : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"

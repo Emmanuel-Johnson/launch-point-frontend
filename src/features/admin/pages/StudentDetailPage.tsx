@@ -104,14 +104,14 @@ const StudentDetailPage = () => {
             className="group flex shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-4 py-2.5 text-sm text-white/60 transition-all duration-300 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.05] hover:text-[#6EE7B7]"
           >
             <ArrowLeft
-              size={17}
+              size={13}
               strokeWidth={1.8}
               className="transition-transform duration-300 motion-safe:group-hover:-translate-x-1"
             />
             Back to Students
           </button>
 
-          <div className="flex shrink-0 items-center gap-5">
+          <div className="flex shrink-0 items-center gap-5 cursor-default">
             {/* Status */}
             <span
               className={`inline-flex h-9 w-24 items-center justify-center gap-2 rounded-full text-xs font-medium ring-1 ring-inset ${
@@ -133,7 +133,7 @@ const StudentDetailPage = () => {
             <button
               type="button"
               onClick={handleToggleStatus}
-              className={`inline-flex h-10 w-40 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-all ${
+              className={`inline-flex h-10 w-40 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-all duration-500 ease-out hover:scale-105 ${
                 isActive
                   ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
                   : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
