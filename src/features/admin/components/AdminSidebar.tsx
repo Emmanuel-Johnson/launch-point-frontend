@@ -191,7 +191,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             }`}
           >
             {/* Logo */}
-            <div className="group relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-[#050505] transition-all duration-500 hover:scale-105">
+            <div className="group relative flex h-9 w-9 shrink-0 cursor-default items-center justify-center overflow-hidden rounded-xl bg-[#050505] transition-all duration-500 hover:scale-105">
               <img
                 src="/admin_logo.png"
                 alt="Launch Point Admin"
@@ -210,7 +210,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                   : "max-w-[180px] translate-x-0 opacity-100"
               }`}
             >
-              <div className="group min-w-[170px] cursor-pointer">
+              <div className="group min-w-[170px] cursor-default">
                 <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-all duration-300 group-hover:text-white/80">
                   LAUNCH POINT
                 </span>

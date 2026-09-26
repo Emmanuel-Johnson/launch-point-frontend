@@ -1,12 +1,13 @@
 import {
   ArrowLeft,
+  BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
   ExternalLink,
+  Globe,
   GraduationCap,
   Mail,
   MapPin,
-  BriefcaseBusiness,
   User,
   XCircle,
 } from "lucide-react";
@@ -14,10 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 const student = {
   id: 85,
-  full_name: "Cristiano Ronaldossd cc",
+  full_name: "Cristiano Ronaldo",
   email: "emmanuel.johnson.pro@gmail.com",
   role: "student",
-  profile_image: "/media/profile_images/Yuta_.jpeg",
+  profile_image: null as string | null,
   bio: "Siuuuuuuuuuuuuuuu",
   location: "Portugal",
   education: "7th standard",
@@ -25,13 +26,34 @@ const student = {
   github_url: "https://github.com/Emmanuel-Johnson",
   linkedin_url: "https://www.linkedin.com/in/emmanuel-johnson-dev/",
   portfolio_url: "https://emmanuel-johnson.vercel.app/",
-  email_verified: true,
   is_active: true,
   date_joined: "2026-09-26T17:45:18.920094+05:30",
   updated_at: "2026-09-26T18:09:10.806467+05:30",
   profile_created_at: "2026-09-26T17:45:43.818178+05:30",
   profile_updated_at: "2026-09-26T18:09:10.805551+05:30",
 };
+
+const GithubMark = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+    className="h-5 w-5"
+  >
+    <path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.61 8.21 11.17.6.11.82-.25.82-.56 0-.28-.01-1.02-.02-2-3.34.71-4.04-1.58-4.04-1.58-.55-1.37-1.34-1.74-1.34-1.74-1.09-.73.08-.72.08-.72 1.2.08 1.84 1.21 1.84 1.21 1.07 1.8 2.81 1.28 3.5.98.11-.76.42-1.28.76-1.57-2.67-.3-5.47-1.31-5.47-5.83 0-1.29.47-2.34 1.24-3.17-.12-.3-.54-1.52.12-3.16 0 0 1.01-.32 3.3 1.21a11.6 11.6 0 0 1 6 0c2.29-1.53 3.3-1.21 3.3-1.21.66 1.64.24 2.86.12 3.16.77.83 1.23 1.88 1.23 3.17 0 4.53-2.81 5.53-5.49 5.82.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.28 0 .31.22.68.83.56A12.02 12.02 0 0 0 24 12.29C24 5.78 18.63.5 12 .5Z" />
+  </svg>
+);
+
+const LinkedinMark = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+    className="h-5 w-5"
+  >
+    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" />
+  </svg>
+);
 
 const StudentDetailPage = () => {
   const navigate = useNavigate();
@@ -69,21 +91,21 @@ const StudentDetailPage = () => {
         {/* =====================================================
             TOP BAR
         ====================================================== */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => navigate("/admin/students")}
-            className="group flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0A0A0A] px-4 py-2.5 text-sm text-white/60 transition-all duration-300 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.05] hover:text-[#6EE7B7]"
+            className="group flex shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-4 py-2.5 text-sm text-white/60 transition-all duration-300 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.05] hover:text-[#6EE7B7]"
           >
             <ArrowLeft
               size={17}
               strokeWidth={1.8}
-              className="transition-transform duration-300 group-hover:-translate-x-1"
+              className="transition-transform duration-300 motion-safe:group-hover:-translate-x-1"
             />
             Back to Students
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {student.is_active ? (
               <span className="flex items-center gap-2 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-3 py-1.5 text-xs font-medium text-[#34D399]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
@@ -101,7 +123,7 @@ const StudentDetailPage = () => {
         {/* =====================================================
             PROFILE HERO
         ====================================================== */}
-        <section className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] p-7 shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
+        <section className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
           {/* Glow */}
           <div
             aria-hidden="true"
@@ -110,13 +132,18 @@ const StudentDetailPage = () => {
 
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
+          />
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
           />
 
           <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
             {/* Profile Image */}
-            <div className="relative shrink-0">
-              <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#34D399]/10 text-2xl font-semibold text-[#34D399] shadow-[0_0_35px_rgba(52,211,153,0.08)]">
+            <div className="shrink-0">
+              <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-[#34D399]/25 bg-[#34D399]/10 text-2xl font-semibold text-[#34D399] shadow-[0_0_45px_rgba(52,211,153,0.12)] ring-1 ring-inset ring-white/[0.06]">
                 {student.profile_image ? (
                   <img
                     src={student.profile_image}
@@ -127,46 +154,75 @@ const StudentDetailPage = () => {
                   getInitials(student.full_name)
                 )}
               </div>
-
-              {/* Online indicator */}
-              {student.is_active && (
-                <span className="absolute -bottom-1.5 -right-1.5 flex h-7 w-7 items-center justify-center rounded-full border-4 border-[#0A0A0A] bg-[#34D399]">
-                  <CheckCircle2
-                    size={13}
-                    className="text-black"
-                    strokeWidth={2.5}
-                  />
-                </span>
-              )}
             </div>
 
             {/* Student Info */}
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                <h1 className="min-w-0 text-2xl font-semibold tracking-tight [overflow-wrap:anywhere] md:text-3xl">
                   {student.full_name}
                 </h1>
 
-                <span className="rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#34D399]">
+                <span className="shrink-0 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#34D399]">
                   Student
                 </span>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/45">
-                <div className="flex items-center gap-2">
-                  <Mail size={15} />
-                  {student.email}
-                </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="inline-flex max-w-full items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-sm text-white/55">
+                  <Mail size={15} className="mt-0.5 shrink-0 text-white/35" />
+                  <span className="min-w-0 [overflow-wrap:anywhere]">
+                    {student.email}
+                  </span>
+                </span>
 
-                <div className="flex items-center gap-2">
-                  <MapPin size={15} />
-                  {student.location}
-                </div>
+                <span className="inline-flex max-w-full items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-sm text-white/55">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-white/35" />
+                  <span className="min-w-0 [overflow-wrap:anywhere]">
+                    {student.location}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            ABOUT
+        ====================================================== */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+            />
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">About</h2>
+              <p className="mt-1 text-xs text-white/40">
+                A short introduction written by the student.
+              </p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+            />
+
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                <User size={18} strokeWidth={1.8} />
               </div>
 
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55">
-                {student.bio}
-              </p>
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-wider text-white/35">
+                  Bio
+                </p>
+                <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70 [overflow-wrap:anywhere]">
+                  {student.bio}
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -175,17 +231,40 @@ const StudentDetailPage = () => {
             BASIC INFORMATION
         ====================================================== */}
         <section>
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">Basic Information</h2>
-            <p className="mt-1 text-xs text-white/40">
-              Personal and professional information about the student.
-            </p>
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+            />
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">
+                Basic Information
+              </h2>
+              <p className="mt-1 text-xs text-white/40">
+                Personal and professional information about the student.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {/* Email */}
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                <Mail size={18} strokeWidth={1.8} />
+              </div>
+
+              <p className="mt-4 text-xs uppercase tracking-wider text-white/35">
+                Email
+              </p>
+
+              <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                {student.email}
+              </p>
+            </div>
+
             {/* Location */}
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399]">
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                 <MapPin size={18} strokeWidth={1.8} />
               </div>
 
@@ -193,14 +272,14 @@ const StudentDetailPage = () => {
                 Location
               </p>
 
-              <p className="mt-1 text-sm font-medium text-white">
+              <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
                 {student.location}
               </p>
             </div>
 
             {/* Education */}
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399]">
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                 <GraduationCap size={18} strokeWidth={1.8} />
               </div>
 
@@ -208,14 +287,14 @@ const StudentDetailPage = () => {
                 Education
               </p>
 
-              <p className="mt-1 text-sm font-medium text-white">
+              <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
                 {student.education}
               </p>
             </div>
 
             {/* Occupation */}
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399]">
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                 <BriefcaseBusiness size={18} strokeWidth={1.8} />
               </div>
 
@@ -223,38 +302,9 @@ const StudentDetailPage = () => {
                 Occupation
               </p>
 
-              <p className="mt-1 text-sm font-medium text-white">
+              <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
                 {student.occupation}
               </p>
-            </div>
-
-            {/* Email Verification */}
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399]">
-                <Mail size={18} strokeWidth={1.8} />
-              </div>
-
-              <p className="mt-4 text-xs uppercase tracking-wider text-white/35">
-                Email Verification
-              </p>
-
-              <div className="mt-1 flex items-center gap-2">
-                {student.email_verified ? (
-                  <>
-                    <CheckCircle2 size={15} className="text-[#34D399]" />
-                    <span className="text-sm font-medium text-[#34D399]">
-                      Verified
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <XCircle size={15} className="text-red-400" />
-                    <span className="text-sm font-medium text-red-400">
-                      Not Verified
-                    </span>
-                  </>
-                )}
-              </div>
             </div>
           </div>
         </section>
@@ -263,11 +313,19 @@ const StudentDetailPage = () => {
             SOCIAL LINKS
         ====================================================== */}
         <section>
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">Social & Portfolio</h2>
-            <p className="mt-1 text-xs text-white/40">
-              Public links associated with this student profile.
-            </p>
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+            />
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">
+                Social &amp; Portfolio
+              </h2>
+              <p className="mt-1 text-xs text-white/40">
+                Public links associated with this student profile.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -276,22 +334,22 @@ const StudentDetailPage = () => {
               href={student.github_url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/20 hover:bg-[#34D399]/[0.03]"
+              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/60 transition-colors group-hover:text-[#34D399]">
-                <ExternalLink size={20} strokeWidth={1.8} />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <GithubMark />
               </div>
 
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">GitHub</p>
-                <p className="mt-1 truncate text-xs text-white/35">
+                <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
                   {student.github_url}
                 </p>
               </div>
 
               <ExternalLink
                 size={15}
-                className="shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
+                className="mt-0.5 shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
               />
             </a>
 
@@ -300,22 +358,22 @@ const StudentDetailPage = () => {
               href={student.linkedin_url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/20 hover:bg-[#34D399]/[0.03]"
+              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/60 transition-colors group-hover:text-[#34D399]">
-                <ExternalLink size={20} strokeWidth={1.8} />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <LinkedinMark />
               </div>
 
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">LinkedIn</p>
-                <p className="mt-1 truncate text-xs text-white/35">
+                <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
                   {student.linkedin_url}
                 </p>
               </div>
 
               <ExternalLink
                 size={15}
-                className="shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
+                className="mt-0.5 shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
               />
             </a>
 
@@ -324,22 +382,22 @@ const StudentDetailPage = () => {
               href={student.portfolio_url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/20 hover:bg-[#34D399]/[0.03]"
+              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/60 transition-colors group-hover:text-[#34D399]">
-                <ExternalLink size={20} strokeWidth={1.8} />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <Globe size={20} strokeWidth={1.8} />
               </div>
 
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">Portfolio</p>
-                <p className="mt-1 truncate text-xs text-white/35">
+                <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
                   {student.portfolio_url}
                 </p>
               </div>
 
               <ExternalLink
                 size={15}
-                className="shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
+                className="mt-0.5 shrink-0 text-white/30 transition-colors group-hover:text-[#34D399]"
               />
             </a>
           </div>
@@ -349,22 +407,37 @@ const StudentDetailPage = () => {
             ACCOUNT INFORMATION
         ====================================================== */}
         <section>
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">Account Information</h2>
-            <p className="mt-1 text-xs text-white/40">
-              Account status and profile timestamps.
-            </p>
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+            />
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">
+                Account Information
+              </h2>
+              <p className="mt-1 text-xs text-white/40">
+                Identity details and profile timestamps.
+              </p>
+            </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A]">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+            />
+
             <div className="grid md:grid-cols-2">
               {/* Student ID */}
               <div className="border-b border-white/[0.06] p-5 md:border-r">
-                <div className="flex items-center gap-3">
-                  <User size={17} className="text-[#34D399]" />
-                  <div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <User size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
                     <p className="text-xs text-white/35">Student ID</p>
-                    <p className="mt-1 text-sm font-medium text-white">
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
                       #{student.id}
                     </p>
                   </div>
@@ -373,79 +446,52 @@ const StudentDetailPage = () => {
 
               {/* Role */}
               <div className="border-b border-white/[0.06] p-5">
-                <div className="flex items-center gap-3">
-                  <User size={17} className="text-[#34D399]" />
-                  <div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <User size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
                     <p className="text-xs text-white/35">Role</p>
-                    <p className="mt-1 text-sm font-medium capitalize text-white">
+                    <p className="mt-1 text-sm font-medium capitalize text-white [overflow-wrap:anywhere]">
                       {student.role}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Date Joined */}
+              {/* Email */}
               <div className="border-b border-white/[0.06] p-5 md:border-r">
-                <div className="flex items-center gap-3">
-                  <CalendarDays size={17} className="text-[#34D399]" />
-                  <div>
-                    <p className="text-xs text-white/35">Date Joined</p>
-                    <p className="mt-1 text-sm font-medium text-white">
-                      {formatDate(student.date_joined)}
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <Mail size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/35">Email</p>
+                    <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                      {student.email}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Profile Created */}
+              {/* Account Status */}
               <div className="border-b border-white/[0.06] p-5">
-                <div className="flex items-center gap-3">
-                  <CalendarDays size={17} className="text-[#34D399]" />
-                  <div>
-                    <p className="text-xs text-white/35">Profile Created</p>
-                    <p className="mt-1 text-sm font-medium text-white">
-                      {formatDate(student.profile_created_at)}
-                    </p>
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${
+                      student.is_active
+                        ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                        : "bg-red-400/10 text-red-400 ring-red-400/20"
+                    }`}
+                  >
+                    {student.is_active ? (
+                      <CheckCircle2 size={16} strokeWidth={1.8} />
+                    ) : (
+                      <XCircle size={16} strokeWidth={1.8} />
+                    )}
                   </div>
-                </div>
-              </div>
 
-              {/* Updated */}
-              <div className="border-b border-white/[0.06] p-5 md:border-r">
-                <div className="flex items-center gap-3">
-                  <CalendarDays size={17} className="text-[#34D399]" />
-                  <div>
-                    <p className="text-xs text-white/35">Account Updated</p>
-                    <p className="mt-1 text-sm font-medium text-white">
-                      {formatDate(student.updated_at)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Profile Updated */}
-              <div className="border-b border-white/[0.06] p-5">
-                <div className="flex items-center gap-3">
-                  <CalendarDays size={17} className="text-[#34D399]" />
-                  <div>
-                    <p className="text-xs text-white/35">Profile Updated</p>
-                    <p className="mt-1 text-sm font-medium text-white">
-                      {formatDate(student.profile_updated_at)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Status */}
-              <div className="p-5 md:border-r">
-                <div className="flex items-center gap-3">
-                  {student.is_active ? (
-                    <CheckCircle2 size={17} className="text-[#34D399]" />
-                  ) : (
-                    <XCircle size={17} className="text-red-400" />
-                  )}
-
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-white/35">Account Status</p>
                     <p
                       className={`mt-1 text-sm font-medium ${
@@ -458,25 +504,61 @@ const StudentDetailPage = () => {
                 </div>
               </div>
 
-              {/* Email Status */}
-              <div className="p-5">
-                <div className="flex items-center gap-3">
-                  {student.email_verified ? (
-                    <CheckCircle2 size={17} className="text-[#34D399]" />
-                  ) : (
-                    <XCircle size={17} className="text-red-400" />
-                  )}
+              {/* Date Joined */}
+              <div className="border-b border-white/[0.06] p-5 md:border-r">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <CalendarDays size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/35">Date Joined</p>
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      {formatDate(student.date_joined)}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-                  <div>
-                    <p className="text-xs text-white/35">Email Status</p>
-                    <p
-                      className={`mt-1 text-sm font-medium ${
-                        student.email_verified
-                          ? "text-[#34D399]"
-                          : "text-red-400"
-                      }`}
-                    >
-                      {student.email_verified ? "Verified" : "Not Verified"}
+              {/* Profile Created */}
+              <div className="border-b border-white/[0.06] p-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <CalendarDays size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/35">Profile Created</p>
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      {formatDate(student.profile_created_at)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Account Updated */}
+              <div className="border-b border-white/[0.06] p-5 md:border-r md:border-b-0">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <CalendarDays size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/35">Account Updated</p>
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      {formatDate(student.updated_at)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile Updated */}
+              <div className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <CalendarDays size={16} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/35">Profile Updated</p>
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      {formatDate(student.profile_updated_at)}
                     </p>
                   </div>
                 </div>
@@ -485,10 +567,23 @@ const StudentDetailPage = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <div className="pb-4 text-center text-xs text-white/25">
-          Student #{student.id} • {formatDateOnly(student.date_joined)}
-        </div>
+        {/* =====================================================
+            FOOTER
+        ====================================================== */}
+        <footer className="mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between">
+          <div className="flex items-center gap-2.5 text-xs text-white/40">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+              <GraduationCap size={14} strokeWidth={1.8} />
+            </span>
+            <span className="font-medium text-white/55">Launch Point</span>
+            <span className="text-white/20">·</span>
+            <span>Admin Panel</span>
+          </div>
+
+          <p className="text-xs tabular-nums text-white/30">
+            Student #{student.id} • Joined {formatDateOnly(student.date_joined)}
+          </p>
+        </footer>
       </div>
     </div>
   );

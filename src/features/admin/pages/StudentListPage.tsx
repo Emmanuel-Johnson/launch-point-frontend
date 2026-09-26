@@ -992,7 +992,7 @@ const StudentListPage = () => {
 
           {/* Pagination */}
           {filteredStudents.length > 0 && totalPages > 1 && (
-            <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between cursor-default">
               {/* Showing range */}
               <p className="text-xs text-white/40">
                 Showing{" "}
