@@ -427,8 +427,8 @@ const ViewProfile = () => {
                         }}
                         title={profile.full_name}
                       >
-                        {profile.full_name.length > 16
-                          ? `${profile.full_name.slice(0, 16)}...`
+                        {profile.full_name.length > 20
+                          ? `${profile.full_name.slice(0, 20)}...`
                           : profile.full_name}
                       </h2>
                     </div>
