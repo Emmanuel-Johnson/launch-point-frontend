@@ -59,9 +59,11 @@ const getInitials = (name: string): string => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const resolveImage = (path: string | null): string | null => {
+const DEFAULT_PROFILE_IMAGE = `${MEDIA_BASE_URL}/media/profile_images/default_profile.png`;
+
+const resolveImage = (path: string | null): string => {
   if (!path) {
-    return null;
+    return DEFAULT_PROFILE_IMAGE;
   }
 
   if (/^https?:\/\//i.test(path)) {
@@ -425,8 +427,8 @@ const ViewProfile = () => {
                         }}
                         title={profile.full_name}
                       >
-                        {profile.full_name.length > 16
-                          ? `${profile.full_name.slice(0, 16)}...`
+                        {profile.full_name.length > 20
+                          ? `${profile.full_name.slice(0, 20)}...`
                           : profile.full_name}
                       </h2>
                     </div>

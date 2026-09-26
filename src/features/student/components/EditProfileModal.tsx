@@ -9,13 +9,26 @@ import {
   User,
   X,
 } from "lucide-react";
+import {
+  useForm,
+  useWatch,
+  type SubmitHandler,
+  type UseFormRegisterReturn,
+} from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { StudentProfile } from "../types/studentProfile";
 import { updateStudentProfile } from "../api/studentProfileApi";
 
 const MEDIA_BASE_URL = "http://localhost:8000";
+const DEFAULT_PROFILE_IMAGE = `${MEDIA_BASE_URL}/media/profile_images/default_profile.png`;
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
+
+/* ==========================================================================
+   TYPES
+========================================================================== */
 
 interface EditProfileModalProps {
   profile: StudentProfile;
@@ -24,20 +37,150 @@ interface EditProfileModalProps {
   onSaved: (profile: StudentProfile) => void;
 }
 
-interface FormData {
-  full_name: string;
-  bio: string;
-  location: string;
-  education: string;
-  occupation: string;
-  github_url: string;
-  linkedin_url: string;
-  portfolio_url: string;
+interface EditProfileFormProps {
+  profile: StudentProfile;
+  onClose: () => void;
+  onSaved: (profile: StudentProfile) => void;
 }
 
-const resolveImage = (path: string | null): string | null => {
+/* ==========================================================================
+   VALIDATION HELPERS
+========================================================================== */
+
+const hasRepeatedSpecialCharacter = (value: string): boolean => {
+  for (let index = 0; index < value.length - 1; index += 1) {
+    const current = value[index];
+    const next = value[index + 1];
+
+    if (
+      current === next &&
+      !/[\p{L}\p{N}]/u.test(current) &&
+      !/\s/.test(current)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+/* ==========================================================================
+   VALIDATION SCHEMA
+========================================================================== */
+
+const profileSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .min(1, "Full name is required")
+    .min(2, "Full name must be at least 2 characters")
+    .max(50, "Full name is too long")
+    .regex(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u, "Please enter a valid full name"),
+
+  bio: z
+    .string()
+    .trim()
+    .min(1, "Bio is required")
+    .min(10, "Bio must be at least 10 characters")
+    .max(500, "Bio cannot exceed 500 characters")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively",
+    ),
+
+  location: z
+    .string()
+    .trim()
+    .min(1, "Location is required")
+    .min(3, "Location must be at least 3 characters")
+    .max(100, "Location is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively",
+    ),
+
+  education: z
+    .string()
+    .trim()
+    .min(1, "Education is required")
+    .min(3, "Education must be at least 3 characters")
+    .max(150, "Education is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively",
+    ),
+
+  occupation: z
+    .string()
+    .trim()
+    .min(1, "Occupation is required")
+    .min(3, "Occupation must be at least 3 characters")
+    .max(100, "Occupation is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively",
+    ),
+
+  github_url: z
+    .string()
+    .trim()
+    .min(1, "GitHub URL is required")
+    .url("Enter a valid GitHub URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "github.com" || url.hostname === "www.github.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "GitHub URL must be from github.com"),
+
+  linkedin_url: z
+    .string()
+    .trim()
+    .min(1, "LinkedIn URL is required")
+    .url("Enter a valid LinkedIn URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "linkedin.com" ||
+            url.hostname === "www.linkedin.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "LinkedIn URL must be from linkedin.com"),
+
+  portfolio_url: z
+    .string()
+    .trim()
+    .min(1, "Portfolio URL is required")
+    .url("Enter a valid portfolio URL")
+    .refine((value) => {
+      try {
+        return new URL(value).protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "Portfolio URL must use HTTPS"),
+});
+
+type FormData = z.infer<typeof profileSchema>;
+
+/* ==========================================================================
+   IMAGE HELPERS
+========================================================================== */
+
+const resolveImage = (path: string | null): string => {
   if (!path) {
-    return null;
+    return DEFAULT_PROFILE_IMAGE;
   }
 
   if (/^https?:\/\//i.test(path)) {
@@ -61,45 +204,113 @@ const getInitials = (name: string): string => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
+/* ==========================================================================
+   MAIN COMPONENT
+========================================================================== */
+
 const EditProfileModal = ({
   profile,
   isOpen,
   onClose,
   onSaved,
 }: EditProfileModalProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  if (!isOpen) {
+    return null;
+  }
 
-  const [formData, setFormData] = useState<FormData>({
-    full_name: profile.full_name || "",
-    bio: profile.bio || "",
-    location: profile.location || "",
-    education: profile.education || "",
-    occupation: profile.occupation || "",
-    github_url: profile.github_url || "",
-    linkedin_url: profile.linkedin_url || "",
-    portfolio_url: profile.portfolio_url || "",
-  });
+  /*
+   * The key causes EditProfileForm to remount when the profile's
+   * updated_at changes. This replaces the previous reset() useEffect.
+   *
+   * No synchronous setState inside an effect is needed.
+   */
+  const profileKey = `${profile.id}-${profile.updated_at}`;
 
+  return (
+    <EditProfileForm
+      key={profileKey}
+      profile={profile}
+      onClose={onClose}
+      onSaved={onSaved}
+    />
+  );
+};
+
+/* ==========================================================================
+   FORM COMPONENT
+========================================================================== */
+
+const EditProfileForm = ({
+  profile,
+  onClose,
+  onSaved,
+}: EditProfileFormProps) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  const [previewImage, setPreviewImage] = useState<string | null>(
+  const [removeProfileImage, setRemoveProfileImage] = useState(false);
+
+  const [previewImage, setPreviewImage] = useState<string>(
     resolveImage(profile.profile_image),
   );
 
   const [isSaving, setIsSaving] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
 
-  /*
-   * --------------------------------------------------------------
-   * Escape key
-   * --------------------------------------------------------------
-   */
+  const [imageError, setImageError] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  /* ==========================================================================
+     REACT HOOK FORM
+  ========================================================================== */
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(profileSchema),
+
+    mode: "onChange",
+
+    defaultValues: {
+      full_name: profile.full_name || "",
+      bio: profile.bio || "",
+      location: profile.location || "",
+      education: profile.education || "",
+      occupation: profile.occupation || "",
+      github_url: profile.github_url || "",
+      linkedin_url: profile.linkedin_url || "",
+      portfolio_url: profile.portfolio_url || "",
+    },
+  });
+
+  /* ==========================================================================
+     WATCH VALUES
+
+     useWatch() instead of watch() to avoid React Compiler warning.
+  ========================================================================== */
+
+  const fullName = useWatch({
+    control,
+    name: "full_name",
+  });
+
+  const bio = useWatch({
+    control,
+    name: "bio",
+  });
+
+  /* ==========================================================================
+     ESCAPE KEY
+
+     This effect is valid because it subscribes to the browser's
+     document event system.
+  ========================================================================== */
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isSaving) {
         onClose();
@@ -111,40 +322,11 @@ const EditProfileModal = ({
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen, isSaving, onClose]);
+  }, [isSaving, onClose]);
 
-  /*
-   * --------------------------------------------------------------
-   * Don't render when closed
-   * --------------------------------------------------------------
-   */
-
-  if (!isOpen) {
-    return null;
-  }
-
-  /*
-   * --------------------------------------------------------------
-   * Form change
-   * --------------------------------------------------------------
-   */
-
-  const handleChange = (field: keyof FormData, value: string) => {
-    setFormData((previous) => ({
-      ...previous,
-      [field]: value,
-    }));
-
-    if (error) {
-      setError(null);
-    }
-  };
-
-  /*
-   * --------------------------------------------------------------
-   * Profile image
-   * --------------------------------------------------------------
-   */
+  /* ==========================================================================
+     IMAGE CHANGE
+  ========================================================================== */
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -153,53 +335,63 @@ const EditProfileModal = ({
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image.");
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!allowedTypes.includes(file.type)) {
+      setImageError("Only JPG, PNG, and WebP images are allowed.");
+
+      event.target.value = "";
+
       return;
     }
 
     const maxSize = 5 * 1024 * 1024;
 
     if (file.size > maxSize) {
-      setError("Profile image must be smaller than 5 MB.");
+      setImageError("Profile image cannot exceed 5 MB.");
+
+      event.target.value = "";
+
       return;
     }
 
     setSelectedImage(file);
-    setPreviewImage(URL.createObjectURL(file));
+
+    setRemoveProfileImage(false);
+
+    setImageError(null);
+
     setError(null);
+
+    setPreviewImage(URL.createObjectURL(file));
 
     event.target.value = "";
   };
 
-  /*
-   * --------------------------------------------------------------
-   * Remove selected image
-   * --------------------------------------------------------------
-   */
+  /* ==========================================================================
+     REMOVE IMAGE
+  ========================================================================== */
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
-    setPreviewImage(null);
+
+    setRemoveProfileImage(true);
+
+    setPreviewImage(DEFAULT_PROFILE_IMAGE);
+
+    setImageError(null);
+
     setError(null);
   };
 
-  /*
-   * --------------------------------------------------------------
-   * Save profile
-   * --------------------------------------------------------------
-   */
+  /* ==========================================================================
+     SUBMIT
+  ========================================================================== */
 
-  const handleSave = async () => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     setError(null);
 
-    if (!formData.full_name.trim()) {
-      setError("Full name is required.");
-      return;
-    }
-
-    if (formData.bio.length > 500) {
-      setError("Bio cannot exceed 500 characters.");
+    if (imageError) {
       return;
     }
 
@@ -207,15 +399,16 @@ const EditProfileModal = ({
       setIsSaving(true);
 
       const updatedProfile = await updateStudentProfile({
-        full_name: formData.full_name.trim(),
-        bio: formData.bio.trim(),
-        location: formData.location.trim(),
-        education: formData.education.trim(),
-        occupation: formData.occupation.trim(),
-        github_url: formData.github_url.trim(),
-        linkedin_url: formData.linkedin_url.trim(),
-        portfolio_url: formData.portfolio_url.trim(),
+        full_name: data.full_name.trim(),
+        bio: data.bio.trim(),
+        location: data.location.trim(),
+        education: data.education.trim(),
+        occupation: data.occupation.trim(),
+        github_url: data.github_url.trim(),
+        linkedin_url: data.linkedin_url.trim(),
+        portfolio_url: data.portfolio_url.trim(),
         profile_image: selectedImage,
+        remove_profile_image: removeProfileImage,
       });
 
       onSaved(updatedProfile);
@@ -228,19 +421,15 @@ const EditProfileModal = ({
     }
   };
 
-  /*
-   * --------------------------------------------------------------
-   * Profile image display
-   * --------------------------------------------------------------
-   */
+  /* ==========================================================================
+     INITIALS
+  ========================================================================== */
 
-  const initials = getInitials(formData.full_name);
+  const initials = getInitials(fullName || "");
 
-  /*
-   * --------------------------------------------------------------
-   * Modal
-   * --------------------------------------------------------------
-   */
+  /* ==========================================================================
+     MODAL
+  ========================================================================== */
 
   return createPortal(
     <div
@@ -314,308 +503,331 @@ const EditProfileModal = ({
             FORM
         ======================================================== */}
 
-        <div className="relative overflow-y-auto px-6 py-6 sm:px-7">
-          <div className="space-y-6">
-            {/* ====================================================
-                PROFILE PHOTO
-            ==================================================== */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="relative flex min-h-0 flex-1 flex-col"
+        >
+          <div className="relative overflow-y-auto px-6 py-6 sm:px-7">
+            <div className="space-y-6">
+              {/* ====================================================
+                  PROFILE PHOTO
+              ==================================================== */}
 
-            <section>
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
-                  <Camera className="h-4 w-4" strokeWidth={1.8} />
+              <section>
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
+                    <Camera className="h-4 w-4" strokeWidth={1.8} />
+                  </div>
+
+                  <div>
+                    <h3
+                      className="text-sm font-semibold text-white"
+                      style={{
+                        fontFamily: DISPLAY_FONT,
+                      }}
+                    >
+                      Profile Photo
+                    </h3>
+
+                    <p className="text-xs text-white/35">
+                      Choose a photo for your profile.
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3
-                    className="text-sm font-semibold text-white"
-                    style={{
-                      fontFamily: DISPLAY_FONT,
-                    }}
-                  >
-                    Profile Photo
-                  </h3>
+                <div className="flex items-center gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
+                  {/* Avatar */}
 
-                  <p className="text-xs text-white/35">
-                    Choose a photo for your profile.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
-                {/* Avatar */}
-
-                <div className="relative shrink-0">
-                  <div className="rounded-full bg-gradient-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
-                    <div className="rounded-full bg-[#0A0A0A] p-[3px]">
-                      <div className="relative h-20 w-20 overflow-hidden rounded-full">
-                        <div
-                          className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"
-                          style={{
-                            fontFamily: DISPLAY_FONT,
-                          }}
-                        >
-                          {initials}
-                        </div>
-
-                        {previewImage && (
-                          <img
-                            src={previewImage}
-                            alt="Profile preview"
-                            className="absolute inset-0 h-full w-full object-cover"
-                            onError={(event) => {
-                              event.currentTarget.style.display = "none";
+                  <div className="relative shrink-0">
+                    <div className="rounded-full bg-gradient-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
+                      <div className="rounded-full bg-[#0A0A0A] p-[3px]">
+                        <div className="relative h-20 w-20 overflow-hidden rounded-full">
+                          <div
+                            className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"
+                            style={{
+                              fontFamily: DISPLAY_FONT,
                             }}
-                          />
-                        )}
+                          >
+                            {initials}
+                          </div>
+
+                          {previewImage && (
+                            <img
+                              src={previewImage}
+                              alt="Profile preview"
+                              className="absolute inset-0 h-full w-full object-cover"
+                              onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Actions */}
+                  {/* Actions */}
 
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white">
-                    Profile picture
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-white">
+                      Profile picture
+                    </p>
 
-                  <p className="mt-1 text-xs leading-relaxed text-white/35">
-                    JPG, PNG or WEBP. Maximum size 5 MB.
-                  </p>
+                    <p className="mt-1 text-xs leading-relaxed text-white/35">
+                      JPG, PNG or WEBP. Maximum size 5 MB.
+                    </p>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                      onChange={handleImageChange}
-                    />
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
+                        onChange={handleImageChange}
+                      />
 
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isSaving}
-                      className="cursor-pointer rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-4 py-2 text-xs font-medium text-[#9D82FF] transition-all duration-200 hover:border-[#7C5CFF]/45 hover:bg-[#7C5CFF]/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      {selectedImage ? "Change Photo" : "Choose Photo"}
-                    </button>
-
-                    {previewImage && (
                       <button
                         type="button"
-                        onClick={handleRemoveImage}
+                        onClick={() => fileInputRef.current?.click()}
                         disabled={isSaving}
-                        className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/45 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="cursor-pointer rounded-xl border border-[#7C5CFF]/25 bg-[#7C5CFF]/10 px-4 py-2 text-xs font-medium text-[#9D82FF] transition-all duration-200 hover:border-[#7C5CFF]/45 hover:bg-[#7C5CFF]/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                       >
-                        Remove
+                        {selectedImage ? "Change Photo" : "Choose Photo"}
                       </button>
+
+                      {previewImage && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveImage}
+                          disabled={isSaving}
+                          className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/45 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+
+                    {imageError && (
+                      <p className="mt-2 text-xs text-red-400">{imageError}</p>
                     )}
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* ====================================================
-                PERSONAL INFORMATION
-            ==================================================== */}
+              {/* ====================================================
+                  PERSONAL INFORMATION
+              ==================================================== */}
 
-            <section>
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
-                  <User className="h-4 w-4" strokeWidth={1.8} />
+              <section>
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
+                    <User className="h-4 w-4" strokeWidth={1.8} />
+                  </div>
+
+                  <div>
+                    <h3
+                      className="text-sm font-semibold text-white"
+                      style={{
+                        fontFamily: DISPLAY_FONT,
+                      }}
+                    >
+                      Personal Information
+                    </h3>
+
+                    <p className="text-xs text-white/35">
+                      Basic information about you.
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3
-                    className="text-sm font-semibold text-white"
-                    style={{
-                      fontFamily: DISPLAY_FONT,
-                    }}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    label="Full Name"
+                    registration={register("full_name")}
+                    placeholder="Enter your full name"
+                    error={errors.full_name?.message}
+                  />
+
+                  <FormField
+                    label="Location"
+                    icon={MapPin}
+                    registration={register("location")}
+                    placeholder="Kerala, India"
+                    error={errors.location?.message}
+                  />
+
+                  <FormField
+                    label="Education"
+                    icon={GraduationCap}
+                    registration={register("education")}
+                    placeholder="B.Tech Computer Science"
+                    error={errors.education?.message}
+                  />
+
+                  <FormField
+                    label="Occupation"
+                    icon={Briefcase}
+                    registration={register("occupation")}
+                    placeholder="Software Developer"
+                    error={errors.occupation?.message}
+                  />
+                </div>
+              </section>
+
+              {/* ====================================================
+                  BIO
+              ==================================================== */}
+
+              <section>
+                <label
+                  htmlFor="profile-bio"
+                  className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-white/35"
+                >
+                  Bio
+                </label>
+
+                <textarea
+                  id="profile-bio"
+                  {...register("bio")}
+                  maxLength={500}
+                  rows={4}
+                  placeholder="Tell something about yourself..."
+                  className={`w-full resize-none rounded-xl border bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/[0.04] focus:ring-1 ${
+                    errors.bio
+                      ? "border-red-500/40 focus:border-red-500/50 focus:ring-red-500/20"
+                      : "border-white/[0.07] focus:border-[#7C5CFF]/40 focus:ring-[#7C5CFF]/20"
+                  }`}
+                />
+
+                <div className="mt-1 flex items-start justify-between gap-3">
+                  <div>
+                    {errors.bio && (
+                      <p className="text-xs text-red-400">
+                        {errors.bio.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <span
+                    className={`shrink-0 text-[11px] ${
+                      bio.length >= 500 ? "text-red-400" : "text-white/25"
+                    }`}
                   >
-                    Personal Information
-                  </h3>
-
-                  <p className="text-xs text-white/35">
-                    Basic information about you.
-                  </p>
+                    {bio.length}/500
+                  </span>
                 </div>
-              </div>
+              </section>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FormField
-                  label="Full Name"
-                  value={formData.full_name}
-                  onChange={(value) => handleChange("full_name", value)}
-                  placeholder="Enter your full name"
-                />
+              {/* ====================================================
+                  SOCIAL LINKS
+              ==================================================== */}
 
-                <FormField
-                  label="Location"
-                  icon={MapPin}
-                  value={formData.location}
-                  onChange={(value) => handleChange("location", value)}
-                  placeholder="Kerala, India"
-                />
+              <section>
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
+                    <LinkIcon className="h-4 w-4" strokeWidth={1.8} />
+                  </div>
 
-                <FormField
-                  label="Education"
-                  icon={GraduationCap}
-                  value={formData.education}
-                  onChange={(value) => handleChange("education", value)}
-                  placeholder="B.Tech Computer Science"
-                />
+                  <div>
+                    <h3
+                      className="text-sm font-semibold text-white"
+                      style={{
+                        fontFamily: DISPLAY_FONT,
+                      }}
+                    >
+                      Social Links
+                    </h3>
 
-                <FormField
-                  label="Occupation"
-                  icon={Briefcase}
-                  value={formData.occupation}
-                  onChange={(value) => handleChange("occupation", value)}
-                  placeholder="Software Developer"
-                />
-              </div>
-            </section>
-
-            {/* ====================================================
-                BIO
-            ==================================================== */}
-
-            <section>
-              <label
-                htmlFor="profile-bio"
-                className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-white/35"
-              >
-                Bio
-              </label>
-
-              <textarea
-                id="profile-bio"
-                value={formData.bio}
-                onChange={(event) => handleChange("bio", event.target.value)}
-                maxLength={500}
-                rows={4}
-                placeholder="Tell something about yourself..."
-                className="w-full resize-none rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:border-[#7C5CFF]/40 focus:bg-white/[0.04] focus:ring-1 focus:ring-[#7C5CFF]/20"
-              />
-
-              <div className="mt-1 flex justify-end">
-                <span className="text-[11px] text-white/25">
-                  {formData.bio.length}/500
-                </span>
-              </div>
-            </section>
-
-            {/* ====================================================
-                SOCIAL LINKS
-            ==================================================== */}
-
-            <section>
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
-                  <LinkIcon className="h-4 w-4" strokeWidth={1.8} />
+                    <p className="text-xs text-white/35">
+                      Connect your online profiles.
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3
-                    className="text-sm font-semibold text-white"
-                    style={{
-                      fontFamily: DISPLAY_FONT,
-                    }}
-                  >
-                    Social Links
-                  </h3>
+                <div className="space-y-4">
+                  <FormField
+                    label="GitHub"
+                    registration={register("github_url")}
+                    placeholder="https://github.com/username"
+                    error={errors.github_url?.message}
+                  />
 
-                  <p className="text-xs text-white/35">
-                    Connect your online profiles.
-                  </p>
+                  <FormField
+                    label="LinkedIn"
+                    registration={register("linkedin_url")}
+                    placeholder="https://linkedin.com/in/username"
+                    error={errors.linkedin_url?.message}
+                  />
+
+                  <FormField
+                    label="Portfolio"
+                    registration={register("portfolio_url")}
+                    placeholder="https://yourportfolio.com"
+                    error={errors.portfolio_url?.message}
+                  />
                 </div>
-              </div>
+              </section>
 
-              <div className="space-y-4">
-                <FormField
-                  label="GitHub"
-                  value={formData.github_url}
-                  onChange={(value) => handleChange("github_url", value)}
-                  placeholder="https://github.com/username"
-                />
+              {/* ====================================================
+                  EMAIL
+              ==================================================== */}
 
-                <FormField
-                  label="LinkedIn"
-                  value={formData.linkedin_url}
-                  onChange={(value) => handleChange("linkedin_url", value)}
-                  placeholder="https://linkedin.com/in/username"
-                />
+              <section>
+                <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-white/35">
+                  Email Address
+                </label>
 
-                <FormField
-                  label="Portfolio"
-                  value={formData.portfolio_url}
-                  onChange={(value) => handleChange("portfolio_url", value)}
-                  placeholder="https://yourportfolio.com"
-                />
-              </div>
-            </section>
+                <div className="rounded-xl border border-white/[0.05] bg-white/[0.015] px-4 py-3 text-sm text-white/35">
+                  {profile.email}
+                </div>
 
-            {/* ====================================================
-                EMAIL
-            ==================================================== */}
+                <p className="mt-2 text-[11px] text-white/25">
+                  Email address cannot be changed here.
+                </p>
+              </section>
 
-            <section>
-              <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.15em] text-white/35">
-                Email Address
-              </label>
+              {/* ====================================================
+                  GENERAL ERROR
+              ==================================================== */}
 
-              <div className="rounded-xl border border-white/[0.05] bg-white/[0.015] px-4 py-3 text-sm text-white/35">
-                {profile.email}
-              </div>
-
-              <p className="mt-2 text-[11px] text-white/25">
-                Email address cannot be changed here.
-              </p>
-            </section>
-
-            {/* ====================================================
-                ERROR
-            ==================================================== */}
-
-            {error && (
-              <div className="rounded-xl border border-red-500/20 bg-red-500/[0.06] px-4 py-3 text-sm text-red-400">
-                {error}
-              </div>
-            )}
+              {error && (
+                <div className="rounded-xl border border-red-500/20 bg-red-500/[0.06] px-4 py-3 text-sm text-red-400">
+                  {error}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* ========================================================
-            FOOTER
-        ======================================================== */}
+          {/* ========================================================
+              FOOTER
+          ======================================================== */}
 
-        <div className="relative flex shrink-0 items-center justify-end gap-3 border-t border-white/[0.06] bg-[#0A0A0A] px-6 py-4 sm:px-7">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSaving}
-            className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Cancel
-          </button>
+          <div className="relative flex shrink-0 items-center justify-end gap-3 border-t border-white/[0.06] bg-[#0A0A0A] px-6 py-4 sm:px-7">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSaving}
+              className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={isSaving}
-            className="inline-flex min-w-[125px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-sm font-medium text-white shadow-[0_8px_25px_rgba(124,92,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#8B6DFF] hover:shadow-[0_12px_30px_rgba(124,92,255,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
-          >
-            {isSaving ? (
-              <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Saving...
-              </>
-            ) : (
-              "Save Changes"
-            )}
-          </button>
-        </div>
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="inline-flex min-w-[125px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-sm font-medium text-white shadow-[0_8px_25px_rgba(124,92,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#8B6DFF] hover:shadow-[0_12px_30px_rgba(124,92,255,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+            >
+              {isSaving ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>,
     document.body,
@@ -628,18 +840,18 @@ const EditProfileModal = ({
 
 interface FormFieldProps {
   label: string;
-  value: string;
-  onChange: (value: string) => void;
+  registration: UseFormRegisterReturn;
   placeholder?: string;
   icon?: typeof User;
+  error?: string;
 }
 
 const FormField = ({
   label,
-  value,
-  onChange,
+  registration,
   placeholder,
   icon: Icon,
+  error,
 }: FormFieldProps) => {
   return (
     <div>
@@ -657,14 +869,19 @@ const FormField = ({
 
         <input
           type="text"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
+          {...registration}
           placeholder={placeholder}
-          className={`h-12 w-full rounded-xl border border-white/[0.07] bg-white/[0.03] text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:border-[#7C5CFF]/40 focus:bg-white/[0.04] focus:ring-1 focus:ring-[#7C5CFF]/20 ${
+          className={`h-12 w-full rounded-xl border bg-white/[0.03] text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/[0.04] focus:ring-1 ${
             Icon ? "pl-11 pr-4" : "px-4"
+          } ${
+            error
+              ? "border-red-500/40 focus:border-red-500/50 focus:ring-red-500/20"
+              : "border-white/[0.07] focus:border-[#7C5CFF]/40 focus:ring-[#7C5CFF]/20"
           }`}
         />
       </div>
+
+      {error && <p className="mt-1.5 text-xs text-red-400">{error}</p>}
     </div>
   );
 };
