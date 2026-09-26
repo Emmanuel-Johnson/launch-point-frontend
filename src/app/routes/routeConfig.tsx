@@ -34,6 +34,7 @@ import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
 import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
 
 import StudentListPage from "../../features/admin/pages/StudentListPage";
+import StudentDetailPage from "../../features/admin/pages/StudentDetailPage";
 
 // Instructor
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
@@ -183,6 +184,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "students",
             element: <StudentListPage />,
+          },
+          {
+            path: "students/:studentId",
+            element: <StudentDetailPage />,
           },
         ],
       },

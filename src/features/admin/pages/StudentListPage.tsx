@@ -8,6 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Student {
   id: number;
@@ -474,6 +475,7 @@ const StudentListPage = () => {
   const [studentList, setStudentList] = useState(students);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -729,7 +731,8 @@ const StudentListPage = () => {
                 {paginatedStudents.map((student) => (
                   <tr
                     key={student.id}
-                    className="group border-b border-white/[0.05] transition-colors duration-200 last:border-b-0 hover:bg-[#34D399]/[0.025]"
+                    onClick={() => navigate(`/admin/students/${student.id}`)}
+                    className="cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.03]"
                   >
                     {/* Student */}
                     <td className="px-6 py-4">
