@@ -66,9 +66,7 @@ const LoginPage = () => {
       console.error("Login failed:", error);
 
       if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data;
-
-        const detailError = responseData?.detail;
+        const detailError = error.response?.data?.detail;
 
         if (detailError) {
           toast.error(detailError);
@@ -112,7 +110,15 @@ const LoginPage = () => {
     } catch (error) {
       console.error("Google authentication failed:", error);
 
-      toast.error("Unable to authenticate with Google. Please try again.");
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.detail ||
+          "Unable to authenticate with Google. Please try again.";
+
+        toast.error(message);
+      } else {
+        toast.error("Unable to authenticate with Google. Please try again.");
+      }
     }
   };
 
