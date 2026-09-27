@@ -233,7 +233,9 @@ const StudentDetailPage = () => {
             {/* Profile Image */}
             <div className="shrink-0">
               <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-[#34D399]/25 bg-[#34D399]/10 text-2xl font-semibold text-[#34D399] shadow-[0_0_45px_rgba(52,211,153,0.12)] ring-1 ring-inset ring-white/[0.06]">
-                {student.profile_image ? (
+                {student.profile_image &&
+                student.profile_image !==
+                  "/media/profile_images/default_profile.png" ? (
                   <img
                     src={`http://127.0.0.1:8000${student.profile_image}`}
                     alt={student.full_name}
@@ -268,7 +270,7 @@ const StudentDetailPage = () => {
                 <span className="inline-flex max-w-full items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-sm text-white/55">
                   <MapPin size={15} className="mt-0.5 shrink-0 text-white/35" />
                   <span className="min-w-0 [overflow-wrap:anywhere]">
-                    {student.location}
+                    {student.location || "Not added"}
                   </span>
                 </span>
               </div>
@@ -313,7 +315,7 @@ const StudentDetailPage = () => {
                 </p>
 
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70 [overflow-wrap:anywhere]">
-                  {student.bio}
+                  {student.bio || "Not added"}
                 </p>
               </div>
             </div>
@@ -369,7 +371,7 @@ const StudentDetailPage = () => {
               </p>
 
               <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
-                {student.location}
+                {student.location || "Not added"}
               </p>
             </div>
 
@@ -384,7 +386,7 @@ const StudentDetailPage = () => {
               </p>
 
               <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
-                {student.education}
+                {student.education || "Not added"}
               </p>
             </div>
 
@@ -399,7 +401,7 @@ const StudentDetailPage = () => {
               </p>
 
               <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
-                {student.occupation}
+                {student.occupation || "Not added"}
               </p>
             </div>
           </div>
@@ -430,10 +432,20 @@ const StudentDetailPage = () => {
           <div className="grid gap-4 md:grid-cols-3">
             {/* Github */}
             <a
-              href={student.github_url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+              href={student.github_url || undefined}
+              target={student.github_url ? "_blank" : undefined}
+              rel={student.github_url ? "noreferrer" : undefined}
+              aria-disabled={!student.github_url}
+              onClick={(e) => {
+                if (!student.github_url) {
+                  e.preventDefault();
+                }
+              }}
+              className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                student.github_url
+                  ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                  : "cursor-not-allowed opacity-50"
+              }`}
             >
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
                 <GithubMark />
@@ -442,7 +454,7 @@ const StudentDetailPage = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">GitHub</p>
                 <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
-                  {student.github_url}
+                  {student.github_url || "Not added"}
                 </p>
               </div>
 
@@ -454,10 +466,20 @@ const StudentDetailPage = () => {
 
             {/* LinkedIn */}
             <a
-              href={student.linkedin_url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+              href={student.linkedin_url || undefined}
+              target={student.linkedin_url ? "_blank" : undefined}
+              rel={student.linkedin_url ? "noreferrer" : undefined}
+              aria-disabled={!student.linkedin_url}
+              onClick={(e) => {
+                if (!student.linkedin_url) {
+                  e.preventDefault();
+                }
+              }}
+              className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                student.linkedin_url
+                  ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                  : "cursor-not-allowed opacity-50"
+              }`}
             >
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
                 <LinkedinMark />
@@ -466,7 +488,7 @@ const StudentDetailPage = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">LinkedIn</p>
                 <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
-                  {student.linkedin_url}
+                  {student.linkedin_url || "Not added"}
                 </p>
               </div>
 
@@ -478,10 +500,20 @@ const StudentDetailPage = () => {
 
             {/* Portfolio */}
             <a
-              href={student.portfolio_url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+              href={student.portfolio_url || undefined}
+              target={student.portfolio_url ? "_blank" : undefined}
+              rel={student.portfolio_url ? "noreferrer" : undefined}
+              aria-disabled={!student.portfolio_url}
+              onClick={(e) => {
+                if (!student.portfolio_url) {
+                  e.preventDefault();
+                }
+              }}
+              className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                student.portfolio_url
+                  ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                  : "cursor-not-allowed opacity-50"
+              }`}
             >
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
                 <Globe size={20} strokeWidth={1.8} />
@@ -490,7 +522,7 @@ const StudentDetailPage = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">Portfolio</p>
                 <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
-                  {student.portfolio_url}
+                  {student.portfolio_url || "Not added"}
                 </p>
               </div>
 
@@ -622,7 +654,7 @@ const StudentDetailPage = () => {
               </div>
 
               {/* Profile Created */}
-              <div className="border-b border-white/[0.06] p-5">
+              {/* <div className="border-b border-white/[0.06] p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <CalendarDays size={16} strokeWidth={1.8} />
@@ -634,7 +666,7 @@ const StudentDetailPage = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Account Updated */}
               <div className="border-b border-white/[0.06] p-5 md:border-r md:border-b-0">
@@ -652,7 +684,7 @@ const StudentDetailPage = () => {
               </div>
 
               {/* Profile Updated */}
-              <div className="p-5">
+              {/* <div className="p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <CalendarDays size={16} strokeWidth={1.8} />
@@ -664,7 +696,7 @@ const StudentDetailPage = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>
