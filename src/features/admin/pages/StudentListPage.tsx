@@ -198,7 +198,10 @@ const StudentListPage = () => {
     <div className="min-h-full w-full bg-black text-white">
       <div className="space-y-6">
         {/* Header */}
-        <section>
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "80ms" }}
+        >
           <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
             <div
               aria-hidden="true"
@@ -238,7 +241,10 @@ const StudentListPage = () => {
         {/* Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* Total Students */}
-          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+          <div
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
+            style={{ animationDelay: "160ms" }}
+          >
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
@@ -262,7 +268,10 @@ const StudentListPage = () => {
           </div>
 
           {/* Active Students */}
-          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40">
+          <div
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40"
+            style={{ animationDelay: "220ms" }}
+          >
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
@@ -291,7 +300,10 @@ const StudentListPage = () => {
           </div>
 
           {/* Inactive Students */}
-          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35">
+          <div
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35"
+            style={{ animationDelay: "280ms" }}
+          >
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent"
@@ -320,7 +332,10 @@ const StudentListPage = () => {
           </div>
 
           {/* Showing */}
-          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+          <div
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
+            style={{ animationDelay: "340ms" }}
+          >
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
@@ -347,7 +362,8 @@ const StudentListPage = () => {
         {/* Student Table */}
         <section
           ref={studentsListRef}
-          className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
+          className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
+          style={{ animationDelay: "420ms" }}
         >
           {" "}
           {/* Table Header */}
