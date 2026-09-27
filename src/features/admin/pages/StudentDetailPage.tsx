@@ -11,28 +11,30 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAdminStudent } from "../api/adminApi";
 
-const student = {
-  id: 85,
-  full_name: "Cristiano Ronaldo",
-  email: "emmanuel.johnson.pro@gmail.com",
-  role: "student",
-  profile_image: null as string | null,
-  bio: "Siuuuuuuuuuuuuuuu",
-  location: "Portugal",
-  education: "7th standard",
-  occupation: "Footballer",
-  github_url: "https://github.com/Emmanuel-Johnson",
-  linkedin_url: "https://www.linkedin.com/in/emmanuel-johnson-dev/",
-  portfolio_url: "https://emmanuel-johnson.vercel.app/",
-  is_active: true,
-  date_joined: "2026-09-26T17:45:18.920094+05:30",
-  updated_at: "2026-09-26T18:09:10.806467+05:30",
-  profile_created_at: "2026-09-26T17:45:43.818178+05:30",
-  profile_updated_at: "2026-09-26T18:09:10.805551+05:30",
-};
+interface Student {
+  id: number;
+  full_name: string;
+  email: string;
+  role: string;
+  profile_image: string | null;
+  bio: string;
+  location: string;
+  education: string;
+  occupation: string;
+  github_url: string;
+  linkedin_url: string;
+  portfolio_url: string;
+  email_verified: boolean;
+  is_active: boolean;
+  date_joined: string;
+  updated_at: string;
+  profile_created_at: string;
+  profile_updated_at: string;
+}
 
 const GithubMark = () => (
   <svg
@@ -58,7 +60,39 @@ const LinkedinMark = () => (
 
 const StudentDetailPage = () => {
   const navigate = useNavigate();
-  const [isActive, setIsActive] = useState(student.is_active);
+  const { studentId } = useParams<{ studentId: string }>();
+
+  const [student, setStudent] = useState<Student | null>(null);
+  const [isActive, setIsActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      if (!studentId) {
+        setError("Student ID is missing.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const studentData = await getAdminStudent(Number(studentId));
+
+        setStudent(studentData);
+        setIsActive(studentData.is_active);
+      } catch (error) {
+        console.error("Failed to fetch student:", error);
+        setError("Failed to load student details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStudent();
+  }, [studentId]);
 
   const handleToggleStatus = () => {
     setIsActive((currentStatus) => !currentStatus);
@@ -90,7 +124,32 @@ const StudentDetailPage = () => {
       .join("")
       .toUpperCase();
   };
+  if (isLoading) {
+    return (
+      <div className="flex min-h-full w-full items-center justify-center bg-black text-white">
+        <div
+          className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-[#34D399]"
+          aria-label="Loading student"
+        />
+      </div>
+    );
+  }
 
+  if (error || !student) {
+    return (
+      <div className="flex min-h-full w-full flex-col items-center justify-center bg-black text-white">
+        <p className="text-sm text-red-400">{error ?? "Student not found."}</p>
+
+        <button
+          type="button"
+          onClick={() => navigate("/admin/students")}
+          className="mt-4 rounded-lg border border-white/[0.08] px-4 py-2 text-sm text-white/60 transition-colors hover:border-[#34D399]/30 hover:text-[#34D399]"
+        >
+          Back to Students
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="min-h-full w-full bg-black text-white">
       <div className="space-y-6">
@@ -176,7 +235,7 @@ const StudentDetailPage = () => {
               <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-[#34D399]/25 bg-[#34D399]/10 text-2xl font-semibold text-[#34D399] shadow-[0_0_45px_rgba(52,211,153,0.12)] ring-1 ring-inset ring-white/[0.06]">
                 {student.profile_image ? (
                   <img
-                    src={student.profile_image}
+                    src={`http://127.0.0.1:8000${student.profile_image}`}
                     alt={student.full_name}
                     className="h-full w-full object-cover"
                   />
