@@ -107,6 +107,7 @@ export const getAdminStudent = async (
 
 export interface UpdateStudentStatusResponse {
   is_active: boolean;
+  message: string;
 }
 
 export const updateStudentStatus = async (

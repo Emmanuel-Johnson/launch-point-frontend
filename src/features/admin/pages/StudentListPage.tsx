@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminStudents, updateStudentStatus } from "../api/adminApi";
+import { toast } from "react-toastify";
 
 interface Student {
   id: number;
@@ -138,8 +139,16 @@ const StudentListPage = () => {
             : student,
         ),
       );
+
+      toast.success(updatedStatus.message, {
+        containerId: "admin",
+      });
     } catch (error) {
       console.error("Failed to update student status:", error);
+
+      toast.error("Failed to update student status.", {
+        containerId: "admin",
+      });
     }
   };
 
