@@ -54,3 +54,72 @@ export const logoutAdmin = async (
 
   return response.data;
 };
+
+// =========================================================
+// Admin Student List
+// =========================================================
+
+export interface AdminStudent {
+  id: number;
+  full_name: string;
+  email: string;
+  profile_image: string | null;
+  date_joined: string;
+  is_active: boolean;
+}
+
+export const getAdminStudents = async (): Promise<AdminStudent[]> => {
+  const response = await adminApi.get<AdminStudent[]>("/admins/students/");
+
+  return response.data;
+};
+
+export interface AdminStudentDetail {
+  id: number;
+  full_name: string;
+  email: string;
+  role: string;
+  profile_image: string | null;
+  bio: string;
+  location: string;
+  education: string;
+  occupation: string;
+  github_url: string;
+  linkedin_url: string;
+  portfolio_url: string;
+  email_verified: boolean;
+  is_active: boolean;
+  date_joined: string;
+  updated_at: string;
+  profile_created_at: string;
+  profile_updated_at: string;
+}
+
+export const getAdminStudent = async (
+  studentId: number,
+): Promise<AdminStudentDetail> => {
+  const response = await adminApi.get<AdminStudentDetail>(
+    `/admins/students/${studentId}`,
+  );
+
+  return response.data;
+};
+
+export interface UpdateStudentStatusResponse {
+  is_active: boolean;
+  message: string;
+}
+
+export const updateStudentStatus = async (
+  studentId: number,
+  isActive: boolean,
+): Promise<UpdateStudentStatusResponse> => {
+  const response = await adminApi.patch<UpdateStudentStatusResponse>(
+    `/admins/students/${studentId}/status/`,
+    {
+      is_active: isActive,
+    },
+  );
+
+  return response.data;
+};

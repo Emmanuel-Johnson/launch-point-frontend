@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import StudentHeader from "../components/StudentHeader";
 import StudentSidebar from "../components/StudentSidebar";
@@ -10,6 +10,17 @@ const StudentLayout = () => {
   const toggleSidebar = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };
+
+  useEffect(() => {
+    const mainElement = document.querySelector(".student-scrollbar");
+
+    if (mainElement) {
+      mainElement.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    }
+  }, [location.pathname]);
 
   return (
     <div className="h-screen overflow-hidden bg-black text-white">

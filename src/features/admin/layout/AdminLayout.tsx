@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import AdminHeader from "../components/AdminHeader";
 import AdminSidebar from "../components/AdminSidebar";
@@ -13,30 +15,32 @@ const AdminLayout = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };
 
+  useEffect(() => {
+    const mainElement = document.querySelector(".admin-scrollbar");
+
+    if (mainElement) {
+      mainElement.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    }
+  }, [location.pathname]);
+
   return (
     <div className="h-screen overflow-hidden bg-black text-white">
-      {/* =====================================================
-          SIDEBAR
-      ====================================================== */}
+      {/* SIDEBAR */}
       <AdminSidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
 
-      {/* =====================================================
-          MAIN APPLICATION AREA
-      ====================================================== */}
+      {/* MAIN APPLICATION AREA */}
       <div
         className={`relative h-screen transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isSidebarCollapsed ? "ml-20" : "ml-[280px]"
         }`}
       >
-        {/* =====================================================
-            HEADER
-        ====================================================== */}
+        {/* HEADER */}
         <AdminHeader isSidebarCollapsed={isSidebarCollapsed} />
 
-        {/* =====================================================
-            CONTENT
-            Scrollbar starts below the 80px header.
-        ====================================================== */}
+        {/* CONTENT */}
         <main className="admin-scrollbar absolute inset-x-0 bottom-0 top-20 overflow-y-auto bg-black">
           <div
             key={location.pathname}
@@ -46,6 +50,20 @@ const AdminLayout = () => {
           </div>
         </main>
       </div>
+
+      {/* ADMIN TOAST */}
+      <ToastContainer
+        containerId="admin"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="dark"
+        toastClassName="admin-toast"
+        progressClassName="admin-toast-progress"
+      />
     </div>
   );
 };

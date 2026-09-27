@@ -185,8 +185,9 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
               <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
                 <div className="flex items-center gap-3.5">
                   {/* Avatar */}
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#34D399] to-[#059669] text-sm font-semibold text-white shadow-lg shadow-[#34D399]/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_18px_rgba(52,211,153,0.3)]">
-                    AD
+
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/15 text-sm font-semibold text-[#34D399] ring-1 ring-[#34D399]/20 transition-all duration-700 ease-out hover:scale-110 hover:bg-[#34D399]/20 hover:text-[#6EE7B7] hover:ring-[#34D399]/40 hover:shadow-[0_0_20px_rgba(52,211,153,0.22)]">
+                    A
                   </div>
 
                   {/* Admin Details */}

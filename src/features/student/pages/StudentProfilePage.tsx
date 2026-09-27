@@ -307,7 +307,10 @@ const ViewProfile = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-full w-full items-center justify-center bg-black text-white">
-        <p className="text-sm text-white/50">Loading profile...</p>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-[#7C5CFF]" />
+          <p className="text-sm text-white/50">Loading profile...</p>
+        </div>
       </div>
     );
   }

@@ -598,3 +598,60 @@ html {
   animation: name-scroll 10s ease-in-out infinite;
 }
 
+/* =========================================================
+   ADMIN TOAST
+   ========================================================= */
+.admin-toast {
+  position: relative !important;
+  background: #000000 !important;
+  color: #e5e7eb !important;
+  border: 1px solid #14532d !important;
+  border-left: 1px solid #14532d !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  padding: 16px 18px !important;
+  min-height: 60px !important;
+}
+
+/* Override success toast completely */
+.admin-toast.Toastify__toast--success {
+  background: #000000 !important;
+  border: 1px solid #14532d !important;
+  border-left: 1px solid #14532d !important;
+
+  --toastify-color-progress: #16a34a !important;
+  --toastify-color-progress-success: #16a34a !important;
+}
+
+/* Remove any pseudo-element that could create the violet strip */
+.admin-toast::before,
+.admin-toast::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Success icon */
+.admin-toast .Toastify__toast-icon {
+  color: #22c55e !important;
+}
+
+.admin-toast .Toastify__toast-icon svg {
+  fill: #22c55e !important;
+  color: #22c55e !important;
+}
+
+/* Progress bar */
+.admin-toast-progress {
+  background: #16a34a !important;
+}
+
+/* Close button */
+.admin-toast .Toastify__close-button {
+  color: #86efac !important;
+  opacity: 0.8 !important;
+}
+
+.admin-toast .Toastify__close-button:hover {
+  color: #22c55e !important;
+  opacity: 1 !important;
+}
