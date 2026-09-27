@@ -54,3 +54,22 @@ export const logoutAdmin = async (
 
   return response.data;
 };
+
+// =========================================================
+// Admin Student List
+// =========================================================
+
+export interface AdminStudent {
+  id: number;
+  full_name: string;
+  email: string;
+  profile_image: string | null;
+  date_joined: string;
+  is_active: boolean;
+}
+
+export const getAdminStudents = async (): Promise<AdminStudent[]> => {
+  const response = await adminApi.get<AdminStudent[]>("/admins/students/");
+
+  return response.data;
+};

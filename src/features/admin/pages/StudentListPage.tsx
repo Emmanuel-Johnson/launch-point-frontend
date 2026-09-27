@@ -7,8 +7,9 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAdminStudents } from "../api/adminApi";
 
 interface Student {
   id: number;
@@ -18,449 +19,28 @@ interface Student {
   date_joined: string;
   is_active: boolean;
 }
-const students: Student[] = [
-  {
-    id: 86,
-    full_name: "Emmanuel Johnson",
-    email: "emmanuelj.swe@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-26T19:35:11.566680+05:30",
-    is_active: true,
-  },
-  {
-    id: 85,
-    full_name: "Cristiano Ronaldossd cc",
-    email: "emmanuel.johnson.pro@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-26T17:45:18.920094+05:30",
-    is_active: true,
-  },
-  {
-    id: 84,
-    full_name: "Arjun Menon",
-    email: "arjun.menon@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-25T16:20:11.120000+05:30",
-    is_active: true,
-  },
-  {
-    id: 83,
-    full_name: "Rahul Sharma",
-    email: "rahul.sharma@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-25T14:10:32.450000+05:30",
-    is_active: false,
-  },
-  {
-    id: 82,
-    full_name: "Ananya Krishnan",
-    email: "ananya.krishnan@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-24T11:45:22.780000+05:30",
-    is_active: true,
-  },
-  {
-    id: 81,
-    full_name: "Vishnu Prasad",
-    email: "vishnu.prasad@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-24T09:30:15.230000+05:30",
-    is_active: true,
-  },
-  {
-    id: 80,
-    full_name: "Sneha Nair",
-    email: "sneha.nair@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-23T18:25:44.610000+05:30",
-    is_active: false,
-  },
-  {
-    id: 79,
-    full_name: "Aditya Raj",
-    email: "aditya.raj@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-23T15:12:36.340000+05:30",
-    is_active: true,
-  },
-  {
-    id: 78,
-    full_name: "Meera Thomas",
-    email: "meera.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-22T13:40:18.550000+05:30",
-    is_active: true,
-  },
-  {
-    id: 77,
-    full_name: "Nikhil Kumar",
-    email: "nikhil.kumar@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-22T10:15:29.920000+05:30",
-    is_active: false,
-  },
-  {
-    id: 76,
-    full_name: "Diya Joseph",
-    email: "diya.joseph@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-21T17:35:12.180000+05:30",
-    is_active: true,
-  },
-  {
-    id: 75,
-    full_name: "Karthik Suresh",
-    email: "karthik.suresh@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-21T12:20:45.670000+05:30",
-    is_active: true,
-  },
-  {
-    id: 74,
-    full_name: "Aishwarya Rajan",
-    email: "aishwarya.rajan@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-20T16:50:33.410000+05:30",
-    is_active: false,
-  },
-  {
-    id: 73,
-    full_name: "Mohammed Faisal",
-    email: "mohammed.faisal@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-20T09:25:17.890000+05:30",
-    is_active: true,
-  },
-  {
-    id: 72,
-    full_name: "Priya Nambiar",
-    email: "priya.nambiar@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-19T14:35:26.540000+05:30",
-    is_active: true,
-  },
-  {
-    id: 71,
-    full_name: "Rohan Mathew",
-    email: "rohan.mathew@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-19T11:10:48.320000+05:30",
-    is_active: false,
-  },
-  {
-    id: 70,
-    full_name: "Lakshmi Devi",
-    email: "lakshmi.devi@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-18T18:45:19.760000+05:30",
-    is_active: true,
-  },
-  {
-    id: 69,
-    full_name: "Joel George",
-    email: "joel.george@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-18T15:30:27.150000+05:30",
-    is_active: true,
-  },
-  {
-    id: 68,
-    full_name: "Sanjay Krish",
-    email: "sanjay.krish@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-17T13:20:36.480000+05:30",
-    is_active: false,
-  },
-  {
-    id: 67,
-    full_name: "Neha Varma",
-    email: "neha.varma@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-17T10:05:14.620000+05:30",
-    is_active: true,
-  },
-  {
-    id: 66,
-    full_name: "Abhinav Das",
-    email: "abhinav.das@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T16:40:51.270000+05:30",
-    is_active: true,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-  {
-    id: 65,
-    full_name: "Sara Thomas",
-    email: "sara.thomas@gmail.com",
-    profile_image: null,
-    date_joined: "2026-09-16T12:15:38.910000+05:30",
-    is_active: false,
-  },
-];
 
 const STUDENTS_PER_PAGE = 10;
 
 const StudentListPage = () => {
-  const [studentList, setStudentList] = useState(students);
+  const [studentList, setStudentList] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const studentsListRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const students = await getAdminStudents();
+        setStudentList(students);
+      } catch (error) {
+        console.error("Failed to fetch students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -510,6 +90,14 @@ const StudentListPage = () => {
       .toUpperCase();
   };
 
+  const isDefaultProfileImage = (profileImage: string | null) => {
+    if (!profileImage) {
+      return true;
+    }
+
+    return profileImage.includes("default_profile.png");
+  };
+
   const truncateText = (text: string, maxLength = 35) => {
     if (text.length <= maxLength) {
       return text;
@@ -517,6 +105,8 @@ const StudentListPage = () => {
 
     return `${text.slice(0, maxLength - 3)}...`;
   };
+
+  const MEDIA_BASE_URL = "http://127.0.0.1:8000";
 
   const handleToggleStatus = (studentId: number) => {
     setStudentList((currentStudents) =>
@@ -794,13 +384,9 @@ const StudentListPage = () => {
                     {/* Student */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {student.id === 85 ? (
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-bold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                            CR
-                          </div>
-                        ) : student.profile_image ? (
+                        {!isDefaultProfileImage(student.profile_image) ? (
                           <img
-                            src={student.profile_image}
+                            src={`${MEDIA_BASE_URL}${student.profile_image}`}
                             alt={student.full_name}
                             className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
                           />
