@@ -24,6 +24,7 @@ const STUDENTS_PER_PAGE = 10;
 
 const StudentListPage = () => {
   const [studentList, setStudentList] = useState<Student[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -39,6 +40,8 @@ const StudentListPage = () => {
         setStudentList(students);
       } catch (error) {
         console.error("Failed to fetch students:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -403,353 +406,258 @@ const StudentListPage = () => {
             </div>
           </div>
           {/* Desktop Table */}
-          <div className="hidden overflow-x-auto md:block">
-            {/* table-fixed + explicit column widths keep every column in the
+          {isLoading ? (
+            <div className="flex min-h-[400px] items-center justify-center">
+              <div
+                className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-[#34D399]"
+                aria-label="Loading students"
+              />
+            </div>
+          ) : (
+            <>
+              <div className="hidden overflow-x-auto md:block">
+                {/* table-fixed + explicit column widths keep every column in the
                 exact same position across pages, regardless of cell content. */}
-            <table className="w-full table-fixed">
-              <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
-                  <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Student
-                  </th>
+                <table className="w-full table-fixed">
+                  <thead className="cursor-default">
+                    <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                      <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Student
+                      </th>
 
-                  <th className="w-[30%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Email
-                  </th>
+                      <th className="w-[30%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Email
+                      </th>
 
-                  <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Joined
-                  </th>
+                      <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Joined
+                      </th>
 
-                  <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Status
-                  </th>
+                      <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Status
+                      </th>
 
-                  {/* "Action" label aligned to the start (left edge) of the
+                      {/* "Action" label aligned to the start (left edge) of the
                       action button that sits below it. */}
-                  <th className="w-[14%] px-6 py-4">
-                    <div className="flex justify-end">
-                      <span className="w-28 text-left text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                        Action
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginatedStudents.map((student, index) => (
-                  <tr
-                    key={`${student.id}-${index}`}
-                    onClick={() => navigate(`/admin/students/${student.id}`)}
-                    className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
-                  >
-                    {/* Student */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {!isDefaultProfileImage(student.profile_image) ? (
-                          <img
-                            src={`${MEDIA_BASE_URL}${student.profile_image}`}
-                            alt={student.full_name}
-                            className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
-                          />
-                        ) : (
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                            {getInitials(student.full_name)}
-                          </div>
-                        )}
-
-                        <div className="min-w-0">
-                          <p
-                            className="truncate text-sm font-medium text-white"
-                            title={student.full_name}
-                          >
-                            {truncateText(student.full_name)}
-                          </p>
-
-                          <p className="mt-0.5 text-xs tabular-nums text-white/35">
-                            ID #{student.id}
-                          </p>
+                      <th className="w-[14%] px-6 py-4">
+                        <div className="flex justify-end">
+                          <span className="w-28 text-left text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                            Action
+                          </span>
                         </div>
-                      </div>
-                    </td>
+                      </th>
+                    </tr>
+                  </thead>
 
-                    {/* Email */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm text-white/60">
-                        <Mail className="h-4 w-4 shrink-0 text-white/30" />
-
-                        <span className="truncate" title={student.email}>
-                          {truncateText(student.email)}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Joined */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
-                        <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
-
-                        <span className="truncate">
-                          {formatDate(student.date_joined)}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
-                          student.is_active
-                            ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
-                            : "bg-red-400/10 text-red-400 ring-red-400/20"
-                        }`}
+                  <tbody>
+                    {paginatedStudents.map((student, index) => (
+                      <tr
+                        key={`${student.id}-${index}`}
+                        onClick={() =>
+                          navigate(`/admin/students/${student.id}`)
+                        }
+                        className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
                       >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            student.is_active ? "bg-[#34D399]" : "bg-red-400"
-                          }`}
-                        />
+                        {/* Student */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            {!isDefaultProfileImage(student.profile_image) ? (
+                              <img
+                                src={`${MEDIA_BASE_URL}${student.profile_image}`}
+                                alt={student.full_name}
+                                className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+                              />
+                            ) : (
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                                {getInitials(student.full_name)}
+                              </div>
+                            )}
 
-                        {student.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </td>
+                            <div className="min-w-0">
+                              <p
+                                className="truncate text-sm font-medium text-white"
+                                title={student.full_name}
+                              >
+                                {truncateText(student.full_name)}
+                              </p>
 
-                    {/* Action */}
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleToggleStatus(student.id);
-                        }}
-                        className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
-                          student.is_active
-                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                        }`}
-                      >
-                        {student.is_active ? "Deactivate" : "Activate"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                              <p className="mt-0.5 text-xs tabular-nums text-white/35">
+                                ID #{student.id}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
 
-                {/* Height-reserving placeholder rows keep the page structure
+                        {/* Email */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-sm text-white/60">
+                            <Mail className="h-4 w-4 shrink-0 text-white/30" />
+
+                            <span className="truncate" title={student.email}>
+                              {truncateText(student.email)}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Joined */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
+                            <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
+
+                            <span className="truncate">
+                              {formatDate(student.date_joined)}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
+                              student.is_active
+                                ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                                : "bg-red-400/10 text-red-400 ring-red-400/20"
+                            }`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${
+                                student.is_active
+                                  ? "bg-[#34D399]"
+                                  : "bg-red-400"
+                              }`}
+                            />
+
+                            {student.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+
+                        {/* Action */}
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleToggleStatus(student.id);
+                            }}
+                            className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
+                              student.is_active
+                                ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                                : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                            }`}
+                          >
+                            {student.is_active ? "Deactivate" : "Activate"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {/* Height-reserving placeholder rows keep the page structure
                     fixed when the last page is partially filled. */}
-                {Array.from({ length: placeholderCount }).map((_, index) => (
-                  <tr
-                    key={`placeholder-${index}`}
-                    aria-hidden="true"
-                    className="border-b border-white/[0.03]"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="h-11" />
-                    </td>
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {/* Mobile Cards */}
-          <div className="divide-y divide-white/[0.06] md:hidden">
-            {paginatedStudents.map((student, index) => (
-              <div
-                key={`${student.id}-${index}`}
-                className="p-5 transition-colors hover:bg-white/[0.02]"
-              >
-                <div className="flex items-start gap-3">
-                  {student.id === 85 ? (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-bold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                      CR
-                    </div>
-                  ) : student.profile_image ? (
-                    <img
-                      src={student.profile_image}
-                      alt={student.full_name}
-                      className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-white/10"
-                    />
-                  ) : (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                      {getInitials(student.full_name)}
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p
-                          className="max-w-[200px] truncate text-sm font-medium text-white"
-                          title={student.full_name}
+                    {Array.from({ length: placeholderCount }).map(
+                      (_, index) => (
+                        <tr
+                          key={`placeholder-${index}`}
+                          aria-hidden="true"
+                          className="border-b border-white/[0.03]"
                         >
-                          {truncateText(student.full_name)}
-                        </p>
+                          <td className="px-6 py-4">
+                            <div className="h-11" />
+                          </td>
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                        </tr>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination */}
+              {filteredStudents.length > 0 && totalPages > 1 && (
+                <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between cursor-default">
+                  {/* Showing range */}
+                  <p className="text-xs text-white/40">
+                    Showing{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {startItem}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {endItem}
+                    </span>{" "}
+                    of{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {filteredStudents.length}
+                    </span>{" "}
+                    students
+                  </p>
 
-                        <p
-                          className="max-w-[220px] truncate text-xs text-white/40"
-                          title={student.email}
-                        >
-                          {truncateText(student.email)}
-                        </p>
-                      </div>
+                  {/* Pagination Controls */}
+                  <div className="flex items-center justify-center gap-1">
+                    {/* Previous */}
+                    <button
+                      type="button"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
 
-                      {/* Mobile Status */}
-                      <span
-                        className={`inline-flex h-7 w-20 shrink-0 items-center justify-center gap-1.5 rounded-full text-[10px] font-medium ring-1 ring-inset ${
-                          student.is_active
-                            ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
-                            : "bg-red-400/10 text-red-400 ring-red-400/20"
-                        }`}
-                      >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            student.is_active ? "bg-[#34D399]" : "bg-red-400"
-                          }`}
-                        />
-
-                        {student.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-xs tabular-nums text-white/35">
-                        <CalendarDays className="h-3.5 w-3.5" />
-                        Joined {formatDate(student.date_joined)}
-                      </span>
-
+                    {/* Page Numbers */}
+                    {getPageNumbers().map((page) => (
                       <button
+                        key={page}
                         type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleToggleStatus(student.id);
-                        }}
-                        className={`inline-flex h-9 w-28 items-center justify-center rounded-lg text-xs font-medium transition-all ${
-                          student.is_active
-                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                        onClick={() => handlePageChange(page)}
+                        className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
+                          currentPage === page
+                            ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                            : "text-white/45 hover:bg-white/[0.04] hover:text-white"
                         }`}
                       >
-                        {student.is_active ? "Deactivate" : "Activate"}
+                        {page}
                       </button>
-                    </div>
+                    ))}
+
+                    {/* Next */}
+                    <button
+                      type="button"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
-
-            {/* Height-reserving placeholder cards mirror a real card's layout
-                so the mobile list keeps a constant height across pages. */}
-            {Array.from({ length: placeholderCount }).map((_, index) => (
-              <div
-                key={`placeholder-mobile-${index}`}
-                aria-hidden="true"
-                className="p-5"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="h-11 w-11 shrink-0 rounded-full" />
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="h-4" />
-                        <div className="mt-0.5 h-4" />
-                      </div>
-                      <div className="h-7 w-20 shrink-0" />
-                    </div>
-
-                    <div className="mt-4 h-9" />
+              )}
+              {/* Empty State */}
+              {filteredStudents.length === 0 && (
+                <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
+                    <Users className="h-6 w-6" />
                   </div>
+
+                  <h3 className="mt-4 text-sm font-medium text-white">
+                    No students found
+                  </h3>
+
+                  <p className="mt-1 text-xs text-white/40">
+                    {statusFilter === "active"
+                      ? "There are currently no active students."
+                      : statusFilter === "inactive"
+                        ? "There are currently no inactive students."
+                        : searchQuery
+                          ? "No students match your search. Try a different name or email."
+                          : "No registered students are available."}
+                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
-          {/* Pagination */}
-          {filteredStudents.length > 0 && totalPages > 1 && (
-            <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between cursor-default">
-              {/* Showing range */}
-              <p className="text-xs text-white/40">
-                Showing{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {startItem}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {endItem}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {filteredStudents.length}
-                </span>{" "}
-                students
-              </p>
-
-              {/* Pagination Controls */}
-              <div className="flex items-center justify-center gap-1">
-                {/* Previous */}
-                <button
-                  type="button"
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-
-                {/* Page Numbers */}
-                {getPageNumbers().map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => handlePageChange(page)}
-                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
-                      currentPage === page
-                        ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-
-                {/* Next */}
-                <button
-                  type="button"
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Next page"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          )}
-          {/* Empty State */}
-          {filteredStudents.length === 0 && (
-            <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
-                <Users className="h-6 w-6" />
-              </div>
-
-              <h3 className="mt-4 text-sm font-medium text-white">
-                No students found
-              </h3>
-
-              <p className="mt-1 text-xs text-white/40">
-                {statusFilter === "active"
-                  ? "There are currently no active students."
-                  : statusFilter === "inactive"
-                    ? "There are currently no inactive students."
-                    : searchQuery
-                      ? "No students match your search. Try a different name or email."
-                      : "No registered students are available."}
-              </p>
-            </div>
+              )}
+            </>
           )}
         </section>
       </div>
