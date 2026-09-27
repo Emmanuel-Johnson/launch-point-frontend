@@ -378,7 +378,7 @@ const StudentListPage = () => {
               </p>
             </div>
 
-            <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+            <div className="flex w-full min-w-0 flex-col gap-3 md:ml-6 md:flex-1 md:flex-row">
               {/* Status Filter */}
               <div className="flex h-10 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
                 {(["all", "active", "inactive"] as const).map((filter) => (
@@ -405,7 +405,7 @@ const StudentListPage = () => {
               </div>
 
               {/* Search */}
-              <div className="relative w-full md:w-80">
+              <div className="relative min-w-0 flex-1">
                 <Search
                   className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-white/35"
                   strokeWidth={1.8}
