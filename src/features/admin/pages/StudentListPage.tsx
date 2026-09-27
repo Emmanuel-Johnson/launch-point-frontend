@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminStudents } from "../api/adminApi";
+import { getAdminStudents, updateStudentStatus } from "../api/adminApi";
 
 interface Student {
   id: number;
@@ -118,17 +118,29 @@ const StudentListPage = () => {
 
   const MEDIA_BASE_URL = "http://127.0.0.1:8000";
 
-  const handleToggleStatus = (studentId: number) => {
-    setStudentList((currentStudents) =>
-      currentStudents.map((student) =>
-        student.id === studentId
-          ? {
-              ...student,
-              is_active: !student.is_active,
-            }
-          : student,
-      ),
-    );
+  const handleToggleStatus = async (
+    studentId: number,
+    currentStatus: boolean,
+  ) => {
+    try {
+      const updatedStatus = await updateStudentStatus(
+        studentId,
+        !currentStatus,
+      );
+
+      setStudentList((currentStudents) =>
+        currentStudents.map((student) =>
+          student.id === studentId
+            ? {
+                ...student,
+                is_active: updatedStatus.is_active,
+              }
+            : student,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to update student status:", error);
+    }
   };
 
   const handleSearchChange = (value: string) => {
@@ -553,7 +565,7 @@ const StudentListPage = () => {
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-                              handleToggleStatus(student.id);
+                              handleToggleStatus(student.id, student.is_active);
                             }}
                             className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
                               student.is_active

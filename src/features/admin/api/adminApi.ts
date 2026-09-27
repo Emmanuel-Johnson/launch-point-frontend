@@ -104,3 +104,21 @@ export const getAdminStudent = async (
 
   return response.data;
 };
+
+export interface UpdateStudentStatusResponse {
+  is_active: boolean;
+}
+
+export const updateStudentStatus = async (
+  studentId: number,
+  isActive: boolean,
+): Promise<UpdateStudentStatusResponse> => {
+  const response = await adminApi.patch<UpdateStudentStatusResponse>(
+    `/admins/students/${studentId}/status/`,
+    {
+      is_active: isActive,
+    },
+  );
+
+  return response.data;
+};
