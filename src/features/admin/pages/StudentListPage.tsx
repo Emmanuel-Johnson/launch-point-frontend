@@ -233,7 +233,7 @@ const StudentListPage = () => {
         </section>
 
         {/* Statistics */}
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* Total Students */}
           <div className="group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
             <div
@@ -282,6 +282,35 @@ const StudentListPage = () => {
               </div>
 
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                <UserCheck className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+            </div>
+          </div>
+
+          {/* Inactive Students */}
+          <div className="group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent"
+            />
+
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-red-400/[0.06] blur-3xl"
+            />
+
+            <div className="relative flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                  Inactive Students
+                </p>
+
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-red-400">
+                  {studentList.filter((student) => !student.is_active).length}
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20">
                 <UserCheck className="h-5 w-5" strokeWidth={1.8} />
               </div>
             </div>
