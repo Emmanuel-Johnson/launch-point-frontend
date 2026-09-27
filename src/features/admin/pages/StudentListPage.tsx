@@ -25,6 +25,9 @@ const STUDENTS_PER_PAGE = 10;
 const StudentListPage = () => {
   const [studentList, setStudentList] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
   const [currentPage, setCurrentPage] = useState(1);
   const studentsListRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
@@ -45,16 +48,20 @@ const StudentListPage = () => {
   const filteredStudents = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
 
-    if (!query) {
-      return studentList;
-    }
-
-    return studentList.filter(
-      (student) =>
+    return studentList.filter((student) => {
+      const matchesSearch =
+        !query ||
         student.full_name.toLowerCase().includes(query) ||
-        student.email.toLowerCase().includes(query),
-    );
-  }, [searchQuery, studentList]);
+        student.email.toLowerCase().includes(query);
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && student.is_active) ||
+        (statusFilter === "inactive" && !student.is_active);
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [searchQuery, statusFilter, studentList]);
 
   const totalPages = Math.ceil(filteredStudents.length / STUDENTS_PER_PAGE);
 
@@ -323,20 +330,47 @@ const StudentListPage = () => {
               </p>
             </div>
 
-            {/* Search */}
-            <div className="relative w-full md:w-80">
-              <Search
-                className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-white/35"
-                strokeWidth={1.8}
-              />
+            <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+              {/* Status Filter */}
+              <div className="flex h-10 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
+                {(["all", "active", "inactive"] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => {
+                      setStatusFilter(filter);
+                      setCurrentPage(1);
+                    }}
+                    className={`h-8 w-20 rounded-lg text-xs font-medium capitalize transition-all ${
+                      statusFilter === filter
+                        ? filter === "active"
+                          ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                          : filter === "inactive"
+                            ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
+                            : "bg-white/[0.08] text-white"
+                        : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
 
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(event) => handleSearchChange(event.target.value)}
-                placeholder="Search students..."
-                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
-              />
+              {/* Search */}
+              <div className="relative w-full md:w-80">
+                <Search
+                  className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-white/35"
+                  strokeWidth={1.8}
+                />
+
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(event) => handleSearchChange(event.target.value)}
+                  placeholder="Search students..."
+                  className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
+                />
+              </div>
             </div>
           </div>
           {/* Desktop Table */}
@@ -678,7 +712,13 @@ const StudentListPage = () => {
               </h3>
 
               <p className="mt-1 text-xs text-white/40">
-                Try searching with a different name or email.
+                {statusFilter === "active"
+                  ? "There are currently no active students."
+                  : statusFilter === "inactive"
+                    ? "There are currently no inactive students."
+                    : searchQuery
+                      ? "No students match your search. Try a different name or email."
+                      : "No registered students are available."}
               </p>
             </div>
           )}
