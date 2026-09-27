@@ -97,7 +97,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             TOP BAR
         ====================================================== */}
-        <div className="flex items-center justify-between gap-3">
+        <div
+          className="animate-page-item flex items-center justify-between gap-3"
+          style={{ animationDelay: "80ms" }}
+        >
           <button
             type="button"
             onClick={() => navigate("/admin/students")}
@@ -147,7 +150,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             PROFILE HERO
         ====================================================== */}
-        <section className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
+        <section
+          className="animate-page-item relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]"
+          style={{ animationDelay: "160ms" }}
+        >
           {/* Glow */}
           <div
             aria-hidden="true"
@@ -214,7 +220,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             ABOUT
         ====================================================== */}
-        <section>
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "220ms" }}
+        >
           <div className="mb-4 flex items-center gap-3">
             <span
               aria-hidden="true"
@@ -243,6 +252,7 @@ const StudentDetailPage = () => {
                 <p className="text-xs uppercase tracking-wider text-white/35">
                   Bio
                 </p>
+
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70 [overflow-wrap:anywhere]">
                   {student.bio}
                 </p>
@@ -254,7 +264,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             BASIC INFORMATION
         ====================================================== */}
-        <section>
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "280ms" }}
+        >
           <div className="mb-4 flex items-center gap-3">
             <span
               aria-hidden="true"
@@ -336,7 +349,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             SOCIAL LINKS
         ====================================================== */}
-        <section>
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "340ms" }}
+        >
           <div className="mb-4 flex items-center gap-3">
             <span
               aria-hidden="true"
@@ -430,7 +446,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             ACCOUNT INFORMATION
         ====================================================== */}
-        <section>
+        <section
+          className="animate-page-item"
+          style={{ animationDelay: "400ms" }}
+        >
           <div className="mb-4 flex items-center gap-3">
             <span
               aria-hidden="true"
@@ -594,7 +613,10 @@ const StudentDetailPage = () => {
         {/* =====================================================
             FOOTER
         ====================================================== */}
-        <footer className="mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between">
+        <footer
+          className="animate-page-item mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between"
+          style={{ animationDelay: "460ms" }}
+        >
           <div className="flex items-center gap-2.5 text-xs text-white/40">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
               <GraduationCap size={14} strokeWidth={1.8} />
