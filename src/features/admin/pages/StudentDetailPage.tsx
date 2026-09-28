@@ -199,17 +199,15 @@ const StudentDetailPage = () => {
             className="animate-page-item flex items-center justify-between gap-3"
             style={{ animationDelay: "80ms" }}
           >
+            {/* Back */}
             <button
               type="button"
               onClick={() => navigate("/admin/students")}
-              className="group flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-3 py-2 text-xs font-medium tracking-tight text-white/55 transition-all duration-300 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.05] hover:text-[#6EE7B7]"
+              className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-xs text-white/50 transition-colors hover:text-white"
+              style={{ animationDelay: "80ms" }}
             >
-              <ArrowLeft
-                size={12}
-                strokeWidth={1.8}
-                className="transition-transform duration-300 motion-safe:group-hover:-translate-x-1"
-              />
-              Back to Students
+              <ArrowLeft className="h-3 w-3 transition-transform duration-300 group-hover:-translate-x-0.5" />
+              Back
             </button>
 
             <div className="flex shrink-0 items-center gap-5 cursor-default">
