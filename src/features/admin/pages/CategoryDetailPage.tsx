@@ -7,6 +7,7 @@ import {
   Clock,
   Hash,
   Link2,
+  Pencil,
   Tags,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -101,6 +102,12 @@ const CategoryDetailPage = () => {
     setCategory((current) =>
       current ? { ...current, is_active: !current.is_active } : current,
     );
+  };
+
+  const handleEditCategory = () => {
+    if (!category) return;
+
+    console.log("Edit category", category.id);
   };
 
   // =========================================================
@@ -211,28 +218,47 @@ const CategoryDetailPage = () => {
                 </div>
               </div>
 
-              {/* Toggle */}
-              <button
-                type="button"
-                onClick={handleToggleStatus}
-                className={`inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl px-6 text-sm font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
-                  category.is_active
-                    ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                    : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                }`}
-              >
-                {category.is_active ? (
-                  <>
-                    <Ban className="h-4 w-4" strokeWidth={1.8} />
-                    Disable Category
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />
-                    Enable Category
-                  </>
-                )}
-              </button>
+              {/* Actions */}
+              <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+                {/* Edit */}
+                <button
+                  type="button"
+                  onClick={handleEditCategory}
+                  className="group/edit relative inline-flex h-11 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.1] bg-white/[0.03] px-6 text-sm font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                >
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover/edit:translate-x-full" />
+
+                  <Pencil className="relative z-10 h-4 w-4" strokeWidth={1.8} />
+
+                  <span className="relative z-10">Edit Category</span>
+                </button>
+
+                {/* Toggle */}
+                <button
+                  type="button"
+                  onClick={handleToggleStatus}
+                  className={`inline-flex h-11 w-50 cursor-pointer items-center justify-center gap-2 rounded-xl px-6 text-sm font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
+                    category.is_active
+                      ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                      : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                  }`}
+                >
+                  {category.is_active ? (
+                    <>
+                      <Ban className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                      Disable Category
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2
+                        className="h-4 w-4 shrink-0"
+                        strokeWidth={1.8}
+                      />
+                      Enable Category
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </section>

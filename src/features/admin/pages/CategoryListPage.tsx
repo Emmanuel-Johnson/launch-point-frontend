@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Pencil,
   Plus,
   Search,
   Tags,
@@ -116,6 +117,10 @@ const CategoryListPage = () => {
           : category,
       ),
     );
+  };
+
+  const handleEditCategory = (id: number) => {
+    console.log("Edit category", id);
   };
 
   const handleSearchChange = (value: string) => {
@@ -439,11 +444,11 @@ const CategoryListPage = () => {
                     Category
                   </th>
 
-                  <th className="w-[34%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[32%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Description
                   </th>
 
-                  <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Courses
                   </th>
 
@@ -451,11 +456,11 @@ const CategoryListPage = () => {
                     Status
                   </th>
 
-                  {/* "Action" label aligned to the start (left edge) of the
-                      action button that sits below it. */}
-                  <th className="w-[14%] px-6 py-4">
+                  {/* "Action" label aligned to the right, above the action
+                      controls (Edit + toggle) that sit below it. */}
+                  <th className="w-[18%] px-6 py-4">
                     <div className="flex justify-end">
-                      <span className="w-28 text-left text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
                         Action
                       </span>
                     </div>
@@ -533,21 +538,38 @@ const CategoryListPage = () => {
                     </td>
 
                     {/* Action */}
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleToggleStatus(category.id);
-                        }}
-                        className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
-                          category.is_active
-                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                        }`}
-                      >
-                        {category.is_active ? "Disable" : "Enable"}
-                      </button>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        {/* Edit */}
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleEditCategory(category.id);
+                          }}
+                          aria-label={`Edit ${category.name}`}
+                          title="Edit category"
+                          className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                        >
+                          <Pencil className="h-4 w-4" strokeWidth={1.8} />
+                        </button>
+
+                        {/* Enable / Disable */}
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleToggleStatus(category.id);
+                          }}
+                          className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
+                            category.is_active
+                              ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                              : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                          }`}
+                        >
+                          {category.is_active ? "Disable" : "Enable"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
