@@ -36,6 +36,7 @@ function App() {
         theme="dark"
         toastClassName="admin-toast"
         progressClassName="admin-toast-progress"
+        className="!z-[100000]"
       />
     </>
   );

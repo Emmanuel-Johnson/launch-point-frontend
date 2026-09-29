@@ -5,6 +5,7 @@ import {
   type AdminCategory,
 } from "../api/adminCategoryApi";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 
 interface CategoryFormModalProps {
   isOpen: boolean;
@@ -20,17 +21,15 @@ const CategoryFormModal = ({
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const resetForm = () => {
     setName("");
     setSlug("");
     setDescription("");
-    setIsActive(true);
-    setErrorMessage("");
+    setIsActive(false);
   };
 
   const handleClose = () => {
@@ -46,15 +45,17 @@ const CategoryFormModal = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setErrorMessage("");
-
     if (!name.trim()) {
-      setErrorMessage("Category name is required.");
+      toast.error("Category name is required.", {
+        containerId: "admin",
+      });
       return;
     }
 
     if (!slug.trim()) {
-      setErrorMessage("Category slug is required.");
+      toast.error("Category slug is required.", {
+        containerId: "admin",
+      });
       return;
     }
 
@@ -74,7 +75,9 @@ const CategoryFormModal = ({
     } catch (error) {
       console.error("Failed to create category:", error);
 
-      setErrorMessage("Failed to create category. Please try again.");
+      toast.error("Failed to create category. Please try again.", {
+        containerId: "admin",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -119,12 +122,6 @@ const CategoryFormModal = ({
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="space-y-5 px-6 py-6">
-            {/* Error */}
-            {errorMessage && (
-              <div className="rounded-xl border border-red-400/20 bg-red-400/[0.06] px-4 py-3 text-sm text-red-400">
-                {errorMessage}
-              </div>
-            )}
             {/* Name */}
             <div>
               <label
