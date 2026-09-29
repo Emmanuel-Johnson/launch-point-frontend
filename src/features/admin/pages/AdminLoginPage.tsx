@@ -74,7 +74,9 @@ const AdminLoginPage = () => {
 
       dispatch(setAdminCredentials(response.user));
 
-      toast.success("Login successful!");
+      toast.success("Login successful!", {
+        containerId: "admin",
+      });
 
       navigate("/admin/dashboard", {
         replace: true,
@@ -88,9 +90,13 @@ const AdminLoginPage = () => {
           responseData?.message ||
           "Invalid email or password.";
 
-        toast.error(message);
+        toast.error(message, {
+          containerId: "admin",
+        });
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.", {
+          containerId: "admin",
+        });
       }
     } finally {
       setIsLoading(false);

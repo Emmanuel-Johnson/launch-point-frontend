@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  Ban,
   BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
@@ -146,13 +147,13 @@ const StudentDetailPage = () => {
     });
   };
 
-  const formatDateOnly = (date: string) => {
-    return new Date(date).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
+  // const formatDateOnly = (date: string) => {
+  //   return new Date(date).toLocaleDateString("en-IN", {
+  //     day: "2-digit",
+  //     month: "short",
+  //     year: "numeric",
+  //   });
+  // };
 
   const getInitials = (name: string) => {
     return name
@@ -195,126 +196,172 @@ const StudentDetailPage = () => {
           {/* =====================================================
             TOP BAR
         ====================================================== */}
+          {/* =====================================================
+    BACK
+====================================================== */}
           <div
-            className="animate-page-item flex items-center justify-between gap-3"
+            className="animate-page-item flex items-center"
             style={{ animationDelay: "80ms" }}
           >
             <button
               type="button"
               onClick={() => navigate("/admin/students")}
-              className="group flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-3 py-2 text-xs font-medium tracking-tight text-white/55 transition-all duration-300 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.05] hover:text-[#6EE7B7]"
+              className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
+              style={{ animationDelay: "80ms" }}
             >
-              <ArrowLeft
-                size={12}
-                strokeWidth={1.8}
-                className="transition-transform duration-300 motion-safe:group-hover:-translate-x-1"
-              />
-              Back to Students
+              <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+              Back
             </button>
-
-            <div className="flex shrink-0 items-center gap-5 cursor-default">
-              {/* Status */}
-              <span
-                className={`inline-flex h-9 w-24 items-center justify-center gap-2 rounded-full text-xs font-medium ring-1 ring-inset ${
-                  isActive
-                    ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
-                    : "bg-red-400/10 text-red-400 ring-red-400/20"
-                }`}
-              >
-                <span
-                  className={`h-2 w-2 rounded-full ${
-                    isActive ? "bg-[#34D399]" : "bg-red-400"
-                  }`}
-                />
-
-                {isActive ? "Active" : "Inactive"}
-              </span>
-
-              {/* Action */}
-              <button
-                type="button"
-                onClick={() => setIsStatusModalOpen(true)}
-                className={`inline-flex h-10 w-40 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-all duration-500 ease-out hover:scale-105 ${
-                  isActive
-                    ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                    : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                }`}
-              >
-                {isActive ? "Deactivate Account" : "Activate Account"}
-              </button>
-            </div>
           </div>
 
           {/* =====================================================
-            PROFILE HERO
-        ====================================================== */}
+    STUDENT HERO
+====================================================== */}
           <section
-            className="animate-page-item relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]"
+            className="animate-page-item"
             style={{ animationDelay: "160ms" }}
           >
-            {/* Glow */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
-            />
+            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/[0.18] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)]">
+              {/* Glow */}
 
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
-            />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/[0.18] blur-3xl"
+              />
 
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
-            />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.05] blur-3xl"
+              />
 
-            <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
-              {/* Profile Image */}
-              <div className="shrink-0">
-                <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-[#34D399]/25 bg-[#34D399]/10 text-2xl font-semibold text-[#34D399] shadow-[0_0_45px_rgba(52,211,153,0.12)] ring-1 ring-inset ring-white/[0.06]">
-                  {student.profile_image &&
-                  student.profile_image !==
-                    "/media/profile_images/default_profile.png" ? (
-                    <img
-                      src={`http://127.0.0.1:8000${student.profile_image}`}
-                      alt={student.full_name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    getInitials(student.full_name)
-                  )}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+              />
+
+              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                {/* =====================================================
+          IDENTITY
+      ====================================================== */}
+                <div className="flex min-w-0 items-start gap-5">
+                  {/* Profile Image / Initials */}
+
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#34D399]/[0.22] via-[#34D399]/[0.08] to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30">
+                    {student.profile_image &&
+                    student.profile_image !==
+                      "/media/profile_images/default_profile.png" ? (
+                      <img
+                        src={`http://127.0.0.1:8000${student.profile_image}`}
+                        alt={student.full_name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      getInitials(student.full_name)
+                    )}
+                  </div>
+
+                  {/* Student Information */}
+
+                  <div className="min-w-0">
+                    {/* Name + Role + Status */}
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h1 className="text-[26px] font-semibold leading-tight tracking-tight [overflow-wrap:anywhere]">
+                        {student.full_name}
+                      </h1>
+
+                      {/* Role */}
+
+                      <span className="shrink-0 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#34D399]">
+                        Student
+                      </span>
+
+                      {/* Status */}
+
+                      <span
+                        className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
+                          isActive
+                            ? "bg-[#34D399]/[0.12] text-[#34D399] ring-[#34D399]/25"
+                            : "bg-red-400/[0.12] text-red-400 ring-red-400/25"
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            isActive
+                              ? "bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.7)]"
+                              : "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]"
+                          }`}
+                        />
+
+                        {isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+
+                    {/* Email */}
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                        <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
+
+                        <span className="min-w-0 [overflow-wrap:anywhere]">
+                          {student.email}
+                        </span>
+                      </span>
+
+                      {/* Location */}
+
+                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                        <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
+
+                        <span className="min-w-0 [overflow-wrap:anywhere]">
+                          {student.location || "Not added"}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Student Info */}
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="min-w-0 text-2xl font-semibold tracking-tight [overflow-wrap:anywhere] md:text-3xl">
-                    {student.full_name}
-                  </h1>
-
-                  <span className="shrink-0 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#34D399]">
-                    Student
-                  </span>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="inline-flex max-w-full items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-sm text-white/55">
-                    <Mail size={15} className="mt-0.5 shrink-0 text-white/35" />
-                    <span className="min-w-0 [overflow-wrap:anywhere]">
-                      {student.email}
-                    </span>
-                  </span>
-
-                  <span className="inline-flex max-w-full items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-sm text-white/55">
-                    <MapPin
-                      size={15}
-                      className="mt-0.5 shrink-0 text-white/35"
+                {/* =====================================================
+          ACTION
+      ====================================================== */}
+                <div className="flex shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsStatusModalOpen(true)}
+                    className={`group/toggle relative inline-flex h-11 min-w-[168px] w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                      isActive
+                        ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
+                        : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
+                        isActive ? "via-red-400/12" : "via-[#34D399]/12"
+                      }`}
                     />
-                    <span className="min-w-0 [overflow-wrap:anywhere]">
-                      {student.location || "Not added"}
-                    </span>
-                  </span>
+
+                    {isActive ? (
+                      <>
+                        <Ban
+                          className="relative z-10 h-4 w-4 shrink-0"
+                          strokeWidth={1.8}
+                        />
+
+                        <span className="relative z-10">
+                          Deactivate Account
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2
+                          className="relative z-10 h-4 w-4 shrink-0"
+                          strokeWidth={1.8}
+                        />
+
+                        <span className="relative z-10">Activate Account</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
@@ -746,7 +793,7 @@ const StudentDetailPage = () => {
           {/* =====================================================
             FOOTER
         ====================================================== */}
-          <footer
+          {/* <footer
             className="animate-page-item mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between"
             style={{ animationDelay: "460ms" }}
           >
@@ -763,7 +810,7 @@ const StudentDetailPage = () => {
               Student #{student.id} • Joined{" "}
               {formatDateOnly(student.date_joined)}
             </p>
-          </footer>
+          </footer> */}
         </div>
       </div>
       <StudentStatusConfirmModal

@@ -41,6 +41,8 @@ import InstructorLayout from "../../features/instructor/layout/InstructorLayout"
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
 
 import StudentProfilePage from "../../features/student/pages/StudentProfilePage";
+import CategoryListPage from "../../features/admin/pages/CategoryListPage";
+import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -188,6 +190,15 @@ export const routeConfig: RouteObject[] = [
           {
             path: "students/:studentId",
             element: <StudentDetailPage />,
+          },
+          // Categories
+          {
+            path: "categories",
+            element: <CategoryListPage />,
+          },
+          {
+            path: "categories/:categoryId",
+            element: <CategoryDetailPage />,
           },
         ],
       },
