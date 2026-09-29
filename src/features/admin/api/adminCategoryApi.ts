@@ -33,3 +33,26 @@ export const getAdminCategory = async (
 
   return response.data;
 };
+
+// =========================================================
+// Update Category Status
+// =========================================================
+
+export interface UpdateAdminCategoryStatusResponse {
+  is_active: boolean;
+  message: string;
+}
+
+export const updateAdminCategoryStatus = async (
+  categoryId: number,
+  isActive: boolean,
+): Promise<UpdateAdminCategoryStatusResponse> => {
+  const response = await adminApi.patch<UpdateAdminCategoryStatusResponse>(
+    `/admins/categories/${categoryId}/status/`,
+    {
+      is_active: isActive,
+    },
+  );
+
+  return response.data;
+};

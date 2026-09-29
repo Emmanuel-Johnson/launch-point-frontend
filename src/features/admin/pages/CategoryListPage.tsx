@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 import {
   getAdminCategories,
+  updateAdminCategoryStatus,
   type AdminCategory,
 } from "../api/adminCategoryApi";
 
@@ -92,14 +93,31 @@ const CategoryListPage = () => {
     return `${text.slice(0, maxLength - 3)}...`;
   };
 
-  const handleToggleStatus = (id: number) => {
-    setCategoryList((currentCategories) =>
-      currentCategories.map((category) =>
-        category.id === id
-          ? { ...category, is_active: !category.is_active }
-          : category,
-      ),
-    );
+  const handleToggleStatus = async (id: number) => {
+    const category = categoryList.find((item) => item.id === id);
+
+    if (!category) return;
+
+    try {
+      const newStatus = !category.is_active;
+
+      const response = await updateAdminCategoryStatus(id, newStatus);
+
+      setCategoryList((currentCategories) =>
+        currentCategories.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                is_active: response.is_active,
+              }
+            : item,
+        ),
+      );
+
+      console.log(response.message);
+    } catch (error) {
+      console.error("Failed to update category status:", error);
+    }
   };
 
   const handleEditCategory = (id: number) => {

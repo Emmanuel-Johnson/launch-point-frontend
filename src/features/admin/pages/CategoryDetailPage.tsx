@@ -13,7 +13,11 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getAdminCategory, type AdminCategory } from "../api/adminCategoryApi";
+import {
+  getAdminCategory,
+  updateAdminCategoryStatus,
+  type AdminCategory,
+} from "../api/adminCategoryApi";
 
 const CategoryDetailPage = () => {
   const navigate = useNavigate();
@@ -79,12 +83,27 @@ const CategoryDetailPage = () => {
   // Actions
   // =========================================================
 
-  const handleToggleStatus = () => {
+  const handleToggleStatus = async () => {
     if (!category) return;
 
-    console.log("Toggle category status:", category.id);
+    try {
+      const newStatus = !category.is_active;
 
-    // Connect PATCH status API here later.
+      const response = await updateAdminCategoryStatus(category.id, newStatus);
+
+      setCategory((currentCategory) =>
+        currentCategory
+          ? {
+              ...currentCategory,
+              is_active: response.is_active,
+            }
+          : currentCategory,
+      );
+
+      console.log(response.message);
+    } catch (error) {
+      console.error("Failed to update category status:", error);
+    }
   };
 
   const handleEditCategory = () => {
@@ -297,7 +316,7 @@ const CategoryDetailPage = () => {
                 <button
                   type="button"
                   onClick={handleToggleStatus}
-                  className={`group/toggle relative inline-flex h-11 min-w-[168px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group/toggle relative inline-flex h-11 min-w-[168px] cursor-pointer w-50 items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
                     category.is_active
                       ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
                       : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
