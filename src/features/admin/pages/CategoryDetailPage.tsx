@@ -18,6 +18,7 @@ import {
   updateAdminCategoryStatus,
   type AdminCategory,
 } from "../api/adminCategoryApi";
+import CategoryStatusConfirmModal from "../components/CategoryStatusConfirmModal";
 
 const CategoryDetailPage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ const CategoryDetailPage = () => {
   const [category, setCategory] = useState<AdminCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
 
   // =========================================================
   // Fetch Category
@@ -83,10 +86,18 @@ const CategoryDetailPage = () => {
   // Actions
   // =========================================================
 
-  const handleToggleStatus = async () => {
+  const handleToggleStatus = () => {
+    if (!category) return;
+
+    setIsStatusModalOpen(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
     if (!category) return;
 
     try {
+      setIsStatusUpdating(true);
+
       const newStatus = !category.is_active;
 
       const response = await updateAdminCategoryStatus(category.id, newStatus);
@@ -100,10 +111,20 @@ const CategoryDetailPage = () => {
           : currentCategory,
       );
 
+      setIsStatusModalOpen(false);
+
       console.log(response.message);
     } catch (error) {
       console.error("Failed to update category status:", error);
+    } finally {
+      setIsStatusUpdating(false);
     }
+  };
+
+  const handleCancelStatusChange = () => {
+    if (isStatusUpdating) return;
+
+    setIsStatusModalOpen(false);
   };
 
   const handleEditCategory = () => {
@@ -203,370 +224,387 @@ const CategoryDetailPage = () => {
   // =========================================================
 
   return (
-    <div className="min-h-full w-full bg-black text-white">
-      <div className="space-y-6">
-        {/* =====================================================
+    <>
+      <div className="min-h-full w-full bg-black text-white">
+        <div className="space-y-6">
+          {/* =====================================================
             Back
         ===================================================== */}
 
-        <button
-          type="button"
-          onClick={() => navigate("/admin/categories")}
-          className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
-          style={{ animationDelay: "80ms" }}
-        >
-          <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-          Back
-        </button>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/categories")}
+            className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
+            style={{ animationDelay: "80ms" }}
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+            Back
+          </button>
 
-        {/* =====================================================
+          {/* =====================================================
             Header
         ===================================================== */}
 
-        <section
-          className="animate-page-item"
-          style={{ animationDelay: "160ms" }}
-        >
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/[0.18] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)]">
-            {/* Glow */}
+          <section
+            className="animate-page-item"
+            style={{ animationDelay: "160ms" }}
+          >
+            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/[0.18] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)]">
+              {/* Glow */}
 
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/[0.18] blur-3xl"
-            />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/[0.18] blur-3xl"
+              />
 
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.05] blur-3xl"
-            />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.05] blur-3xl"
+              />
 
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
-            />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+              />
 
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              {/* Identity */}
+              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                {/* Identity */}
 
-              <div className="flex min-w-0 items-start gap-5">
-                {/* Initials */}
+                <div className="flex min-w-0 items-start gap-5">
+                  {/* Initials */}
 
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/[0.22] via-[#34D399]/[0.08] to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30">
-                  {getInitials(category.name)}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-[26px] font-semibold leading-tight tracking-tight [overflow-wrap:anywhere]">
-                      {category.name}
-                    </h1>
-
-                    {/* Status Badge */}
-
-                    <span
-                      className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
-                        category.is_active
-                          ? "bg-[#34D399]/[0.12] text-[#34D399] ring-[#34D399]/25"
-                          : "bg-red-400/[0.12] text-red-400 ring-red-400/25"
-                      }`}
-                    >
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          category.is_active
-                            ? "bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.7)]"
-                            : "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]"
-                        }`}
-                      />
-
-                      {category.is_active ? "Active" : "Inactive"}
-                    </span>
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/[0.22] via-[#34D399]/[0.08] to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30">
+                    {getInitials(category.name)}
                   </div>
 
-                  {/* Slug */}
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h1 className="text-[26px] font-semibold leading-tight tracking-tight [overflow-wrap:anywhere]">
+                        {category.name}
+                      </h1>
 
-                  <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
-                    <Link2 className="h-3.5 w-3.5 shrink-0 text-white/35" />
+                      {/* Status Badge */}
 
-                    <span className="font-mono text-[13px] [overflow-wrap:anywhere]">
-                      {category.slug}
-                    </span>
-                  </p>
+                      <span
+                        className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
+                          category.is_active
+                            ? "bg-[#34D399]/[0.12] text-[#34D399] ring-[#34D399]/25"
+                            : "bg-red-400/[0.12] text-red-400 ring-red-400/25"
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            category.is_active
+                              ? "bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.7)]"
+                              : "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]"
+                          }`}
+                        />
+
+                        {category.is_active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+
+                    {/* Slug */}
+
+                    <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                      <Link2 className="h-3.5 w-3.5 shrink-0 text-white/35" />
+
+                      <span className="font-mono text-[13px] [overflow-wrap:anywhere]">
+                        {category.slug}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+
+                <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+                  {/* Edit */}
+
+                  <button
+                    type="button"
+                    onClick={handleEditCategory}
+                    className="group/edit relative inline-flex h-11 min-w-[128px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.1] bg-white/[0.04] px-6 text-sm font-medium text-white/75 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/35 hover:bg-[#34D399]/[0.06] hover:text-[#34D399] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.35)]"
+                  >
+                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/12 to-transparent transition-transform duration-700 group-hover/edit:translate-x-full" />
+
+                    <Pencil
+                      className="relative z-10 h-4 w-4"
+                      strokeWidth={1.8}
+                    />
+
+                    <span className="relative z-10">Edit Category</span>
+                  </button>
+
+                  {/* Toggle */}
+
+                  <button
+                    type="button"
+                    onClick={handleToggleStatus}
+                    className={`group/toggle relative inline-flex h-11 min-w-[168px] cursor-pointer w-50 items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                      category.is_active
+                        ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
+                        : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
+                        category.is_active
+                          ? "via-red-400/12"
+                          : "via-[#34D399]/12"
+                      }`}
+                    />
+
+                    {category.is_active ? (
+                      <>
+                        <Ban
+                          className="relative z-10 h-4 w-4 shrink-0"
+                          strokeWidth={1.8}
+                        />
+
+                        <span className="relative z-10">Disable Category</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2
+                          className="relative z-10 h-4 w-4 shrink-0"
+                          strokeWidth={1.8}
+                        />
+
+                        <span className="relative z-10">Enable Category</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-
-              {/* Actions */}
-
-              <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
-                {/* Edit */}
-
-                <button
-                  type="button"
-                  onClick={handleEditCategory}
-                  className="group/edit relative inline-flex h-11 min-w-[128px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.1] bg-white/[0.04] px-6 text-sm font-medium text-white/75 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/35 hover:bg-[#34D399]/[0.06] hover:text-[#34D399] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.35)]"
-                >
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/12 to-transparent transition-transform duration-700 group-hover/edit:translate-x-full" />
-
-                  <Pencil className="relative z-10 h-4 w-4" strokeWidth={1.8} />
-
-                  <span className="relative z-10">Edit Category</span>
-                </button>
-
-                {/* Toggle */}
-
-                <button
-                  type="button"
-                  onClick={handleToggleStatus}
-                  className={`group/toggle relative inline-flex h-11 min-w-[168px] cursor-pointer w-50 items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
-                    category.is_active
-                      ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
-                      : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
-                      category.is_active ? "via-red-400/12" : "via-[#34D399]/12"
-                    }`}
-                  />
-
-                  {category.is_active ? (
-                    <>
-                      <Ban
-                        className="relative z-10 h-4 w-4 shrink-0"
-                        strokeWidth={1.8}
-                      />
-
-                      <span className="relative z-10">Disable Category</span>
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2
-                        className="relative z-10 h-4 w-4 shrink-0"
-                        strokeWidth={1.8}
-                      />
-
-                      <span className="relative z-10">Enable Category</span>
-                    </>
-                  )}
-                </button>
-              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* =====================================================
+          {/* =====================================================
             Stats
         ===================================================== */}
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {/* Courses */}
-
-          <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
-            style={{ animationDelay: "240ms" }}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
-            />
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                  Total Courses
-                </p>
-
-                <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
-                  —
-                </p>
-              </div>
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
-                <BookOpen className="h-5 w-5" strokeWidth={1.8} />
-              </div>
-            </div>
-          </div>
-
-          {/* Status */}
-
-          <div
-            className={`animate-page-item group relative cursor-default overflow-hidden rounded-2xl border bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 ${
-              category.is_active
-                ? "border-[#34D399]/25 hover:border-[#34D399]/40 hover:shadow-[0_16px_40px_-16px_rgba(52,211,153,0.25)]"
-                : "border-red-400/20 hover:border-red-400/35 hover:shadow-[0_16px_40px_-16px_rgba(248,113,113,0.25)]"
-            }`}
-            style={{ animationDelay: "300ms" }}
-          >
-            <div
-              aria-hidden="true"
-              className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent ${
-                category.is_active ? "via-[#34D399]/60" : "via-red-400/50"
-              }`}
-            />
-
-            <div
-              aria-hidden="true"
-              className={`pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full blur-3xl ${
-                category.is_active ? "bg-[#34D399]/[0.08]" : "bg-red-400/[0.06]"
-              }`}
-            />
-
-            <div className="relative flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                  Status
-                </p>
-
-                <p
-                  className={`mt-3 text-3xl font-semibold tracking-tight ${
-                    category.is_active ? "text-[#34D399]" : "text-red-400"
-                  }`}
-                >
-                  {category.is_active ? "Active" : "Inactive"}
-                </p>
-              </div>
-
-              <div
-                className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset transition-transform duration-300 group-hover:scale-105 ${
-                  category.is_active
-                    ? "bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] ring-[#34D399]/20"
-                    : "bg-gradient-to-br from-red-400/[0.16] to-red-400/[0.03] text-red-400 ring-red-400/20"
-                }`}
-              >
-                {category.is_active ? (
-                  <CheckCircle2 className="h-5 w-5" strokeWidth={1.8} />
-                ) : (
-                  <Ban className="h-5 w-5" strokeWidth={1.8} />
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Category ID */}
-
-          <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
-            style={{ animationDelay: "360ms" }}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
-            />
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                  Category ID
-                </p>
-
-                <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
-                  #{category.id}
-                </p>
-              </div>
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] text-white/55 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-white/[0.06] transition-transform duration-300 group-hover:scale-105">
-                <Hash className="h-5 w-5" strokeWidth={1.8} />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =====================================================
-            Category Information
-        ===================================================== */}
-
-        <section
-          className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_16px_44px_-12px_rgba(0,0,0,0.7)]"
-          style={{ animationDelay: "440ms" }}
-        >
-          <div className="relative cursor-default border-b border-white/[0.07] p-6">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
-            />
-
-            <h2 className="text-lg font-semibold tracking-tight">
-              Category Information
-            </h2>
-
-            <p className="mt-1 text-xs text-white/45">
-              Full details for this category.
-            </p>
-          </div>
-
-          <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2">
-            {/* Name */}
-
-            <InfoRow
-              icon={<Tags className="h-4 w-4" strokeWidth={1.8} />}
-              label="Name"
-              value={category.name}
-            />
-
-            {/* Slug */}
-
-            <InfoRow
-              icon={<Link2 className="h-4 w-4" strokeWidth={1.8} />}
-              label="Slug"
-              value={category.slug}
-            />
-
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {/* Courses */}
 
-            <InfoRow
-              icon={<BookOpen className="h-4 w-4" strokeWidth={1.8} />}
-              label="Courses"
-              value="—"
-            />
+            <div
+              className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
+              style={{ animationDelay: "240ms" }}
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
+              />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
+                    Total Courses
+                  </p>
+
+                  <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
+                    —
+                  </p>
+                </div>
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
+                  <BookOpen className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+              </div>
+            </div>
 
             {/* Status */}
 
-            <InfoRow
-              icon={
-                category.is_active ? (
-                  <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />
-                ) : (
-                  <Ban className="h-4 w-4" strokeWidth={1.8} />
-                )
-              }
-              label="Status"
-              value={category.is_active ? "Active" : "Inactive"}
-              valueClassName={
-                category.is_active ? "text-[#34D399]" : "text-red-400"
-              }
-            />
+            <div
+              className={`animate-page-item group relative cursor-default overflow-hidden rounded-2xl border bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 ${
+                category.is_active
+                  ? "border-[#34D399]/25 hover:border-[#34D399]/40 hover:shadow-[0_16px_40px_-16px_rgba(52,211,153,0.25)]"
+                  : "border-red-400/20 hover:border-red-400/35 hover:shadow-[0_16px_40px_-16px_rgba(248,113,113,0.25)]"
+              }`}
+              style={{ animationDelay: "300ms" }}
+            >
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent ${
+                  category.is_active ? "via-[#34D399]/60" : "via-red-400/50"
+                }`}
+              />
 
-            {/* Created */}
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full blur-3xl ${
+                  category.is_active
+                    ? "bg-[#34D399]/[0.08]"
+                    : "bg-red-400/[0.06]"
+                }`}
+              />
 
-            <InfoRow
-              icon={<CalendarDays className="h-4 w-4" strokeWidth={1.8} />}
-              label="Created"
-              value={formatDateTime(category.created_at)}
-            />
+              <div className="relative flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
+                    Status
+                  </p>
 
-            {/* Updated */}
+                  <p
+                    className={`mt-3 text-3xl font-semibold tracking-tight ${
+                      category.is_active ? "text-[#34D399]" : "text-red-400"
+                    }`}
+                  >
+                    {category.is_active ? "Active" : "Inactive"}
+                  </p>
+                </div>
 
-            <InfoRow
-              icon={<Clock className="h-4 w-4" strokeWidth={1.8} />}
-              label="Last Updated"
-              value={formatDateTime(category.updated_at)}
-            />
-          </div>
-
-          {/* Description */}
-
-          <div className="border-t border-white/[0.07] p-6">
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-              <Tags className="h-4 w-4" strokeWidth={1.8} />
-              Description
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset transition-transform duration-300 group-hover:scale-105 ${
+                    category.is_active
+                      ? "bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] ring-[#34D399]/20"
+                      : "bg-gradient-to-br from-red-400/[0.16] to-red-400/[0.03] text-red-400 ring-red-400/20"
+                  }`}
+                >
+                  {category.is_active ? (
+                    <CheckCircle2 className="h-5 w-5" strokeWidth={1.8} />
+                  ) : (
+                    <Ban className="h-5 w-5" strokeWidth={1.8} />
+                  )}
+                </div>
+              </div>
             </div>
 
-            <p className="mt-3 text-sm leading-relaxed text-white/70 [overflow-wrap:anywhere]">
-              {category.description || "No description provided."}
-            </p>
-          </div>
-        </section>
+            {/* Category ID */}
+
+            <div
+              className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
+              style={{ animationDelay: "360ms" }}
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
+              />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
+                    Category ID
+                  </p>
+
+                  <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
+                    #{category.id}
+                  </p>
+                </div>
+
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] text-white/55 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-white/[0.06] transition-transform duration-300 group-hover:scale-105">
+                  <Hash className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* =====================================================
+            Category Information
+        ===================================================== */}
+
+          <section
+            className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_16px_44px_-12px_rgba(0,0,0,0.7)]"
+            style={{ animationDelay: "440ms" }}
+          >
+            <div className="relative cursor-default border-b border-white/[0.07] p-6">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+              />
+
+              <h2 className="text-lg font-semibold tracking-tight">
+                Category Information
+              </h2>
+
+              <p className="mt-1 text-xs text-white/45">
+                Full details for this category.
+              </p>
+            </div>
+
+            <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2">
+              {/* Name */}
+
+              <InfoRow
+                icon={<Tags className="h-4 w-4" strokeWidth={1.8} />}
+                label="Name"
+                value={category.name}
+              />
+
+              {/* Slug */}
+
+              <InfoRow
+                icon={<Link2 className="h-4 w-4" strokeWidth={1.8} />}
+                label="Slug"
+                value={category.slug}
+              />
+
+              {/* Courses */}
+
+              <InfoRow
+                icon={<BookOpen className="h-4 w-4" strokeWidth={1.8} />}
+                label="Courses"
+                value="—"
+              />
+
+              {/* Status */}
+
+              <InfoRow
+                icon={
+                  category.is_active ? (
+                    <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />
+                  ) : (
+                    <Ban className="h-4 w-4" strokeWidth={1.8} />
+                  )
+                }
+                label="Status"
+                value={category.is_active ? "Active" : "Inactive"}
+                valueClassName={
+                  category.is_active ? "text-[#34D399]" : "text-red-400"
+                }
+              />
+
+              {/* Created */}
+
+              <InfoRow
+                icon={<CalendarDays className="h-4 w-4" strokeWidth={1.8} />}
+                label="Created"
+                value={formatDateTime(category.created_at)}
+              />
+
+              {/* Updated */}
+
+              <InfoRow
+                icon={<Clock className="h-4 w-4" strokeWidth={1.8} />}
+                label="Last Updated"
+                value={formatDateTime(category.updated_at)}
+              />
+            </div>
+
+            {/* Description */}
+
+            <div className="border-t border-white/[0.07] p-6">
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/45">
+                <Tags className="h-4 w-4" strokeWidth={1.8} />
+                Description
+              </div>
+
+              <p className="mt-3 text-sm leading-relaxed text-white/70 [overflow-wrap:anywhere]">
+                {category.description || "No description provided."}
+              </p>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+      <CategoryStatusConfirmModal
+        isOpen={isStatusModalOpen}
+        isLoading={isStatusUpdating}
+        categoryName={category.name}
+        isActive={category.is_active}
+        onCancel={handleCancelStatusChange}
+        onConfirm={handleConfirmStatusChange}
+      />
+    </>
   );
 };
 
