@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import {
   getAdminCategory,
   updateAdminCategoryStatus,
@@ -50,7 +50,10 @@ const CategoryDetailPage = () => {
 
         setCategory(data);
       } catch (error) {
-        console.error("Failed to fetch category:", error);
+        toast.error("Failed to fetch category.", {
+          containerId: "admin",
+        });
+        console.log(error);
         setError("Category not found.");
       } finally {
         setIsLoading(false);
@@ -113,9 +116,14 @@ const CategoryDetailPage = () => {
 
       setIsStatusModalOpen(false);
 
-      console.log(response.message);
+      toast.success(response.message, {
+        containerId: "admin",
+      });
     } catch (error) {
-      console.error("Failed to update category status:", error);
+      toast.error("Failed to update category status.", {
+        containerId: "admin",
+      });
+      console.log(error);
     } finally {
       setIsStatusUpdating(false);
     }

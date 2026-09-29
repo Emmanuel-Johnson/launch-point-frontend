@@ -17,6 +17,7 @@ import {
   updateAdminCategoryStatus,
   type AdminCategory,
 } from "../api/adminCategoryApi";
+import { toast } from "react-toastify";
 
 type Category = AdminCategory;
 
@@ -134,9 +135,14 @@ const CategoryListPage = () => {
       setIsStatusModalOpen(false);
       setSelectedCategory(null);
 
-      console.log(response.message);
+      toast.success(response.message, {
+        containerId: "admin",
+      });
     } catch (error) {
-      console.error("Failed to update category status:", error);
+      toast.error("Failed to update category status.", {
+        containerId: "admin",
+      });
+      console.log(error);
     } finally {
       setIsStatusUpdating(false);
     }
