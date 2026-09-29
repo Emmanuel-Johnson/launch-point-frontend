@@ -1,12 +1,16 @@
 import { X, Tags } from "lucide-react";
+import { createPortal } from "react-dom";
 import { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import axios from "axios";
+
 import {
   createAdminCategory,
   type AdminCategory,
 } from "../api/adminCategoryApi";
-import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
 
 interface CategoryFormModalProps {
   isOpen: boolean;
@@ -14,64 +18,112 @@ interface CategoryFormModalProps {
   onCreated: (category: AdminCategory) => void;
 }
 
+/* --------------------------------------------------
+   Validation Schema
+-------------------------------------------------- */
+
+const categorySchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Category name is required")
+    .min(2, "Category name must be at least 2 characters")
+    .max(100, "Category name is too long")
+    .regex(
+      /^[\p{L}\p{N}]+(?:[ '&-][\p{L}\p{N}]+)*$/u,
+      "Please enter a valid category name",
+    ),
+
+  slug: z
+    .string()
+    .trim()
+    .min(1, "Category slug is required")
+    .min(2, "Category slug must be at least 2 characters")
+    .max(100, "Category slug is too long")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug must contain only lowercase letters, numbers, and hyphens",
+    ),
+
+  description: z
+    .string()
+    .trim()
+    .min(1, "Category description is required")
+    .min(10, "Description must be at least 10 characters")
+    .max(500, "Description must not exceed 500 characters")
+    .refine(
+      (value) => !/[^A-Za-z0-9\s]{4,}/.test(value),
+      "Description cannot contain more than 3 consecutive special characters",
+    ),
+});
+
+type CategoryFormData = z.infer<typeof categorySchema>;
+
+/* --------------------------------------------------
+   Component
+-------------------------------------------------- */
+
 const CategoryFormModal = ({
   isOpen,
   onClose,
   onCreated,
 }: CategoryFormModalProps) => {
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(false);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CategoryFormData>({
+    resolver: zodResolver(categorySchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      slug: "",
+      description: "",
+    },
+  });
+
+  /* --------------------------------------------------
+     Reset Form
+  -------------------------------------------------- */
 
   const resetForm = () => {
-    setName("");
-    setSlug("");
-    setDescription("");
+    reset();
+
     setIsActive(false);
   };
+
+  /* --------------------------------------------------
+     Close Modal
+  -------------------------------------------------- */
 
   const handleClose = () => {
     if (isSubmitting) return;
 
     resetForm();
+
     onClose();
   };
-  if (!isOpen) {
-    return null;
-  }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  /* --------------------------------------------------
+     Submit
+  -------------------------------------------------- */
 
-    if (!name.trim()) {
-      toast.error("Category name is required.", {
-        containerId: "admin",
-      });
-      return;
-    }
-
-    if (!slug.trim()) {
-      toast.error("Category slug is required.", {
-        containerId: "admin",
-      });
-      return;
-    }
-
+  const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
     try {
-      setIsSubmitting(true);
-
       const createdCategory = await createAdminCategory({
-        name: name.trim(),
-        slug: slug.trim(),
-        description: description.trim(),
+        name: data.name.trim(),
+        slug: data.slug.trim(),
+        description: data.description.trim(),
         is_active: isActive,
       });
 
       onCreated(createdCategory);
+
       resetForm();
+
       onClose();
     } catch (error) {
       console.error("Failed to create category:", error);
@@ -79,20 +131,32 @@ const CategoryFormModal = ({
       let message = "Failed to create category. Please try again.";
 
       if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const nameError = responseData?.name?.[0];
+        const slugError = responseData?.slug?.[0];
+        const descriptionError = responseData?.description?.[0];
+        const detailError = responseData?.detail;
+        const messageError = responseData?.message;
+
         message =
-          error.response?.data?.name?.[0] ||
-          error.response?.data?.slug?.[0] ||
-          error.response?.data?.message ||
+          nameError ||
+          slugError ||
+          descriptionError ||
+          detailError ||
+          messageError ||
           message;
       }
 
       toast.error(message, {
         containerId: "admin",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
+
+  if (!isOpen) {
+    return null;
+  }
 
   return createPortal(
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 p-6 backdrop-blur-sm">
@@ -131,7 +195,7 @@ const CategoryFormModal = ({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="space-y-5 px-6 py-6">
             {/* Name */}
             <div>
@@ -145,13 +209,21 @@ const CategoryFormModal = ({
               <input
                 id="category-name"
                 type="text"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
                 placeholder="e.g. Web Development"
                 disabled={isSubmitting}
-                className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50"
+                {...register("name")}
+                className={`h-11 w-full rounded-xl border ${
+                  errors.name ? "border-red-400/60" : "border-white/[0.08]"
+                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
+
+              {errors.name && (
+                <p className="mt-1.5 text-xs text-red-400">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
+
             {/* Slug */}
             <div>
               <label
@@ -164,13 +236,27 @@ const CategoryFormModal = ({
               <input
                 id="category-slug"
                 type="text"
-                value={slug}
-                onChange={(event) => setSlug(event.target.value)}
                 placeholder="e.g. web-development"
                 disabled={isSubmitting}
-                className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50"
+                {...register("slug")}
+                className={`h-11 w-full rounded-xl border ${
+                  errors.slug ? "border-red-400/60" : "border-white/[0.08]"
+                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
+
+              {errors.slug && (
+                <p className="mt-1.5 text-xs text-red-400">
+                  {errors.slug.message}
+                </p>
+              )}
+
+              {!errors.slug && (
+                <p className="mt-1.5 text-[11px] text-white/30">
+                  Use lowercase letters, numbers, and hyphens.
+                </p>
+              )}
             </div>
+
             {/* Description */}
             <div>
               <label
@@ -182,16 +268,33 @@ const CategoryFormModal = ({
 
               <textarea
                 id="category-description"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
                 placeholder="Describe what this category is about..."
                 rows={4}
                 disabled={isSubmitting}
-                className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50"
+                {...register("description")}
+                className={`w-full resize-none rounded-xl border ${
+                  errors.description
+                    ? "border-red-400/60"
+                    : "border-white/[0.08]"
+                } bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
-            </div>
-            {/* Active */}
 
+              <div className="mt-1.5 flex items-center justify-between">
+                {errors.description ? (
+                  <p className="text-xs text-red-400">
+                    {errors.description.message}
+                  </p>
+                ) : (
+                  <span />
+                )}
+
+                <p className="text-[11px] text-white/30">
+                  Maximum 500 characters
+                </p>
+              </div>
+            </div>
+
+            {/* Active */}
             <div className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-white">
@@ -217,7 +320,7 @@ const CategoryFormModal = ({
                 } disabled:cursor-not-allowed disabled:opacity-50`}
               >
                 <span
-                  className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
+                  className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
                     isActive ? "translate-x-5" : "translate-x-0"
                   }`}
                 />
