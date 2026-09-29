@@ -12,6 +12,7 @@ import {
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryStatusConfirmModal from "../components/CategoryStatusConfirmModal";
+import CategoryFormModal from "../components/CategoryFormModal";
 import {
   getAdminCategories,
   updateAdminCategoryStatus,
@@ -37,6 +38,7 @@ const CategoryListPage = () => {
     null,
   );
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const categoriesListRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const fetchCategories = async () => {
@@ -271,7 +273,7 @@ const CategoryListPage = () => {
                 {/* Add Category */}
                 <button
                   type="button"
-                  onClick={() => console.log("Create category")}
+                  onClick={() => setIsCategoryModalOpen(true)}
                   className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -748,6 +750,20 @@ const CategoryListPage = () => {
         isActive={selectedCategory?.is_active ?? false}
         onCancel={handleCancelStatusChange}
         onConfirm={handleConfirmStatusChange}
+      />
+      <CategoryFormModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        onCreated={(createdCategory) => {
+          setCategoryList((currentCategories) => [
+            createdCategory,
+            ...currentCategories,
+          ]);
+
+          toast.success("Category created successfully.", {
+            containerId: "admin",
+          });
+        }}
       />
     </>
   );

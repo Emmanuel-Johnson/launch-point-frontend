@@ -56,3 +56,25 @@ export const updateAdminCategoryStatus = async (
 
   return response.data;
 };
+
+// =========================================================
+// Create Category
+// =========================================================
+
+export interface CreateAdminCategoryData {
+  name: string;
+  slug: string;
+  description: string;
+  is_active: boolean;
+}
+
+export const createAdminCategory = async (
+  data: CreateAdminCategoryData,
+): Promise<AdminCategory> => {
+  const response = await adminApi.post<AdminCategory>(
+    "/admins/categories/",
+    data,
+  );
+
+  return response.data;
+};
