@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  Ban,
   BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
@@ -203,10 +204,10 @@ const StudentDetailPage = () => {
             <button
               type="button"
               onClick={() => navigate("/admin/students")}
-              className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-xs text-white/50 transition-colors hover:text-white"
+              className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
               style={{ animationDelay: "80ms" }}
             >
-              <ArrowLeft className="h-3 w-3 transition-transform duration-300 group-hover:-translate-x-0.5" />
+              <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />{" "}
               Back
             </button>
 
@@ -232,13 +233,37 @@ const StudentDetailPage = () => {
               <button
                 type="button"
                 onClick={() => setIsStatusModalOpen(true)}
-                className={`inline-flex h-10 w-40 cursor-pointer items-center justify-center rounded-xl text-sm font-medium transition-all duration-500 ease-out hover:scale-105 ${
+                className={`group/toggle relative inline-flex h-11 min-w-[168px] w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
                   isActive
-                    ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                    : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                    ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
+                    : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
                 }`}
               >
-                {isActive ? "Deactivate Account" : "Activate Account"}
+                <span
+                  className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
+                    isActive ? "via-red-400/12" : "via-[#34D399]/12"
+                  }`}
+                />
+
+                {isActive ? (
+                  <>
+                    <Ban
+                      className="relative z-10 h-4 w-4 shrink-0"
+                      strokeWidth={1.8}
+                    />
+
+                    <span className="relative z-10">Deactivate Account</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2
+                      className="relative z-10 h-4 w-4 shrink-0"
+                      strokeWidth={1.8}
+                    />
+
+                    <span className="relative z-10">Activate Account</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
