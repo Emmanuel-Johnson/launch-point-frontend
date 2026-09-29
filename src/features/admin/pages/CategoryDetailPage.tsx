@@ -19,6 +19,7 @@ import {
   type AdminCategory,
 } from "../api/adminCategoryApi";
 import CategoryStatusConfirmModal from "../components/CategoryStatusConfirmModal";
+import CategoryFormModal from "../components/CategoryFormModal";
 
 const CategoryDetailPage = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const CategoryDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
 
   // =========================================================
@@ -138,9 +140,7 @@ const CategoryDetailPage = () => {
   const handleEditCategory = () => {
     if (!category) return;
 
-    console.log("Edit category:", category.id);
-
-    // Connect edit modal/navigation here later.
+    setIsEditModalOpen(true);
   };
 
   // =========================================================
@@ -674,6 +674,17 @@ const CategoryDetailPage = () => {
         isActive={category.is_active}
         onCancel={handleCancelStatusChange}
         onConfirm={handleConfirmStatusChange}
+      />
+
+      <CategoryFormModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        editingCategory={category}
+        onCreated={() => {}}
+        onUpdated={(updatedCategory) => {
+          setCategory(updatedCategory);
+          setIsEditModalOpen(false);
+        }}
       />
     </>
   );
