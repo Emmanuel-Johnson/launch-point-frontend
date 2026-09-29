@@ -146,13 +146,13 @@ const StudentDetailPage = () => {
     });
   };
 
-  const formatDateOnly = (date: string) => {
-    return new Date(date).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
+  // const formatDateOnly = (date: string) => {
+  //   return new Date(date).toLocaleDateString("en-IN", {
+  //     day: "2-digit",
+  //     month: "short",
+  //     year: "numeric",
+  //   });
+  // };
 
   const getInitials = (name: string) => {
     return name
@@ -744,7 +744,7 @@ const StudentDetailPage = () => {
           {/* =====================================================
             FOOTER
         ====================================================== */}
-          <footer
+          {/* <footer
             className="animate-page-item mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between"
             style={{ animationDelay: "460ms" }}
           >
@@ -761,7 +761,7 @@ const StudentDetailPage = () => {
               Student #{student.id} • Joined{" "}
               {formatDateOnly(student.date_joined)}
             </p>
-          </footer>
+          </footer> */}
         </div>
       </div>
       <StudentStatusConfirmModal
