@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import AdminHeader from "../components/AdminHeader";
@@ -50,20 +49,6 @@ const AdminLayout = () => {
           </div>
         </main>
       </div>
-
-      {/* ADMIN TOAST */}
-      <ToastContainer
-        containerId="admin"
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        toastClassName="admin-toast"
-        progressClassName="admin-toast-progress"
-      />
     </div>
   );
 };
