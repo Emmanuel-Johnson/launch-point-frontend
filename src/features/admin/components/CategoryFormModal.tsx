@@ -21,7 +21,6 @@ interface CategoryFormModalProps {
 /* --------------------------------------------------
    Validation Schema
 -------------------------------------------------- */
-
 const categorySchema = z.object({
   name: z
     .string()
@@ -33,14 +32,23 @@ const categorySchema = z.object({
       /^[\p{L}\p{N}]+(?:[ '&-][\p{L}\p{N}]+)*$/u,
       "Category name contains invalid characters",
     )
+    .refine(
+      (value) => !/(.)\1{3,}/u.test(value.toLowerCase()),
+      "Category name contains too many repeated characters",
+    )
     .refine((value) => {
-      const normalized = value.replace(/\s/g, "").toLowerCase();
+      const normalized = value.replace(/[\s-]/g, "").toLowerCase();
 
-      return (
-        !normalized ||
-        !normalized.split("").every((char) => char === normalized[0])
-      );
-    }, "Category name cannot contain only repeated characters"),
+      for (let size = 2; size <= 6; size++) {
+        const pattern = new RegExp(`^(.{${size}})\\1{2,}$`, "u");
+
+        if (pattern.test(normalized)) {
+          return false;
+        }
+      }
+
+      return true;
+    }, "Category name contains a repeated pattern"),
 
   slug: z
     .string()
@@ -52,13 +60,23 @@ const categorySchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug must contain only lowercase letters, numbers, and hyphens",
     )
+    .refine(
+      (value) => !/(.)\1{3,}/.test(value),
+      "Slug contains too many repeated characters",
+    )
     .refine((value) => {
       const normalized = value.replace(/-/g, "");
-      return (
-        !normalized ||
-        !normalized.split("").every((char) => char === normalized[0])
-      );
-    }, "Slug cannot contain only repeated characters"),
+
+      for (let size = 2; size <= 6; size++) {
+        const pattern = new RegExp(`^(.{${size}})\\1{2,}$`);
+
+        if (pattern.test(normalized)) {
+          return false;
+        }
+      }
+
+      return true;
+    }, "Slug contains a repeated pattern"),
 
   description: z
     .string()
@@ -70,14 +88,23 @@ const categorySchema = z.object({
       (value) => !/[^A-Za-z0-9\s]{4,}/.test(value),
       "Description cannot contain more than 3 consecutive special characters",
     )
+    .refine(
+      (value) => !/(.)\1{3,}/u.test(value.toLowerCase()),
+      "Description contains too many repeated characters",
+    )
     .refine((value) => {
       const normalized = value.replace(/\s/g, "").toLowerCase();
 
-      return (
-        !normalized ||
-        !normalized.split("").every((char) => char === normalized[0])
-      );
-    }, "Description cannot contain only repeated characters"),
+      for (let size = 2; size <= 6; size++) {
+        const pattern = new RegExp(`^(.{${size}})\\1{2,}$`, "u");
+
+        if (pattern.test(normalized)) {
+          return false;
+        }
+      }
+
+      return true;
+    }, "Description contains a repeated pattern"),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
