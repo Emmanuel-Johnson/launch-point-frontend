@@ -393,68 +393,59 @@ const CategoryDetailPage = () => {
         ===================================================== */}
 
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {/* Courses */}
-
+            {/* =====================================================
+      CATEGORY ID
+  ====================================================== */}
             <div
-              className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
-              style={{ animationDelay: "240ms" }}
+              className="animate-page-item group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_12px_40px_-12px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.75)]"
+              style={{ animationDelay: "360ms" }}
             >
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
               />
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                    Total Courses
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-white/35">
+                    Category ID
                   </p>
 
-                  <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
-                    —
+                  <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-white">
+                    #{category.id}
                   </p>
                 </div>
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
-                  <BookOpen className="h-5 w-5" strokeWidth={1.8} />
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/50 ring-1 ring-inset ring-white/[0.07] transition-transform duration-300 group-hover:scale-105">
+                  <Hash className="h-5 w-5" strokeWidth={1.8} />
                 </div>
               </div>
             </div>
 
-            {/* Status */}
-
+            {/* =====================================================
+      STATUS
+  ====================================================== */}
             <div
-              className={`animate-page-item group relative cursor-default overflow-hidden rounded-2xl border bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 ${
+              className={`animate-page-item group relative overflow-hidden rounded-2xl border bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_12px_40px_-12px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-0.5 ${
                 category.is_active
-                  ? "border-[#34D399]/25 hover:border-[#34D399]/40 hover:shadow-[0_16px_40px_-16px_rgba(52,211,153,0.25)]"
-                  : "border-red-400/20 hover:border-red-400/35 hover:shadow-[0_16px_40px_-16px_rgba(248,113,113,0.25)]"
+                  ? "border-[#34D399]/20 hover:border-[#34D399]/35 hover:shadow-[0_16px_40px_-16px_rgba(52,211,153,0.18)]"
+                  : "border-red-400/20 hover:border-red-400/35 hover:shadow-[0_16px_40px_-16px_rgba(248,113,113,0.18)]"
               }`}
               style={{ animationDelay: "300ms" }}
             >
               <div
                 aria-hidden="true"
                 className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent ${
-                  category.is_active ? "via-[#34D399]/60" : "via-red-400/50"
+                  category.is_active ? "via-[#34D399]/50" : "via-red-400/45"
                 }`}
               />
 
-              <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full blur-3xl ${
-                  category.is_active
-                    ? "bg-[#34D399]/[0.08]"
-                    : "bg-red-400/[0.06]"
-                }`}
-              />
-
-              <div className="relative flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                    Status
-                  </p>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-white/35">Status</p>
 
                   <p
-                    className={`mt-3 text-3xl font-semibold tracking-tight ${
+                    className={`mt-2 text-2xl font-semibold tracking-tight ${
                       category.is_active ? "text-[#34D399]" : "text-red-400"
                     }`}
                   >
@@ -463,10 +454,10 @@ const CategoryDetailPage = () => {
                 </div>
 
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset transition-transform duration-300 group-hover:scale-105 ${
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset transition-transform duration-300 group-hover:scale-105 ${
                     category.is_active
-                      ? "bg-gradient-to-br from-[#34D399]/[0.18] to-[#34D399]/[0.03] text-[#34D399] ring-[#34D399]/20"
-                      : "bg-gradient-to-br from-red-400/[0.16] to-red-400/[0.03] text-red-400 ring-red-400/20"
+                      ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                      : "bg-red-400/10 text-red-400 ring-red-400/20"
                   }`}
                 >
                   {category.is_active ? (
@@ -477,31 +468,31 @@ const CategoryDetailPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Category ID */}
-
+            {/* =====================================================
+      TOTAL COURSES
+  ====================================================== */}
             <div
-              className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]"
-              style={{ animationDelay: "360ms" }}
+              className="animate-page-item group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_12px_40px_-12px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.75)]"
+              style={{ animationDelay: "240ms" }}
             >
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/30 to-transparent"
               />
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                    Category ID
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-white/35">
+                    Total Courses
                   </p>
 
-                  <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
-                    #{category.id}
+                  <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-white">
+                    —
                   </p>
                 </div>
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] text-white/55 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-white/[0.06] transition-transform duration-300 group-hover:scale-105">
-                  <Hash className="h-5 w-5" strokeWidth={1.8} />
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
+                  <BookOpen className="h-5 w-5" strokeWidth={1.8} />
                 </div>
               </div>
             </div>
@@ -512,94 +503,166 @@ const CategoryDetailPage = () => {
         ===================================================== */}
 
           <section
-            className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#0C0C0C] to-[#070707] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03),0_16px_44px_-12px_rgba(0,0,0,0.7)]"
+            className="animate-page-item"
             style={{ animationDelay: "440ms" }}
           >
-            <div className="relative cursor-default border-b border-white/[0.07] p-6">
+            {/* Section Heading */}
+            <div className="mb-4 flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+              />
+
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight">
+                  Category Information
+                </h2>
+
+                <p className="mt-1 text-xs text-white/40">
+                  Details and metadata for this category.
+                </p>
+              </div>
+            </div>
+
+            {/* Information Card */}
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
               />
 
-              <h2 className="text-lg font-semibold tracking-tight">
-                Category Information
-              </h2>
+              <div className="grid md:grid-cols-2">
+                {/* Name */}
+                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      <Tags size={16} strokeWidth={1.8} />
+                    </div>
 
-              <p className="mt-1 text-xs text-white/45">
-                Full details for this category.
-              </p>
-            </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Name</p>
 
-            <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2">
-              {/* Name */}
+                      <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                        {category.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-              <InfoRow
-                icon={<Tags className="h-4 w-4" strokeWidth={1.8} />}
-                label="Name"
-                value={category.name}
-              />
+                {/* Slug */}
+                <div className="border-b border-white/[0.06] p-5">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      <Link2 size={16} strokeWidth={1.8} />
+                    </div>
 
-              {/* Slug */}
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Slug</p>
 
-              <InfoRow
-                icon={<Link2 className="h-4 w-4" strokeWidth={1.8} />}
-                label="Slug"
-                value={category.slug}
-              />
+                      <p className="mt-1 text-sm font-medium font-mono text-white [overflow-wrap:anywhere]">
+                        {category.slug}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Courses */}
+                {/* Courses */}
+                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      <BookOpen size={16} strokeWidth={1.8} />
+                    </div>
 
-              <InfoRow
-                icon={<BookOpen className="h-4 w-4" strokeWidth={1.8} />}
-                label="Courses"
-                value="—"
-              />
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Courses</p>
 
-              {/* Status */}
+                      <p className="mt-1 text-sm font-medium text-white">—</p>
+                    </div>
+                  </div>
+                </div>
 
-              <InfoRow
-                icon={
-                  category.is_active ? (
-                    <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />
-                  ) : (
-                    <Ban className="h-4 w-4" strokeWidth={1.8} />
-                  )
-                }
-                label="Status"
-                value={category.is_active ? "Active" : "Inactive"}
-                valueClassName={
-                  category.is_active ? "text-[#34D399]" : "text-red-400"
-                }
-              />
+                {/* Status */}
+                <div className="border-b border-white/[0.06] p-5">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${
+                        category.is_active
+                          ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                          : "bg-red-400/10 text-red-400 ring-red-400/20"
+                      }`}
+                    >
+                      {category.is_active ? (
+                        <CheckCircle2 size={16} strokeWidth={1.8} />
+                      ) : (
+                        <Ban size={16} strokeWidth={1.8} />
+                      )}
+                    </div>
 
-              {/* Created */}
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Status</p>
 
-              <InfoRow
-                icon={<CalendarDays className="h-4 w-4" strokeWidth={1.8} />}
-                label="Created"
-                value={formatDateTime(category.created_at)}
-              />
+                      <p
+                        className={`mt-1 text-sm font-medium ${
+                          category.is_active ? "text-[#34D399]" : "text-red-400"
+                        }`}
+                      >
+                        {category.is_active ? "Active" : "Inactive"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Updated */}
+                {/* Created */}
+                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      <CalendarDays size={16} strokeWidth={1.8} />
+                    </div>
 
-              <InfoRow
-                icon={<Clock className="h-4 w-4" strokeWidth={1.8} />}
-                label="Last Updated"
-                value={formatDateTime(category.updated_at)}
-              />
-            </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Created</p>
 
-            {/* Description */}
+                      <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                        {formatDateTime(category.created_at)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="border-t border-white/[0.07] p-6">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-white/45">
-                <Tags className="h-4 w-4" strokeWidth={1.8} />
-                Description
+                {/* Last Updated */}
+                <div className="border-b border-white/[0.06] p-5 md:border-b-0">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                      <Clock size={16} strokeWidth={1.8} />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/35">Last Updated</p>
+
+                      <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                        {formatDateTime(category.updated_at)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <p className="mt-3 text-sm leading-relaxed text-white/70 [overflow-wrap:anywhere]">
-                {category.description || "No description provided."}
-              </p>
+              {/* Description */}
+              <div className="border-t border-white/[0.07] p-5">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <Tags size={16} strokeWidth={1.8} />
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-white/35">Description</p>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-sm leading-relaxed text-white/70 [overflow-wrap:anywhere]">
+                  {category.description || "No description provided."}
+                </p>
+              </div>
             </div>
           </section>
         </div>
@@ -620,33 +683,33 @@ const CategoryDetailPage = () => {
 // Info Row
 // =========================================================
 
-interface InfoRowProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  valueClassName?: string;
-}
+// interface InfoRowProps {
+//   icon: React.ReactNode;
+//   label: string;
+//   value: string;
+//   valueClassName?: string;
+// }
 
-const InfoRow = ({ icon, label, value, valueClassName }: InfoRowProps) => (
-  <div className="group/row flex items-start gap-3.5 bg-[#0A0A0A] px-6 py-5 transition-colors duration-200 hover:bg-[#0E0E0E]">
-    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-white/[0.07] to-white/[0.02] text-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] ring-1 ring-inset ring-white/[0.06] transition-colors duration-200 group-hover/row:text-white/70">
-      {icon}
-    </div>
+// const InfoRow = ({ icon, label, value, valueClassName }: InfoRowProps) => (
+//   <div className="group/row flex items-start gap-3.5 bg-[#0A0A0A] px-6 py-5 transition-colors duration-200 hover:bg-[#0E0E0E]">
+//     <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-white/[0.07] to-white/[0.02] text-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] ring-1 ring-inset ring-white/[0.06] transition-colors duration-200 group-hover/row:text-white/70">
+//       {icon}
+//     </div>
 
-    <div className="min-w-0">
-      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/40">
-        {label}
-      </p>
+//     <div className="min-w-0">
+//       <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/40">
+//         {label}
+//       </p>
 
-      <p
-        className={`mt-1 text-sm font-medium text-white [overflow-wrap:anywhere] ${
-          valueClassName ?? ""
-        }`}
-      >
-        {value}
-      </p>
-    </div>
-  </div>
-);
+//       <p
+//         className={`mt-1 text-sm font-medium text-white [overflow-wrap:anywhere] ${
+//           valueClassName ?? ""
+//         }`}
+//       >
+//         {value}
+//       </p>
+//     </div>
+//   </div>
+// );
 
 export default CategoryDetailPage;
