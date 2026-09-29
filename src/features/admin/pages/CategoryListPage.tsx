@@ -9,62 +9,45 @@ import {
   Search,
   Tags,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  courseCount: number;
-  is_active: boolean;
-}
+import {
+  getAdminCategories,
+  type AdminCategory,
+} from "../api/adminCategoryApi";
 
-const categories: Category[] = [
-  {
-    id: 1,
-    name: "Web Development",
-    description:
-      "Courses related to frontend, backend, and full-stack development.",
-    courseCount: 12,
-    is_active: true,
-  },
-  {
-    id: 2,
-    name: "Python",
-    description: "Learn Python programming from beginner to advanced level.",
-    courseCount: 8,
-    is_active: true,
-  },
-  {
-    id: 3,
-    name: "Data Science",
-    description: "Data analysis, machine learning, and data science courses.",
-    courseCount: 6,
-    is_active: false,
-  },
-  {
-    id: 4,
-    name: "UI/UX Design",
-    description: "User interface and user experience design courses.",
-    courseCount: 5,
-    is_active: true,
-  },
-];
+type Category = AdminCategory;
 
 const CATEGORIES_PER_PAGE = 10;
 
 const CategoryListPage = () => {
   const navigate = useNavigate();
-
-  const [categoryList, setCategoryList] = useState<Category[]>(categories);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
   const [currentPage, setCurrentPage] = useState(1);
-
   const categoriesListRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true);
+
+        const data = await getAdminCategories();
+
+        setCategoryList(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const filteredCategories = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -433,252 +416,273 @@ const CategoryListPage = () => {
             </div>
           </div>
 
-          {/* Desktop Table */}
-          <div className="hidden overflow-x-auto md:block">
-            {/* table-fixed + explicit column widths keep every column in the
+          {/* Category Content */}
+          {isLoading ? (
+            <div className="flex min-h-[420px] flex-col items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#34D399]" />
+
+              <p className="mt-4 text-sm font-medium text-white/60">
+                Loading categories...
+              </p>
+
+              <p className="mt-1 text-xs text-white/30">
+                Please wait while we fetch the categories.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden overflow-x-auto md:block">
+                {/* table-fixed + explicit column widths keep every column in the
                 exact same position across pages, regardless of cell content. */}
-            <table className="w-full table-fixed">
-              <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
-                  <th className="w-[24%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Category
-                  </th>
+                <table className="w-full table-fixed">
+                  <thead className="cursor-default">
+                    <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                      <th className="w-[24%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Category
+                      </th>
 
-                  <th className="w-[32%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Description
-                  </th>
+                      <th className="w-[32%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Description
+                      </th>
 
-                  <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Courses
-                  </th>
+                      <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Courses
+                      </th>
 
-                  <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Status
-                  </th>
+                      <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                        Status
+                      </th>
 
-                  {/* "Action" label aligned to the right, above the action
+                      {/* "Action" label aligned to the right, above the action
                       controls (Edit + toggle) that sit below it. */}
-                  <th className="w-[18%] px-6 py-4">
-                    <div className="flex justify-end">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                        Action
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginatedCategories.map((category, index) => (
-                  <tr
-                    key={`${category.id}-${index}`}
-                    onClick={() => navigate(`/admin/categories/${category.id}`)}
-                    className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
-                  >
-                    {/* Category */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                          <Tags className="h-5 w-5" strokeWidth={1.8} />
+                      <th className="w-[18%] px-6 py-4">
+                        <div className="flex justify-end">
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                            Action
+                          </span>
                         </div>
+                      </th>
+                    </tr>
+                  </thead>
 
-                        <div className="min-w-0">
-                          <p
-                            className="truncate text-sm font-medium text-white"
-                            title={category.name}
-                          >
-                            {category.name}
-                          </p>
-
-                          <p className="mt-0.5 text-xs tabular-nums text-white/35">
-                            ID #{category.id}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Description */}
-                    <td className="px-6 py-4">
-                      <p
-                        className="truncate text-sm text-white/60"
-                        title={category.description}
+                  <tbody>
+                    {paginatedCategories.map((category, index) => (
+                      <tr
+                        key={`${category.id}-${index}`}
+                        onClick={() =>
+                          navigate(`/admin/categories/${category.id}`)
+                        }
+                        className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
                       >
-                        {truncateText(category.description)}
-                      </p>
-                    </td>
+                        {/* Category */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                              <Tags className="h-5 w-5" strokeWidth={1.8} />
+                            </div>
 
-                    {/* Courses */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
-                        <BookOpen className="h-4 w-4 shrink-0 text-white/30" />
+                            <div className="min-w-0">
+                              <p
+                                className="truncate text-sm font-medium text-white"
+                                title={category.name}
+                              >
+                                {category.name}
+                              </p>
 
-                        <span className="truncate">
-                          {category.courseCount} courses
-                        </span>
-                      </div>
-                    </td>
+                              <p className="mt-0.5 text-xs tabular-nums text-white/35">
+                                ID #{category.id}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
 
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
-                          category.is_active
-                            ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
-                            : "bg-red-400/10 text-red-400 ring-red-400/20"
+                        {/* Description */}
+                        <td className="px-6 py-4">
+                          <p
+                            className="truncate text-sm text-white/60"
+                            title={category.description}
+                          >
+                            {truncateText(category.description)}
+                          </p>
+                        </td>
+
+                        {/* Courses */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
+                            <BookOpen className="h-4 w-4 shrink-0 text-white/30" />
+
+                            <span className="truncate">_</span>
+                          </div>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
+                              category.is_active
+                                ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+                                : "bg-red-400/10 text-red-400 ring-red-400/20"
+                            }`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${
+                                category.is_active
+                                  ? "bg-[#34D399]"
+                                  : "bg-red-400"
+                              }`}
+                            />
+
+                            {category.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+
+                        {/* Action */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-end gap-2">
+                            {/* Edit */}
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleEditCategory(category.id);
+                              }}
+                              aria-label={`Edit ${category.name}`}
+                              title="Edit category"
+                              className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                            >
+                              <Pencil className="h-4 w-4" strokeWidth={1.8} />
+                            </button>
+
+                            {/* Enable / Disable */}
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleToggleStatus(category.id);
+                              }}
+                              className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
+                                category.is_active
+                                  ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                                  : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                              }`}
+                            >
+                              {category.is_active ? "Disable" : "Enable"}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {/* Height-reserving placeholder rows keep the page structure
+                    fixed when the last page is partially filled. */}
+                    {Array.from({ length: placeholderCount }).map(
+                      (_, index) => (
+                        <tr
+                          key={`placeholder-${index}`}
+                          aria-hidden="true"
+                          className="border-b border-white/[0.03]"
+                        >
+                          <td className="px-6 py-4">
+                            <div className="h-11" />
+                          </td>
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                          <td className="px-6 py-4" />
+                        </tr>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              {filteredCategories.length > 0 && totalPages > 1 && (
+                <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  {/* Showing range */}
+                  <p className="text-xs text-white/40">
+                    Showing{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {startItem}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {endItem}
+                    </span>{" "}
+                    of{" "}
+                    <span className="font-medium tabular-nums text-white/70">
+                      {filteredCategories.length}
+                    </span>{" "}
+                    categories
+                  </p>
+
+                  {/* Pagination Controls */}
+                  <div className="flex items-center justify-center gap-1">
+                    {/* Previous */}
+                    <button
+                      type="button"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+
+                    {/* Page Numbers */}
+                    {getPageNumbers().map((page) => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => handlePageChange(page)}
+                        className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
+                          currentPage === page
+                            ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                            : "text-white/45 hover:bg-white/[0.04] hover:text-white"
                         }`}
                       >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            category.is_active ? "bg-[#34D399]" : "bg-red-400"
-                          }`}
-                        />
+                        {page}
+                      </button>
+                    ))}
 
-                        {category.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </td>
+                    {/* Next */}
+                    <button
+                      type="button"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
-                    {/* Action */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        {/* Edit */}
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleEditCategory(category.id);
-                          }}
-                          aria-label={`Edit ${category.name}`}
-                          title="Edit category"
-                          className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
-                        >
-                          <Pencil className="h-4 w-4" strokeWidth={1.8} />
-                        </button>
+              {/* Empty State */}
+              {filteredCategories.length === 0 && (
+                <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
+                    <Tags className="h-6 w-6" />
+                  </div>
 
-                        {/* Enable / Disable */}
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleToggleStatus(category.id);
-                          }}
-                          className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
-                            category.is_active
-                              ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                              : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                          }`}
-                        >
-                          {category.is_active ? "Disable" : "Enable"}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                  <h3 className="mt-4 text-sm font-medium text-white">
+                    No categories found
+                  </h3>
 
-                {/* Height-reserving placeholder rows keep the page structure
-                    fixed when the last page is partially filled. */}
-                {Array.from({ length: placeholderCount }).map((_, index) => (
-                  <tr
-                    key={`placeholder-${index}`}
-                    aria-hidden="true"
-                    className="border-b border-white/[0.03]"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="h-11" />
-                    </td>
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {filteredCategories.length > 0 && totalPages > 1 && (
-            <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              {/* Showing range */}
-              <p className="text-xs text-white/40">
-                Showing{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {startItem}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {endItem}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {filteredCategories.length}
-                </span>{" "}
-                categories
-              </p>
-
-              {/* Pagination Controls */}
-              <div className="flex items-center justify-center gap-1">
-                {/* Previous */}
-                <button
-                  type="button"
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-
-                {/* Page Numbers */}
-                {getPageNumbers().map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => handlePageChange(page)}
-                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
-                      currentPage === page
-                        ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-
-                {/* Next */}
-                <button
-                  type="button"
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Next page"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Empty State */}
-          {filteredCategories.length === 0 && (
-            <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
-                <Tags className="h-6 w-6" />
-              </div>
-
-              <h3 className="mt-4 text-sm font-medium text-white">
-                No categories found
-              </h3>
-
-              <p className="mt-1 text-xs text-white/40">
-                {statusFilter === "active"
-                  ? "There are currently no active categories."
-                  : statusFilter === "inactive"
-                    ? "There are currently no inactive categories."
-                    : searchQuery
-                      ? "No categories match your search. Try a different name."
-                      : "No categories are available yet."}
-              </p>
-            </div>
+                  <p className="mt-1 text-xs text-white/40">
+                    {statusFilter === "active"
+                      ? "There are currently no active categories."
+                      : statusFilter === "inactive"
+                        ? "There are currently no inactive categories."
+                        : searchQuery
+                          ? "No categories match your search. Try a different name."
+                          : "No categories are available yet."}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </section>
       </div>
