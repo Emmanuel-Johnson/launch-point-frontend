@@ -15,8 +15,20 @@ export interface AdminCategory {
 }
 
 export const getAdminCategories = async (): Promise<AdminCategory[]> => {
-  const response = await adminApi.get<AdminCategory[]>(
-    "/admins/categories/",
+  const response = await adminApi.get<AdminCategory[]>("/admins/categories/");
+
+  return response.data;
+};
+
+// =========================================================
+// Get Category Detail
+// =========================================================
+
+export const getAdminCategory = async (
+  categoryId: number,
+): Promise<AdminCategory> => {
+  const response = await adminApi.get<AdminCategory>(
+    `/admins/categories/${categoryId}/`,
   );
 
   return response.data;
