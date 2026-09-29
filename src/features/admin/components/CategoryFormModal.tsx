@@ -1,6 +1,6 @@
 import { X, Tags } from "lucide-react";
 import { createPortal } from "react-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import axios from "axios";
 
 import {
   createAdminCategory,
+  updateAdminCategory,
   type AdminCategory,
 } from "../api/adminCategoryApi";
 
@@ -16,11 +17,14 @@ interface CategoryFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreated: (category: AdminCategory) => void;
+  editingCategory?: AdminCategory | null;
+  onUpdated: (category: AdminCategory) => void;
 }
 
 /* --------------------------------------------------
    Validation Schema
 -------------------------------------------------- */
+
 const categorySchema = z.object({
   name: z
     .string()
@@ -117,6 +121,8 @@ const CategoryFormModal = ({
   isOpen,
   onClose,
   onCreated,
+  editingCategory,
+  onUpdated,
 }: CategoryFormModalProps) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -136,11 +142,40 @@ const CategoryFormModal = ({
   });
 
   /* --------------------------------------------------
+     Load Edit Data / Reset Create Form
+
+     IMPORTANT:
+     Do not call setState() synchronously here.
+  -------------------------------------------------- */
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (editingCategory) {
+      reset({
+        name: editingCategory.name,
+        slug: editingCategory.slug,
+        description: editingCategory.description,
+      });
+    } else {
+      reset({
+        name: "",
+        slug: "",
+        description: "",
+      });
+    }
+  }, [isOpen, editingCategory, reset]);
+
+  /* --------------------------------------------------
      Reset Form
   -------------------------------------------------- */
 
   const resetForm = () => {
-    reset();
+    reset({
+      name: "",
+      slug: "",
+      description: "",
+    });
 
     setIsActive(false);
   };
@@ -163,22 +198,54 @@ const CategoryFormModal = ({
 
   const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
     try {
-      const createdCategory = await createAdminCategory({
-        name: data.name.trim(),
-        slug: data.slug.trim(),
-        description: data.description.trim(),
-        is_active: isActive,
-      });
+      /* -----------------------------------------------
+         EDIT CATEGORY
+      ------------------------------------------------ */
 
-      onCreated(createdCategory);
+      if (editingCategory) {
+        const updatedCategory = await updateAdminCategory(editingCategory.id, {
+          name: data.name.trim(),
+          slug: data.slug.trim(),
+          description: data.description.trim(),
+        });
+
+        onUpdated(updatedCategory);
+
+        toast.success("Category updated successfully.", {
+          containerId: "admin",
+        });
+      } else {
+        /* ---------------------------------------------
+           CREATE CATEGORY
+        ---------------------------------------------- */
+
+        const createdCategory = await createAdminCategory({
+          name: data.name.trim(),
+          slug: data.slug.trim(),
+          description: data.description.trim(),
+          is_active: isActive,
+        });
+
+        onCreated(createdCategory);
+
+        toast.success("Category created successfully.", {
+          containerId: "admin",
+        });
+      }
 
       resetForm();
-
       onClose();
     } catch (error) {
-      console.error("Failed to create category:", error);
+      console.error(
+        editingCategory
+          ? "Failed to update category:"
+          : "Failed to create category:",
+        error,
+      );
 
-      let message = "Failed to create category. Please try again.";
+      let message = editingCategory
+        ? "Failed to update category. Please try again."
+        : "Failed to create category. Please try again.";
 
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data;
@@ -204,6 +271,10 @@ const CategoryFormModal = ({
     }
   };
 
+  /* --------------------------------------------------
+     Don't Render
+  -------------------------------------------------- */
+
   if (!isOpen) {
     return null;
   }
@@ -225,10 +296,14 @@ const CategoryFormModal = ({
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold text-white">Add Category</h2>
+              <h2 className="text-lg font-semibold text-white">
+                {editingCategory ? "Edit Category" : "Add Category"}
+              </h2>
 
               <p className="mt-0.5 text-xs text-white/45">
-                Create a new course category.
+                {editingCategory
+                  ? "Update the category information."
+                  : "Create a new course category."}
               </p>
             </div>
           </div>
@@ -344,38 +419,40 @@ const CategoryFormModal = ({
               </div>
             </div>
 
-            {/* Active */}
-            <div className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
-              <div>
-                <p className="text-sm font-medium text-white">
-                  Active Category
-                </p>
+            {/* Active Category - Only show when creating */}
+            {!editingCategory && (
+              <div className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    Active Category
+                  </p>
 
-                <p className="mt-0.5 text-xs text-white/40">
-                  Allow this category to be used immediately.
-                </p>
+                  <p className="mt-0.5 text-xs text-white/40">
+                    Allow this category to be used immediately.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={isActive}
+                  aria-label="Toggle category active status"
+                  onClick={() => setIsActive((previous) => !previous)}
+                  disabled={isSubmitting}
+                  className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "bg-[#34D399] shadow-[0_0_12px_rgba(52,211,153,0.25)]"
+                      : "bg-white/15"
+                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                >
+                  <span
+                    className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
+                      isActive ? "translate-x-5" : "translate-x-0"
+                    }`}
+                  />
+                </button>
               </div>
-
-              <button
-                type="button"
-                role="switch"
-                aria-checked={isActive}
-                aria-label="Toggle category active status"
-                onClick={() => setIsActive((previous) => !previous)}
-                disabled={isSubmitting}
-                className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-all duration-300 ${
-                  isActive
-                    ? "bg-[#34D399] shadow-[0_0_12px_rgba(52,211,153,0.25)]"
-                    : "bg-white/15"
-                } disabled:cursor-not-allowed disabled:opacity-50`}
-              >
-                <span
-                  className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
-                    isActive ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -389,6 +466,8 @@ const CategoryFormModal = ({
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#34D399]/30 border-t-[#34D399]" />
                 </span>
+              ) : editingCategory ? (
+                "Save Changes"
               ) : (
                 "Create Category"
               )}

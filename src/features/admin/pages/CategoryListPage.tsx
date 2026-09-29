@@ -39,6 +39,7 @@ const CategoryListPage = () => {
   );
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const categoriesListRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const fetchCategories = async () => {
@@ -158,7 +159,12 @@ const CategoryListPage = () => {
   };
 
   const handleEditCategory = (id: number) => {
-    console.log("Edit category", id);
+    const category = categoryList.find((item) => item.id === id);
+
+    if (!category) return;
+
+    setEditingCategory(category);
+    setIsCategoryModalOpen(true);
   };
 
   const handleSearchChange = (value: string) => {
@@ -273,7 +279,10 @@ const CategoryListPage = () => {
                 {/* Add Category */}
                 <button
                   type="button"
-                  onClick={() => setIsCategoryModalOpen(true)}
+                  onClick={() => {
+                    setEditingCategory(null);
+                    setIsCategoryModalOpen(true);
+                  }}
                   className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -753,16 +762,23 @@ const CategoryListPage = () => {
       />
       <CategoryFormModal
         isOpen={isCategoryModalOpen}
-        onClose={() => setIsCategoryModalOpen(false)}
+        onClose={() => {
+          setIsCategoryModalOpen(false);
+          setEditingCategory(null);
+        }}
+        editingCategory={editingCategory}
         onCreated={(createdCategory) => {
           setCategoryList((currentCategories) => [
             createdCategory,
             ...currentCategories,
           ]);
-
-          toast.success("Category created successfully.", {
-            containerId: "admin",
-          });
+        }}
+        onUpdated={(updatedCategory) => {
+          setCategoryList((currentCategories) =>
+            currentCategories.map((category) =>
+              category.id === updatedCategory.id ? updatedCategory : category,
+            ),
+          );
         }}
       />
     </>

@@ -78,3 +78,25 @@ export const createAdminCategory = async (
 
   return response.data;
 };
+
+// =========================================================
+// Update Category
+// =========================================================
+
+export interface UpdateAdminCategoryData {
+  name: string;
+  slug: string;
+  description: string;
+}
+
+export const updateAdminCategory = async (
+  categoryId: number,
+  data: UpdateAdminCategoryData,
+): Promise<AdminCategory> => {
+  const response = await adminApi.patch<AdminCategory>(
+    `/admins/categories/${categoryId}/update/`,
+    data,
+  );
+
+  return response.data;
+};
