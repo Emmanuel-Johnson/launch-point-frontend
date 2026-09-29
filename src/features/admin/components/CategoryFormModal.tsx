@@ -28,33 +28,56 @@ const categorySchema = z.object({
     .trim()
     .min(1, "Category name is required")
     .min(2, "Category name must be at least 2 characters")
-    .max(100, "Category name is too long")
+    .max(100, "Category name cannot exceed 100 characters")
     .regex(
       /^[\p{L}\p{N}]+(?:[ '&-][\p{L}\p{N}]+)*$/u,
-      "Please enter a valid category name",
-    ),
+      "Category name contains invalid characters",
+    )
+    .refine((value) => {
+      const normalized = value.replace(/\s/g, "").toLowerCase();
+
+      return (
+        !normalized ||
+        !normalized.split("").every((char) => char === normalized[0])
+      );
+    }, "Category name cannot contain only repeated characters"),
 
   slug: z
     .string()
     .trim()
-    .min(1, "Category slug is required")
-    .min(2, "Category slug must be at least 2 characters")
-    .max(100, "Category slug is too long")
+    .min(1, "Slug is required")
+    .min(2, "Slug must be at least 2 characters")
+    .max(100, "Slug cannot exceed 100 characters")
     .regex(
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug must contain only lowercase letters, numbers, and hyphens",
-    ),
+    )
+    .refine((value) => {
+      const normalized = value.replace(/-/g, "");
+      return (
+        !normalized ||
+        !normalized.split("").every((char) => char === normalized[0])
+      );
+    }, "Slug cannot contain only repeated characters"),
 
   description: z
     .string()
     .trim()
-    .min(1, "Category description is required")
+    .min(1, "Description is required")
     .min(10, "Description must be at least 10 characters")
-    .max(500, "Description must not exceed 500 characters")
+    .max(500, "Description cannot exceed 500 characters")
     .refine(
       (value) => !/[^A-Za-z0-9\s]{4,}/.test(value),
       "Description cannot contain more than 3 consecutive special characters",
-    ),
+    )
+    .refine((value) => {
+      const normalized = value.replace(/\s/g, "").toLowerCase();
+
+      return (
+        !normalized ||
+        !normalized.split("").every((char) => char === normalized[0])
+      );
+    }, "Description cannot contain only repeated characters"),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -331,20 +354,17 @@ const CategoryFormModal = ({
           {/* Footer */}
           <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] px-6 py-4">
             <button
-              type="button"
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="h-10 rounded-xl border border-white/[0.08] bg-white/[0.02] px-5 text-sm font-medium text-white/60 transition-all duration-200 hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Cancel
-            </button>
-
-            <button
               type="submit"
               disabled={isSubmitting}
-              className="h-10 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-200 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-8px_rgba(52,211,153,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="relative h-10 w-50 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-200 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-8px_rgba(52,211,153,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSubmitting ? "Creating..." : "Create Category"}
+              {isSubmitting ? (
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#34D399]/30 border-t-[#34D399]" />
+                </span>
+              ) : (
+                "Create Category"
+              )}
             </button>
           </div>
         </form>
