@@ -6,6 +6,7 @@ import {
 } from "../api/adminCategoryApi";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 interface CategoryFormModalProps {
   isOpen: boolean;
@@ -75,7 +76,17 @@ const CategoryFormModal = ({
     } catch (error) {
       console.error("Failed to create category:", error);
 
-      toast.error("Failed to create category. Please try again.", {
+      let message = "Failed to create category. Please try again.";
+
+      if (axios.isAxiosError(error)) {
+        message =
+          error.response?.data?.name?.[0] ||
+          error.response?.data?.slug?.[0] ||
+          error.response?.data?.message ||
+          message;
+      }
+
+      toast.error(message, {
         containerId: "admin",
       });
     } finally {
