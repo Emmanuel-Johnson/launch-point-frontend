@@ -36,6 +36,9 @@ import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
 import StudentListPage from "../../features/admin/pages/StudentListPage";
 import StudentDetailPage from "../../features/admin/pages/StudentDetailPage";
 
+import SubscriptionPlanListPage from "../../features/admin/pages/SubscriptionPlanListPage";
+import SubscriptionPlanDetailPage from "../../features/admin/pages/SubscriptionPlanDetailPage";
+
 // Instructor
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
@@ -199,6 +202,14 @@ export const routeConfig: RouteObject[] = [
           {
             path: "categories/:categoryId",
             element: <CategoryDetailPage />,
+          },
+          {
+            path: "subscriptions",
+            element: <SubscriptionPlanListPage />,
+          },
+          {
+            path: "subscriptions/:planId",
+            element: <SubscriptionPlanDetailPage />,
           },
         ],
       },

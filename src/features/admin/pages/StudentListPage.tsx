@@ -22,7 +22,7 @@ interface Student {
   is_active: boolean;
 }
 
-const STUDENTS_PER_PAGE = 10;
+const STUDENTS_PER_PAGE = 5;
 
 const StudentListPage = () => {
   const [studentList, setStudentList] = useState<Student[]>([]);

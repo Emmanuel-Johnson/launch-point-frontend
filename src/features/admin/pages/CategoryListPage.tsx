@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
 
 type Category = AdminCategory;
 
-const CATEGORIES_PER_PAGE = 10;
+const CATEGORIES_PER_PAGE = 5;
 
 const CategoryListPage = () => {
   const navigate = useNavigate();
