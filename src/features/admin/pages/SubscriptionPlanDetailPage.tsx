@@ -1,391 +1,383 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ArrowLeft,
-  CalendarDays,
-  Check,
   CreditCard,
-  Edit,
+  Crown,
+  Pencil,
   Power,
-  RefreshCw,
-  X,
+  Check,
+  IndianRupee,
+  CalendarPlus,
+  CalendarClock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
-import {
-  getAdminSubscriptionPlan,
-  updateAdminSubscriptionPlanStatus,
-  type AdminSubscriptionPlan,
-} from "../api/adminSubscriptionsApi";
+/* -------------------------------- */
+/* Types (local — no API for now)   */
+/* -------------------------------- */
+
+interface SubscriptionPlanDetail {
+  id: number;
+  name: string;
+  plan_type: "free" | "premium";
+  description: string;
+  benefits: string[];
+  price: string;
+  billing_interval: "weekly" | "monthly" | "yearly" | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/* -------------------------------- */
+/* Dummy data                       */
+/* -------------------------------- */
+
+const DUMMY_PLAN: SubscriptionPlanDetail = {
+  id: 3,
+  name: "Premium Monthly",
+  plan_type: "premium",
+  description:
+    "Full access to every premium course on Launch Point, along with downloadable resources and priority support. Billed monthly with the flexibility to upgrade, downgrade, or cancel anytime.",
+  benefits: [
+    "Unlimited access to all premium courses",
+    "Downloadable lecture resources and source files",
+    "Priority email and chat support",
+    "Verified completion certificates for every course",
+    "Early access to newly released content",
+  ],
+  price: "1099.00",
+  billing_interval: "monthly",
+  is_active: true,
+  created_at: "2025-03-14T09:24:00Z",
+  updated_at: "2025-09-02T16:40:00Z",
+};
 
 const SubscriptionPlanDetailPage = () => {
   const navigate = useNavigate();
-  const { planId } = useParams<{ planId: string }>();
+  const { id } = useParams();
 
-  const [plan, setPlan] = useState<AdminSubscriptionPlan | null>(null);
+  const [plan, setPlan] = useState<SubscriptionPlanDetail>(DUMMY_PLAN);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const [loading, setLoading] = useState(true);
-  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const planId = id ?? String(plan.id);
 
-  useEffect(() => {
-    if (!planId) {
-      return;
-    }
+  /*
+   * Activate / Deactivate — simple local flip (no API for now)
+   */
+  const handleStatusChange = () => {
+    setIsUpdating(true);
 
-    let isMounted = true;
-
-    const loadPlan = async () => {
-      try {
-        const data = await getAdminSubscriptionPlan(Number(planId));
-
-        if (isMounted) {
-          setPlan(data);
-        }
-      } catch {
-        if (isMounted) {
-          toast.error("Failed to load subscription plan", {
-            containerId: "admin",
-          });
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    void loadPlan();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [planId]);
-
-  const handleStatusChange = async () => {
-    if (!plan) {
-      return;
-    }
-
-    try {
-      setUpdatingStatus(true);
-
-      const updatedPlan = await updateAdminSubscriptionPlanStatus(
-        plan.id,
-        !plan.is_active,
-      );
-
-      setPlan(updatedPlan);
-
-      toast.success(
-        updatedPlan.is_active
-          ? "Plan activated successfully"
-          : "Plan deactivated successfully",
-        {
-          containerId: "admin",
-        },
-      );
-    } catch {
-      toast.error("Failed to update plan status", {
-        containerId: "admin",
-      });
-    } finally {
-      setUpdatingStatus(false);
-    }
+    window.setTimeout(() => {
+      setPlan((previous) => ({ ...previous, is_active: !previous.is_active }));
+      setIsUpdating(false);
+    }, 500);
   };
 
-  if (loading) {
-    return <DetailPageSkeleton />;
-  }
+  const handleEditPlan = () => {
+    navigate(`/admin/subscriptions/${planId}/edit`);
+  };
 
-  if (!plan) {
-    return (
-      <div className="min-h-screen bg-[#050807] px-6 py-6 text-white">
+  return (
+    <>
+      {/* Self-contained entrance keyframes (renamed to avoid global clashes) */}
+      <style>{`
+        @keyframes spItemRise {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .sp-item { animation: spItemRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @media (prefers-reduced-motion: reduce) {
+          .sp-item { animation: none; }
+        }
+      `}</style>
+
+      <div className="space-y-6 text-white">
+        {/* ================= Back link ================= */}
         <button
           type="button"
           onClick={() => navigate("/admin/subscriptions")}
-          className="mb-6 flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
+          className="group inline-flex cursor-pointer items-center gap-2 text-sm text-white/45 transition-colors duration-300 hover:text-white/80"
         >
-          <ArrowLeft size={17} />
-          Back to Subscription Plans
+          <ArrowLeft
+            size={16}
+            className="transition-transform duration-300 group-hover:-translate-x-0.5"
+          />
+          Back
         </button>
 
-        <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02]">
-          <div className="text-center">
-            <CreditCard size={40} className="mx-auto mb-4 text-gray-600" />
+        {/* ================= Hero ================= */}
+        <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
+          {/* ambient emerald glow */}
+          <div className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#34D399]/10 blur-3xl" />
+          {/* faint gold hairline */}
+          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
 
-            <h2 className="text-lg font-medium text-white">
-              Subscription plan not found
-            </h2>
-
-            <p className="mt-2 text-sm text-gray-500">
-              The plan may have been removed or the ID is invalid.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#050807] px-6 py-6 text-white">
-      {/* Back */}
-      <button
-        type="button"
-        onClick={() => navigate("/admin/subscriptions")}
-        className="mb-6 flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
-      >
-        <ArrowLeft size={17} />
-        Back to Subscription Plans
-      </button>
-
-      {/* Header Card */}
-      <div className="relative mb-6 overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
-        {/* Green glow */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-emerald-400/10 blur-3xl" />
-
-        <div className="relative flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-400/10">
-              <CreditCard size={26} className="text-emerald-400" />
-            </div>
-
-            <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl font-semibold">{plan.name}</h1>
-
-                <StatusBadge isActive={plan.is_active} />
+          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            {/* Identity */}
+            <div className="flex min-w-0 items-center gap-4">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_26px_-8px_rgba(52,211,153,0.6)]">
+                <CreditCard size={28} className="text-[#34D399]" />
               </div>
 
-              <p className="mt-1 text-sm text-gray-500">
-                Subscription Plan #{plan.id}
-              </p>
+              <div className="min-w-0">
+                <h1 className="text-2xl font-semibold tracking-tight [overflow-wrap:anywhere]">
+                  {plan.name}
+                </h1>
+
+                <p className="mt-1 text-sm text-white/40">Plan #{planId}</p>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {/* Type */}
+                  {plan.plan_type === "premium" ? (
+                    <span className="inline-flex h-7 items-center justify-center gap-1.5 rounded-full border border-[#E8C67A]/25 bg-[#E8C67A]/10 px-3 text-xs font-medium text-[#E8C67A]">
+                      <Crown size={12} />
+                      Premium
+                    </span>
+                  ) : (
+                    <span className="inline-flex h-7 items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 text-xs font-medium text-white/55">
+                      {capitalize(plan.plan_type)}
+                    </span>
+                  )}
+
+                  {/* Status */}
+                  <span
+                    className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium ${
+                      plan.is_active
+                        ? "border border-[#34D399]/25 bg-[#34D399]/10 text-[#34D399]"
+                        : "border border-white/10 bg-white/5 text-white/50"
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        plan.is_active
+                          ? "animate-pulse bg-[#34D399] shadow-[0_0_6px_rgba(52,211,153,0.7)]"
+                          : "bg-white/40"
+                      }`}
+                    />
+                    {plan.is_active ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex shrink-0 flex-wrap items-center gap-3">
+              {/* Edit */}
+              <button
+                type="button"
+                onClick={handleEditPlan}
+                className="group inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 text-xs font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
+              >
+                <Pencil
+                  size={14}
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+                Edit Plan
+              </button>
+
+              {/* Activate / Deactivate */}
+              <button
+                type="button"
+                disabled={isUpdating}
+                onClick={handleStatusChange}
+                className={`group/btn relative inline-flex h-9 w-36 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
+                  plan.is_active
+                    ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
+                    : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
+                }`}
+              >
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+
+                <Power
+                  size={15}
+                  className={`relative z-10 ${isUpdating ? "animate-spin" : ""}`}
+                />
+
+                <span className="relative z-10">
+                  {isUpdating
+                    ? plan.is_active
+                      ? "Deactivating..."
+                      : "Activating..."
+                    : plan.is_active
+                      ? "Deactivate"
+                      : "Activate"}
+                </span>
+              </button>
             </div>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() =>
-                toast.info("Edit plan modal coming next", {
-                  containerId: "admin",
-                })
-              }
-              className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
+        {/* ================= Body grid ================= */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left column */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Description */}
+            <section
+              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              style={{ animationDelay: "80ms" }}
             >
-              <Edit size={17} />
-              Edit
-            </button>
+              <SectionTitle>Description</SectionTitle>
 
-            <button
-              type="button"
-              disabled={updatingStatus}
-              onClick={handleStatusChange}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                plan.is_active
-                  ? "bg-red-400/10 text-red-400 hover:bg-red-400/20"
-                  : "bg-emerald-400/10 text-emerald-400 hover:bg-emerald-400/20"
-              }`}
+              <p className="mt-3 text-sm leading-relaxed text-white/60 [overflow-wrap:anywhere]">
+                {plan.description || "No description provided."}
+              </p>
+            </section>
+
+            {/* Benefits */}
+            <section
+              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              style={{ animationDelay: "160ms" }}
             >
-              {updatingStatus ? (
-                <RefreshCw size={17} className="animate-spin" />
+              <div className="flex items-center justify-between">
+                <SectionTitle>Benefits</SectionTitle>
+
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-medium text-white/50">
+                  {plan.benefits.length}
+                </span>
+              </div>
+
+              {plan.benefits.length > 0 ? (
+                <ul className="mt-4 space-y-3">
+                  {plan.benefits.map((benefit, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-sm text-white/70"
+                    >
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#34D399]/15 ring-1 ring-inset ring-[#34D399]/25">
+                        <Check size={12} className="text-[#34D399]" />
+                      </span>
+
+                      <span className="min-w-0 [overflow-wrap:anywhere]">
+                        {benefit}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               ) : (
-                <Power size={17} />
+                <p className="mt-3 text-sm text-white/40">
+                  No benefits listed for this plan.
+                </p>
+              )}
+            </section>
+          </div>
+
+          {/* Right column */}
+          <div className="space-y-6">
+            {/* Pricing */}
+            <section
+              className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              style={{ animationDelay: "120ms" }}
+            >
+              {/* faint gold hairline for the premium price */}
+              {plan.plan_type === "premium" && (
+                <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
               )}
 
-              {plan.is_active ? "Deactivate" : "Activate"}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <InfoCard
-          label="Plan Type"
-          value={plan.plan_type === "premium" ? "Premium" : "Free"}
-          icon={<CreditCard size={18} />}
-        />
-
-        <InfoCard
-          label="Price"
-          value={`₹${plan.price}`}
-          icon={<CreditCard size={18} />}
-        />
-
-        <InfoCard
-          label="Billing"
-          value={
-            plan.billing_interval
-              ? capitalize(plan.billing_interval)
-              : "Not set"
-          }
-          icon={<CalendarDays size={18} />}
-        />
-
-        <InfoCard
-          label="Status"
-          value={plan.is_active ? "Active" : "Inactive"}
-          icon={plan.is_active ? <Check size={18} /> : <X size={18} />}
-        />
-      </div>
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Description */}
-        <div className="lg:col-span-2">
-          <section className="rounded-2xl border border-white/5 bg-white/[0.02] p-6">
-            <h2 className="mb-4 text-lg font-semibold text-white">
-              Description
-            </h2>
-
-            <p className="whitespace-pre-wrap text-sm leading-7 text-gray-400">
-              {plan.description?.trim()
-                ? plan.description
-                : "No description provided for this plan."}
-            </p>
-          </section>
-        </div>
-
-        {/* Plan Information */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.02] p-6">
-          <h2 className="mb-5 text-lg font-semibold text-white">
-            Plan Information
-          </h2>
-
-          <div className="space-y-4">
-            <InfoRow label="Plan ID" value={`#${plan.id}`} />
-
-            <InfoRow label="Plan Type" value={capitalize(plan.plan_type)} />
-
-            <InfoRow label="Price" value={`₹${plan.price}`} />
-
-            <InfoRow
-              label="Billing"
-              value={
-                plan.billing_interval
-                  ? capitalize(plan.billing_interval)
-                  : "Not set"
-              }
-            />
-
-            <InfoRow
-              label="Status"
-              value={plan.is_active ? "Active" : "Inactive"}
-            />
-          </div>
-        </section>
-
-        {/* Benefits */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.02] p-6 lg:col-span-3">
-          <h2 className="mb-5 text-lg font-semibold text-white">
-            Plan Benefits
-          </h2>
-
-          {plan.benefits && plan.benefits.length > 0 ? (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {plan.benefits.map((benefit, index) => (
+              <div className="flex items-center gap-3">
                 <div
-                  key={`${benefit}-${index}`}
-                  className="flex items-start gap-3 rounded-xl border border-white/5 bg-black/20 p-4"
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ring-1 ring-inset ${
+                    plan.plan_type === "premium"
+                      ? "from-[#E8C67A]/20 to-[#E8C67A]/5 ring-[#E8C67A]/25"
+                      : "from-[#34D399]/20 to-[#34D399]/5 ring-[#34D399]/20"
+                  }`}
                 >
-                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-400/10">
-                    <Check size={14} className="text-emerald-400" />
-                  </div>
-
-                  <span className="text-sm text-gray-300">{benefit}</span>
+                  <IndianRupee
+                    size={18}
+                    className={
+                      plan.plan_type === "premium"
+                        ? "text-[#E8C67A]"
+                        : "text-[#34D399]"
+                    }
+                  />
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500">
-              No benefits have been added to this plan.
-            </p>
-          )}
-        </section>
 
-        {/* Dates */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.02] p-6 lg:col-span-3">
-          <h2 className="mb-5 text-lg font-semibold text-white">
-            Record Information
-          </h2>
+                <SectionTitle>Pricing</SectionTitle>
+              </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <InfoRow label="Created At" value={formatDate(plan.created_at)} />
+              <div className="mt-5">
+                <p
+                  className={`text-3xl font-semibold [overflow-wrap:anywhere] ${
+                    plan.plan_type === "premium"
+                      ? "text-[#E8C67A]"
+                      : "text-white"
+                  }`}
+                >
+                  <span className="text-white/40">₹</span>
+                  {plan.price}
+                </p>
 
-            <InfoRow label="Last Updated" value={formatDate(plan.updated_at)} />
+                <p className="mt-1.5 text-sm text-white/45">
+                  {billingLabel(plan.billing_interval)}
+                </p>
+              </div>
+            </section>
+
+            {/* Timeline */}
+            <section
+              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              style={{ animationDelay: "200ms" }}
+            >
+              <SectionTitle>Timeline</SectionTitle>
+
+              <div className="mt-4 space-y-4">
+                <MetaRow
+                  icon={CalendarPlus}
+                  label="Created"
+                  value={formatDate(plan.created_at)}
+                />
+
+                <MetaRow
+                  icon={CalendarClock}
+                  label="Last updated"
+                  value={formatDate(plan.updated_at)}
+                />
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 /* -------------------------------- */
-/* Status Badge                     */
+/* Section Title                    */
 /* -------------------------------- */
 
-interface StatusBadgeProps {
-  isActive: boolean;
-}
-
-const StatusBadge = ({ isActive }: StatusBadgeProps) => {
+const SectionTitle = ({ children }: { children: React.ReactNode }) => {
   return (
-    <span
-      className={`rounded-full px-3 py-1 text-xs font-medium ${
-        isActive
-          ? "bg-emerald-400/10 text-emerald-400"
-          : "bg-red-400/10 text-red-400"
-      }`}
-    >
-      {isActive ? "Active" : "Inactive"}
-    </span>
+    <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+      {children}
+    </h2>
   );
 };
 
 /* -------------------------------- */
-/* Info Card                        */
+/* Meta Row                         */
 /* -------------------------------- */
 
-interface InfoCardProps {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-}
-
-const InfoCard = ({ label, value, icon }: InfoCardProps) => {
-  return (
-    <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
-      <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-400">
-        {icon}
-      </div>
-
-      <p className="text-sm text-gray-500">{label}</p>
-
-      <p className="mt-1 text-xl font-semibold capitalize text-white">
-        {value}
-      </p>
-    </div>
-  );
-};
-
-/* -------------------------------- */
-/* Info Row                         */
-/* -------------------------------- */
-
-interface InfoRowProps {
+interface MetaRowProps {
+  icon: typeof CreditCard;
   label: string;
   value: string;
 }
 
-const InfoRow = ({ label, value }: InfoRowProps) => {
+const MetaRow = ({ icon: Icon, label, value }: MetaRowProps) => {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3 last:border-0 last:pb-0">
-      <span className="text-sm text-gray-500">{label}</span>
+    <div className="flex items-center gap-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-white/45">
+        <Icon size={16} />
+      </div>
 
-      <span className="text-right text-sm font-medium text-gray-300">
-        {value}
-      </span>
+      <div className="min-w-0">
+        <p className="text-[11px] uppercase tracking-wider text-white/35">
+          {label}
+        </p>
+        <p className="text-sm text-white/70 [overflow-wrap:anywhere]">
+          {value}
+        </p>
+      </div>
     </div>
   );
 };
@@ -398,51 +390,31 @@ const capitalize = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
-const formatDate = (value: string) => {
-  const date = new Date(value);
+const billingLabel = (interval: SubscriptionPlanDetail["billing_interval"]) => {
+  switch (interval) {
+    case "weekly":
+      return "Billed per week";
+    case "monthly":
+      return "Billed per month";
+    case "yearly":
+      return "Billed per year";
+    default:
+      return "One-time / free";
+  }
+};
+
+const formatDate = (iso: string) => {
+  const date = new Date(iso);
 
   if (Number.isNaN(date.getTime())) {
     return "—";
   }
 
-  return date.toLocaleString("en-IN", {
-    day: "2-digit",
+  return date.toLocaleDateString("en-IN", {
+    day: "numeric",
     month: "short",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
   });
-};
-
-/* -------------------------------- */
-/* Loading Skeleton                 */
-/* -------------------------------- */
-
-const DetailPageSkeleton = () => {
-  return (
-    <div className="min-h-screen bg-[#050807] px-6 py-6">
-      <div className="mb-6 h-5 w-48 animate-pulse rounded bg-white/5" />
-
-      <div className="mb-6 h-32 animate-pulse rounded-2xl border border-white/5 bg-white/[0.02]" />
-
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="h-32 animate-pulse rounded-2xl border border-white/5 bg-white/[0.02]"
-          />
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="h-64 animate-pulse rounded-2xl border border-white/5 bg-white/[0.02] lg:col-span-2" />
-
-        <div className="h-64 animate-pulse rounded-2xl border border-white/5 bg-white/[0.02]" />
-
-        <div className="h-48 animate-pulse rounded-2xl border border-white/5 bg-white/[0.02] lg:col-span-3" />
-      </div>
-    </div>
-  );
 };
 
 export default SubscriptionPlanDetailPage;
