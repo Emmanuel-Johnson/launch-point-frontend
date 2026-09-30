@@ -3,6 +3,8 @@ import {
   CreditCard,
   Search,
   Power,
+  PowerOff,
+  Loader2,
   Plus,
   ChevronLeft,
   ChevronRight,
@@ -13,10 +15,11 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Adjust this path if your modal lives elsewhere.
+// Adjust these paths if your modals live elsewhere.
 import SubscriptionPlanFormModal, {
   type PlanFormValues,
 } from "../components/Subscriptionplanformmodal";
+import SubscriptionStatusConfirmModal from "../components/Subscriptionstatusconfirmmodal";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -123,6 +126,10 @@ const SubscriptionPlanListPage = () => {
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
+  // Plan currently awaiting status-change confirmation (null = modal closed).
+  const [confirmPlan, setConfirmPlan] =
+    useState<SubscriptionPlanListItem | null>(null);
+
   /*
    * Filter plans
    */
@@ -167,9 +174,22 @@ const SubscriptionPlanListPage = () => {
   ).length;
 
   /*
-   * Activate / Deactivate — simple local flip (no API for now)
+   * Activate / Deactivate — open confirm modal
    */
-  const handleStatusChange = (planId: number) => {
+  const handleStatusClick = (plan: SubscriptionPlanListItem) => {
+    setConfirmPlan(plan);
+  };
+
+  /*
+   * Confirm the status change — simple local flip (no API for now)
+   */
+  const handleConfirmStatusChange = () => {
+    if (!confirmPlan) {
+      return;
+    }
+
+    const planId = confirmPlan.id;
+
     setUpdatingPlanId(planId);
 
     // Fake a tiny delay so the spinner + button state are visible in the UI.
@@ -181,6 +201,7 @@ const SubscriptionPlanListPage = () => {
       );
 
       setUpdatingPlanId(null);
+      setConfirmPlan(null);
     }, 500);
   };
 
@@ -488,7 +509,7 @@ const SubscriptionPlanListPage = () => {
                           <button
                             type="button"
                             disabled={updatingPlanId === plan.id}
-                            onClick={() => handleStatusChange(plan.id)}
+                            onClick={() => handleStatusClick(plan)}
                             className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
                               plan.is_active
                                 ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
@@ -497,12 +518,16 @@ const SubscriptionPlanListPage = () => {
                           >
                             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
-                            <Power
-                              size={15}
-                              className={`relative z-10 ${
-                                updatingPlanId === plan.id ? "animate-spin" : ""
-                              }`}
-                            />
+                            {updatingPlanId === plan.id ? (
+                              <Loader2
+                                size={15}
+                                className="relative z-10 animate-spin"
+                              />
+                            ) : plan.is_active ? (
+                              <PowerOff size={15} className="relative z-10" />
+                            ) : (
+                              <Power size={15} className="relative z-10" />
+                            )}
 
                             <span className="relative z-10">
                               {updatingPlanId === plan.id
@@ -612,6 +637,18 @@ const SubscriptionPlanListPage = () => {
           mode="create"
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateSubmit}
+        />
+      )}
+
+      {/* ================= Status Confirm Modal ================= */}
+      {confirmPlan && (
+        <SubscriptionStatusConfirmModal
+          isOpen={confirmPlan !== null}
+          isActive={confirmPlan.is_active}
+          planName={confirmPlan.name}
+          isLoading={updatingPlanId === confirmPlan.id}
+          onCancel={() => setConfirmPlan(null)}
+          onConfirm={handleConfirmStatusChange}
         />
       )}
     </>

@@ -5,12 +5,17 @@ import {
   Crown,
   Pencil,
   Power,
+  PowerOff,
+  Loader2,
   Check,
   IndianRupee,
   CalendarPlus,
   CalendarClock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+
+// Adjust this path if your modal lives elsewhere.
+import SubscriptionStatusConfirmModal from "../components/Subscriptionstatusconfirmmodal";
 
 /* -------------------------------- */
 /* Types (local — no API for now)   */
@@ -59,18 +64,27 @@ const SubscriptionPlanDetailPage = () => {
 
   const [plan, setPlan] = useState<SubscriptionPlanDetail>(DUMMY_PLAN);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const planId = id ?? String(plan.id);
 
   /*
-   * Activate / Deactivate — simple local flip (no API for now)
+   * Activate / Deactivate — open confirm modal
    */
-  const handleStatusChange = () => {
+  const handleStatusClick = () => {
+    setIsConfirmOpen(true);
+  };
+
+  /*
+   * Confirm the status change — simple local flip (no API for now)
+   */
+  const handleConfirmStatusChange = () => {
     setIsUpdating(true);
 
     window.setTimeout(() => {
       setPlan((previous) => ({ ...previous, is_active: !previous.is_active }));
       setIsUpdating(false);
+      setIsConfirmOpen(false);
     }, 500);
   };
 
@@ -180,7 +194,7 @@ const SubscriptionPlanDetailPage = () => {
               <button
                 type="button"
                 disabled={isUpdating}
-                onClick={handleStatusChange}
+                onClick={handleStatusClick}
                 className={`group/btn relative inline-flex h-9 w-36 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
                   plan.is_active
                     ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
@@ -189,10 +203,13 @@ const SubscriptionPlanDetailPage = () => {
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
-                <Power
-                  size={15}
-                  className={`relative z-10 ${isUpdating ? "animate-spin" : ""}`}
-                />
+                {isUpdating ? (
+                  <Loader2 size={15} className="relative z-10 animate-spin" />
+                ) : plan.is_active ? (
+                  <PowerOff size={15} className="relative z-10" />
+                ) : (
+                  <Power size={15} className="relative z-10" />
+                )}
 
                 <span className="relative z-10">
                   {isUpdating
@@ -337,6 +354,18 @@ const SubscriptionPlanDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* ================= Status Confirm Modal ================= */}
+      {isConfirmOpen && (
+        <SubscriptionStatusConfirmModal
+          isOpen={isConfirmOpen}
+          isActive={plan.is_active}
+          planName={plan.name}
+          isLoading={isUpdating}
+          onCancel={() => setIsConfirmOpen(false)}
+          onConfirm={handleConfirmStatusChange}
+        />
+      )}
     </>
   );
 };
