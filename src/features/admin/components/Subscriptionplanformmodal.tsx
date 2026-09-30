@@ -46,14 +46,20 @@ const SubscriptionPlanFormModal = ({
   /*
    * Local form state. Initialised from initialData on mount — mount the modal
    * conditionally (or pass a `key`) when switching records so edit prefills fresh.
+   * Free plans have no billing interval; premium plans always have one.
    */
-  const [form, setForm] = useState<PlanFormValues>({
-    ...DEFAULTS,
-    ...initialData,
-    benefits:
+  const [form, setForm] = useState<PlanFormValues>(() => {
+    const merged = { ...DEFAULTS, ...initialData };
+
+    const benefits =
       initialData?.benefits && initialData.benefits.length > 0
         ? initialData.benefits
-        : DEFAULTS.benefits,
+        : DEFAULTS.benefits;
+
+    const billing_interval: PlanFormValues["billing_interval"] =
+      merged.plan_type === "free" ? "" : merged.billing_interval || "monthly";
+
+    return { ...merged, benefits, billing_interval };
   });
 
   /*
@@ -90,6 +96,19 @@ const SubscriptionPlanFormModal = ({
     setForm((previous) => ({ ...previous, [key]: value }));
   };
 
+  /*
+   * Switching plan type also fixes the billing interval:
+   * free → none, premium → keep existing or default to monthly.
+   */
+  const handlePlanTypeChange = (type: PlanFormValues["plan_type"]) => {
+    setForm((previous) => ({
+      ...previous,
+      plan_type: type,
+      billing_interval:
+        type === "free" ? "" : previous.billing_interval || "monthly",
+    }));
+  };
+
   const updateBenefit = (index: number, value: string) => {
     setForm((previous) => ({
       ...previous,
@@ -115,6 +134,7 @@ const SubscriptionPlanFormModal = ({
     }));
   };
 
+  const isFree = form.plan_type === "free";
   const typeIndex = PLAN_TYPES.indexOf(form.plan_type);
 
   const canSubmit = form.name.trim().length > 0 && form.price.trim().length > 0;
@@ -135,8 +155,18 @@ const SubscriptionPlanFormModal = ({
 
   return createPortal(
     <>
-      {/* Scoped entrance keyframes */}
+      {/* Fonts + scoped entrance keyframes */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        .sp-font-body {
+          font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        }
+        .sp-font-display {
+          font-family: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+          letter-spacing: -0.01em;
+        }
+
         @keyframes spModalOverlay { from { opacity: 0; } to { opacity: 1; } }
         @keyframes spModalPanel {
           from { opacity: 0; transform: translateY(12px) scale(0.98); }
@@ -155,7 +185,7 @@ const SubscriptionPlanFormModal = ({
         <div
           role="dialog"
           aria-modal="true"
-          className="sp-panel relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0B0B0B] to-[#080808] text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
+          className="sp-panel sp-font-body relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0B0B0B] to-[#080808] text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
         >
           {/* faint gold hairline */}
           <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
@@ -168,7 +198,7 @@ const SubscriptionPlanFormModal = ({
               </div>
 
               <div>
-                <h2 className="text-lg font-semibold tracking-tight">
+                <h2 className="sp-font-display text-lg font-semibold tracking-tight">
                   {mode === "edit"
                     ? "Edit Subscription Plan"
                     : "Create Subscription Plan"}
@@ -192,7 +222,7 @@ const SubscriptionPlanFormModal = ({
           {/* ===================== Body ===================== */}
           <div className="admin-scrollbar flex-1 space-y-5 overflow-y-auto px-6 py-6">
             {/* Name */}
-            <Field label="Plan Name" required>
+            <Field label="Plan Name">
               <input
                 type="text"
                 value={form.name}
@@ -222,7 +252,7 @@ const SubscriptionPlanFormModal = ({
                     <button
                       key={type}
                       type="button"
-                      onClick={() => setField("plan_type", type)}
+                      onClick={() => handlePlanTypeChange(type)}
                       className={`relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium capitalize transition-colors duration-300 ${
                         active
                           ? type === "premium"
@@ -241,7 +271,7 @@ const SubscriptionPlanFormModal = ({
 
             {/* Price + Billing */}
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Price (₹)" required>
+              <Field label="Price (₹)">
                 <div className="relative">
                   <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-white/40">
                     ₹
@@ -261,6 +291,7 @@ const SubscriptionPlanFormModal = ({
                 <div className="relative">
                   <select
                     value={form.billing_interval}
+                    disabled={isFree}
                     onChange={(event) =>
                       setField(
                         "billing_interval",
@@ -268,16 +299,27 @@ const SubscriptionPlanFormModal = ({
                           .value as PlanFormValues["billing_interval"],
                       )
                     }
-                    className={`${inputClass} cursor-pointer appearance-none pr-10 [&>option]:bg-[#0B0B0B]`}
+                    className={`${inputClass} appearance-none pr-10 [&>option]:bg-[#0B0B0B] [&>option]:text-white ${
+                      isFree
+                        ? "cursor-not-allowed opacity-60"
+                        : "cursor-pointer"
+                    }`}
                   >
-                    <option value="">Not applicable</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
+                    {isFree ? (
+                      <option value="">Not applicable</option>
+                    ) : (
+                      <>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                      </>
+                    )}
                   </select>
                   <ChevronDown
                     size={16}
-                    className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40"
+                    className={`pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 ${
+                      isFree ? "text-white/25" : "text-white/40"
+                    }`}
                   />
                 </div>
               </Field>
@@ -301,7 +343,7 @@ const SubscriptionPlanFormModal = ({
               <div className="space-y-2.5">
                 {form.benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-xs font-medium text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                    <div className="sp-font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-xs font-medium text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       {index + 1}
                     </div>
 

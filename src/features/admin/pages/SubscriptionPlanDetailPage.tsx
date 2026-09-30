@@ -181,7 +181,7 @@ const SubscriptionPlanDetailPage = () => {
               <button
                 type="button"
                 onClick={handleEditPlan}
-                className="group inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 text-xs font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
+                className="group inline-flex h-12 w-30 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 text-xs font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
               >
                 <Pencil
                   size={14}
@@ -195,7 +195,7 @@ const SubscriptionPlanDetailPage = () => {
                 type="button"
                 disabled={isUpdating}
                 onClick={handleStatusClick}
-                className={`group/btn relative inline-flex h-9 w-36 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`group/btn relative inline-flex h-12 w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
                   plan.is_active
                     ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
                     : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"

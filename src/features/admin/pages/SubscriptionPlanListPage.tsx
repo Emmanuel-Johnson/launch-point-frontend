@@ -242,8 +242,21 @@ const SubscriptionPlanListPage = () => {
 
   return (
     <>
-      {/* Self-contained entrance keyframes (renamed to avoid global clashes) */}
+      {/*
+        Fonts + entrance keyframes (scoped).
+        Space Grotesk = display (headings, figures), Inter = body.
+      */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        .sp-font-body {
+          font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        }
+        .sp-font-display {
+          font-family: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+          letter-spacing: -0.01em;
+        }
+
         @keyframes spItemRise {
           from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -254,7 +267,7 @@ const SubscriptionPlanListPage = () => {
         }
       `}</style>
 
-      <div className="space-y-6 text-white">
+      <div className="sp-font-body space-y-6 text-white">
         {/* ================= Hero ================= */}
         <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
           {/* ambient emerald glow */}
@@ -269,7 +282,7 @@ const SubscriptionPlanListPage = () => {
               </div>
 
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight">
+                <h1 className="sp-font-display text-2xl font-semibold tracking-tight">
                   Subscription Plans
                 </h1>
 
@@ -469,7 +482,7 @@ const SubscriptionPlanListPage = () => {
                               Premium
                             </span>
                           ) : (
-                            <span className="inline-flex h-7 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-medium text-white/55">
+                            <span className="inline-flex h-7 w-24 items-center justify-center rounded-full border border-slate-400/20 bg-slate-400/10 text-xs font-medium text-slate-300">
                               {capitalize(plan.plan_type)}
                             </span>
                           )}
@@ -479,17 +492,21 @@ const SubscriptionPlanListPage = () => {
                         <td className="px-6 py-5 text-center">
                           <span
                             title={plan.price}
-                            className="block truncate font-semibold text-white"
+                            className="sp-font-display block truncate font-semibold text-white"
                           >
                             <span className="text-white/45">₹</span>
                             {plan.price}
                           </span>
                         </td>
 
-                        {/* Billing — fixed size chip */}
+                        {/* Billing — fixed size chip (color-coded by interval) */}
                         <td className="px-6 py-5">
                           {plan.billing_interval ? (
-                            <span className="inline-flex h-7 w-24 items-center justify-center rounded-md border border-white/[0.07] bg-white/[0.03] text-xs capitalize text-white/55">
+                            <span
+                              className={`inline-flex h-7 w-24 items-center justify-center rounded-md border text-xs font-medium capitalize ${billingChipClass(
+                                plan.billing_interval,
+                              )}`}
+                            >
                               {plan.billing_interval}
                             </span>
                           ) : (
@@ -603,7 +620,7 @@ const SubscriptionPlanListPage = () => {
                       key={entry}
                       type="button"
                       onClick={() => setCurrentPage(entry)}
-                      className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-sm transition-all duration-300 ${
+                      className={`sp-font-display flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-sm transition-all duration-300 ${
                         entry === currentPage
                           ? "bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)]"
                           : "border border-white/[0.08] bg-white/[0.02] font-medium text-white/55 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)]"
@@ -755,7 +772,11 @@ const StatCard = ({
 
       <p className="text-sm text-white/45">{label}</p>
 
-      <p className={`mt-1 text-2xl font-semibold ${styles.value}`}>{value}</p>
+      <p
+        className={`sp-font-display mt-1 text-2xl font-semibold ${styles.value}`}
+      >
+        {value}
+      </p>
     </div>
   );
 };
@@ -766,6 +787,25 @@ const StatCard = ({
 
 const capitalize = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+/*
+ * Billing interval chip colours — subtle, on-brand tints.
+ * weekly → sky · monthly → emerald (shell accent) · yearly → champagne gold.
+ */
+const billingChipClass = (
+  interval: Exclude<SubscriptionPlanListItem["billing_interval"], null>,
+) => {
+  switch (interval) {
+    case "weekly":
+      return "border-sky-400/20 bg-sky-400/10 text-sky-300";
+    case "monthly":
+      return "border-[#34D399]/25 bg-[#34D399]/10 text-[#34D399]";
+    case "yearly":
+      return "border-[#E8C67A]/25 bg-[#E8C67A]/10 text-[#E8C67A]";
+    default:
+      return "border-white/[0.07] bg-white/[0.03] text-white/55";
+  }
 };
 
 /*
