@@ -13,6 +13,11 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// Adjust this path if your modal lives elsewhere.
+import SubscriptionPlanFormModal, {
+  type PlanFormValues,
+} from "../components/Subscriptionplanformmodal";
+
 const ITEMS_PER_PAGE = 6;
 
 const STATUS_FILTERS = ["all", "active", "inactive"] as const;
@@ -116,6 +121,8 @@ const SubscriptionPlanListPage = () => {
 
   const [updatingPlanId, setUpdatingPlanId] = useState<number | null>(null);
 
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
   /*
    * Filter plans
    */
@@ -178,10 +185,33 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Create plan
+   * Create plan — open modal
    */
   const handleCreatePlan = () => {
-    navigate("/admin/subscriptions/create");
+    setIsCreateOpen(true);
+  };
+
+  /*
+   * Create plan — add to list locally (no API for now)
+   */
+  const handleCreateSubmit = (values: PlanFormValues) => {
+    setPlans((previousPlans) => {
+      const nextId =
+        previousPlans.reduce((max, plan) => Math.max(max, plan.id), 0) + 1;
+
+      const newPlan: SubscriptionPlanListItem = {
+        id: nextId,
+        name: values.name,
+        plan_type: values.plan_type,
+        price: values.price,
+        billing_interval: values.billing_interval || null,
+        is_active: values.is_active,
+      };
+
+      return [newPlan, ...previousPlans];
+    });
+
+    setCurrentPage(1);
   };
 
   const placeholderCount =
@@ -288,7 +318,7 @@ const SubscriptionPlanListPage = () => {
           <div className="group relative w-full md:max-w-sm">
             <Search
               size={18}
-              className="cursor-pointer absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-white/40 transition-colors duration-300 group-focus-within:text-[#34D399]"
+              className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-white/40 transition-colors duration-300 group-focus-within:text-[#34D399]"
             />
 
             <input
@@ -574,6 +604,16 @@ const SubscriptionPlanListPage = () => {
           )}
         </div>
       </div>
+
+      {/* ================= Create Modal ================= */}
+      {isCreateOpen && (
+        <SubscriptionPlanFormModal
+          isOpen={isCreateOpen}
+          mode="create"
+          onClose={() => setIsCreateOpen(false)}
+          onSubmit={handleCreateSubmit}
+        />
+      )}
     </>
   );
 };
