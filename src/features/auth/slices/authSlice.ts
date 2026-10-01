@@ -39,10 +39,19 @@ const authSlice = createSlice({
         state.user.profile_image = action.payload;
       }
     },
+
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
+      }
+    },
   },
 });
 
-export const { setCredentials, clearCredentials, setProfileImage } =
+export const { setCredentials, clearCredentials, setProfileImage, updateUser } =
   authSlice.actions;
 
 export default authSlice.reducer;

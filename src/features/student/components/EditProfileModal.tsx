@@ -18,7 +18,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "../../../app/store/hooks";
-import { setProfileImage } from "../../auth/slices/authSlice";
+import { updateUser } from "../../auth/slices/authSlice";
 import type { StudentProfile } from "../types/studentProfile";
 import { updateStudentProfile } from "../api/studentProfileApi";
 
@@ -270,12 +270,10 @@ const EditProfileForm = ({
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(profileSchema),
-
     mode: "onChange",
-
     defaultValues: {
       full_name: profile.full_name || "",
       bio: profile.bio || "",
@@ -288,6 +286,7 @@ const EditProfileForm = ({
     },
   });
 
+  const hasChanges = isDirty || selectedImage !== null || removeProfileImage;
   /* ==========================================================================
      WATCH VALUES
 
@@ -411,8 +410,13 @@ const EditProfileForm = ({
         profile_image: selectedImage,
         remove_profile_image: removeProfileImage,
       });
-
-      dispatch(setProfileImage(updatedProfile.profile_image));
+      dispatch(
+        updateUser({
+          full_name: updatedProfile.full_name,
+          profile_image: updatedProfile.profile_image,
+        }),
+      );
+      // dispatch(setProfileImage(updatedProfile.profile_image));
       onSaved(updatedProfile);
     } catch (error) {
       console.error("Failed to update student profile:", error);
@@ -441,20 +445,12 @@ const EditProfileForm = ({
         inset: 0,
         zIndex: 2147483647,
       }}
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !isSaving) {
-          onClose();
-        }
-      }}
     >
       <div
         className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-profile-title"
-        onMouseDown={(event) => {
-          event.stopPropagation();
-        }}
       >
         {/* ========================================================
             TOP GLOW
@@ -816,8 +812,8 @@ const EditProfileForm = ({
 
             <button
               type="submit"
-              disabled={isSaving}
-              className="inline-flex min-w-[125px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-sm font-medium text-white shadow-[0_8px_25px_rgba(124,92,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#8B6DFF] hover:shadow-[0_12px_30px_rgba(124,92,255,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              disabled={isSaving || !hasChanges}
+              className="inline-flex min-w-50 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-sm font-medium text-white shadow-[0_8px_25px_rgba(124,92,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#8B6DFF] hover:shadow-[0_12px_30px_rgba(124,92,255,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
               {isSaving ? (
                 <>

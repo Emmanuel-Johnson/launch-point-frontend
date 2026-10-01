@@ -80,9 +80,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   };
 
   const MEDIA_BASE_URL = "http://localhost:8000";
+  const DEFAULT_PROFILE_IMAGE = `${MEDIA_BASE_URL}/media/profile_images/default_profile.png`;
 
   const resolveImage = (path: string | null | undefined) => {
-    if (!path) return null;
+    if (!path) return DEFAULT_PROFILE_IMAGE;
 
     if (/^https?:\/\//i.test(path)) {
       return path;
