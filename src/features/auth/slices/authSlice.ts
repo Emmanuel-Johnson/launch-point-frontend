@@ -7,6 +7,7 @@ type User = {
   email: string;
   full_name: string;
   role: UserRole;
+  profile_image: string | null;
 };
 
 type AuthState = {
@@ -32,9 +33,16 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+
+    setProfileImage: (state, action: PayloadAction<string | null>) => {
+      if (state.user) {
+        state.user.profile_image = action.payload;
+      }
+    },
   },
 });
 
-export const { setCredentials, clearCredentials } = authSlice.actions;
+export const { setCredentials, clearCredentials, setProfileImage } =
+  authSlice.actions;
 
 export default authSlice.reducer;
