@@ -14,7 +14,10 @@ import {
   Crown,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getAdminSubscriptionPlans } from "../api/adminSubscriptionsApi";
+import {
+  getAdminSubscriptionPlans,
+  createAdminSubscriptionPlan,
+} from "../api/adminSubscriptionsApi";
 
 // Adjust these paths if your modals live elsewhere.
 import SubscriptionPlanFormModal, {
@@ -54,6 +57,7 @@ const SubscriptionPlanListPage = () => {
   const [updatingPlanId, setUpdatingPlanId] = useState<number | null>(null);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Plan currently awaiting status-change confirmation (null = modal closed).
   const [confirmPlan, setConfirmPlan] =
@@ -157,24 +161,39 @@ const SubscriptionPlanListPage = () => {
   /*
    * Create plan — add to list locally (no API for now)
    */
-  const handleCreateSubmit = (values: PlanFormValues) => {
-    setPlans((previousPlans) => {
-      const nextId =
-        previousPlans.reduce((max, plan) => Math.max(max, plan.id), 0) + 1;
+  const handleCreateSubmit = async (values: PlanFormValues) => {
+    try {
+      setIsSubmitting(true);
 
-      const newPlan: SubscriptionPlanListItem = {
-        id: nextId,
+      const createdPlan = await createAdminSubscriptionPlan({
         name: values.name,
         plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
         price: values.price,
         billing_interval: values.billing_interval || null,
         is_active: values.is_active,
-      };
+      });
 
-      return [newPlan, ...previousPlans];
-    });
+      setPlans((previousPlans) => [
+        {
+          id: createdPlan.id,
+          name: createdPlan.name,
+          plan_type: createdPlan.plan_type,
+          price: createdPlan.price,
+          billing_interval: createdPlan.billing_interval,
+          is_active: createdPlan.is_active,
+        },
+        ...previousPlans,
+      ]);
 
-    setCurrentPage(1);
+      setCurrentPage(1);
+      setIsCreateOpen(false);
+    } catch (error) {
+      console.error("Failed to create subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const placeholderCount =
@@ -596,6 +615,7 @@ const SubscriptionPlanListPage = () => {
           mode="create"
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateSubmit}
+          isSubmitting={isSubmitting}
         />
       )}
 

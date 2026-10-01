@@ -21,7 +21,8 @@ interface SubscriptionPlanFormModalProps {
   onClose: () => void;
   mode?: "create" | "edit";
   initialData?: Partial<PlanFormValues>;
-  onSubmit?: (values: PlanFormValues) => void;
+  onSubmit?: (values: PlanFormValues) => void | Promise<void>;
+  isSubmitting?: boolean;
 }
 
 const DEFAULTS: PlanFormValues = {
@@ -42,6 +43,7 @@ const SubscriptionPlanFormModal = ({
   mode = "create",
   initialData,
   onSubmit,
+  isSubmitting = false,
 }: SubscriptionPlanFormModalProps) => {
   /*
    * Local form state. Initialised from initialData on mount — mount the modal
@@ -139,8 +141,8 @@ const SubscriptionPlanFormModal = ({
 
   const canSubmit = form.name.trim().length > 0 && form.price.trim().length > 0;
 
-  const handleSubmit = () => {
-    if (!canSubmit) {
+  const handleSubmit = async () => {
+    if (!canSubmit || isSubmitting) {
       return;
     }
 
@@ -149,8 +151,7 @@ const SubscriptionPlanFormModal = ({
       benefits: form.benefits.map((b) => b.trim()).filter(Boolean),
     };
 
-    onSubmit?.(cleaned);
-    onClose();
+    await onSubmit?.(cleaned);
   };
 
   return createPortal(
@@ -426,12 +427,37 @@ const SubscriptionPlanFormModal = ({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!canSubmit}
-              className="group relative inline-flex h-10 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              disabled={!canSubmit || isSubmitting}
+              className="group relative inline-flex h-10 min-w-[120px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-              <span className="relative z-10">
-                {mode === "edit" ? "Save Changes" : "Create Plan"}
+
+              <span className="relative z-10 flex items-center justify-center">
+                {isSubmitting ? (
+                  <svg
+                    className="h-5 w-5 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    />
+                    <path
+                      className="opacity-90"
+                      fill="currentColor"
+                      d="M12 3a9 9 0 0 1 9 9h-3a6 6 0 0 0-6-6V3z"
+                    />
+                  </svg>
+                ) : mode === "edit" ? (
+                  "Save Changes"
+                ) : (
+                  "Create Plan"
+                )}
               </span>
             </button>
           </div>
