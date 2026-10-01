@@ -79,6 +79,20 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
     }
   };
 
+  const MEDIA_BASE_URL = "http://localhost:8000";
+
+  const resolveImage = (path: string | null | undefined) => {
+    if (!path) return null;
+
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+
+    return `${MEDIA_BASE_URL}${path}`;
+  };
+
+  const profileImage = resolveImage(user?.profile_image);
+
   return (
     <>
       <header
@@ -162,8 +176,21 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Avatar */}
-              <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#7C5CFF]/20 text-sm font-semibold text-[#7C5CFF] ring-1 ring-[#7C5CFF]/20 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/25 group-hover:text-[#9D82FF] group-hover:ring-[#7C5CFF]/40 group-hover:shadow-[0_0_18px_rgba(124,92,255,0.18)]">
-                E
+              <div className="relative z-10 h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#7C5CFF]/20 text-sm font-semibold text-[#7C5CFF] ring-1 ring-[#7C5CFF]/20 transition-all duration-300 group-hover:scale-105">
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt={user?.full_name ?? "Profile"}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    {user?.full_name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
               </div>
 
               {/* User Info */}
@@ -200,8 +227,26 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
                 <div className="flex items-center gap-3.5">
                   {/* Avatar */}
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#7C5CFF] to-[#5B3FE0] text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20 transition-all duration-300 hover:scale-105 hover:shadow-[#7C5CFF]/30">
-                    EJ
+                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[#7C5CFF] to-[#5B3FE0] text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20">
+                    {profileImage ? (
+                      <img
+                        src={profileImage}
+                        alt={user?.full_name ?? "Profile"}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        {user?.full_name
+                          ?.split(" ")
+                          .map((name) => name[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                    )}
                   </div>
 
                   {/* User Details */}

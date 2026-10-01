@@ -15,7 +15,8 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
-
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setProfileImage } from "../../auth/slices/authSlice";
 import type { StudentProfile } from "../types/studentProfile";
 import { getStudentProfile } from "../api/studentProfileApi";
 import EditProfileModal from "../components/EditProfileModal";
@@ -281,6 +282,8 @@ const ViewProfile = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -290,6 +293,14 @@ const ViewProfile = () => {
         const data = await getStudentProfile();
 
         setProfile(data);
+
+        dispatch(
+          setProfileImage(
+            data.profile_image
+              ? `http://localhost:8000${data.profile_image}`
+              : null,
+          ),
+        );
       } catch (error) {
         console.error("Failed to fetch student profile:", error);
 
@@ -300,7 +311,7 @@ const ViewProfile = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [dispatch]);
 
   /* ---------------------------------------------------------- loading */
 

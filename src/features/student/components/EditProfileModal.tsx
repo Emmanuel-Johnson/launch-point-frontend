@@ -17,7 +17,8 @@ import {
 } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setProfileImage } from "../../auth/slices/authSlice";
 import type { StudentProfile } from "../types/studentProfile";
 import { updateStudentProfile } from "../api/studentProfileApi";
 
@@ -248,7 +249,6 @@ const EditProfileForm = ({
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const [removeProfileImage, setRemoveProfileImage] = useState(false);
-
   const [previewImage, setPreviewImage] = useState<string>(
     resolveImage(profile.profile_image),
   );
@@ -260,6 +260,7 @@ const EditProfileForm = ({
   const [imageError, setImageError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
 
   /* ==========================================================================
      REACT HOOK FORM
@@ -411,6 +412,7 @@ const EditProfileForm = ({
         remove_profile_image: removeProfileImage,
       });
 
+      dispatch(setProfileImage(updatedProfile.profile_image));
       onSaved(updatedProfile);
     } catch (error) {
       console.error("Failed to update student profile:", error);
