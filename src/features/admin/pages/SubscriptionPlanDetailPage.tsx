@@ -87,8 +87,8 @@ const SubscriptionPlanDetailPage = () => {
 
   if (!plan) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center text-white/50">
-        Loading subscription plan...
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-emerald-400" />
       </div>
     );
   }
