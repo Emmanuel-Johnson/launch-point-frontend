@@ -383,35 +383,39 @@ const SubscriptionPlanFormModal = ({
               </div>
             </Field>
 
-            {/* Active toggle */}
-            <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5">
-              <div>
-                <p className="text-sm font-medium text-white">Active</p>
-                <p className="mt-0.5 text-xs text-white/40">
-                  Make this plan available to subscribers.
-                </p>
-              </div>
+            {mode === "create" && (
+              <>
+                {/* Active toggle */}
+                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5">
+                  <div>
+                    <p className="text-sm font-medium text-white">Active</p>
+                    <p className="mt-0.5 text-xs text-white/40">
+                      Make this plan available to subscribers.
+                    </p>
+                  </div>
 
-              <button
-                type="button"
-                role="switch"
-                aria-checked={form.is_active}
-                onClick={() => setField("is_active", !form.is_active)}
-                className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-300 ${
-                  form.is_active
-                    ? "bg-[#34D399]/30 ring-1 ring-inset ring-[#34D399]/40"
-                    : "bg-white/10 ring-1 ring-inset ring-white/10"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full transition-all duration-300 ${
-                    form.is_active
-                      ? "left-0.5 translate-x-5 bg-[#34D399] shadow-[0_0_10px_rgba(52,211,153,0.7)]"
-                      : "left-0.5 translate-x-0 bg-white/70"
-                  }`}
-                />
-              </button>
-            </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={form.is_active}
+                    onClick={() => setField("is_active", !form.is_active)}
+                    className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-300 ${
+                      form.is_active
+                        ? "bg-[#34D399]/30 ring-1 ring-inset ring-[#34D399]/40"
+                        : "bg-white/10 ring-1 ring-inset ring-white/10"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 h-5 w-5 rounded-full transition-all duration-300 ${
+                        form.is_active
+                          ? "left-0.5 translate-x-5 bg-[#34D399] shadow-[0_0_10px_rgba(52,211,153,0.7)]"
+                          : "left-0.5 translate-x-0 bg-white/70"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* ===================== Footer ===================== */}
@@ -428,7 +432,7 @@ const SubscriptionPlanFormModal = ({
               type="button"
               onClick={handleSubmit}
               disabled={!canSubmit || isSubmitting}
-              className="group relative inline-flex h-10 min-w-[120px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              className="group relative inline-flex h-10 min-w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
