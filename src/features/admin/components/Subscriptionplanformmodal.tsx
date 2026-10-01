@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Plus, Trash2, CreditCard, Crown, ChevronDown } from "lucide-react";
 import { z } from "zod";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 import Field from "./Field";
 
@@ -541,7 +543,58 @@ const SubscriptionPlanFormModal = ({
 
     setErrors({});
 
-    await onSubmit?.(cleaned);
+    try {
+      await onSubmit?.(cleaned);
+
+      toast.success(
+        mode === "edit"
+          ? "Subscription plan updated successfully."
+          : "Subscription plan created successfully.",
+        {
+          containerId: "admin",
+        },
+      );
+    } catch (error) {
+      console.error(
+        mode === "edit"
+          ? "Failed to update subscription plan:"
+          : "Failed to create subscription plan:",
+        error,
+      );
+
+      let message =
+        mode === "edit"
+          ? "Failed to update subscription plan. Please try again."
+          : "Failed to create subscription plan. Please try again.";
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+
+        const nameError = responseData?.name?.[0];
+        const planTypeError = responseData?.plan_type?.[0];
+        const descriptionError = responseData?.description?.[0];
+        const benefitsError = responseData?.benefits?.[0];
+        const priceError = responseData?.price?.[0];
+        const billingIntervalError = responseData?.billing_interval?.[0];
+        const detailError = responseData?.detail;
+        const messageError = responseData?.message;
+
+        message =
+          nameError ||
+          planTypeError ||
+          descriptionError ||
+          benefitsError ||
+          priceError ||
+          billingIntervalError ||
+          detailError ||
+          messageError ||
+          message;
+      }
+
+      toast.error(message, {
+        containerId: "admin",
+      });
+    }
   };
 
   return createPortal(
