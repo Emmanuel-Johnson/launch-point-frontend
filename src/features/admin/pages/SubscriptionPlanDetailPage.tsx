@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   CreditCard,
@@ -13,7 +13,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { getAdminSubscriptionPlan } from "../api/adminSubscriptionsApi";
 // Adjust this path if your modal lives elsewhere.
 import SubscriptionStatusConfirmModal from "../components/Subscriptionstatusconfirmmodal";
 
@@ -34,40 +34,64 @@ interface SubscriptionPlanDetail {
   updated_at: string;
 }
 
-/* -------------------------------- */
-/* Dummy data                       */
-/* -------------------------------- */
-
-const DUMMY_PLAN: SubscriptionPlanDetail = {
-  id: 3,
-  name: "Premium Monthly",
-  plan_type: "premium",
-  description:
-    "Full access to every premium course on Launch Point, along with downloadable resources and priority support. Billed monthly with the flexibility to upgrade, downgrade, or cancel anytime.",
-  benefits: [
-    "Unlimited access to all premium courses",
-    "Downloadable lecture resources and source files",
-    "Priority email and chat support",
-    "Verified completion certificates for every course",
-    "Early access to newly released content",
-  ],
-  price: "1099.00",
-  billing_interval: "monthly",
-  is_active: true,
-  created_at: "2025-03-14T09:24:00Z",
-  updated_at: "2025-09-02T16:40:00Z",
-};
-
 const SubscriptionPlanDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { planId } = useParams<{ planId: string }>();
 
-  const [plan, setPlan] = useState<SubscriptionPlanDetail>(DUMMY_PLAN);
+  const [plan, setPlan] = useState<SubscriptionPlanDetail | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const planId = id ?? String(plan.id);
+  useEffect(() => {
+    const fetchPlan = async () => {
+      if (!planId) {
+        setError("Plan ID is missing.");
+        return;
+      }
 
+      const numericPlanId = Number(planId);
+
+      if (Number.isNaN(numericPlanId)) {
+        setError("Invalid plan ID.");
+        return;
+      }
+
+      try {
+        const planData = await getAdminSubscriptionPlan(numericPlanId);
+        setPlan(planData);
+      } catch (error) {
+        console.error("Failed to fetch subscription plan:", error);
+        setError("Subscription plan not found.");
+      }
+    };
+
+    fetchPlan();
+  }, [planId]);
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-white">
+        <p className="text-red-400">{error}</p>
+
+        <button
+          type="button"
+          onClick={() => navigate("/admin/subscriptions")}
+          className="rounded-lg bg-[#34D399]/10 px-4 py-2 text-sm text-[#34D399] cursor-pointer"
+        >
+          Back to Subscription Plans
+        </button>
+      </div>
+    );
+  }
+
+  if (!plan) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center text-white/50">
+        Loading subscription plan...
+      </div>
+    );
+  }
   /*
    * Activate / Deactivate — open confirm modal
    */
@@ -82,7 +106,17 @@ const SubscriptionPlanDetailPage = () => {
     setIsUpdating(true);
 
     window.setTimeout(() => {
-      setPlan((previous) => ({ ...previous, is_active: !previous.is_active }));
+      setPlan((previous) => {
+        if (!previous) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          is_active: !previous.is_active,
+        };
+      });
+
       setIsUpdating(false);
       setIsConfirmOpen(false);
     }, 500);
@@ -428,7 +462,7 @@ const billingLabel = (interval: SubscriptionPlanDetail["billing_interval"]) => {
     case "yearly":
       return "Billed per year";
     default:
-      return "One-time / free";
+      return "Free plan";
   }
 };
 
