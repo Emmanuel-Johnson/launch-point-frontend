@@ -19,6 +19,7 @@ import {
   getAdminSubscriptionPlans,
   createAdminSubscriptionPlan,
   updateAdminSubscriptionPlan,
+  updateAdminSubscriptionPlanStatus,
   getAdminSubscriptionPlan,
   type AdminSubscriptionPlan,
 } from "../api/adminSubscriptionsApi";
@@ -154,28 +155,41 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Confirm the status change — simple local flip (no API for now)
+   * Confirm the status change — update through API
    */
-  const handleConfirmStatusChange = () => {
+  const handleConfirmStatusChange = async () => {
     if (!confirmPlan) {
       return;
     }
 
     const planId = confirmPlan.id;
+    const newStatus = !confirmPlan.is_active;
 
-    setUpdatingPlanId(planId);
+    try {
+      setUpdatingPlanId(planId);
 
-    // Fake a tiny delay so the spinner + button state are visible in the UI.
-    window.setTimeout(() => {
+      const updatedPlan = await updateAdminSubscriptionPlanStatus(
+        planId,
+        newStatus,
+      );
+
       setPlans((previousPlans) =>
         previousPlans.map((plan) =>
-          plan.id === planId ? { ...plan, is_active: !plan.is_active } : plan,
+          plan.id === updatedPlan.id
+            ? {
+                ...plan,
+                is_active: updatedPlan.is_active,
+              }
+            : plan,
         ),
       );
 
-      setUpdatingPlanId(null);
       setConfirmPlan(null);
-    }, 500);
+    } catch (error) {
+      console.error("Failed to update subscription plan status:", error);
+    } finally {
+      setUpdatingPlanId(null);
+    }
   };
 
   /*
@@ -186,7 +200,7 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Create plan — add to list locally (no API for now)
+   * Create plan — add to list locally
    */
   const handleCreateSubmit = async (values: PlanFormValues) => {
     try {
@@ -303,9 +317,8 @@ const SubscriptionPlanListPage = () => {
       <div className="sp-font-body space-y-6 text-white">
         {/* ================= Hero ================= */}
         <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
-          {/* ambient emerald glow */}
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#34D399]/10 blur-3xl" />
-          {/* faint gold hairline */}
+
           <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
 
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -331,7 +344,6 @@ const SubscriptionPlanListPage = () => {
               onClick={handleCreatePlan}
               className="group relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start overflow-hidden rounded-xl border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-4 py-2.5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] sm:self-auto"
             >
-              {/* shine sweep */}
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               <Plus
@@ -400,13 +412,14 @@ const SubscriptionPlanListPage = () => {
             />
           </div>
 
-          {/* Segmented Status Filter (sliding indicator) */}
+          {/* Segmented Status Filter */}
           <div className="relative flex self-start rounded-xl border border-white/[0.08] bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:self-auto">
-            {/* Sliding highlight */}
             <span
               aria-hidden="true"
               className="absolute bottom-1 left-1 top-1 w-[92px] rounded-lg bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
-              style={{ transform: `translateX(${activeFilterIndex * 100}%)` }}
+              style={{
+                transform: `translateX(${activeFilterIndex * 100}%)`,
+              }}
             />
 
             {STATUS_FILTERS.map((key) => {
@@ -446,7 +459,6 @@ const SubscriptionPlanListPage = () => {
                 <col className="w-[21%]" />
               </colgroup>
 
-              {/* Table Header */}
               <thead>
                 <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left text-[11px] uppercase tracking-[0.14em] text-white/40">
                   <th className="px-6 py-4 font-medium">Plan</th>
@@ -458,7 +470,6 @@ const SubscriptionPlanListPage = () => {
                 </tr>
               </thead>
 
-              {/* Table Body */}
               <tbody>
                 {paginatedPlans.length === 0 ? (
                   <tr>
@@ -507,7 +518,7 @@ const SubscriptionPlanListPage = () => {
                           </button>
                         </td>
 
-                        {/* Type — fixed size badge */}
+                        {/* Type */}
                         <td className="px-6 py-5">
                           {plan.plan_type === "premium" ? (
                             <span className="inline-flex h-7 w-24 items-center justify-center gap-1.5 rounded-full border border-[#E8C67A]/25 bg-[#E8C67A]/10 text-xs font-medium text-[#E8C67A]">
@@ -521,7 +532,7 @@ const SubscriptionPlanListPage = () => {
                           )}
                         </td>
 
-                        {/* Price — centered + truncated */}
+                        {/* Price */}
                         <td className="px-6 py-5 text-center">
                           <span
                             title={plan.price}
@@ -532,7 +543,7 @@ const SubscriptionPlanListPage = () => {
                           </span>
                         </td>
 
-                        {/* Billing — fixed size chip (color-coded by interval) */}
+                        {/* Billing */}
                         <td className="px-6 py-5">
                           {plan.billing_interval ? (
                             <span
@@ -549,15 +560,15 @@ const SubscriptionPlanListPage = () => {
                           )}
                         </td>
 
-                        {/* Status — fixed size badge */}
+                        {/* Status */}
                         <td className="px-6 py-5">
                           <StatusBadge isActive={plan.is_active} />
                         </td>
 
-                        {/* Action — edit + status buttons */}
+                        {/* Action */}
                         <td className="px-6 py-5">
                           <div className="flex items-center justify-end gap-2">
-                            {/* Edit — glass icon tile, emerald on hover */}
+                            {/* Edit */}
                             <button
                               type="button"
                               disabled={editingPlanId === plan.id}
@@ -800,7 +811,13 @@ interface StatCardProps {
 
 const STAT_ACCENTS: Record<
   StatAccent,
-  { tile: string; icon: string; glow: string; border: string; value: string }
+  {
+    tile: string;
+    icon: string;
+    glow: string;
+    border: string;
+    value: string;
+  }
 > = {
   emerald: {
     tile: "from-[#34D399]/20 to-[#34D399]/5 ring-[#34D399]/20",
@@ -839,12 +856,10 @@ const StatCard = ({
       className={`sp-item group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(0,0,0,0.95)] ${styles.border}`}
       style={{ animationDelay: `${delay}ms` }}
     >
-      {/* ambient glow */}
       <div
         className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${styles.glow}`}
       />
 
-      {/* shine sweep */}
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
       <div

@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getAdminSubscriptionPlan,
   updateAdminSubscriptionPlan,
+  updateAdminSubscriptionPlanStatus,
 } from "../api/adminSubscriptionsApi";
 import SubscriptionPlanFormModal, {
   type PlanFormValues,
@@ -110,24 +111,26 @@ const SubscriptionPlanDetailPage = () => {
   /*
    * Confirm the status change — simple local flip (no API for now)
    */
-  const handleConfirmStatusChange = () => {
-    setIsUpdating(true);
+  const handleConfirmStatusChange = async () => {
+    if (!plan) {
+      return;
+    }
 
-    window.setTimeout(() => {
-      setPlan((previous) => {
-        if (!previous) {
-          return previous;
-        }
+    try {
+      setIsUpdating(true);
 
-        return {
-          ...previous,
-          is_active: !previous.is_active,
-        };
-      });
+      const updatedPlan = await updateAdminSubscriptionPlanStatus(
+        plan.id,
+        !plan.is_active,
+      );
 
-      setIsUpdating(false);
+      setPlan(updatedPlan);
       setIsConfirmOpen(false);
-    }, 500);
+    } catch (error) {
+      console.error("Failed to update subscription plan status:", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleEditPlan = () => {
