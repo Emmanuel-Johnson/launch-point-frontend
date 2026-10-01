@@ -24,7 +24,7 @@ export interface SubscriptionPlanListItem {
 
 export const getAdminSubscriptionPlans = async () => {
   const response = await adminApi.get<SubscriptionPlanListItem[]>(
-    "/subscriptions/plans/",
+    "admins/subscriptions/plans/",
   );
 
   return response.data;
@@ -32,7 +32,7 @@ export const getAdminSubscriptionPlans = async () => {
 
 export const getAdminSubscriptionPlan = async (planId: number) => {
   const response = await adminApi.get<AdminSubscriptionPlan>(
-    `/subscriptions/plans/${planId}/`,
+    `admins/subscriptions/plans/${planId}/`,
   );
 
   return response.data;
@@ -42,7 +42,7 @@ export const createAdminSubscriptionPlan = async (
   planData: Omit<AdminSubscriptionPlan, "id" | "created_at" | "updated_at">,
 ) => {
   const response = await adminApi.post<AdminSubscriptionPlan>(
-    "/subscriptions/plans/",
+    "admins/subscriptions/plans/",
     planData,
   );
 
@@ -56,7 +56,7 @@ export const updateAdminSubscriptionPlan = async (
   >,
 ) => {
   const response = await adminApi.patch<AdminSubscriptionPlan>(
-    `/subscriptions/plans/${planId}/`,
+    `admins/subscriptions/plans/${planId}/`,
     planData,
   );
 
@@ -68,7 +68,7 @@ export const updateAdminSubscriptionPlanStatus = async (
   isActive: boolean,
 ) => {
   const response = await adminApi.patch<AdminSubscriptionPlan>(
-    `/subscriptions/plans/${planId}/status/`,
+    `admins/subscriptions/plans/${planId}/status/`,
     {
       is_active: isActive,
     },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   CreditCard,
@@ -13,7 +13,14 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import {
+  getAdminSubscriptionPlan,
+  updateAdminSubscriptionPlan,
+  updateAdminSubscriptionPlanStatus,
+} from "../api/adminSubscriptionsApi";
+import SubscriptionPlanFormModal, {
+  type PlanFormValues,
+} from "../components/Subscriptionplanformmodal";
 // Adjust this path if your modal lives elsewhere.
 import SubscriptionStatusConfirmModal from "../components/Subscriptionstatusconfirmmodal";
 
@@ -34,40 +41,66 @@ interface SubscriptionPlanDetail {
   updated_at: string;
 }
 
-/* -------------------------------- */
-/* Dummy data                       */
-/* -------------------------------- */
-
-const DUMMY_PLAN: SubscriptionPlanDetail = {
-  id: 3,
-  name: "Premium Monthly",
-  plan_type: "premium",
-  description:
-    "Full access to every premium course on Launch Point, along with downloadable resources and priority support. Billed monthly with the flexibility to upgrade, downgrade, or cancel anytime.",
-  benefits: [
-    "Unlimited access to all premium courses",
-    "Downloadable lecture resources and source files",
-    "Priority email and chat support",
-    "Verified completion certificates for every course",
-    "Early access to newly released content",
-  ],
-  price: "1099.00",
-  billing_interval: "monthly",
-  is_active: true,
-  created_at: "2025-03-14T09:24:00Z",
-  updated_at: "2025-09-02T16:40:00Z",
-};
-
 const SubscriptionPlanDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { planId } = useParams<{ planId: string }>();
 
-  const [plan, setPlan] = useState<SubscriptionPlanDetail>(DUMMY_PLAN);
+  const [plan, setPlan] = useState<SubscriptionPlanDetail | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const planId = id ?? String(plan.id);
+  useEffect(() => {
+    const fetchPlan = async () => {
+      if (!planId) {
+        setError("Plan ID is missing.");
+        return;
+      }
 
+      const numericPlanId = Number(planId);
+
+      if (Number.isNaN(numericPlanId)) {
+        setError("Invalid plan ID.");
+        return;
+      }
+
+      try {
+        const planData = await getAdminSubscriptionPlan(numericPlanId);
+        setPlan(planData);
+      } catch (error) {
+        console.error("Failed to fetch subscription plan:", error);
+        setError("Subscription plan not found.");
+      }
+    };
+
+    fetchPlan();
+  }, [planId]);
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-white">
+        <p className="text-red-400">{error}</p>
+
+        <button
+          type="button"
+          onClick={() => navigate("/admin/subscriptions")}
+          className="rounded-lg bg-[#34D399]/10 px-4 py-2 text-sm text-[#34D399] cursor-pointer"
+        >
+          Back to Subscription Plans
+        </button>
+      </div>
+    );
+  }
+
+  if (!plan) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-emerald-400" />
+      </div>
+    );
+  }
   /*
    * Activate / Deactivate — open confirm modal
    */
@@ -78,18 +111,58 @@ const SubscriptionPlanDetailPage = () => {
   /*
    * Confirm the status change — simple local flip (no API for now)
    */
-  const handleConfirmStatusChange = () => {
-    setIsUpdating(true);
+  const handleConfirmStatusChange = async () => {
+    if (!plan) {
+      return;
+    }
 
-    window.setTimeout(() => {
-      setPlan((previous) => ({ ...previous, is_active: !previous.is_active }));
-      setIsUpdating(false);
+    try {
+      setIsUpdating(true);
+
+      const updatedPlan = await updateAdminSubscriptionPlanStatus(
+        plan.id,
+        !plan.is_active,
+      );
+
+      setPlan(updatedPlan);
       setIsConfirmOpen(false);
-    }, 500);
+    } catch (error) {
+      console.error("Failed to update subscription plan status:", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleEditPlan = () => {
-    navigate(`/admin/subscriptions/${planId}/edit`);
+    setIsEditOpen(true);
+  };
+
+  const handleEditSubmit = async (values: PlanFormValues) => {
+    if (!plan) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updatedPlan = await updateAdminSubscriptionPlan(plan.id, {
+        name: values.name,
+        plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
+        price: values.price,
+        billing_interval: values.billing_interval || null,
+        is_active: values.is_active,
+      });
+
+      setPlan(updatedPlan);
+
+      setIsEditOpen(false);
+    } catch (error) {
+      console.error("Failed to update subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -355,6 +428,26 @@ const SubscriptionPlanDetailPage = () => {
         </div>
       </div>
 
+      {isEditOpen && (
+        <SubscriptionPlanFormModal
+          key={plan.id}
+          isOpen={isEditOpen}
+          mode="edit"
+          initialData={{
+            name: plan.name,
+            plan_type: plan.plan_type,
+            description: plan.description,
+            benefits: plan.benefits,
+            price: plan.price,
+            billing_interval: plan.billing_interval || "",
+            is_active: plan.is_active,
+          }}
+          onClose={() => setIsEditOpen(false)}
+          onSubmit={handleEditSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
       {/* ================= Status Confirm Modal ================= */}
       {isConfirmOpen && (
         <SubscriptionStatusConfirmModal
@@ -428,7 +521,7 @@ const billingLabel = (interval: SubscriptionPlanDetail["billing_interval"]) => {
     case "yearly":
       return "Billed per year";
     default:
-      return "One-time / free";
+      return "Free plan";
   }
 };
 

@@ -130,7 +130,7 @@ const CategoryFormModal = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
     mode: "onChange",
@@ -459,7 +459,7 @@ const CategoryFormModal = ({
           <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] px-6 py-4">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (Boolean(editingCategory) && !isDirty)}
               className="relative h-10 w-50 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-200 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-8px_rgba(52,211,153,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (

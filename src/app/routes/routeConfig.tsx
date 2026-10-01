@@ -19,6 +19,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 // Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
+import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 
 // Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
@@ -136,6 +137,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "profile",
             element: <StudentProfilePage />,
+          },
+          {
+            path: "subscriptions",
+            element: <StudentSubscriptionPage />,
           },
         ],
       },

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CreditCard,
   Search,
@@ -12,8 +12,17 @@ import {
   BadgeCheck,
   Ban,
   Crown,
+  Pencil,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+  getAdminSubscriptionPlans,
+  createAdminSubscriptionPlan,
+  updateAdminSubscriptionPlan,
+  updateAdminSubscriptionPlanStatus,
+  getAdminSubscriptionPlan,
+  type AdminSubscriptionPlan,
+} from "../api/adminSubscriptionsApi";
 
 // Adjust these paths if your modals live elsewhere.
 import SubscriptionPlanFormModal, {
@@ -39,82 +48,10 @@ interface SubscriptionPlanListItem {
   is_active: boolean;
 }
 
-/* -------------------------------- */
-/* Dummy data                       */
-/* -------------------------------- */
-
-const DUMMY_PLANS: SubscriptionPlanListItem[] = [
-  {
-    id: 1,
-    name: "Free PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree Plan",
-    plan_type: "free",
-    price:
-      "0.00333333333333333333333333333333333333333333333333333333333333333333333333333333",
-    billing_interval: null,
-    is_active: true,
-  },
-  {
-    id: 2,
-    name: "Premium Weekly",
-    plan_type: "premium",
-    price: "299.00",
-    billing_interval: "weekly",
-    is_active: true,
-  },
-  {
-    id: 3,
-    name: "Premium Monthly",
-    plan_type: "premium",
-    price: "1099.00",
-    billing_interval: "monthly",
-    is_active: true,
-  },
-  {
-    id: 4,
-    name: "Premium Yearly",
-    plan_type: "premium",
-    price: "9999.00",
-    billing_interval: "yearly",
-    is_active: true,
-  },
-  {
-    id: 5,
-    name: "Student Monthly",
-    plan_type: "premium",
-    price: "799.00",
-    billing_interval: "monthly",
-    is_active: false,
-  },
-  {
-    id: 6,
-    name: "Basic Weekly",
-    plan_type: "free",
-    price: "0.00",
-    billing_interval: "weekly",
-    is_active: false,
-  },
-  {
-    id: 7,
-    name: "Pro Monthly",
-    plan_type: "premium",
-    price: "1499.00",
-    billing_interval: "monthly",
-    is_active: true,
-  },
-  {
-    id: 8,
-    name: "Pro Yearly",
-    plan_type: "premium",
-    price: "12999.00",
-    billing_interval: "yearly",
-    is_active: true,
-  },
-];
-
 const SubscriptionPlanListPage = () => {
   const navigate = useNavigate();
 
-  const [plans, setPlans] = useState<SubscriptionPlanListItem[]>(DUMMY_PLANS);
+  const [plans, setPlans] = useState<SubscriptionPlanListItem[]>([]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -123,12 +60,31 @@ const SubscriptionPlanListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [updatingPlanId, setUpdatingPlanId] = useState<number | null>(null);
-
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState<AdminSubscriptionPlan | null>(
+    null,
+  );
+  const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Plan currently awaiting status-change confirmation (null = modal closed).
   const [confirmPlan, setConfirmPlan] =
     useState<SubscriptionPlanListItem | null>(null);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const data = await getAdminSubscriptionPlans();
+        setPlans(data);
+      } catch (error) {
+        console.error("Failed to fetch subscription plans:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   /*
    * Filter plans
@@ -181,28 +137,59 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Confirm the status change — simple local flip (no API for now)
+   * Edit plan — fetch full plan details and open modal
    */
-  const handleConfirmStatusChange = () => {
+  const handleEditPlan = async (plan: SubscriptionPlanListItem) => {
+    try {
+      setEditingPlanId(plan.id);
+
+      const planData = await getAdminSubscriptionPlan(plan.id);
+
+      setEditingPlan(planData);
+      setIsEditOpen(true);
+    } catch (error) {
+      console.error("Failed to fetch subscription plan:", error);
+    } finally {
+      setEditingPlanId(null);
+    }
+  };
+
+  /*
+   * Confirm the status change — update through API
+   */
+  const handleConfirmStatusChange = async () => {
     if (!confirmPlan) {
       return;
     }
 
     const planId = confirmPlan.id;
+    const newStatus = !confirmPlan.is_active;
 
-    setUpdatingPlanId(planId);
+    try {
+      setUpdatingPlanId(planId);
 
-    // Fake a tiny delay so the spinner + button state are visible in the UI.
-    window.setTimeout(() => {
+      const updatedPlan = await updateAdminSubscriptionPlanStatus(
+        planId,
+        newStatus,
+      );
+
       setPlans((previousPlans) =>
         previousPlans.map((plan) =>
-          plan.id === planId ? { ...plan, is_active: !plan.is_active } : plan,
+          plan.id === updatedPlan.id
+            ? {
+                ...plan,
+                is_active: updatedPlan.is_active,
+              }
+            : plan,
         ),
       );
 
-      setUpdatingPlanId(null);
       setConfirmPlan(null);
-    }, 500);
+    } catch (error) {
+      console.error("Failed to update subscription plan status:", error);
+    } finally {
+      setUpdatingPlanId(null);
+    }
   };
 
   /*
@@ -213,26 +200,86 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Create plan — add to list locally (no API for now)
+   * Create plan — add to list locally
    */
-  const handleCreateSubmit = (values: PlanFormValues) => {
-    setPlans((previousPlans) => {
-      const nextId =
-        previousPlans.reduce((max, plan) => Math.max(max, plan.id), 0) + 1;
+  const handleCreateSubmit = async (values: PlanFormValues) => {
+    try {
+      setIsSubmitting(true);
 
-      const newPlan: SubscriptionPlanListItem = {
-        id: nextId,
+      const createdPlan = await createAdminSubscriptionPlan({
         name: values.name,
         plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
         price: values.price,
         billing_interval: values.billing_interval || null,
         is_active: values.is_active,
-      };
+      });
 
-      return [newPlan, ...previousPlans];
-    });
+      setPlans((previousPlans) => [
+        {
+          id: createdPlan.id,
+          name: createdPlan.name,
+          plan_type: createdPlan.plan_type,
+          price: createdPlan.price,
+          billing_interval: createdPlan.billing_interval,
+          is_active: createdPlan.is_active,
+        },
+        ...previousPlans,
+      ]);
 
-    setCurrentPage(1);
+      setCurrentPage(1);
+      setIsCreateOpen(false);
+    } catch (error) {
+      console.error("Failed to create subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /*
+   * Edit plan — submit updated data to API
+   */
+  const handleEditSubmit = async (values: PlanFormValues) => {
+    if (!editingPlan) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updatedPlan = await updateAdminSubscriptionPlan(editingPlan.id, {
+        name: values.name,
+        plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
+        price: values.price,
+        billing_interval: values.billing_interval || null,
+        is_active: values.is_active,
+      });
+
+      setPlans((previousPlans) =>
+        previousPlans.map((plan) =>
+          plan.id === updatedPlan.id
+            ? {
+                id: updatedPlan.id,
+                name: updatedPlan.name,
+                plan_type: updatedPlan.plan_type,
+                price: updatedPlan.price,
+                billing_interval: updatedPlan.billing_interval,
+                is_active: updatedPlan.is_active,
+              }
+            : plan,
+        ),
+      );
+
+      setIsEditOpen(false);
+      setEditingPlan(null);
+    } catch (error) {
+      console.error("Failed to update subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const placeholderCount =
@@ -270,9 +317,8 @@ const SubscriptionPlanListPage = () => {
       <div className="sp-font-body space-y-6 text-white">
         {/* ================= Hero ================= */}
         <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
-          {/* ambient emerald glow */}
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#34D399]/10 blur-3xl" />
-          {/* faint gold hairline */}
+
           <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
 
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -298,7 +344,6 @@ const SubscriptionPlanListPage = () => {
               onClick={handleCreatePlan}
               className="group relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start overflow-hidden rounded-xl border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-4 py-2.5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] sm:self-auto"
             >
-              {/* shine sweep */}
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               <Plus
@@ -367,13 +412,14 @@ const SubscriptionPlanListPage = () => {
             />
           </div>
 
-          {/* Segmented Status Filter (sliding indicator) */}
+          {/* Segmented Status Filter */}
           <div className="relative flex self-start rounded-xl border border-white/[0.08] bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:self-auto">
-            {/* Sliding highlight */}
             <span
               aria-hidden="true"
               className="absolute bottom-1 left-1 top-1 w-[92px] rounded-lg bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
-              style={{ transform: `translateX(${activeFilterIndex * 100}%)` }}
+              style={{
+                transform: `translateX(${activeFilterIndex * 100}%)`,
+              }}
             />
 
             {STATUS_FILTERS.map((key) => {
@@ -405,15 +451,14 @@ const SubscriptionPlanListPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1080px] table-fixed">
               <colgroup>
-                <col className="w-[29%]" />
+                <col className="w-[25%]" />
                 <col className="w-[14%]" />
                 <col className="w-[12%]" />
                 <col className="w-[14%]" />
                 <col className="w-[14%]" />
-                <col className="w-[17%]" />
+                <col className="w-[21%]" />
               </colgroup>
 
-              {/* Table Header */}
               <thead>
                 <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left text-[11px] uppercase tracking-[0.14em] text-white/40">
                   <th className="px-6 py-4 font-medium">Plan</th>
@@ -425,7 +470,6 @@ const SubscriptionPlanListPage = () => {
                 </tr>
               </thead>
 
-              {/* Table Body */}
               <tbody>
                 {paginatedPlans.length === 0 ? (
                   <tr>
@@ -474,7 +518,7 @@ const SubscriptionPlanListPage = () => {
                           </button>
                         </td>
 
-                        {/* Type — fixed size badge */}
+                        {/* Type */}
                         <td className="px-6 py-5">
                           {plan.plan_type === "premium" ? (
                             <span className="inline-flex h-7 w-24 items-center justify-center gap-1.5 rounded-full border border-[#E8C67A]/25 bg-[#E8C67A]/10 text-xs font-medium text-[#E8C67A]">
@@ -488,7 +532,7 @@ const SubscriptionPlanListPage = () => {
                           )}
                         </td>
 
-                        {/* Price — centered + truncated */}
+                        {/* Price */}
                         <td className="px-6 py-5 text-center">
                           <span
                             title={plan.price}
@@ -499,7 +543,7 @@ const SubscriptionPlanListPage = () => {
                           </span>
                         </td>
 
-                        {/* Billing — fixed size chip (color-coded by interval) */}
+                        {/* Billing */}
                         <td className="px-6 py-5">
                           {plan.billing_interval ? (
                             <span
@@ -516,46 +560,71 @@ const SubscriptionPlanListPage = () => {
                           )}
                         </td>
 
-                        {/* Status — fixed size badge */}
+                        {/* Status */}
                         <td className="px-6 py-5">
                           <StatusBadge isActive={plan.is_active} />
                         </td>
 
-                        {/* Action — fixed size button */}
-                        <td className="px-6 py-5 text-right">
-                          <button
-                            type="button"
-                            disabled={updatingPlanId === plan.id}
-                            onClick={() => handleStatusClick(plan)}
-                            className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
-                              plan.is_active
-                                ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
-                                : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
-                            }`}
-                          >
-                            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+                        {/* Action */}
+                        <td className="px-6 py-5">
+                          <div className="flex items-center justify-end gap-2">
+                            {/* Edit */}
+                            <button
+                              type="button"
+                              disabled={editingPlanId === plan.id}
+                              onClick={() => handleEditPlan(plan)}
+                              title="Edit plan"
+                              aria-label="Edit plan"
+                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {editingPlanId === plan.id ? (
+                                <Loader2
+                                  size={15}
+                                  className="h-[15px] w-[15px] shrink-0 animate-spin"
+                                />
+                              ) : (
+                                <Pencil
+                                  size={15}
+                                  className="h-[15px] w-[15px] shrink-0"
+                                />
+                              )}
+                            </button>
 
-                            {updatingPlanId === plan.id ? (
-                              <Loader2
-                                size={15}
-                                className="relative z-10 animate-spin"
-                              />
-                            ) : plan.is_active ? (
-                              <PowerOff size={15} className="relative z-10" />
-                            ) : (
-                              <Power size={15} className="relative z-10" />
-                            )}
+                            {/* Activate / Deactivate */}
+                            <button
+                              type="button"
+                              disabled={updatingPlanId === plan.id}
+                              onClick={() => handleStatusClick(plan)}
+                              className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
+                                plan.is_active
+                                  ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
+                                  : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
+                              }`}
+                            >
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
-                            <span className="relative z-10">
-                              {updatingPlanId === plan.id
-                                ? plan.is_active
-                                  ? "Deactivating..."
-                                  : "Activating..."
-                                : plan.is_active
-                                  ? "Deactivate"
-                                  : "Activate"}
-                            </span>
-                          </button>
+                              {updatingPlanId === plan.id ? (
+                                <Loader2
+                                  size={15}
+                                  className="relative z-10 animate-spin"
+                                />
+                              ) : plan.is_active ? (
+                                <PowerOff size={15} className="relative z-10" />
+                              ) : (
+                                <Power size={15} className="relative z-10" />
+                              )}
+
+                              <span className="relative z-10">
+                                {updatingPlanId === plan.id
+                                  ? plan.is_active
+                                    ? "Deactivating..."
+                                    : "Activating..."
+                                  : plan.is_active
+                                    ? "Deactivate"
+                                    : "Activate"}
+                              </span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -654,6 +723,31 @@ const SubscriptionPlanListPage = () => {
           mode="create"
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {/* ================= Edit Modal ================= */}
+      {isEditOpen && editingPlan && (
+        <SubscriptionPlanFormModal
+          key={editingPlan.id}
+          isOpen={isEditOpen}
+          mode="edit"
+          initialData={{
+            name: editingPlan.name,
+            plan_type: editingPlan.plan_type,
+            description: editingPlan.description,
+            benefits: editingPlan.benefits,
+            price: editingPlan.price,
+            billing_interval: editingPlan.billing_interval || "",
+            is_active: editingPlan.is_active,
+          }}
+          onClose={() => {
+            setIsEditOpen(false);
+            setEditingPlan(null);
+          }}
+          onSubmit={handleEditSubmit}
+          isSubmitting={isSubmitting}
         />
       )}
 
@@ -717,7 +811,13 @@ interface StatCardProps {
 
 const STAT_ACCENTS: Record<
   StatAccent,
-  { tile: string; icon: string; glow: string; border: string; value: string }
+  {
+    tile: string;
+    icon: string;
+    glow: string;
+    border: string;
+    value: string;
+  }
 > = {
   emerald: {
     tile: "from-[#34D399]/20 to-[#34D399]/5 ring-[#34D399]/20",
@@ -756,12 +856,10 @@ const StatCard = ({
       className={`sp-item group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(0,0,0,0.95)] ${styles.border}`}
       style={{ animationDelay: `${delay}ms` }}
     >
-      {/* ambient glow */}
       <div
         className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${styles.glow}`}
       />
 
-      {/* shine sweep */}
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
       <div
