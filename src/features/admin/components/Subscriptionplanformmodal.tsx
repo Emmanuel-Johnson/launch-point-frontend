@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Plus, Trash2, CreditCard, Crown, ChevronDown } from "lucide-react";
+import { z } from "zod";
+
+import Field from "./Field";
 
 /* -------------------------------- */
 /* Types (local — no API for now)   */
@@ -37,6 +40,173 @@ const DEFAULTS: PlanFormValues = {
 
 const PLAN_TYPES = ["free", "premium"] as const;
 
+/* -------------------------------- */
+/* Validation Helpers               */
+/* -------------------------------- */
+
+const hasRepeatedSpecialCharacter = (value: string) => {
+  return /([^\p{L}\p{N}\s])\1{2,}/u.test(value);
+};
+
+const hasConsecutiveSpecialCharacters = (value: string) => {
+  return /[^\p{L}\p{N}\s]{3,}/u.test(value);
+};
+
+const hasRepeatedCharacter = (value: string) => {
+  return /(.)\1{3,}/su.test(value);
+};
+
+const hasRepeatedPattern = (value: string) => {
+  const normalized = value.replace(/\s/g, "").toLowerCase();
+
+  for (let size = 2; size <= 6; size++) {
+    const pattern = new RegExp(`^(.{${size}})\\1{2,}$`, "u");
+
+    if (pattern.test(normalized)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+/* -------------------------------- */
+/* Validation Schema                */
+/* -------------------------------- */
+const hasLetter = (value: string) => /\p{L}/u.test(value);
+const countLetters = (value: string) => (value.match(/\p{L}/gu) || []).length;
+
+const subscriptionPlanSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(3, "Plan name must be at least 3 characters.")
+      .max(100, "Plan name must not exceed 100 characters.")
+      .refine(
+        (value) => hasLetter(value),
+        "Plan name must contain at least one letter.",
+      )
+      .refine(
+        (value) => !hasRepeatedSpecialCharacter(value),
+        "Plan name cannot contain the same special character 3 or more times consecutively.",
+      )
+      .refine(
+        (value) => !hasConsecutiveSpecialCharacters(value),
+        "Plan name cannot contain 3 or more consecutive special characters.",
+      )
+      .refine(
+        (value) => !hasRepeatedCharacter(value),
+        "Plan name cannot contain the same character 4 or more times consecutively.",
+      )
+      .refine(
+        (value) => !hasRepeatedPattern(value),
+        "Plan name contains a repeated pattern.",
+      )
+      .refine(
+        (value) => /^[\p{L}\p{N} _-]+$/u.test(value),
+        "Plan name contains special characters.",
+      ),
+
+    plan_type: z.enum(["free", "premium"]),
+
+    description: z
+      .string()
+      .trim()
+      .min(1, "Description is required")
+      .min(10, "Description must be at least 10 characters")
+      .max(500, "Description cannot exceed 500 characters")
+      .refine(
+        (value) => !hasRepeatedSpecialCharacter(value),
+        "Description cannot contain the same special character 3 times consecutively",
+      )
+      .refine(
+        (value) => !hasConsecutiveSpecialCharacters(value),
+        "Description cannot contain 3 or more consecutive special characters",
+      )
+      .refine(
+        (value) => !hasRepeatedCharacter(value),
+        "Description contains too many repeated characters",
+      )
+      .refine(
+        (value) => !hasRepeatedPattern(value),
+        "Description contains a repeated pattern",
+      ),
+
+    benefits: z
+      .array(
+        z
+          .string()
+          .trim()
+          .min(3, "Each benefit must be at least 3 characters.")
+          .max(200, "Each benefit must not exceed 200 characters.")
+          .refine(
+            (value) => countLetters(value) >= 3,
+            "Each benefit must contain at least 3 letters.",
+          )
+          .refine(
+            (value) => !hasRepeatedSpecialCharacter(value),
+            "Benefit cannot contain the same special character 3 or more times consecutively.",
+          )
+          .refine(
+            (value) => !hasConsecutiveSpecialCharacters(value),
+            "Benefit cannot contain 3 or more consecutive special characters.",
+          )
+          .refine(
+            (value) => !hasRepeatedCharacter(value),
+            "Benefit cannot contain the same character 4 or more times consecutively.",
+          )
+          .refine(
+            (value) => !hasRepeatedPattern(value),
+            "Benefit contains a repeated pattern.",
+          ),
+      )
+      .min(3, "At least 3 benefits are required.")
+      .max(25, "You can add a maximum of 25 benefits.")
+      .refine((benefits) => {
+        const normalized = benefits.map((benefit) =>
+          benefit.trim().toLowerCase(),
+        );
+
+        return new Set(normalized).size === normalized.length;
+      }, "Benefits must be unique."),
+
+    price: z
+      .string()
+      .trim()
+      .min(1, "Price is required")
+      .refine(
+        (value) => /^\d+(\.\d{1,2})?$/.test(value),
+        "Price must contain only numbers with up to 2 decimal places",
+      )
+      .refine((value) => Number(value) >= 0, "Price cannot be negative")
+      .refine(
+        (value) => Number(value) <= 999999.99,
+        "Price cannot exceed ₹999999.99",
+      ),
+
+    billing_interval: z.enum(["", "weekly", "monthly", "yearly"]),
+
+    is_active: z.boolean(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.plan_type === "premium" && !data.billing_interval) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["billing_interval"],
+        message: "Billing interval is required for premium plans",
+      });
+    }
+
+    if (data.plan_type === "free" && data.billing_interval) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["billing_interval"],
+        message: "Free plans cannot have a billing interval",
+      });
+    }
+  });
+
 const SubscriptionPlanFormModal = ({
   isOpen,
   onClose,
@@ -45,11 +215,10 @@ const SubscriptionPlanFormModal = ({
   onSubmit,
   isSubmitting = false,
 }: SubscriptionPlanFormModalProps) => {
-  /*
-   * Local form state. Initialised from initialData on mount — mount the modal
-   * conditionally (or pass a `key`) when switching records so edit prefills fresh.
-   * Free plans have no billing interval; premium plans always have one.
-   */
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof PlanFormValues, string>>
+  >({});
+
   const [form, setForm] = useState<PlanFormValues>(() => {
     const merged = { ...DEFAULTS, ...initialData };
 
@@ -61,7 +230,11 @@ const SubscriptionPlanFormModal = ({
     const billing_interval: PlanFormValues["billing_interval"] =
       merged.plan_type === "free" ? "" : merged.billing_interval || "monthly";
 
-    return { ...merged, benefits, billing_interval };
+    return {
+      ...merged,
+      benefits,
+      billing_interval,
+    };
   });
 
   /*
@@ -91,65 +264,188 @@ const SubscriptionPlanFormModal = ({
     return null;
   }
 
+  /*
+   * Validate a single field while typing.
+   */
+  const validateField = <K extends keyof PlanFormValues>(
+    key: K,
+    value: PlanFormValues[K],
+  ) => {
+    const nextForm = {
+      ...form,
+      [key]: value,
+    };
+
+    const result = subscriptionPlanSchema.safeParse(nextForm);
+
+    if (result.success) {
+      setErrors((previous) => ({
+        ...previous,
+        [key]: undefined,
+      }));
+
+      return;
+    }
+
+    const issue = result.error.issues.find(
+      (currentIssue) => currentIssue.path[0] === key,
+    );
+
+    setErrors((previous) => ({
+      ...previous,
+      [key]: issue?.message,
+    }));
+  };
+
   const setField = <K extends keyof PlanFormValues>(
     key: K,
     value: PlanFormValues[K],
   ) => {
-    setForm((previous) => ({ ...previous, [key]: value }));
+    setForm((previous) => ({
+      ...previous,
+      [key]: value,
+    }));
+
+    validateField(key, value);
   };
 
   /*
    * Switching plan type also fixes the billing interval:
-   * free → none, premium → keep existing or default to monthly.
+   * free → none
+   * premium → keep existing or default to monthly.
    */
   const handlePlanTypeChange = (type: PlanFormValues["plan_type"]) => {
+    const billingInterval =
+      type === "free" ? "" : form.billing_interval || "monthly";
+
     setForm((previous) => ({
       ...previous,
       plan_type: type,
-      billing_interval:
-        type === "free" ? "" : previous.billing_interval || "monthly",
+      billing_interval: billingInterval,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      plan_type: undefined,
+      billing_interval: undefined,
     }));
   };
 
   const updateBenefit = (index: number, value: string) => {
+    const updatedBenefits = form.benefits.map((benefit, benefitIndex) =>
+      benefitIndex === index ? value : benefit,
+    );
+
     setForm((previous) => ({
       ...previous,
-      benefits: previous.benefits.map((benefit, benefitIndex) =>
-        benefitIndex === index ? value : benefit,
-      ),
+      benefits: updatedBenefits,
+    }));
+
+    const result = subscriptionPlanSchema.safeParse({
+      ...form,
+      benefits: updatedBenefits,
+    });
+
+    if (result.success) {
+      setErrors((previous) => ({
+        ...previous,
+        benefits: undefined,
+      }));
+
+      return;
+    }
+
+    const issue = result.error.issues.find(
+      (currentIssue) => currentIssue.path[0] === "benefits",
+    );
+
+    setErrors((previous) => ({
+      ...previous,
+      benefits: issue?.message,
     }));
   };
 
   const addBenefit = () => {
+    if (form.benefits.length >= 25) {
+      setErrors((previous) => ({
+        ...previous,
+        benefits: "A subscription plan can have a maximum of 25 benefits",
+      }));
+
+      return;
+    }
+
     setForm((previous) => ({
       ...previous,
       benefits: [...previous.benefits, ""],
     }));
+
+    setErrors((previous) => ({
+      ...previous,
+      benefits: undefined,
+    }));
   };
 
   const removeBenefit = (index: number) => {
+    if (form.benefits.length <= 3) {
+      setErrors((previous) => ({
+        ...previous,
+        benefits: "A subscription plan must have at least 3 benefits",
+      }));
+
+      return;
+    }
+
+    const updatedBenefits = form.benefits.filter(
+      (_, benefitIndex) => benefitIndex !== index,
+    );
+
     setForm((previous) => ({
       ...previous,
-      benefits: previous.benefits.filter(
-        (_, benefitIndex) => benefitIndex !== index,
-      ),
+      benefits: updatedBenefits,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      benefits: undefined,
     }));
   };
 
   const isFree = form.plan_type === "free";
   const typeIndex = PLAN_TYPES.indexOf(form.plan_type);
 
-  const canSubmit = form.name.trim().length > 0 && form.price.trim().length > 0;
-
   const handleSubmit = async () => {
-    if (!canSubmit || isSubmitting) {
+    if (isSubmitting) {
       return;
     }
 
     const cleaned: PlanFormValues = {
       ...form,
-      benefits: form.benefits.map((b) => b.trim()).filter(Boolean),
+      name: form.name.trim(),
+      description: form.description.trim(),
+      benefits: form.benefits.map((benefit) => benefit.trim()),
+      price: form.price.trim(),
     };
+
+    const result = subscriptionPlanSchema.safeParse(cleaned);
+
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof PlanFormValues, string>> = {};
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof PlanFormValues;
+
+        if (!fieldErrors[field]) {
+          fieldErrors[field] = issue.message;
+        }
+      });
+
+      setErrors(fieldErrors);
+
+      return;
+    }
+
+    setErrors({});
 
     await onSubmit?.(cleaned);
   };
@@ -163,24 +459,51 @@ const SubscriptionPlanFormModal = ({
         .sp-font-body {
           font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
+
         .sp-font-display {
           font-family: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
           letter-spacing: -0.01em;
         }
 
-        @keyframes spModalOverlay { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes spModalPanel {
-          from { opacity: 0; transform: translateY(12px) scale(0.98); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes spModalOverlay {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
         }
-        .sp-overlay { animation: spModalOverlay 0.2s ease-out both; }
-        .sp-panel { animation: spModalPanel 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+        @keyframes spModalPanel {
+          from {
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .sp-overlay {
+          animation: spModalOverlay 0.2s ease-out both;
+        }
+
+        .sp-panel {
+          animation: spModalPanel 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .sp-overlay, .sp-panel { animation: none; }
+          .sp-overlay,
+          .sp-panel {
+            animation: none;
+          }
         }
       `}</style>
 
-      {/* Overlay (clicking outside does NOT close the modal) */}
+      {/* Overlay */}
       <div className="sp-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
         {/* Panel */}
         <div
@@ -191,7 +514,7 @@ const SubscriptionPlanFormModal = ({
           {/* faint gold hairline */}
           <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
 
-          {/* ===================== Header ===================== */}
+          {/* Header */}
           <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-6 py-5">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_22px_-8px_rgba(52,211,153,0.6)]">
@@ -204,6 +527,7 @@ const SubscriptionPlanFormModal = ({
                     ? "Edit Subscription Plan"
                     : "Create Subscription Plan"}
                 </h2>
+
                 <p className="mt-0.5 text-xs text-white/40">
                   Set the plan details, pricing, and benefits.
                 </p>
@@ -220,7 +544,7 @@ const SubscriptionPlanFormModal = ({
             </button>
           </div>
 
-          {/* ===================== Body ===================== */}
+          {/* Body */}
           <div className="admin-scrollbar flex-1 space-y-5 overflow-y-auto px-6 py-6">
             {/* Name */}
             <Field label="Plan Name">
@@ -229,11 +553,17 @@ const SubscriptionPlanFormModal = ({
                 value={form.name}
                 onChange={(event) => setField("name", event.target.value)}
                 placeholder="e.g. Premium Monthly"
-                className={inputClass}
+                className={`${inputClass} ${
+                  errors.name ? "border-red-400/60 focus:border-red-400/60" : ""
+                }`}
               />
+
+              {errors.name && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.name}</p>
+              )}
             </Field>
 
-            {/* Plan Type (segmented) */}
+            {/* Plan Type */}
             <Field label="Plan Type">
               <div className="relative flex w-full max-w-xs rounded-xl border border-white/[0.08] bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                 <span
@@ -243,7 +573,9 @@ const SubscriptionPlanFormModal = ({
                       ? "bg-gradient-to-br from-[#E8C67A]/25 to-[#E8C67A]/5 shadow-[0_0_18px_-6px_rgba(232,198,122,0.6)] ring-[#E8C67A]/30"
                       : "bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 shadow-[0_0_18px_-6px_rgba(52,211,153,0.6)] ring-[#34D399]/30"
                   }`}
-                  style={{ transform: `translateX(${typeIndex * 100}%)` }}
+                  style={{
+                    transform: `translateX(${typeIndex * 100}%)`,
+                  }}
                 />
 
                 {PLAN_TYPES.map((type) => {
@@ -263,6 +595,7 @@ const SubscriptionPlanFormModal = ({
                       }`}
                     >
                       {type === "premium" && <Crown size={13} />}
+
                       {type}
                     </button>
                   );
@@ -277,15 +610,24 @@ const SubscriptionPlanFormModal = ({
                   <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-white/40">
                     ₹
                   </span>
+
                   <input
                     type="text"
                     inputMode="decimal"
                     value={form.price}
                     onChange={(event) => setField("price", event.target.value)}
                     placeholder="0.00"
-                    className={`${inputClass} pl-8`}
+                    className={`${inputClass} pl-8 ${
+                      errors.price
+                        ? "border-red-400/60 focus:border-red-400/60"
+                        : ""
+                    }`}
                   />
                 </div>
+
+                {errors.price && (
+                  <p className="mt-1.5 text-xs text-red-400">{errors.price}</p>
+                )}
               </Field>
 
               <Field label="Billing Interval">
@@ -304,6 +646,10 @@ const SubscriptionPlanFormModal = ({
                       isFree
                         ? "cursor-not-allowed opacity-60"
                         : "cursor-pointer"
+                    } ${
+                      errors.billing_interval
+                        ? "border-red-400/60 focus:border-red-400/60"
+                        : ""
                     }`}
                   >
                     {isFree ? (
@@ -316,6 +662,7 @@ const SubscriptionPlanFormModal = ({
                       </>
                     )}
                   </select>
+
                   <ChevronDown
                     size={16}
                     className={`pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 ${
@@ -323,6 +670,12 @@ const SubscriptionPlanFormModal = ({
                     }`}
                   />
                 </div>
+
+                {errors.billing_interval && (
+                  <p className="mt-1.5 text-xs text-red-400">
+                    {errors.billing_interval}
+                  </p>
+                )}
               </Field>
             </div>
 
@@ -335,11 +688,21 @@ const SubscriptionPlanFormModal = ({
                 }
                 placeholder="Describe what this plan offers..."
                 rows={3}
-                className={`${inputClass} min-h-[88px] resize-y`}
+                className={`${inputClass} min-h-[88px] resize-y ${
+                  errors.description
+                    ? "border-red-400/60 focus:border-red-400/60"
+                    : ""
+                }`}
               />
+
+              {errors.description && (
+                <p className="mt-1.5 text-xs text-red-400">
+                  {errors.description}
+                </p>
+              )}
             </Field>
 
-            {/* Benefits (dynamic list) */}
+            {/* Benefits */}
             <Field label="Benefits">
               <div className="space-y-2.5">
                 {form.benefits.map((benefit, index) => (
@@ -355,7 +718,11 @@ const SubscriptionPlanFormModal = ({
                         updateBenefit(index, event.target.value)
                       }
                       placeholder="e.g. Unlimited access to all courses"
-                      className={inputClass}
+                      className={`${inputClass} ${
+                        errors.benefits
+                          ? "border-red-400/60 focus:border-red-400/60"
+                          : ""
+                      }`}
                     />
 
                     <button
@@ -368,6 +735,10 @@ const SubscriptionPlanFormModal = ({
                     </button>
                   </div>
                 ))}
+
+                {errors.benefits && (
+                  <p className="text-xs text-red-400">{errors.benefits}</p>
+                )}
 
                 <button
                   type="button"
@@ -383,42 +754,41 @@ const SubscriptionPlanFormModal = ({
               </div>
             </Field>
 
+            {/* Active */}
             {mode === "create" && (
-              <>
-                {/* Active toggle */}
-                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5">
-                  <div>
-                    <p className="text-sm font-medium text-white">Active</p>
-                    <p className="mt-0.5 text-xs text-white/40">
-                      Make this plan available to subscribers.
-                    </p>
-                  </div>
+              <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5">
+                <div>
+                  <p className="text-sm font-medium text-white">Active</p>
 
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={form.is_active}
-                    onClick={() => setField("is_active", !form.is_active)}
-                    className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-300 ${
-                      form.is_active
-                        ? "bg-[#34D399]/30 ring-1 ring-inset ring-[#34D399]/40"
-                        : "bg-white/10 ring-1 ring-inset ring-white/10"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-5 w-5 rounded-full transition-all duration-300 ${
-                        form.is_active
-                          ? "left-0.5 translate-x-5 bg-[#34D399] shadow-[0_0_10px_rgba(52,211,153,0.7)]"
-                          : "left-0.5 translate-x-0 bg-white/70"
-                      }`}
-                    />
-                  </button>
+                  <p className="mt-0.5 text-xs text-white/40">
+                    Make this plan available to subscribers.
+                  </p>
                 </div>
-              </>
+
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={form.is_active}
+                  onClick={() => setField("is_active", !form.is_active)}
+                  className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-300 ${
+                    form.is_active
+                      ? "bg-[#34D399]/30 ring-1 ring-inset ring-[#34D399]/40"
+                      : "bg-white/10 ring-1 ring-inset ring-white/10"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 h-5 w-5 rounded-full transition-all duration-300 ${
+                      form.is_active
+                        ? "left-0.5 translate-x-5 bg-[#34D399] shadow-[0_0_10px_rgba(52,211,153,0.7)]"
+                        : "left-0.5 translate-x-0 bg-white/70"
+                    }`}
+                  />
+                </button>
+              </div>
             )}
           </div>
 
-          {/* ===================== Footer ===================== */}
+          {/* Footer */}
           <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/[0.06] px-6 py-4">
             <button
               type="button"
@@ -431,7 +801,7 @@ const SubscriptionPlanFormModal = ({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!canSubmit || isSubmitting}
+              disabled={isSubmitting}
               className="group relative inline-flex h-10 min-w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -451,6 +821,7 @@ const SubscriptionPlanFormModal = ({
                       stroke="currentColor"
                       strokeWidth="3"
                     />
+
                     <path
                       className="opacity-90"
                       fill="currentColor"
@@ -471,32 +842,6 @@ const SubscriptionPlanFormModal = ({
     document.body,
   );
 };
-
-/* -------------------------------- */
-/* Field wrapper                    */
-/* -------------------------------- */
-
-interface FieldProps {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}
-
-const Field = ({ label, required, children }: FieldProps) => {
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-medium text-white/55">
-        {label}
-        {required && <span className="ml-1 text-red-400">*</span>}
-      </label>
-      {children}
-    </div>
-  );
-};
-
-/* -------------------------------- */
-/* Shared input class               */
-/* -------------------------------- */
 
 const inputClass =
   "w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-2.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/30 hover:border-white/[0.14] focus:border-[#34D399]/40 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.08)]";
