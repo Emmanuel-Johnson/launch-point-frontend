@@ -18,6 +18,9 @@ import { useNavigate } from "react-router-dom";
 import {
   getAdminSubscriptionPlans,
   createAdminSubscriptionPlan,
+  updateAdminSubscriptionPlan,
+  getAdminSubscriptionPlan,
+  type AdminSubscriptionPlan,
 } from "../api/adminSubscriptionsApi";
 
 // Adjust these paths if your modals live elsewhere.
@@ -56,8 +59,13 @@ const SubscriptionPlanListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [updatingPlanId, setUpdatingPlanId] = useState<number | null>(null);
-
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState<AdminSubscriptionPlan | null>(
+    null,
+  );
+  const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Plan currently awaiting status-change confirmation (null = modal closed).
@@ -128,10 +136,21 @@ const SubscriptionPlanListPage = () => {
   };
 
   /*
-   * Edit plan — UI only (placeholder pending API / modal wiring)
+   * Edit plan — fetch full plan details and open modal
    */
-  const handleEditPlan = (plan: SubscriptionPlanListItem) => {
-    console.log("Edit plan:", plan.id);
+  const handleEditPlan = async (plan: SubscriptionPlanListItem) => {
+    try {
+      setEditingPlanId(plan.id);
+
+      const planData = await getAdminSubscriptionPlan(plan.id);
+
+      setEditingPlan(planData);
+      setIsEditOpen(true);
+    } catch (error) {
+      console.error("Failed to fetch subscription plan:", error);
+    } finally {
+      setEditingPlanId(null);
+    }
   };
 
   /*
@@ -199,6 +218,51 @@ const SubscriptionPlanListPage = () => {
       setIsCreateOpen(false);
     } catch (error) {
       console.error("Failed to create subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /*
+   * Edit plan — submit updated data to API
+   */
+  const handleEditSubmit = async (values: PlanFormValues) => {
+    if (!editingPlan) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updatedPlan = await updateAdminSubscriptionPlan(editingPlan.id, {
+        name: values.name,
+        plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
+        price: values.price,
+        billing_interval: values.billing_interval || null,
+        is_active: values.is_active,
+      });
+
+      setPlans((previousPlans) =>
+        previousPlans.map((plan) =>
+          plan.id === updatedPlan.id
+            ? {
+                id: updatedPlan.id,
+                name: updatedPlan.name,
+                plan_type: updatedPlan.plan_type,
+                price: updatedPlan.price,
+                billing_interval: updatedPlan.billing_interval,
+                is_active: updatedPlan.is_active,
+              }
+            : plan,
+        ),
+      );
+
+      setIsEditOpen(false);
+      setEditingPlan(null);
+    } catch (error) {
+      console.error("Failed to update subscription plan:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -496,12 +560,23 @@ const SubscriptionPlanListPage = () => {
                             {/* Edit — glass icon tile, emerald on hover */}
                             <button
                               type="button"
+                              disabled={editingPlanId === plan.id}
                               onClick={() => handleEditPlan(plan)}
                               title="Edit plan"
                               aria-label="Edit plan"
-                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)]"
+                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                              <Pencil size={15} />
+                              {editingPlanId === plan.id ? (
+                                <Loader2
+                                  size={15}
+                                  className="h-[15px] w-[15px] shrink-0 animate-spin"
+                                />
+                              ) : (
+                                <Pencil
+                                  size={15}
+                                  className="h-[15px] w-[15px] shrink-0"
+                                />
+                              )}
                             </button>
 
                             {/* Activate / Deactivate */}
@@ -637,6 +712,30 @@ const SubscriptionPlanListPage = () => {
           mode="create"
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {/* ================= Edit Modal ================= */}
+      {isEditOpen && editingPlan && (
+        <SubscriptionPlanFormModal
+          key={editingPlan.id}
+          isOpen={isEditOpen}
+          mode="edit"
+          initialData={{
+            name: editingPlan.name,
+            plan_type: editingPlan.plan_type,
+            description: editingPlan.description,
+            benefits: editingPlan.benefits,
+            price: editingPlan.price,
+            billing_interval: editingPlan.billing_interval || "",
+            is_active: editingPlan.is_active,
+          }}
+          onClose={() => {
+            setIsEditOpen(false);
+            setEditingPlan(null);
+          }}
+          onSubmit={handleEditSubmit}
           isSubmitting={isSubmitting}
         />
       )}

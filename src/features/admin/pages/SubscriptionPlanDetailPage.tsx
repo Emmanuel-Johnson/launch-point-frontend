@@ -13,7 +13,13 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdminSubscriptionPlan } from "../api/adminSubscriptionsApi";
+import {
+  getAdminSubscriptionPlan,
+  updateAdminSubscriptionPlan,
+} from "../api/adminSubscriptionsApi";
+import SubscriptionPlanFormModal, {
+  type PlanFormValues,
+} from "../components/Subscriptionplanformmodal";
 // Adjust this path if your modal lives elsewhere.
 import SubscriptionStatusConfirmModal from "../components/Subscriptionstatusconfirmmodal";
 
@@ -42,6 +48,8 @@ const SubscriptionPlanDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -123,7 +131,35 @@ const SubscriptionPlanDetailPage = () => {
   };
 
   const handleEditPlan = () => {
-    navigate(`/admin/subscriptions/${planId}/edit`);
+    setIsEditOpen(true);
+  };
+
+  const handleEditSubmit = async (values: PlanFormValues) => {
+    if (!plan) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updatedPlan = await updateAdminSubscriptionPlan(plan.id, {
+        name: values.name,
+        plan_type: values.plan_type,
+        description: values.description,
+        benefits: values.benefits,
+        price: values.price,
+        billing_interval: values.billing_interval || null,
+        is_active: values.is_active,
+      });
+
+      setPlan(updatedPlan);
+
+      setIsEditOpen(false);
+    } catch (error) {
+      console.error("Failed to update subscription plan:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -388,6 +424,26 @@ const SubscriptionPlanDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {isEditOpen && (
+        <SubscriptionPlanFormModal
+          key={plan.id}
+          isOpen={isEditOpen}
+          mode="edit"
+          initialData={{
+            name: plan.name,
+            plan_type: plan.plan_type,
+            description: plan.description,
+            benefits: plan.benefits,
+            price: plan.price,
+            billing_interval: plan.billing_interval || "",
+            is_active: plan.is_active,
+          }}
+          onClose={() => setIsEditOpen(false)}
+          onSubmit={handleEditSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
 
       {/* ================= Status Confirm Modal ================= */}
       {isConfirmOpen && (
