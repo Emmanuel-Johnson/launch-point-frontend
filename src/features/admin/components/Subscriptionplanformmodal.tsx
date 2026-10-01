@@ -32,7 +32,7 @@ const DEFAULTS: PlanFormValues = {
   name: "",
   plan_type: "premium",
   description: "",
-  benefits: [""],
+  benefits: ["", "", ""],
   price: "",
   billing_interval: "monthly",
   is_active: true,
@@ -99,7 +99,7 @@ const subscriptionPlanSchema = z
       )
       .refine(
         (value) => !hasRepeatedCharacter(value),
-        "Plan name cannot contain the same character 4 or more times consecutively.",
+        "Plan name cannot contain the same character 6 or more times consecutively.",
       )
       .refine(
         (value) => !hasRepeatedPattern(value),
@@ -209,6 +209,22 @@ const subscriptionPlanSchema = z
     }
   });
 
+/* -------------------------------- */
+/* Normalize form values            */
+/* -------------------------------- */
+
+const normalizePlanValues = (values: PlanFormValues): PlanFormValues => {
+  return {
+    ...values,
+    name: values.name.trim(),
+    description: values.description.trim(),
+    benefits: values.benefits.map((benefit) => benefit.trim()),
+    price: values.price.trim(),
+    billing_interval:
+      values.plan_type === "free" ? "" : values.billing_interval,
+  };
+};
+
 const SubscriptionPlanFormModal = ({
   isOpen,
   onClose,
@@ -238,6 +254,38 @@ const SubscriptionPlanFormModal = ({
       billing_interval,
     };
   });
+
+  /*
+   * Original values used for detecting changes
+   * in edit mode.
+   */
+  const initialFormValues: PlanFormValues = {
+    ...DEFAULTS,
+    ...initialData,
+    benefits:
+      initialData?.benefits && initialData.benefits.length > 0
+        ? initialData.benefits
+        : DEFAULTS.benefits,
+    billing_interval:
+      initialData?.plan_type === "free"
+        ? ""
+        : initialData?.billing_interval || "monthly",
+  };
+
+  /*
+   * Disable Save Changes when nothing has changed.
+   *
+   * Create mode:
+   *   → always considered changed
+   *
+   * Edit mode:
+   *   → enabled only when current form differs
+   *      from the original values.
+   */
+  const hasChanges =
+    mode === "create" ||
+    JSON.stringify(normalizePlanValues(form)) !==
+      JSON.stringify(normalizePlanValues(initialFormValues));
 
   /*
    * Close on Escape + lock background scroll while open.
@@ -436,6 +484,13 @@ const SubscriptionPlanFormModal = ({
 
   const handleSubmit = async () => {
     if (isSubmitting) {
+      return;
+    }
+
+    /*
+     * Prevent submitting an unchanged edit.
+     */
+    if (mode === "edit" && !hasChanges) {
       return;
     }
 
@@ -858,7 +913,7 @@ const SubscriptionPlanFormModal = ({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !hasChanges}
               className="group relative inline-flex h-10 min-w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
