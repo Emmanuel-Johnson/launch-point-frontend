@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CreditCard,
   Search,
@@ -14,6 +14,7 @@ import {
   Crown,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getAdminSubscriptionPlans } from "../api/adminSubscriptionsApi";
 
 // Adjust these paths if your modals live elsewhere.
 import SubscriptionPlanFormModal, {
@@ -39,82 +40,10 @@ interface SubscriptionPlanListItem {
   is_active: boolean;
 }
 
-/* -------------------------------- */
-/* Dummy data                       */
-/* -------------------------------- */
-
-const DUMMY_PLANS: SubscriptionPlanListItem[] = [
-  {
-    id: 1,
-    name: "Free PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree PlanFree Plan",
-    plan_type: "free",
-    price:
-      "0.00333333333333333333333333333333333333333333333333333333333333333333333333333333",
-    billing_interval: null,
-    is_active: true,
-  },
-  {
-    id: 2,
-    name: "Premium Weekly",
-    plan_type: "premium",
-    price: "299.00",
-    billing_interval: "weekly",
-    is_active: true,
-  },
-  {
-    id: 3,
-    name: "Premium Monthly",
-    plan_type: "premium",
-    price: "1099.00",
-    billing_interval: "monthly",
-    is_active: true,
-  },
-  {
-    id: 4,
-    name: "Premium Yearly",
-    plan_type: "premium",
-    price: "9999.00",
-    billing_interval: "yearly",
-    is_active: true,
-  },
-  {
-    id: 5,
-    name: "Student Monthly",
-    plan_type: "premium",
-    price: "799.00",
-    billing_interval: "monthly",
-    is_active: false,
-  },
-  {
-    id: 6,
-    name: "Basic Weekly",
-    plan_type: "free",
-    price: "0.00",
-    billing_interval: "weekly",
-    is_active: false,
-  },
-  {
-    id: 7,
-    name: "Pro Monthly",
-    plan_type: "premium",
-    price: "1499.00",
-    billing_interval: "monthly",
-    is_active: true,
-  },
-  {
-    id: 8,
-    name: "Pro Yearly",
-    plan_type: "premium",
-    price: "12999.00",
-    billing_interval: "yearly",
-    is_active: true,
-  },
-];
-
 const SubscriptionPlanListPage = () => {
   const navigate = useNavigate();
 
-  const [plans, setPlans] = useState<SubscriptionPlanListItem[]>(DUMMY_PLANS);
+  const [plans, setPlans] = useState<SubscriptionPlanListItem[]>([]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -129,6 +58,19 @@ const SubscriptionPlanListPage = () => {
   // Plan currently awaiting status-change confirmation (null = modal closed).
   const [confirmPlan, setConfirmPlan] =
     useState<SubscriptionPlanListItem | null>(null);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const data = await getAdminSubscriptionPlans();
+        setPlans(data);
+      } catch (error) {
+        console.error("Failed to fetch subscription plans:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   /*
    * Filter plans

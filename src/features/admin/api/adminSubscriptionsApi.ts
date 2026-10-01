@@ -24,7 +24,7 @@ export interface SubscriptionPlanListItem {
 
 export const getAdminSubscriptionPlans = async () => {
   const response = await adminApi.get<SubscriptionPlanListItem[]>(
-    "/subscriptions/plans/",
+    "admins/subscriptions/plans/",
   );
 
   return response.data;
