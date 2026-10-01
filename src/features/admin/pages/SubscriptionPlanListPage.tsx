@@ -12,6 +12,7 @@ import {
   BadgeCheck,
   Ban,
   Crown,
+  Pencil,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -124,6 +125,13 @@ const SubscriptionPlanListPage = () => {
    */
   const handleStatusClick = (plan: SubscriptionPlanListItem) => {
     setConfirmPlan(plan);
+  };
+
+  /*
+   * Edit plan — UI only (placeholder pending API / modal wiring)
+   */
+  const handleEditPlan = (plan: SubscriptionPlanListItem) => {
+    console.log("Edit plan:", plan.id);
   };
 
   /*
@@ -366,12 +374,12 @@ const SubscriptionPlanListPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1080px] table-fixed">
               <colgroup>
-                <col className="w-[29%]" />
+                <col className="w-[25%]" />
                 <col className="w-[14%]" />
                 <col className="w-[12%]" />
                 <col className="w-[14%]" />
                 <col className="w-[14%]" />
-                <col className="w-[17%]" />
+                <col className="w-[21%]" />
               </colgroup>
 
               {/* Table Header */}
@@ -482,41 +490,55 @@ const SubscriptionPlanListPage = () => {
                           <StatusBadge isActive={plan.is_active} />
                         </td>
 
-                        {/* Action — fixed size button */}
-                        <td className="px-6 py-5 text-right">
-                          <button
-                            type="button"
-                            disabled={updatingPlanId === plan.id}
-                            onClick={() => handleStatusClick(plan)}
-                            className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
-                              plan.is_active
-                                ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
-                                : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
-                            }`}
-                          >
-                            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+                        {/* Action — edit + status buttons */}
+                        <td className="px-6 py-5">
+                          <div className="flex items-center justify-end gap-2">
+                            {/* Edit — glass icon tile, emerald on hover */}
+                            <button
+                              type="button"
+                              onClick={() => handleEditPlan(plan)}
+                              title="Edit plan"
+                              aria-label="Edit plan"
+                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)]"
+                            >
+                              <Pencil size={15} />
+                            </button>
 
-                            {updatingPlanId === plan.id ? (
-                              <Loader2
-                                size={15}
-                                className="relative z-10 animate-spin"
-                              />
-                            ) : plan.is_active ? (
-                              <PowerOff size={15} className="relative z-10" />
-                            ) : (
-                              <Power size={15} className="relative z-10" />
-                            )}
+                            {/* Activate / Deactivate */}
+                            <button
+                              type="button"
+                              disabled={updatingPlanId === plan.id}
+                              onClick={() => handleStatusClick(plan)}
+                              className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
+                                plan.is_active
+                                  ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
+                                  : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
+                              }`}
+                            >
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
-                            <span className="relative z-10">
-                              {updatingPlanId === plan.id
-                                ? plan.is_active
-                                  ? "Deactivating..."
-                                  : "Activating..."
-                                : plan.is_active
-                                  ? "Deactivate"
-                                  : "Activate"}
-                            </span>
-                          </button>
+                              {updatingPlanId === plan.id ? (
+                                <Loader2
+                                  size={15}
+                                  className="relative z-10 animate-spin"
+                                />
+                              ) : plan.is_active ? (
+                                <PowerOff size={15} className="relative z-10" />
+                              ) : (
+                                <Power size={15} className="relative z-10" />
+                              )}
+
+                              <span className="relative z-10">
+                                {updatingPlanId === plan.id
+                                  ? plan.is_active
+                                    ? "Deactivating..."
+                                    : "Activating..."
+                                  : plan.is_active
+                                    ? "Deactivate"
+                                    : "Activate"}
+                              </span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
