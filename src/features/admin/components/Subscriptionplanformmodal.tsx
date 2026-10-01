@@ -73,7 +73,9 @@ const hasRepeatedPattern = (value: string) => {
 /* -------------------------------- */
 /* Validation Schema                */
 /* -------------------------------- */
+
 const hasLetter = (value: string) => /\p{L}/u.test(value);
+
 const countLetters = (value: string) => (value.match(/\p{L}/gu) || []).length;
 
 const subscriptionPlanSchema = z
@@ -216,7 +218,7 @@ const SubscriptionPlanFormModal = ({
   isSubmitting = false,
 }: SubscriptionPlanFormModalProps) => {
   const [errors, setErrors] = useState<
-    Partial<Record<keyof PlanFormValues, string>>
+    Partial<Record<keyof PlanFormValues, string | string[]>>
   >({});
 
   const [form, setForm] = useState<PlanFormValues>(() => {
@@ -331,6 +333,9 @@ const SubscriptionPlanFormModal = ({
     }));
   };
 
+  /*
+   * Validate each benefit independently while typing.
+   */
   const updateBenefit = (index: number, value: string) => {
     const updatedBenefits = form.benefits.map((benefit, benefitIndex) =>
       benefitIndex === index ? value : benefit,
@@ -341,28 +346,30 @@ const SubscriptionPlanFormModal = ({
       benefits: updatedBenefits,
     }));
 
-    const result = subscriptionPlanSchema.safeParse({
-      ...form,
-      benefits: updatedBenefits,
-    });
+    /*
+     * Validate only the benefit being edited.
+     * This makes the error appear directly under
+     * the benefit that currently has the problem.
+     */
+    const benefitResult =
+      subscriptionPlanSchema.shape.benefits.element.safeParse(value);
 
-    if (result.success) {
-      setErrors((previous) => ({
+    setErrors((previous) => {
+      const previousErrors = Array.isArray(previous.benefits)
+        ? [...previous.benefits]
+        : [];
+
+      if (benefitResult.success) {
+        previousErrors[index] = undefined as never;
+      } else {
+        previousErrors[index] = benefitResult.error.issues[0]?.message;
+      }
+
+      return {
         ...previous,
-        benefits: undefined,
-      }));
-
-      return;
-    }
-
-    const issue = result.error.issues.find(
-      (currentIssue) => currentIssue.path[0] === "benefits",
-    );
-
-    setErrors((previous) => ({
-      ...previous,
-      benefits: issue?.message,
-    }));
+        benefits: previousErrors,
+      };
+    });
   };
 
   const addBenefit = () => {
@@ -405,10 +412,23 @@ const SubscriptionPlanFormModal = ({
       benefits: updatedBenefits,
     }));
 
-    setErrors((previous) => ({
-      ...previous,
-      benefits: undefined,
-    }));
+    setErrors((previous) => {
+      if (!Array.isArray(previous.benefits)) {
+        return {
+          ...previous,
+          benefits: undefined,
+        };
+      }
+
+      const updatedErrors = previous.benefits.filter(
+        (_, benefitIndex) => benefitIndex !== index,
+      );
+
+      return {
+        ...previous,
+        benefits: updatedErrors,
+      };
+    });
   };
 
   const isFree = form.plan_type === "free";
@@ -430,9 +450,28 @@ const SubscriptionPlanFormModal = ({
     const result = subscriptionPlanSchema.safeParse(cleaned);
 
     if (!result.success) {
-      const fieldErrors: Partial<Record<keyof PlanFormValues, string>> = {};
+      const fieldErrors: Partial<
+        Record<keyof PlanFormValues, string | string[]>
+      > = {};
 
       result.error.issues.forEach((issue) => {
+        /*
+         * Benefit errors contain the benefit index.
+         */
+        if (issue.path[0] === "benefits" && typeof issue.path[1] === "number") {
+          const index = issue.path[1];
+
+          if (!Array.isArray(fieldErrors.benefits)) {
+            fieldErrors.benefits = [];
+          }
+
+          if (!fieldErrors.benefits[index]) {
+            fieldErrors.benefits[index] = issue.message;
+          }
+
+          return;
+        }
+
         const field = issue.path[0] as keyof PlanFormValues;
 
         if (!fieldErrors[field]) {
@@ -554,11 +593,13 @@ const SubscriptionPlanFormModal = ({
                 onChange={(event) => setField("name", event.target.value)}
                 placeholder="e.g. Premium Monthly"
                 className={`${inputClass} ${
-                  errors.name ? "border-red-400/60 focus:border-red-400/60" : ""
+                  typeof errors.name === "string"
+                    ? "border-red-400/60 focus:border-red-400/60"
+                    : ""
                 }`}
               />
 
-              {errors.name && (
+              {typeof errors.name === "string" && (
                 <p className="mt-1.5 text-xs text-red-400">{errors.name}</p>
               )}
             </Field>
@@ -618,14 +659,14 @@ const SubscriptionPlanFormModal = ({
                     onChange={(event) => setField("price", event.target.value)}
                     placeholder="0.00"
                     className={`${inputClass} pl-8 ${
-                      errors.price
+                      typeof errors.price === "string"
                         ? "border-red-400/60 focus:border-red-400/60"
                         : ""
                     }`}
                   />
                 </div>
 
-                {errors.price && (
+                {typeof errors.price === "string" && (
                   <p className="mt-1.5 text-xs text-red-400">{errors.price}</p>
                 )}
               </Field>
@@ -647,7 +688,7 @@ const SubscriptionPlanFormModal = ({
                         ? "cursor-not-allowed opacity-60"
                         : "cursor-pointer"
                     } ${
-                      errors.billing_interval
+                      typeof errors.billing_interval === "string"
                         ? "border-red-400/60 focus:border-red-400/60"
                         : ""
                     }`}
@@ -671,7 +712,7 @@ const SubscriptionPlanFormModal = ({
                   />
                 </div>
 
-                {errors.billing_interval && (
+                {typeof errors.billing_interval === "string" && (
                   <p className="mt-1.5 text-xs text-red-400">
                     {errors.billing_interval}
                   </p>
@@ -689,13 +730,13 @@ const SubscriptionPlanFormModal = ({
                 placeholder="Describe what this plan offers..."
                 rows={3}
                 className={`${inputClass} min-h-[88px] resize-y ${
-                  errors.description
+                  typeof errors.description === "string"
                     ? "border-red-400/60 focus:border-red-400/60"
                     : ""
                 }`}
               />
 
-              {errors.description && (
+              {typeof errors.description === "string" && (
                 <p className="mt-1.5 text-xs text-red-400">
                   {errors.description}
                 </p>
@@ -705,38 +746,54 @@ const SubscriptionPlanFormModal = ({
             {/* Benefits */}
             <Field label="Benefits">
               <div className="space-y-2.5">
-                {form.benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="sp-font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-xs font-medium text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                      {index + 1}
+                {form.benefits.map((benefit, index) => {
+                  const benefitError = Array.isArray(errors.benefits)
+                    ? errors.benefits[index]
+                    : undefined;
+
+                  return (
+                    <div key={index} className="flex items-start gap-2">
+                      <div className="sp-font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-xs font-medium text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                        {index + 1}
+                      </div>
+
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          value={benefit}
+                          onChange={(event) =>
+                            updateBenefit(index, event.target.value)
+                          }
+                          placeholder="e.g. Unlimited access to all courses"
+                          className={`${inputClass} ${
+                            benefitError
+                              ? "border-red-400/60 focus:border-red-400/60"
+                              : ""
+                          }`}
+                        />
+
+                        {/* Error appears immediately while typing */}
+                        {benefitError && (
+                          <p className="mt-1.5 text-xs text-red-400">
+                            {benefitError}
+                          </p>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => removeBenefit(index)}
+                        aria-label="Remove benefit"
+                        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.02] text-white/40 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
+                  );
+                })}
 
-                    <input
-                      type="text"
-                      value={benefit}
-                      onChange={(event) =>
-                        updateBenefit(index, event.target.value)
-                      }
-                      placeholder="e.g. Unlimited access to all courses"
-                      className={`${inputClass} ${
-                        errors.benefits
-                          ? "border-red-400/60 focus:border-red-400/60"
-                          : ""
-                      }`}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => removeBenefit(index)}
-                      aria-label="Remove benefit"
-                      className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.02] text-white/40 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                ))}
-
-                {errors.benefits && (
+                {/* General benefits errors */}
+                {typeof errors.benefits === "string" && (
                   <p className="text-xs text-red-400">{errors.benefits}</p>
                 )}
 
