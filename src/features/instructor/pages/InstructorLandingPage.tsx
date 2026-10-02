@@ -138,7 +138,7 @@ const InstructorLandingPage = () => {
           {/* Right: Apply button */}
           <Link
             to={applyPath}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-blue-400"
+            className="inline-flex origin-center items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)]"
           >
             <span className="hidden sm:inline">Become an Instructor</span>
             <span className="sm:hidden">Apply</span>
@@ -147,10 +147,10 @@ const InstructorLandingPage = () => {
       </header>
 
       {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden border-b border-white/10">
+      <section className="group relative overflow-hidden border-b border-white/10">
         {/* Background glow + subtle grid */}
-        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl" />
-        <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-blue-500/30" />
+        <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-sky-400/25" />
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.15]"
           style={{
