@@ -48,6 +48,8 @@ import StudentProfilePage from "../../features/student/pages/StudentProfilePage"
 import CategoryListPage from "../../features/admin/pages/CategoryListPage";
 import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
 
+import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
+
 export const routeConfig: RouteObject[] = [
   // =========================
   // Public / Marketing routes
@@ -153,10 +155,14 @@ export const routeConfig: RouteObject[] = [
     children: [
       {
         path: "/instructor",
+        element: <InstructorLandingPage />,
+      },
+      {
+        path: "/instructor/dashboard",
         element: <InstructorLayout />,
         children: [
           {
-            path: "dashboard",
+            index: true,
             element: <InstructorDashboardPage />,
           },
         ],

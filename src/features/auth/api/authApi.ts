@@ -6,11 +6,19 @@ import api from "../../../shared/api/axios";
 
 export type UserRole = "student" | "instructor" | "admin";
 
+// export type AuthUser = {
+//   id: number;
+//   full_name: string;
+//   email: string;
+//   role: UserRole;
+// };
+
 export type AuthUser = {
   id: number;
   full_name: string;
   email: string;
   role: UserRole;
+  profile_image: string | null;
 };
 
 // =========================================================
