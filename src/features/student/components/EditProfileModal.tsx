@@ -410,10 +410,15 @@ const EditProfileForm = ({
         profile_image: selectedImage,
         remove_profile_image: removeProfileImage,
       });
+
       dispatch(
         updateUser({
           full_name: updatedProfile.full_name,
-          profile_image: updatedProfile.profile_image,
+          profile_image: updatedProfile.profile_image
+            ? updatedProfile.profile_image.startsWith("http")
+              ? updatedProfile.profile_image
+              : `${MEDIA_BASE_URL}${updatedProfile.profile_image}`
+            : DEFAULT_PROFILE_IMAGE,
         }),
       );
       // dispatch(setProfileImage(updatedProfile.profile_image));
