@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
 import {
   ArrowUpRight,
   Briefcase,
@@ -303,8 +303,7 @@ const ViewProfile = () => {
         );
       } catch (error) {
         console.error("Failed to fetch student profile:", error);
-
-        setError("Failed to load profile.");
+        toast.error("Failed to load profile.");
       } finally {
         setIsLoading(false);
       }
@@ -605,6 +604,7 @@ const ViewProfile = () => {
           onSaved={(updatedProfile) => {
             setProfile(updatedProfile);
             setIsEditModalOpen(false);
+            toast.success("Profile updated successfully!");
           }}
         />
       )}

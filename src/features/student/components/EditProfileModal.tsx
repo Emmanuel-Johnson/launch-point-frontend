@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 import {
   Briefcase,
   Camera,
@@ -255,8 +256,6 @@ const EditProfileForm = ({
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const [error, setError] = useState<string | null>(null);
-
   const [imageError, setImageError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -361,8 +360,6 @@ const EditProfileForm = ({
 
     setImageError(null);
 
-    setError(null);
-
     setPreviewImage(URL.createObjectURL(file));
 
     event.target.value = "";
@@ -380,8 +377,6 @@ const EditProfileForm = ({
     setPreviewImage(DEFAULT_PROFILE_IMAGE);
 
     setImageError(null);
-
-    setError(null);
   };
 
   /* ==========================================================================
@@ -389,8 +384,6 @@ const EditProfileForm = ({
   ========================================================================== */
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    setError(null);
-
     if (imageError) {
       return;
     }
@@ -410,10 +403,15 @@ const EditProfileForm = ({
         profile_image: selectedImage,
         remove_profile_image: removeProfileImage,
       });
+
       dispatch(
         updateUser({
           full_name: updatedProfile.full_name,
-          profile_image: updatedProfile.profile_image,
+          profile_image: updatedProfile.profile_image
+            ? updatedProfile.profile_image.startsWith("http")
+              ? updatedProfile.profile_image
+              : `${MEDIA_BASE_URL}${updatedProfile.profile_image}`
+            : DEFAULT_PROFILE_IMAGE,
         }),
       );
       // dispatch(setProfileImage(updatedProfile.profile_image));
@@ -421,7 +419,7 @@ const EditProfileForm = ({
     } catch (error) {
       console.error("Failed to update student profile:", error);
 
-      setError("Failed to update profile. Please try again.");
+      toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -443,7 +441,7 @@ const EditProfileForm = ({
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 2147483647,
+        zIndex: 10000,
       }}
     >
       <div
@@ -783,16 +781,6 @@ const EditProfileForm = ({
                   Email address cannot be changed here.
                 </p>
               </section>
-
-              {/* ====================================================
-                  GENERAL ERROR
-              ==================================================== */}
-
-              {error && (
-                <div className="rounded-xl border border-red-500/20 bg-red-500/[0.06] px-4 py-3 text-sm text-red-400">
-                  {error}
-                </div>
-              )}
             </div>
           </div>
 

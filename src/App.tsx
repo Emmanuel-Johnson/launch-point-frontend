@@ -22,6 +22,8 @@ function App() {
         closeOnClick
         pauseOnHover
         theme="dark"
+        toastClassName="student-toast"
+        className="student-toast-container"
       />
 
       {/* Admin Toast */}

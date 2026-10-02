@@ -777,3 +777,13 @@ html {
 .Toastify__toast-container--top-right {
   z-index: 100000 !important;
 }
+
+.student-toast-container.Toastify__toast-container--top-right {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+}
+
+.student-toast {
+  position: relative !important;
+  z-index: 2147483647 !important;
+}
