@@ -10,7 +10,7 @@ const PublicFooter = () => {
           <div className="lg:col-span-2">
             <Link
               to="#"
-              className="inline-flex items-center gap-3 transition-all duration-500 hover:scale-105"
+              className="inline-flex items-center gap-3 transition-all duration-500 hover:scale-105 cursor-default"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-500 hover:scale-105">
                 <img
