@@ -429,7 +429,7 @@ const VerifyEmailPage = () => {
           type="button"
           onClick={() => handleVerify()}
           disabled={isVerifying || isResending}
-          className="mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
+          className="cursor-pointer mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isVerifying ? (
             <svg
@@ -470,7 +470,7 @@ const VerifyEmailPage = () => {
               type="button"
               onClick={handleResend}
               disabled={isResending || isVerifying}
-              className="font-medium text-white transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
+              className="cursor-pointer font-medium text-white transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isResending ? "Sending..." : "Resend"}
             </button>
@@ -484,7 +484,7 @@ const VerifyEmailPage = () => {
             type="button"
             onClick={handleChangeEmail}
             disabled={isVerifying || isResending}
-            className="font-medium text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
+            className="cursor-pointer font-medium text-gray-500 transition-colors hover:text-[#8b83ff] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Change email
           </button>
