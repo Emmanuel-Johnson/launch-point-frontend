@@ -427,7 +427,7 @@ const VerifyResetCodePage = () => {
           type="button"
           onClick={() => handleVerify()}
           disabled={isBusy}
-          className="mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+          className="cursor-pointer mt-7 flex w-full items-center justify-center rounded-lg bg-[#6c63ff] py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#6c63ff]/20 transition-all duration-300 hover:scale-[1.01] hover:bg-[#756cff] hover:shadow-[#6c63ff]/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
         >
           {isVerifying ? (
             <svg
@@ -468,7 +468,7 @@ const VerifyResetCodePage = () => {
               type="button"
               onClick={handleResend}
               disabled={isBusy}
-              className="font-medium text-[#8b83ff] transition-colors hover:text-[#a39eff] disabled:cursor-not-allowed disabled:opacity-50"
+              className="cursor-pointer font-medium text-[#8b83ff] transition-colors hover:text-[#a39eff] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isResending ? "Resending..." : "Resend code"}
             </button>
