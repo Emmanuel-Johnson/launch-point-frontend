@@ -1,15 +1,21 @@
 <div align="center">
 
-# 🎓 Launch Point — Frontend
+<br>
 
-### The React + TypeScript client for a subscription-based Learning Management System
+# 🧑‍💻 Launch Point — Frontend
+
+#### The React + TypeScript client for a subscription-based Learning Management System
 
 <br>
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+&nbsp;
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+&nbsp;
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+&nbsp;
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+&nbsp;
 [![React Router](https://img.shields.io/badge/Router-7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
 
 <br>
@@ -19,19 +25,23 @@
 
 <sub>Marketing site · Auth flows · Student dashboard · Admin dashboard · Google sign-in</sub>
 
+<br>
+
+</div>
+
+<div align="center">
+
+**[Overview](#-overview)** &nbsp;·&nbsp; **[Tech Stack](#-tech-stack)** &nbsp;·&nbsp; **[Features](#-features)** &nbsp;·&nbsp; **[Architecture](#-architecture)** &nbsp;·&nbsp; **[Setup](#-getting-started)** &nbsp;·&nbsp; **[Auth](#-authentication-flow)** &nbsp;·&nbsp; **[Roadmap](#-roadmap)**
+
 </div>
 
 <br>
 
----
-
 <div align="center">
 
-**[Overview](#-overview)** • **[Tech Stack](#-tech-stack)** • **[Features](#-features)** • **[Architecture](#-architecture)** • **[Structure](#-project-structure)** • **[Routes](#-routes)** • **[Setup](#-getting-started)** • **[Auth](#-authentication-flow)** • **[Roadmap](#-roadmap)**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 </div>
-
----
 
 <br>
 
@@ -46,7 +56,17 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 
 <br>
 
+<div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
+
+<br>
+
 ## 🛠 Tech Stack
+
+<div align="center">
 
 <table>
 <tr><td><b>Framework</b></td><td>React 19</td></tr>
@@ -63,6 +83,16 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 <tr><td><b>State</b></td><td>Redux Toolkit + React Redux</td></tr>
 </table>
 
+</div>
+
+<br>
+
+<div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
+
 <br>
 
 ## ✨ Features
@@ -71,7 +101,7 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 <tr>
 <td width="50%" valign="top">
 
-**🏠 Marketing**
+### 🏠 Marketing
 
 - Landing, About & Contact pages
 - Shared public navbar & footer
@@ -81,7 +111,7 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 </td>
 <td width="50%" valign="top">
 
-**🔐 Authentication**
+### 🔐 Authentication
 
 - Signup & login
 - Email OTP verification
@@ -93,7 +123,7 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 <tr>
 <td width="50%" valign="top">
 
-**🎓 Student**
+### 🎓 Student
 
 - Protected dashboard layout
 - Sidebar + header shell
@@ -102,7 +132,7 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 </td>
 <td width="50%" valign="top">
 
-**🛡 Admin**
+### 🛡 Admin
 
 - Separate admin login & dashboard
 - Dedicated admin route guards
@@ -111,6 +141,14 @@ The app is organised **by feature** (marketing, auth, student, admin) rather tha
 </td>
 </tr>
 </table>
+
+<br>
+
+<div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
 
 <br>
 
@@ -126,6 +164,8 @@ shared/     →  Cross-cutting: axios clients, route guards, UI primitives
 
 **Route guards** keep access rules declarative and out of the pages:
 
+<div align="center">
+
 | Guard                     | Purpose                                        |
 | ------------------------- | ---------------------------------------------- |
 | **`PublicRoute`**         | Redirects signed-in users away from auth pages |
@@ -133,71 +173,15 @@ shared/     →  Cross-cutting: axios clients, route guards, UI primitives
 | **`AdminPublicRoute`**    | Guest-only wrapper for the admin login         |
 | **`AdminProtectedRoute`** | Gates the admin area                           |
 
-<br>
-
-## 📁 Project Structure
-
-```
-launch-point-frontend/
-│
-├── 📂 public/                     # Static assets (logo, auth artwork)
-│
-├── 📂 src/
-│   ├── App.tsx
-│   ├── main.tsx                   # BrowserRouter + Google OAuth provider
-│   ├── index.css                  # Tailwind + keyframe animations
-│   │
-│   ├── 📂 app/
-│   │   └── routes/                # routeConfig · AppRoutes · ScrollToTop
-│   │
-│   ├── 📂 features/
-│   │   ├── 📂 marketing/          # Landing, About, Contact, Legal, 404
-│   │   │   ├── components/        # Hero, HowItWorks, WhyChooseUs, FinalCTA
-│   │   │   ├── layout/            # PublicNavbar, PublicFooter, PublicLayout
-│   │   │   └── pages/
-│   │   ├── 📂 auth/               # Login, Signup, Verify, Reset flows
-│   │   │   ├── api/               # authApi
-│   │   │   ├── layout/            # AuthLayout
-│   │   │   └── pages/
-│   │   ├── 📂 student/            # Dashboard shell
-│   │   │   ├── components/        # Header, Sidebar, LogoutModal
-│   │   │   ├── layout/
-│   │   │   └── pages/
-│   │   └── 📂 admin/              # Admin login + dashboard
-│   │       ├── api/ · components/ · layout/ · pages/
-│   │
-│   └── 📂 shared/
-│       ├── api/                   # axios (JWT refresh) + adminAxios
-│       ├── components/            # Reveal (scroll animation)
-│       ├── guards/                # Route guards (see above)
-│       └── toast.css
-│
-├── index.html · vite.config.ts · tsconfig*.json · eslint.config.js
-└── package.json
-```
+</div>
 
 <br>
 
-## 🧭 Routes
+<div align="center">
 
-<table>
-<tr><th>Path</th><th>Screen</th><th>Access</th></tr>
-<tr><td><code>/</code></td><td>Landing</td><td>🌐 Public</td></tr>
-<tr><td><code>/about</code></td><td>About</td><td>🌐 Public</td></tr>
-<tr><td><code>/contact</code></td><td>Contact</td><td>🌐 Public</td></tr>
-<tr><td><code>/privacy-policy</code></td><td>Privacy Policy</td><td>🌐 Public</td></tr>
-<tr><td><code>/terms</code></td><td>Terms</td><td>🌐 Public</td></tr>
-<tr><td><code>/login</code></td><td>Login</td><td>👤 Guest only</td></tr>
-<tr><td><code>/signup</code></td><td>Signup</td><td>👤 Guest only</td></tr>
-<tr><td><code>/verify-email</code></td><td>Email OTP verification</td><td>👤 Guest only</td></tr>
-<tr><td><code>/forgot-password</code></td><td>Request reset code</td><td>👤 Guest only</td></tr>
-<tr><td><code>/verify-reset-code</code></td><td>Verify reset code</td><td>👤 Guest only</td></tr>
-<tr><td><code>/reset-password</code></td><td>Set new password</td><td>👤 Guest only</td></tr>
-<tr><td><code>/student/dashboard</code></td><td>Student dashboard</td><td>🔒 Student</td></tr>
-<tr><td><code>/admin/login</code></td><td>Admin login</td><td>👤 Guest only</td></tr>
-<tr><td><code>/admin/dashboard</code></td><td>Admin dashboard</td><td>🛡 Admin</td></tr>
-<tr><td><code>*</code></td><td>404 Not Found</td><td>🌐 Public</td></tr>
-</table>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
 
 <br>
 
@@ -208,6 +192,8 @@ launch-point-frontend/
 - Node.js 18+
 - The [Launch Point backend](https://github.com/Emmanuel-Johnson/launch-point-backend) running locally
 - A Google OAuth Client ID
+
+<br>
 
 ### Installation
 
@@ -227,7 +213,11 @@ npm run dev
 
 The app runs at **`http://localhost:5173`** by default ⚡
 
+<br>
+
 ### Available Scripts
+
+<div align="center">
 
 | Command           | Description                                    |
 | ----------------- | ---------------------------------------------- |
@@ -236,8 +226,12 @@ The app runs at **`http://localhost:5173`** by default ⚡
 | `npm run preview` | Preview the production build locally           |
 | `npm run lint`    | Run ESLint across the project                  |
 
+</div>
+
+<br>
+
 <details>
-<summary><b>📋 Environment Variables (.env)</b></summary>
+<summary><b>📋 &nbsp;Environment Variables (.env)</b></summary>
 
 <br>
 
@@ -250,6 +244,14 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id
 > Consider moving it to an env variable (e.g. `VITE_API_BASE_URL`) before deploying.
 
 </details>
+
+<br>
+
+<div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
 
 <br>
 
@@ -267,6 +269,14 @@ The Axios client in `src/shared/api/axios.ts` handles sessions transparently:
 
 <br>
 
+<div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+</div>
+
+<br>
+
 ## 🗺 Roadmap
 
 - [ ] 📚 Course catalog & detail pages
@@ -278,12 +288,16 @@ The Axios client in `src/shared/api/axios.ts` handles sessions transparently:
 
 <br>
 
----
-
 <div align="center">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<br>
+<br>
 
 <sub>Built with React, TypeScript & Vite · Pairs with the <b>Launch Point</b> backend API</sub>
 
+<br>
 <br>
 
 ⭐ **Star this repo if you find it useful!**
