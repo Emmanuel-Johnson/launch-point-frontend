@@ -1,3 +1,5 @@
+import { useState } from "react";
+import InstructorApplicationModal from "../components/InstructorApplicationModal";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -109,11 +111,10 @@ const steps = [
 ];
 
 const InstructorLandingPage = () => {
-  const accessToken = localStorage.getItem("access");
-  const isLoggedIn = !!accessToken;
+  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
 
-  // Must have an account to apply — swap this to your real apply flow.
-  const applyPath = isLoggedIn ? "/instructor/apply" : "/signup";
+  const openApplication = () => setIsApplicationOpen(true);
+  const closeApplication = () => setIsApplicationOpen(false);
 
   return (
     <main className="bg-[#09090B] text-zinc-100">
@@ -136,13 +137,14 @@ const InstructorLandingPage = () => {
           </div>
 
           {/* Right: Apply button */}
-          <Link
-            to={applyPath}
-            className="inline-flex origin-center items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+          <button
+            type="button"
+            onClick={openApplication}
+            className="inline-flex origin-center items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer"
           >
             <span className="hidden sm:inline">Become an Instructor</span>
             <span className="sm:hidden">Apply</span>
-          </Link>
+          </button>
         </div>
       </header>
 
@@ -378,12 +380,13 @@ const InstructorLandingPage = () => {
 
               <Reveal delay={450}>
                 <div className="relative mt-9">
-                  <Link
-                    to={applyPath}
-                    className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-500 ease-out hover:scale-[1.04] hover:bg-zinc-100"
+                  <button
+                    type="button"
+                    onClick={openApplication}
+                    className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
                   >
                     Apply to become an instructor
-                  </Link>
+                  </button>
                 </div>
               </Reveal>
             </div>
@@ -410,12 +413,13 @@ const InstructorLandingPage = () => {
                   For Instructors
                 </h3>
                 <div className="mt-5 space-y-3">
-                  <Link
-                    to={applyPath}
-                    className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
+                  <button
+                    type="button"
+                    onClick={openApplication}
+                    className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
                   >
                     Apply
-                  </Link>
+                  </button>
                   <Link
                     to="#"
                     className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
@@ -486,6 +490,11 @@ const InstructorLandingPage = () => {
           </div>
         </div>
       </footer>
+
+      <InstructorApplicationModal
+        isOpen={isApplicationOpen}
+        onClose={closeApplication}
+      />
     </main>
   );
 };
