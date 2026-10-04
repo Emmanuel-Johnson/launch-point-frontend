@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import {
   X,
-  GraduationCap,
   BriefcaseBusiness,
   UserRound,
   Link2,
@@ -34,18 +33,18 @@ const experienceOptions = [
   { value: "ten_plus", label: "10+ years" },
 ];
 
-const categoryOptions = [
+const topicOptions = [
+  "Python",
   "Web Development",
-  "Mobile App Development",
-  "Data Science",
-  "Artificial Intelligence & Machine Learning",
-  "Cybersecurity",
-  "Cloud Computing",
-  "Database Management",
-  "Software Engineering",
-  "DevOps",
+  "JavaScript",
+  "React",
+  "Django",
+  "Data Structures & Algorithms",
+  "Database Design",
   "UI/UX Design",
-  "Game Development",
+  "Data Science",
+  "Cloud Computing",
+  "Cybersecurity",
   "Other",
 ];
 
@@ -76,6 +75,8 @@ const InstructorApplicationModal = ({
   const [form, setForm] = useState<ApplicationForm>(initialApplicationForm);
   const [resume, setResume] = useState<File | null>(null);
   const [resumeError, setResumeError] = useState("");
+  const [supportingFiles, setSupportingFiles] = useState<File[]>([]);
+  const [supportingFilesError, setSupportingFilesError] = useState("");
   const [topicInput, setTopicInput] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -158,10 +159,47 @@ const InstructorApplicationModal = ({
     setResume(file);
   };
 
+  const handleSupportingFilesChange = (files: FileList | null) => {
+    setSupportingFilesError("");
+    if (!files) return;
+
+    const selectedFiles = Array.from(files);
+    const allowedExtensions = /\.(pdf|doc|docx|png|jpe?g)$/i;
+    const maxFileSize = 5 * 1024 * 1024;
+
+    if (selectedFiles.length > 5) {
+      setSupportingFilesError("You can upload up to 5 supporting files.");
+      return;
+    }
+
+    const invalidFile = selectedFiles.find(
+      (file) => !allowedExtensions.test(file.name) || file.size > maxFileSize,
+    );
+    if (invalidFile) {
+      setSupportingFilesError(
+        "Each file must be PDF, DOC, DOCX, PNG, or JPG and 5 MB or smaller.",
+      );
+      return;
+    }
+
+    setSupportingFiles(selectedFiles);
+  };
+
+  const removeSupportingFile = (fileName: string) => {
+    setSupportingFiles((previous) =>
+      previous.filter((file) => file.name !== fileName),
+    );
+    setSupportingFilesError("");
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!resume) {
       setResumeError("Please upload your resume to continue.");
+      return;
+    }
+    if (supportingFiles.length === 0) {
+      setSupportingFilesError("Please upload at least one supporting file.");
       return;
     }
     setSubmitted(true);
@@ -171,6 +209,8 @@ const InstructorApplicationModal = ({
     setForm(initialApplicationForm);
     setResume(null);
     setResumeError("");
+    setSupportingFiles([]);
+    setSupportingFilesError("");
     setTopicInput("");
     setSubmitted(false);
     onClose();
@@ -185,9 +225,6 @@ const InstructorApplicationModal = ({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-0 backdrop-blur-md sm:p-5"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) closeAndReset();
-      }}
       role="presentation"
     >
       <section
@@ -199,35 +236,15 @@ const InstructorApplicationModal = ({
         <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-blue-500/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
 
-        <header className="relative flex shrink-0 items-start justify-between border-b border-white/10 px-5 py-5 sm:px-8 sm:py-6">
-          <div className="flex items-start gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-500/10 text-blue-300">
-              <GraduationCap className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-blue-400">
-                Launch Point · Instructor Program
-              </p>
-              <h2
-                id="application-modal-title"
-                className="mt-1 text-xl font-bold tracking-tight text-white sm:text-2xl"
-              >
-                {submitted
-                  ? "Application preview complete"
-                  : "Become an instructor"}
-              </h2>
-              <p className="mt-1 max-w-xl text-xs leading-5 text-zinc-400 sm:text-sm">
-                {submitted
-                  ? "This is a UI demo. Your application has not been sent anywhere."
-                  : "Tell us about your experience and what you’d love to teach."}
-              </p>
-            </div>
-          </div>
+        <header className="relative flex shrink-0 items-center justify-end border-b border-white/10 px-5 py-4 sm:px-8">
+          <h2 id="application-modal-title" className="sr-only">
+            {submitted ? "Application preview" : "Instructor application"}
+          </h2>
           <button
             type="button"
             onClick={closeAndReset}
             aria-label="Close application form"
-            className="ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-white/20 hover:bg-white/5 hover:text-white cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -252,6 +269,12 @@ const InstructorApplicationModal = ({
               </p>
               <p className="mt-3 text-zinc-500">Resume</p>
               <p className="mt-1 font-medium text-white">{resume?.name}</p>
+              <p className="mt-3 text-zinc-500">Supporting files</p>
+              <p className="mt-1 font-medium text-white">
+                {supportingFiles.length
+                  ? supportingFiles.map((file) => file.name).join(", ")
+                  : "None added"}
+              </p>
             </div>
             <button
               type="button"
@@ -359,7 +382,7 @@ const InstructorApplicationModal = ({
                 <div className="mt-5">
                   <div className="flex items-center justify-between gap-3">
                     <label className={labelClass}>
-                      Categories you want to teach{" "}
+                      Topics you want to teach{" "}
                       <span className="text-blue-400">*</span>
                     </label>
                     <span className="text-xs text-zinc-500">
@@ -370,18 +393,18 @@ const InstructorApplicationModal = ({
                     Choose up to 10 topics.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {categoryOptions.map((category) => {
-                      const selected = form.topics_to_teach.includes(category);
+                    {topicOptions.map((topic) => {
+                      const selected = form.topics_to_teach.includes(topic);
                       return (
                         <button
-                          key={category}
+                          key={topic}
                           type="button"
-                          onClick={() => toggleTopic(category)}
+                          onClick={() => toggleTopic(topic)}
                           aria-pressed={selected}
                           className={`rounded-full border px-3 py-2 text-xs font-medium transition ${selected ? "border-blue-400/50 bg-blue-500/15 text-blue-200" : "border-white/10 bg-white/[0.02] text-zinc-400 hover:border-white/20 hover:text-white"}`}
                         >
                           {selected ? "✓ " : "+ "}
-                          {category}
+                          {topic}
                         </button>
                       );
                     })}
@@ -569,6 +592,80 @@ const InstructorApplicationModal = ({
                   {resumeError && (
                     <p className="mt-2 text-xs text-rose-300">{resumeError}</p>
                   )}
+
+                  <div className="mt-6">
+                    <label className={labelClass}>
+                      Supporting files <span className="text-blue-400">*</span>
+                    </label>
+                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                      Upload certificates or other relevant documents. Up to 5
+                      files, 5 MB each.
+                    </p>
+                    <label
+                      className={`mt-3 flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed ${
+                        supportingFilesError
+                          ? "border-rose-400/50 bg-rose-400/[0.03]"
+                          : "border-white/15 bg-[#101116] hover:border-blue-400/50 hover:bg-blue-500/[0.03]"
+                      } px-4 py-4 transition`}
+                    >
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        className="sr-only"
+                        onChange={(event) => {
+                          handleSupportingFilesChange(event.target.files);
+                          event.target.value = "";
+                        }}
+                      />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300">
+                        <UploadCloud className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block text-sm font-medium text-white">
+                          Choose supporting files
+                        </span>
+                        <span className="mt-1 block text-xs text-zinc-500">
+                          PDF, DOC, DOCX, PNG, or JPG
+                        </span>
+                      </div>
+                    </label>
+
+                    {supportingFilesError && (
+                      <p className="mt-2 text-xs text-rose-300">
+                        {supportingFilesError}
+                      </p>
+                    )}
+
+                    {supportingFiles.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        {supportingFiles.map((file) => (
+                          <div
+                            key={`${file.name}-${file.size}`}
+                            className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-3 py-2.5"
+                          >
+                            <FileText className="h-4 w-4 shrink-0 text-blue-300" />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm text-zinc-200">
+                                {file.name}
+                              </p>
+                              <p className="text-xs text-zinc-500">
+                                {(file.size / (1024 * 1024)).toFixed(2)} MB
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeSupportingFile(file.name)}
+                              aria-label={`Remove ${file.name}`}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -592,23 +689,22 @@ const InstructorApplicationModal = ({
 
             <footer className="flex shrink-0 flex-col-reverse gap-3 border-t border-white/10 bg-[#0B0C11]/95 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
               <p className="text-center text-[11px] text-zinc-500 sm:text-left">
-                <span className="text-blue-400">*</span> Required fields · UI
-                demo only
+                <span className="text-blue-400"></span>
               </p>
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={closeAndReset}
-                  className="flex-1 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:bg-white/5 sm:flex-none"
+                  className="flex-1 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:bg-white/5 sm:flex-none cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={form.topics_to_teach.length === 0}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none cursor-pointer"
                 >
-                  Preview application <span aria-hidden="true">→</span>
+                  Submit application <span aria-hidden="true">→</span>
                 </button>
               </div>
             </footer>
