@@ -24,7 +24,7 @@ const experienceOptions = [
   { value: "ten_plus", label: "10+ years" },
 ];
 
-const topicOptions = [
+const CategoryOptions = [
   "Python",
   "Web Development",
   "JavaScript",
@@ -36,7 +36,6 @@ const topicOptions = [
   "Data Science",
   "Cloud Computing",
   "Cybersecurity",
-  "Other",
 ];
 
 type ApplicationForm = {
@@ -47,7 +46,7 @@ type ApplicationForm = {
   occupation: string;
   education: string;
   years_of_experience: string;
-  topics_to_teach: string[];
+  categories_to_teach: string[];
   short_bio: string;
   phone_number: string;
   location: string;
@@ -68,7 +67,7 @@ const initialApplicationForm: ApplicationForm = {
   occupation: "",
   education: "",
   years_of_experience: "",
-  topics_to_teach: [],
+  categories_to_teach: [],
   short_bio: "",
   phone_number: "",
   location: "",
@@ -97,8 +96,6 @@ const InstructorApplicationModal = ({
 
   const [supportingFiles, setSupportingFiles] = useState<File[]>([]);
   const [supportingFilesError, setSupportingFilesError] = useState("");
-
-  const [topicInput, setTopicInput] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
@@ -174,46 +171,6 @@ const InstructorApplicationModal = ({
     }));
   };
 
-  const toggleTopic = (topic: string) => {
-    setForm((previous) => {
-      const exists = previous.topics_to_teach.includes(topic);
-
-      if (exists) {
-        return {
-          ...previous,
-          topics_to_teach: previous.topics_to_teach.filter(
-            (item) => item !== topic,
-          ),
-        };
-      }
-
-      if (previous.topics_to_teach.length >= 10) {
-        return previous;
-      }
-
-      return {
-        ...previous,
-        topics_to_teach: [...previous.topics_to_teach, topic],
-      };
-    });
-  };
-
-  const addCustomTopic = () => {
-    const topic = topicInput.trim();
-
-    if (
-      !topic ||
-      form.topics_to_teach.includes(topic) ||
-      form.topics_to_teach.length >= 10
-    ) {
-      return;
-    }
-
-    updateField("topics_to_teach", [...form.topics_to_teach, topic]);
-
-    setTopicInput("");
-  };
-
   const handleResumeChange = (file?: File) => {
     setResumeError("");
 
@@ -283,7 +240,6 @@ const InstructorApplicationModal = ({
     setResumeError("");
     setSupportingFiles([]);
     setSupportingFilesError("");
-    setTopicInput("");
     setLoadError("");
   };
 
@@ -402,9 +358,8 @@ const InstructorApplicationModal = ({
           <div className="relative flex min-h-0 flex-1 flex-col">
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-8 sm:py-7">
               {/* PERSONAL INFORMATION */}
-
               <div className={sectionClass}>
-                <div className="mb-5 flex items-center gap-3">
+                <div className="mb-6 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
                     <UserRound className="h-4 w-4" />
                   </div>
@@ -415,46 +370,63 @@ const InstructorApplicationModal = ({
                     </h3>
 
                     <p className="mt-0.5 text-xs text-zinc-500">
-                      Information loaded from your profile.
+                      Update your full name and picture.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                  {profileImageUrl ? (
-                    <img
-                      src={profileImageUrl}
-                      alt={form.full_name || "Profile"}
-                      className="h-20 w-20 shrink-0 rounded-2xl border border-white/10 object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-blue-500/10 text-2xl font-semibold text-blue-300">
-                      {form.full_name
-                        ? form.full_name
-                            .split(" ")
-                            .filter(Boolean)
-                            .slice(0, 2)
-                            .map((name) => name[0])
-                            .join("")
-                            .toUpperCase()
-                        : "U"}
-                    </div>
-                  )}
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                  {/* Profile Picture */}
+                  <div className="flex w-full flex-col items-center gap-3 sm:w-28">
+                    {profileImageUrl ? (
+                      <img
+                        src={profileImageUrl}
+                        alt={form.full_name || "Profile"}
+                        className="h-24 w-24 rounded-2xl border border-white/10 object-cover shadow-lg"
+                      />
+                    ) : (
+                      <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-white/10 bg-blue-500/10 text-2xl font-semibold text-blue-300">
+                        {form.full_name
+                          ? form.full_name
+                              .split(" ")
+                              .filter(Boolean)
+                              .slice(0, 2)
+                              .map((name) => name[0])
+                              .join("")
+                              .toUpperCase()
+                          : "U"}
+                      </div>
+                    )}
 
+                    <button
+                      type="button"
+                      className="text-xs font-medium text-blue-400 transition hover:text-blue-300"
+                    >
+                      Change photo
+                    </button>
+                  </div>
+
+                  {/* Personal Details */}
                   <div className="grid flex-1 gap-4 sm:grid-cols-2">
                     <label className={labelClass}>
                       Full name
                       <input
-                        className={`${inputClass} cursor-not-allowed opacity-70`}
+                        className={inputClass}
                         value={form.full_name}
-                        readOnly
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            full_name: e.target.value,
+                          }))
+                        }
+                        placeholder="Enter your full name"
                       />
                     </label>
 
                     <label className={labelClass}>
                       Email
                       <input
-                        className={`${inputClass} cursor-not-allowed opacity-70`}
+                        className={`${inputClass} cursor-not-allowed opacity-60`}
                         value={form.email}
                         readOnly
                       />
@@ -462,9 +434,7 @@ const InstructorApplicationModal = ({
                   </div>
                 </div>
               </div>
-
               {/* PROFESSIONAL INFORMATION */}
-
               <div className={sectionClass}>
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
@@ -485,7 +455,6 @@ const InstructorApplicationModal = ({
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className={labelClass}>
                     Occupation
-                    <span className="text-blue-400"> *</span>
                     <input
                       className={inputClass}
                       value={form.occupation}
@@ -498,7 +467,7 @@ const InstructorApplicationModal = ({
                   </label>
 
                   <label className={labelClass}>
-                    Education / qualification
+                    Education
                     <input
                       className={inputClass}
                       value={form.education}
@@ -563,32 +532,31 @@ const InstructorApplicationModal = ({
                   </label>
                 </div>
 
-                {/* TOPICS */}
+                {/* CATEGORIES */}
 
                 <div className="mt-5">
                   <div className="flex items-center justify-between gap-3">
                     <label className={labelClass}>
-                      Topics you want to teach
+                      Categories you want to teach
                     </label>
 
                     <span className="text-xs text-zinc-500">
-                      {form.topics_to_teach.length}/10 selected
+                      {form.categories_to_teach.length}/10 selected
                     </span>
                   </div>
 
                   <p className="mt-1 text-xs text-zinc-500">
-                    Choose up to 10 topics.
+                    Choose up to 10 Categories.
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {topicOptions.map((topic) => {
-                      const selected = form.topics_to_teach.includes(topic);
+                    {CategoryOptions.map((category) => {
+                      const selected =
+                        form.categories_to_teach.includes(category);
 
                       return (
                         <button
-                          key={topic}
                           type="button"
-                          onClick={() => toggleTopic(topic)}
                           aria-pressed={selected}
                           className={`rounded-full border px-3 py-2 text-xs font-medium transition ${
                             selected
@@ -597,43 +565,14 @@ const InstructorApplicationModal = ({
                           }`}
                         >
                           {selected ? "✓ " : "+ "}
-                          {topic}
+                          {category}
                         </button>
                       );
                     })}
                   </div>
-
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      className={`${inputClass} mt-0`}
-                      value={topicInput}
-                      onChange={(e) => setTopicInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addCustomTopic();
-                        }
-                      }}
-                      placeholder="Add another topic"
-                      maxLength={60}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={addCustomTopic}
-                      disabled={
-                        !topicInput.trim() || form.topics_to_teach.length >= 10
-                      }
-                      className="shrink-0 rounded-xl border border-white/10 px-4 text-sm font-medium text-zinc-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      Add
-                    </button>
-                  </div>
                 </div>
               </div>
-
               {/* ABOUT YOU */}
-
               <div className={sectionClass}>
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
@@ -654,7 +593,7 @@ const InstructorApplicationModal = ({
                 <label className={labelClass}>
                   Short professional bio
                   <textarea
-                    className={`${inputClass} min-h-28 resize-y`}
+                    className={`${inputClass} min-h-28 resize-none`}
                     value={form.short_bio}
                     onChange={(e) => updateField("short_bio", e.target.value)}
                     placeholder="Share your background, skills, and what makes your teaching approach unique..."
@@ -665,9 +604,7 @@ const InstructorApplicationModal = ({
                   </span>
                 </label>
               </div>
-
               {/* PROFESSIONAL LINKS */}
-
               <div className={sectionClass}>
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
@@ -680,7 +617,7 @@ const InstructorApplicationModal = ({
                     </h3>
 
                     <p className="mt-0.5 text-xs text-zinc-500">
-                      Links loaded from your profile.
+                      Add links to showcase your professional work.
                     </p>
                   </div>
                 </div>
@@ -715,7 +652,7 @@ const InstructorApplicationModal = ({
                   </label>
 
                   <label className={`${labelClass} sm:col-span-2`}>
-                    Portfolio / personal website
+                    Portfolio
                     <input
                       className={inputClass}
                       type="url"
@@ -729,7 +666,6 @@ const InstructorApplicationModal = ({
                   </label>
                 </div>
               </div>
-
               {/* APPLICATION */}
 
               <div className={sectionClass}>
@@ -752,7 +688,7 @@ const InstructorApplicationModal = ({
                 <label className={labelClass}>
                   Why do you want to become an instructor?
                   <textarea
-                    className={`${inputClass} min-h-32 resize-y`}
+                    className={`${inputClass} min-h-32 resize-none`}
                     value={form.motivation}
                     onChange={(e) => updateField("motivation", e.target.value)}
                     placeholder="What motivates you to teach, and how would you help learners succeed?"
@@ -763,8 +699,7 @@ const InstructorApplicationModal = ({
                   </span>
                 </label>
 
-                {/* RESUME */}
-
+                {/* RESUME / CV */}
                 <div className="mt-5">
                   <label className={labelClass}>Resume / CV</label>
 
@@ -796,9 +731,7 @@ const InstructorApplicationModal = ({
 
                     <span className="mt-1 text-xs text-zinc-500">
                       {resume
-                        ? `${(resume.size / (1024 * 1024)).toFixed(
-                            2,
-                          )} MB · Ready`
+                        ? `${(resume.size / (1024 * 1024)).toFixed(2)} MB · Ready`
                         : "PDF, DOC, or DOCX · Max 5 MB"}
                     </span>
                   </label>
@@ -809,21 +742,19 @@ const InstructorApplicationModal = ({
                 </div>
 
                 {/* SUPPORTING FILES */}
-
                 <div className="mt-6">
                   <label className={labelClass}>Supporting files</label>
 
                   <p className="mt-1 text-xs leading-5 text-zinc-500">
-                    Upload certificates or other relevant documents. Up to 5
-                    files, 5 MB each.
+                    Add certificates or other relevant documents.
                   </p>
 
                   <label
-                    className={`mt-3 flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed ${
+                    className={`mt-3 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed ${
                       supportingFilesError
                         ? "border-rose-400/50 bg-rose-400/[0.03]"
                         : "border-white/15 bg-[#101116] hover:border-blue-400/50 hover:bg-blue-500/[0.03]"
-                    } px-4 py-4 transition`}
+                    } px-5 py-7 text-center transition`}
                   >
                     <input
                       type="file"
@@ -832,24 +763,21 @@ const InstructorApplicationModal = ({
                       className="sr-only"
                       onChange={(event) => {
                         handleSupportingFilesChange(event.target.files);
-
                         event.target.value = "";
                       }}
                     />
 
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300">
                       <UploadCloud className="h-5 w-5" />
                     </div>
 
-                    <div className="min-w-0">
-                      <span className="block text-sm font-medium text-white">
-                        Choose supporting files
-                      </span>
+                    <span className="mt-3 text-sm font-medium text-white">
+                      Choose supporting files
+                    </span>
 
-                      <span className="mt-1 block text-xs text-zinc-500">
-                        PDF, DOC, DOCX, PNG, or JPG
-                      </span>
-                    </div>
+                    <span className="mt-1 text-xs text-zinc-500">
+                      PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB each
+                    </span>
                   </label>
 
                   {supportingFilesError && (
@@ -893,7 +821,6 @@ const InstructorApplicationModal = ({
               </div>
 
               {/* TERMS */}
-
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
                 <input
                   type="checkbox"
@@ -916,7 +843,8 @@ const InstructorApplicationModal = ({
 
             <footer className="flex shrink-0 flex-col-reverse gap-3 border-t border-white/10 bg-[#0B0C11]/95 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
               <p className="text-center text-[11px] text-zinc-500 sm:text-left">
-                Application submission will be connected later.
+                Shared information will be updated in your student profile after
+                your application is approved.
               </p>
 
               <div className="flex gap-3">
