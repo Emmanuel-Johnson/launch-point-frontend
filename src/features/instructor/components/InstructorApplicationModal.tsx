@@ -369,7 +369,7 @@ const InstructorApplicationModal = ({
           </div>
         ) : (
           <div className="relative flex min-h-0 flex-1 flex-col">
-            <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-8 sm:py-7">
+            <div className="lp-scroll flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-8 sm:py-7">
               {/* PERSONAL INFORMATION */}
               <div className={sectionClass}>
                 <div className="mb-6 flex items-center gap-3">
