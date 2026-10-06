@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 
 import PublicLayout from "../../features/marketing/layout/PublicLayout";
 import LandingPage from "../../features/marketing/pages/LandingPage";
@@ -49,6 +49,8 @@ import CategoryListPage from "../../features/admin/pages/CategoryListPage";
 import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
 
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
+import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
+import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -133,6 +135,10 @@ export const routeConfig: RouteObject[] = [
         element: <StudentLayout />,
         children: [
           {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
             path: "dashboard",
             element: <StudentDashboardPage />,
           },
@@ -156,6 +162,14 @@ export const routeConfig: RouteObject[] = [
       {
         path: "/instructor",
         element: <InstructorLandingPage />,
+      },
+      {
+        path: "/instructor/applications",
+        element: <InstructorApplicationListPage />,
+      },
+      {
+        path: "/instructor/applications/:applicationId",
+        element: <InstructorApplicationDetailsPage />,
       },
       {
         path: "/instructor/dashboard",
@@ -193,6 +207,10 @@ export const routeConfig: RouteObject[] = [
         path: "/admin",
         element: <AdminLayout />,
         children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
           {
             path: "dashboard",
             element: <AdminDashboardPage />,
