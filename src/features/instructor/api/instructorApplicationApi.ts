@@ -1,6 +1,11 @@
 import api from "../../../shared/api/axios";
 
-export interface InstructorApplicationFormData {
+export interface InstructorApplicationCategory {
+  id: number;
+  name: string;
+}
+
+export interface InstructorApplicationUser {
   full_name: string;
   email: string;
   profile_image: string | null;
@@ -12,6 +17,11 @@ export interface InstructorApplicationFormData {
   portfolio_url: string | null;
 }
 
+export interface InstructorApplicationFormData {
+  user: InstructorApplicationUser;
+  categories: InstructorApplicationCategory[];
+}
+
 export const getInstructorApplicationFormData =
   async (): Promise<InstructorApplicationFormData> => {
     const response = await api.get<InstructorApplicationFormData>(
@@ -20,3 +30,20 @@ export const getInstructorApplicationFormData =
 
     return response.data;
   };
+
+export interface InstructorApplicationResponse {
+  id: number;
+  status: string;
+  submitted_at: string;
+}
+
+export const createInstructorApplication = async (
+  formData: FormData,
+): Promise<InstructorApplicationResponse> => {
+  const response = await api.post<InstructorApplicationResponse>(
+    "/instructors/application/",
+    formData,
+  );
+
+  return response.data;
+};

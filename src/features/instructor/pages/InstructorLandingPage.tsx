@@ -151,8 +151,10 @@ const InstructorLandingPage = () => {
       {/* ================= HERO ================= */}
       <section className="group relative overflow-hidden border-b border-white/10">
         {/* Background glow + subtle grid */}
-        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-blue-500/30" />
-        <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-sky-400/25" />
+        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-[2200ms] ease-in-out group-hover:scale-125 group-hover:bg-blue-500/30" />
+
+        <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:scale-125 group-hover:bg-sky-400/25" />
+
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.15]"
           style={{
@@ -191,29 +193,18 @@ const InstructorLandingPage = () => {
                 you and the people who want to learn from you.
               </p>
             </Reveal>
-
-            {/* <Reveal delay={450}>
-              <div className="mt-10">
-                <Link
-                  to={applyPath}
-                  className="group inline-flex items-center gap-2 rounded-lg bg-blue-500 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all duration-500 ease-out hover:scale-[1.04] hover:bg-blue-400 hover:shadow-xl hover:shadow-blue-500/30"
-                >
-                  Start teaching today
-                  <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" />
-                </Link>
-              </div>
-            </Reveal> */}
           </div>
 
-          {/* Right visual — honest feature panel (no fake data) */}
+          {/* Right visual */}
           <Reveal delay={300}>
             <div className="relative">
-              <div className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-blue-500/10 blur-3xl" />
+              <div className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-blue-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:bg-blue-500/20 group-hover:scale-105" />
 
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F12] p-8 shadow-2xl shadow-black/40">
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F12] p-8 shadow-2xl shadow-black/40 transition-all duration-[1800ms] ease-in-out hover:border-blue-400/20 hover:shadow-blue-500/10">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
                   Everything you need
                 </p>
+
                 <h3 className="mt-3 text-2xl font-bold text-white">
                   One place to teach, grow, and get paid.
                 </h3>
@@ -221,18 +212,21 @@ const InstructorLandingPage = () => {
                 <div className="mt-8 space-y-3">
                   {toolkit.map((item) => {
                     const Icon = item.icon;
+
                     return (
                       <div
                         key={item.title}
-                        className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all duration-500 ease-out hover:border-blue-400/30 hover:bg-white/[0.04]"
+                        className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all duration-[1400ms] ease-in-out hover:translate-x-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
                       >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-500 group-hover:bg-blue-500/15 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                          <Icon className="h-5 w-5" />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-[1600ms] ease-in-out group-hover:bg-blue-500/15 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                          <Icon className="h-5 w-5 transition-transform duration-[1600ms] ease-in-out group-hover:scale-110" />
                         </div>
+
                         <div>
                           <p className="text-sm font-semibold text-white">
                             {item.title}
                           </p>
+
                           <p className="mt-1 text-sm leading-6 text-zinc-500">
                             {item.description}
                           </p>
