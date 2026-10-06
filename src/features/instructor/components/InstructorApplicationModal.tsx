@@ -80,11 +80,17 @@ const InstructorApplicationModal = ({
   onClose,
 }: InstructorApplicationModalProps) => {
   const [form, setForm] = useState<ApplicationForm>(initialApplicationForm);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null,
+  );
+  const [profileImageError, setProfileImageError] = useState("");
   const [categories, setCategories] = useState<InstructorApplicationCategory[]>(
     [],
   );
   const [resume, setResume] = useState<File | null>(null);
   const [resumeError, setResumeError] = useState("");
+  const [isDraggingResume, setIsDraggingResume] = useState(false);
 
   const [supportingFiles, setSupportingFiles] = useState<File[]>([]);
   const [supportingFilesError, setSupportingFilesError] = useState("");
@@ -163,6 +169,32 @@ const InstructorApplicationModal = ({
     }));
   };
 
+  const handleProfileImageChange = (file?: File) => {
+    setProfileImageError("");
+
+    if (!file) {
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const maxFileSize = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      setProfileImageError("Please choose a JPG, PNG, or WebP image.");
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      setProfileImageError("Profile image must be 5 MB or smaller.");
+      return;
+    }
+
+    setProfileImageFile(file);
+
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImagePreview(previewUrl);
+  };
+
   const handleResumeChange = (file?: File) => {
     setResumeError("");
 
@@ -191,19 +223,22 @@ const InstructorApplicationModal = ({
   const handleSupportingFilesChange = (files: FileList | null) => {
     setSupportingFilesError("");
 
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
     const selectedFiles = Array.from(files);
 
     const allowedExtensions = /\.(pdf|doc|docx|png|jpe?g)$/i;
-
     const maxFileSize = 5 * 1024 * 1024;
 
-    if (selectedFiles.length > 5) {
-      setSupportingFilesError("You can upload up to 5 supporting files.");
+    // Check total file count
+    if (supportingFiles.length + selectedFiles.length > 5) {
+      setSupportingFilesError(
+        `You can upload up to 5 supporting files. You already selected ${supportingFiles.length}.`,
+      );
       return;
     }
 
+    // Validate each file
     const invalidFile = selectedFiles.find(
       (file) => !allowedExtensions.test(file.name) || file.size > maxFileSize,
     );
@@ -215,7 +250,17 @@ const InstructorApplicationModal = ({
       return;
     }
 
-    setSupportingFiles(selectedFiles);
+    // Prevent duplicate files
+    const newFiles = selectedFiles.filter(
+      (newFile) =>
+        !supportingFiles.some(
+          (existingFile) =>
+            existingFile.name === newFile.name &&
+            existingFile.size === newFile.size,
+        ),
+    );
+
+    setSupportingFiles((previous) => [...previous, ...newFiles]);
   };
 
   const removeSupportingFile = (fileName: string) => {
@@ -228,10 +273,22 @@ const InstructorApplicationModal = ({
 
   const resetForm = () => {
     setForm(initialApplicationForm);
+
+    setProfileImageFile(null);
+
+    if (profileImagePreview) {
+      URL.revokeObjectURL(profileImagePreview);
+    }
+
+    setProfileImagePreview(null);
+    setProfileImageError("");
+
     setResume(null);
     setResumeError("");
+
     setSupportingFiles([]);
     setSupportingFilesError("");
+
     setLoadError("");
   };
 
@@ -274,7 +331,9 @@ const InstructorApplicationModal = ({
       formData.append("portfolio_url", form.portfolio_url);
       formData.append("motivation", form.motivation);
       formData.append("terms_accepted", String(form.terms_accepted));
-
+      if (profileImageFile) {
+        formData.append("profile_image", profileImageFile);
+      }
       formData.append("resume", resume);
 
       supportingFiles.forEach((file) => {
@@ -305,9 +364,11 @@ const InstructorApplicationModal = ({
   const iconTileClass =
     "flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]";
 
-  const profileImageUrl = form.profile_image
-    ? `http://localhost:8000${form.profile_image}`
-    : null;
+  const profileImageUrl = profileImagePreview
+    ? profileImagePreview
+    : form.profile_image
+      ? `http://localhost:8000${form.profile_image}`
+      : null;
 
   return (
     <div
@@ -449,12 +510,30 @@ const InstructorApplicationModal = ({
                       </div>
                     )}
 
-                    <button
-                      type="button"
-                      className="rounded-md border border-blue-500/30 bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-400 transition-all hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300 cursor-pointer"
+                    <label
+                      htmlFor="profile-image-upload"
+                      className="cursor-pointer rounded-md border border-blue-500/30 bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-400 transition-all hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300"
                     >
                       Change photo
-                    </button>
+                    </label>
+
+                    <input
+                      id="profile-image-upload"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="sr-only"
+                      onChange={(event) => {
+                        handleProfileImageChange(event.target.files?.[0]);
+
+                        // Allows selecting the same image again.
+                        event.target.value = "";
+                      }}
+                    />
+                    {profileImageError && (
+                      <p className="text-center text-xs text-rose-300">
+                        {profileImageError}
+                      </p>
+                    )}
                   </div>
 
                   {/* Personal Details */}
@@ -803,58 +882,160 @@ const InstructorApplicationModal = ({
                 </label>
 
                 {/* RESUME + SUPPORTING FILES (side by side on large screens) */}
-                <div className="mt-5 grid gap-6 lg:grid-cols-2">
+                <div className="mt-5 grid items-stretch gap-6 lg:grid-cols-2">
                   {/* RESUME / CV */}
-                  <div className="flex flex-col">
+                  {/* RESUME / CV */}
+                  <div className="flex h-full flex-col">
                     <label className={labelClass}>Resume / CV</label>
 
                     <p className="mt-1 text-xs leading-5 text-zinc-500">
                       Upload your latest resume or CV.
                     </p>
 
-                    <label
-                      className={`group mt-3 flex flex-1 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed ${
-                        resumeError
-                          ? "border-rose-400/50 bg-rose-400/[0.03]"
-                          : resume
-                            ? "border-blue-400/50 bg-blue-500/[0.06]"
-                            : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
-                      } px-5 py-7 text-center transition`}
-                    >
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        className="sr-only"
-                        onChange={(e) =>
-                          handleResumeChange(e.target.files?.[0])
-                        }
-                      />
+                    {resume ? (
+                      /* Selected resume */
+                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
+                        <div className="flex items-center gap-4">
+                          {/* File icon */}
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-blue-500/10 text-blue-300">
+                            <FileText className="h-6 w-6" />
+                          </div>
 
+                          {/* File information */}
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium text-white">
+                              {resume.name}
+                            </p>
+
+                            <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
+                              <span>
+                                {resume.name.split(".").pop()?.toUpperCase()}{" "}
+                                file
+                              </span>
+
+                              <span className="text-zinc-700">•</span>
+
+                              <span>
+                                {(resume.size / (1024 * 1024)).toFixed(2)} MB
+                              </span>
+                            </div>
+
+                            <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Ready to submit</span>
+                            </div>
+                          </div>
+
+                          {/* Remove resume */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setResume(null);
+                              setResumeError("");
+                            }}
+                            aria-label="Remove resume"
+                            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        {/* Change resume */}
+                        <label
+                          htmlFor="resume-upload"
+                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+                        >
+                          Change resume
+                        </label>
+
+                        <input
+                          id="resume-upload"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          className="hidden"
+                          onChange={(event) => {
+                            handleResumeChange(event.target.files?.[0]);
+                            event.target.value = "";
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      /* Upload / drag & drop */
                       <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
-                          resume
-                            ? "border-blue-400/40 bg-blue-500/20 text-blue-200"
-                            : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                        onDragOver={(event) => {
+                          event.preventDefault();
+                          setIsDraggingResume(true);
+                        }}
+                        onDragEnter={(event) => {
+                          event.preventDefault();
+                          setIsDraggingResume(true);
+                        }}
+                        onDragLeave={(event) => {
+                          event.preventDefault();
+                          setIsDraggingResume(false);
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          setIsDraggingResume(false);
+
+                          const file = event.dataTransfer.files?.[0];
+
+                          if (file) {
+                            handleResumeChange(file);
+                          }
+                        }}
+                        className={`group mt-3 flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-8 text-center transition ${
+                          resumeError
+                            ? "border-rose-400/50 bg-rose-400/[0.03]"
+                            : isDraggingResume
+                              ? "border-blue-400 bg-blue-500/[0.08] shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
+                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
                         }`}
                       >
-                        {resume ? (
-                          <CheckCircle2 className="h-5 w-5" />
-                        ) : (
+                        {/* Upload icon */}
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
+                            isDraggingResume
+                              ? "border-blue-400/50 bg-blue-500/20 text-blue-200"
+                              : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                          }`}
+                        >
                           <UploadCloud className="h-5 w-5" />
-                        )}
+                        </div>
+
+                        {/* Upload text */}
+                        <span className="mt-3 text-sm font-medium text-white">
+                          {isDraggingResume
+                            ? "Drop your resume here"
+                            : "Drag & drop your resume here"}
+                        </span>
+
+                        <span className="mt-1 text-xs text-zinc-500">
+                          PDF, DOC, or DOCX · Max 5 MB
+                        </span>
+
+                        {/* Select button */}
+                        <label
+                          htmlFor="resume-upload"
+                          className="mt-4 cursor-pointer rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300"
+                        >
+                          Select resume
+                        </label>
+
+                        <input
+                          id="resume-upload"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          className="hidden"
+                          onChange={(event) => {
+                            handleResumeChange(event.target.files?.[0]);
+                            event.target.value = "";
+                          }}
+                        />
                       </div>
+                    )}
 
-                      <span className="mt-3 text-sm font-medium text-white">
-                        {resume ? resume.name : "Click to upload your resume"}
-                      </span>
-
-                      <span className="mt-1 text-xs text-zinc-500">
-                        {resume
-                          ? `${(resume.size / (1024 * 1024)).toFixed(2)} MB · Ready`
-                          : "PDF, DOC, or DOCX · Max 5 MB"}
-                      </span>
-                    </label>
-
+                    {/* Resume error */}
                     {resumeError && (
                       <p className="mt-2 text-xs text-rose-300">
                         {resumeError}
@@ -863,82 +1044,132 @@ const InstructorApplicationModal = ({
                   </div>
 
                   {/* SUPPORTING FILES */}
-                  <div className="flex flex-col">
+
+                  {/* SUPPORTING FILES */}
+                  <div className="flex h-full flex-col">
                     <label className={labelClass}>Supporting files</label>
 
                     <p className="mt-1 text-xs leading-5 text-zinc-500">
                       Add certificates or other relevant documents.
                     </p>
 
-                    <label
-                      className={`group mt-3 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed ${
+                    {/* Drop zone */}
+                    {/* Drop zone */}
+                    <div
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                      }}
+                      onDragEnter={(event) => {
+                        event.preventDefault();
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+
+                        handleSupportingFilesChange(event.dataTransfer.files);
+                      }}
+                      className={`group mt-3 flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-7 text-center transition ${
                         supportingFilesError
                           ? "border-rose-400/50 bg-rose-400/[0.03]"
                           : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
-                      } px-5 py-7 text-center transition`}
+                      }`}
                     >
-                      <input
-                        type="file"
-                        multiple
-                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                        className="sr-only"
-                        onChange={(event) => {
-                          handleSupportingFilesChange(event.target.files);
-                          event.target.value = "";
-                        }}
-                      />
-
+                      {/* Upload icon */}
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300 transition group-hover:border-blue-400/40 group-hover:bg-blue-500/10">
                         <UploadCloud className="h-5 w-5" />
                       </div>
 
+                      {/* Upload text */}
                       <span className="mt-3 text-sm font-medium text-white">
-                        Choose supporting files
+                        Drag & drop your files here
                       </span>
 
                       <span className="mt-1 text-xs text-zinc-500">
                         PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB each
                       </span>
-                    </label>
 
+                      {/* Select files button */}
+                      <label
+                        htmlFor="supporting-files-upload"
+                        className="mt-4 cursor-pointer rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300"
+                      >
+                        Select files
+                      </label>
+
+                      {/* Hidden file input */}
+                      <input
+                        id="supporting-files-upload"
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        className="hidden"
+                        onChange={(event) => {
+                          handleSupportingFilesChange(event.target.files);
+
+                          // Allows selecting the same file again.
+                          event.target.value = "";
+                        }}
+                      />
+                    </div>
+
+                    {/* Error */}
                     {supportingFilesError && (
                       <p className="mt-2 text-xs text-rose-300">
                         {supportingFilesError}
                       </p>
                     )}
 
+                    {/* Selected files */}
                     {supportingFiles.length > 0 && (
                       <div className="mt-3 space-y-2">
-                        {supportingFiles.map((file) => (
+                        {supportingFiles.map((file, index) => (
                           <div
-                            key={`${file.name}-${file.size}`}
-                            className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-3 py-2.5 transition hover:border-blue-400/25 hover:bg-blue-500/[0.04]"
+                            key={`${file.name}-${file.size}-${index}`}
+                            className="flex items-center gap-3 rounded-xl border border-blue-400/15 bg-blue-500/[0.03] px-3 py-2.5 transition hover:border-blue-400/30 hover:bg-blue-500/[0.05]"
                           >
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/10 text-blue-300">
+                            {/* File icon */}
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/10 text-blue-300">
                               <FileText className="h-4 w-4" />
                             </div>
 
+                            {/* File information */}
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm text-zinc-200">
+                              <p className="truncate text-sm font-medium text-zinc-200">
                                 {file.name}
                               </p>
 
-                              <p className="text-xs text-zinc-500">
-                                {(file.size / (1024 * 1024)).toFixed(2)} MB
-                              </p>
+                              <div className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500">
+                                <span>
+                                  {file.name.split(".").pop()?.toUpperCase()}{" "}
+                                  file
+                                </span>
+
+                                <span className="text-zinc-700">•</span>
+
+                                <span>
+                                  {(file.size / (1024 * 1024)).toFixed(2)} MB
+                                </span>
+                              </div>
                             </div>
 
+                            {/* Remove */}
                             <button
                               type="button"
                               onClick={() => removeSupportingFile(file.name)}
                               aria-label={`Remove ${file.name}`}
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                              className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
                             >
                               <X className="h-4 w-4" />
                             </button>
                           </div>
                         ))}
                       </div>
+                    )}
+
+                    {/* File count */}
+                    {supportingFiles.length > 0 && (
+                      <p className="mt-2 text-right text-xs text-zinc-600">
+                        {supportingFiles.length}/5 files selected
+                      </p>
                     )}
                   </div>
                 </div>
