@@ -94,6 +94,7 @@ const InstructorApplicationModal = ({
 
   const [supportingFiles, setSupportingFiles] = useState<File[]>([]);
   const [supportingFilesError, setSupportingFilesError] = useState("");
+  const [isDraggingSupporting, setIsDraggingSupporting] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
@@ -881,16 +882,33 @@ const InstructorApplicationModal = ({
                   </span>
                 </label>
 
-                {/* RESUME + SUPPORTING FILES (side by side on large screens) */}
-                <div className="mt-5 grid items-stretch gap-6 lg:grid-cols-2">
+                {/* ───────────────────────────────────────────────
+                    DOCUMENTS — Resume + Supporting files
+                    Stacked full-width so the supporting files lay
+                    out as a grid of resume-style "ready" cards.
+                   ─────────────────────────────────────────────── */}
+                <div className="mt-6 space-y-6">
                   {/* RESUME / CV */}
-                  {/* RESUME / CV */}
-                  <div className="flex h-full flex-col">
-                    <label className={labelClass}>Resume / CV</label>
+                  <div className="flex flex-col">
+                    <div className="flex items-end justify-between gap-3">
+                      <div>
+                        <label className={labelClass}>Resume / CV</label>
 
-                    <p className="mt-1 text-xs leading-5 text-zinc-500">
-                      Upload your latest resume or CV.
-                    </p>
+                        <p className="mt-1 text-xs leading-5 text-zinc-500">
+                          Upload your latest resume or CV.
+                        </p>
+                      </div>
+
+                      <span
+                        className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
+                          resume
+                            ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
+                            : "border-blue-400/20 bg-blue-500/10 text-blue-200"
+                        }`}
+                      >
+                        {resume ? "Attached" : "Required"}
+                      </span>
+                    </div>
 
                     {resume ? (
                       /* Selected resume */
@@ -903,7 +921,10 @@ const InstructorApplicationModal = ({
 
                           {/* File information */}
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-white">
+                            <p
+                              className="truncate text-sm font-medium text-white"
+                              title={resume.name}
+                            >
                               {resume.name}
                             </p>
 
@@ -984,7 +1005,7 @@ const InstructorApplicationModal = ({
                             handleResumeChange(file);
                           }
                         }}
-                        className={`group mt-3 flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-8 text-center transition ${
+                        className={`group mt-3 flex flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-8 text-center transition ${
                           resumeError
                             ? "border-rose-400/50 bg-rose-400/[0.03]"
                             : isDraggingResume
@@ -1043,73 +1064,107 @@ const InstructorApplicationModal = ({
                     )}
                   </div>
 
-                  {/* SUPPORTING FILES */}
+                  {/* Divider */}
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                   {/* SUPPORTING FILES */}
-                  <div className="flex h-full flex-col">
-                    <label className={labelClass}>Supporting files</label>
+                  <div className="flex flex-col">
+                    <div className="flex items-end justify-between gap-3">
+                      <div>
+                        <label className={labelClass}>Supporting files</label>
 
-                    <p className="mt-1 text-xs leading-5 text-zinc-500">
-                      Add certificates or other relevant documents.
-                    </p>
-
-                    {/* Drop zone */}
-                    {/* Drop zone */}
-                    <div
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                      }}
-                      onDragEnter={(event) => {
-                        event.preventDefault();
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-
-                        handleSupportingFilesChange(event.dataTransfer.files);
-                      }}
-                      className={`group mt-3 flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-7 text-center transition ${
-                        supportingFilesError
-                          ? "border-rose-400/50 bg-rose-400/[0.03]"
-                          : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
-                      }`}
-                    >
-                      {/* Upload icon */}
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300 transition group-hover:border-blue-400/40 group-hover:bg-blue-500/10">
-                        <UploadCloud className="h-5 w-5" />
+                        <p className="mt-1 text-xs leading-5 text-zinc-500">
+                          Add certificates or other relevant documents.
+                        </p>
                       </div>
 
-                      {/* Upload text */}
-                      <span className="mt-3 text-sm font-medium text-white">
-                        Drag & drop your files here
-                      </span>
-
-                      <span className="mt-1 text-xs text-zinc-500">
-                        PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB each
-                      </span>
-
-                      {/* Select files button */}
-                      <label
-                        htmlFor="supporting-files-upload"
-                        className="mt-4 cursor-pointer rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300"
+                      <span
+                        className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
+                          supportingFiles.length >= 5
+                            ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
+                            : "border-blue-400/20 bg-blue-500/10 text-blue-200"
+                        }`}
                       >
-                        Select files
-                      </label>
-
-                      {/* Hidden file input */}
-                      <input
-                        id="supporting-files-upload"
-                        type="file"
-                        multiple
-                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                        className="hidden"
-                        onChange={(event) => {
-                          handleSupportingFilesChange(event.target.files);
-
-                          // Allows selecting the same file again.
-                          event.target.value = "";
-                        }}
-                      />
+                        {supportingFiles.length}/5 files
+                      </span>
                     </div>
+
+                    {/* Drop zone — hidden once the limit is reached */}
+                    {supportingFiles.length < 5 && (
+                      <div
+                        onDragOver={(event) => {
+                          event.preventDefault();
+                          setIsDraggingSupporting(true);
+                        }}
+                        onDragEnter={(event) => {
+                          event.preventDefault();
+                          setIsDraggingSupporting(true);
+                        }}
+                        onDragLeave={(event) => {
+                          event.preventDefault();
+                          setIsDraggingSupporting(false);
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          setIsDraggingSupporting(false);
+
+                          handleSupportingFilesChange(event.dataTransfer.files);
+                        }}
+                        className={`group mt-3 flex flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-7 text-center transition ${
+                          supportingFilesError
+                            ? "border-rose-400/50 bg-rose-400/[0.03]"
+                            : isDraggingSupporting
+                              ? "border-blue-400 bg-blue-500/[0.08] shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
+                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
+                        }`}
+                      >
+                        {/* Upload icon */}
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
+                            isDraggingSupporting
+                              ? "border-blue-400/50 bg-blue-500/20 text-blue-200"
+                              : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                          }`}
+                        >
+                          <UploadCloud className="h-5 w-5" />
+                        </div>
+
+                        {/* Upload text */}
+                        <span className="mt-3 text-sm font-medium text-white">
+                          {isDraggingSupporting
+                            ? "Drop your files here"
+                            : "Drag & drop your files here"}
+                        </span>
+
+                        <span className="mt-1 text-xs text-zinc-500">
+                          PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB
+                          each
+                        </span>
+
+                        {/* Select files button */}
+                        <label
+                          htmlFor="supporting-files-upload"
+                          className="mt-4 cursor-pointer rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-blue-300"
+                        >
+                          Select files
+                        </label>
+
+                        {/* Hidden file input */}
+                        <input
+                          id="supporting-files-upload"
+                          type="file"
+                          multiple
+                          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                          className="hidden"
+                          onChange={(event) => {
+                            handleSupportingFilesChange(event.target.files);
+
+                            // Allows selecting the same file again.
+                            event.target.value = "";
+                          }}
+                        />
+                      </div>
+                    )}
 
                     {/* Error */}
                     {supportingFilesError && (
@@ -1118,58 +1173,62 @@ const InstructorApplicationModal = ({
                       </p>
                     )}
 
-                    {/* Selected files */}
+                    {/* Selected files — resume-style cards in a responsive grid */}
                     {supportingFiles.length > 0 && (
-                      <div className="mt-3 space-y-2">
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         {supportingFiles.map((file, index) => (
                           <div
                             key={`${file.name}-${file.size}-${index}`}
-                            className="flex items-center gap-3 rounded-xl border border-blue-400/15 bg-blue-500/[0.03] px-3 py-2.5 transition hover:border-blue-400/30 hover:bg-blue-500/[0.05]"
+                            className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40"
                           >
-                            {/* File icon */}
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/10 text-blue-300">
-                              <FileText className="h-4 w-4" />
-                            </div>
-
-                            {/* File information */}
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-zinc-200">
-                                {file.name}
-                              </p>
-
-                              <div className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500">
-                                <span>
-                                  {file.name.split(".").pop()?.toUpperCase()}{" "}
-                                  file
-                                </span>
-
-                                <span className="text-zinc-700">•</span>
-
-                                <span>
-                                  {(file.size / (1024 * 1024)).toFixed(2)} MB
-                                </span>
+                            <div className="flex items-start gap-3">
+                              {/* File icon */}
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-blue-500/10 text-blue-300">
+                                <FileText className="h-5 w-5" />
                               </div>
+
+                              {/* File information */}
+                              <div className="min-w-0 flex-1">
+                                <p
+                                  className="truncate text-sm font-medium text-white"
+                                  title={file.name}
+                                >
+                                  {file.name}
+                                </p>
+
+                                <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
+                                  <span>
+                                    {file.name.split(".").pop()?.toUpperCase()}{" "}
+                                    file
+                                  </span>
+
+                                  <span className="text-zinc-700">•</span>
+
+                                  <span>
+                                    {(file.size / (1024 * 1024)).toFixed(2)} MB
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Remove */}
+                              <button
+                                type="button"
+                                onClick={() => removeSupportingFile(file.name)}
+                                aria-label={`Remove ${file.name}`}
+                                className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
                             </div>
 
-                            {/* Remove */}
-                            <button
-                              type="button"
-                              onClick={() => removeSupportingFile(file.name)}
-                              aria-label={`Remove ${file.name}`}
-                              className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
+                            {/* Ready badge */}
+                            <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Ready to submit</span>
+                            </div>
                           </div>
                         ))}
                       </div>
-                    )}
-
-                    {/* File count */}
-                    {supportingFiles.length > 0 && (
-                      <p className="mt-2 text-right text-xs text-zinc-600">
-                        {supportingFiles.length}/5 files selected
-                      </p>
                     )}
                   </div>
                 </div>
