@@ -245,7 +245,7 @@ const InstructorApplicationModal = ({
   const labelClass = "block text-sm font-medium text-zinc-300";
 
   const sectionClass =
-    "rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6";
+    "flex flex-col rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6";
 
   const iconTileClass =
     "flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]";
@@ -263,7 +263,7 @@ const InstructorApplicationModal = ({
         aria-labelledby="application-modal-title"
         aria-modal="true"
         role="dialog"
-        className="relative flex h-full w-full flex-col overflow-hidden border border-white/10 bg-[#0A0B10] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10 sm:h-[min(92vh,900px)] sm:max-w-4xl sm:rounded-3xl"
+        className="relative flex h-full w-full flex-col overflow-hidden border border-white/10 bg-[#0A0B10] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10 sm:h-[min(92vh,900px)] sm:max-w-5xl sm:rounded-3xl"
       >
         {/* Ambient blue glows */}
         <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
@@ -430,6 +430,7 @@ const InstructorApplicationModal = ({
                   </div>
                 </div>
               </div>
+
               {/* PROFESSIONAL INFORMATION */}
               <div className={sectionClass}>
                 <div className="mb-5 flex items-center gap-3">
@@ -448,7 +449,7 @@ const InstructorApplicationModal = ({
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <label className={labelClass}>
                     Occupation
                     <input
@@ -516,7 +517,9 @@ const InstructorApplicationModal = ({
                     />
                   </label>
 
-                  <label className={`${labelClass} sm:col-span-2`}>
+                  <label
+                    className={`${labelClass} sm:col-span-2 lg:col-span-2`}
+                  >
                     Location
                     <input
                       className={inputClass}
@@ -611,100 +614,106 @@ const InstructorApplicationModal = ({
                   </div>
                 </div>
               </div>
-              {/* ABOUT YOU */}
-              <div className={sectionClass}>
-                <div className="mb-5 flex items-center gap-3">
-                  <div className={iconTileClass}>
-                    <UserRound className="h-4 w-4" />
+
+              {/* ABOUT YOU + PROFESSIONAL LINKS (side by side on large screens) */}
+              <div className="grid gap-5 lg:grid-cols-2">
+                {/* ABOUT YOU */}
+                <div className={sectionClass}>
+                  <div className="mb-5 flex items-center gap-3">
+                    <div className={iconTileClass}>
+                      <UserRound className="h-4 w-4" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">
+                        About you
+                      </h3>
+
+                      <p className="mt-0.5 text-xs text-zinc-500">
+                        Help learners and our team get to know you.
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">
-                      About you
-                    </h3>
-
-                    <p className="mt-0.5 text-xs text-zinc-500">
-                      Help learners and our team get to know you.
-                    </p>
-                  </div>
+                  <label className={`${labelClass} flex flex-1 flex-col`}>
+                    Short professional bio
+                    <textarea
+                      className={`${inputClass} min-h-28 flex-1 resize-none`}
+                      value={form.short_bio}
+                      onChange={(e) => updateField("short_bio", e.target.value)}
+                      placeholder="Share your background, skills, and what makes your teaching approach unique..."
+                      maxLength={1000}
+                    />
+                    <span className="mt-1 block text-right text-xs text-zinc-600">
+                      {form.short_bio.length}/1000
+                    </span>
+                  </label>
                 </div>
 
-                <label className={labelClass}>
-                  Short professional bio
-                  <textarea
-                    className={`${inputClass} min-h-28 resize-none`}
-                    value={form.short_bio}
-                    onChange={(e) => updateField("short_bio", e.target.value)}
-                    placeholder="Share your background, skills, and what makes your teaching approach unique..."
-                    maxLength={1000}
-                  />
-                  <span className="mt-1 block text-right text-xs text-zinc-600">
-                    {form.short_bio.length}/1000
-                  </span>
-                </label>
+                {/* PROFESSIONAL LINKS */}
+                <div className={sectionClass}>
+                  <div className="mb-5 flex items-center gap-3">
+                    <div className={iconTileClass}>
+                      <Link2 className="h-4 w-4" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-white">
+                        Professional links
+                      </h3>
+
+                      <p className="mt-0.5 text-xs text-zinc-500">
+                        Add links to showcase your professional work.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4">
+                    <label className={labelClass}>
+                      LinkedIn URL
+                      <input
+                        className={inputClass}
+                        type="url"
+                        value={form.linkedin_url}
+                        onChange={(e) =>
+                          updateField("linkedin_url", e.target.value)
+                        }
+                        placeholder="https://linkedin.com/in/you"
+                        maxLength={255}
+                      />
+                    </label>
+
+                    <label className={labelClass}>
+                      GitHub URL
+                      <input
+                        className={inputClass}
+                        type="url"
+                        value={form.github_url}
+                        onChange={(e) =>
+                          updateField("github_url", e.target.value)
+                        }
+                        placeholder="https://github.com/you"
+                        maxLength={255}
+                      />
+                    </label>
+
+                    <label className={labelClass}>
+                      Portfolio
+                      <input
+                        className={inputClass}
+                        type="url"
+                        value={form.portfolio_url}
+                        onChange={(e) =>
+                          updateField("portfolio_url", e.target.value)
+                        }
+                        placeholder="https://yourportfolio.com"
+                        maxLength={255}
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
-              {/* PROFESSIONAL LINKS */}
-              <div className={sectionClass}>
-                <div className="mb-5 flex items-center gap-3">
-                  <div className={iconTileClass}>
-                    <Link2 className="h-4 w-4" />
-                  </div>
 
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">
-                      Professional links
-                    </h3>
-
-                    <p className="mt-0.5 text-xs text-zinc-500">
-                      Add links to showcase your professional work.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className={labelClass}>
-                    LinkedIn URL
-                    <input
-                      className={inputClass}
-                      type="url"
-                      value={form.linkedin_url}
-                      onChange={(e) =>
-                        updateField("linkedin_url", e.target.value)
-                      }
-                      placeholder="https://linkedin.com/in/you"
-                      maxLength={255}
-                    />
-                  </label>
-
-                  <label className={labelClass}>
-                    GitHub URL
-                    <input
-                      className={inputClass}
-                      type="url"
-                      value={form.github_url}
-                      onChange={(e) =>
-                        updateField("github_url", e.target.value)
-                      }
-                      placeholder="https://github.com/you"
-                      maxLength={255}
-                    />
-                  </label>
-
-                  <label className={`${labelClass} sm:col-span-2`}>
-                    Portfolio
-                    <input
-                      className={inputClass}
-                      type="url"
-                      value={form.portfolio_url}
-                      onChange={(e) =>
-                        updateField("portfolio_url", e.target.value)
-                      }
-                      placeholder="https://yourportfolio.com"
-                      maxLength={255}
-                    />
-                  </label>
-                </div>
-              </div>
               {/* APPLICATION */}
 
               <div className={sectionClass}>
@@ -738,134 +747,145 @@ const InstructorApplicationModal = ({
                   </span>
                 </label>
 
-                {/* RESUME / CV */}
-                <div className="mt-5">
-                  <label className={labelClass}>Resume / CV</label>
+                {/* RESUME + SUPPORTING FILES (side by side on large screens) */}
+                <div className="mt-5 grid gap-6 lg:grid-cols-2">
+                  {/* RESUME / CV */}
+                  <div className="flex flex-col">
+                    <label className={labelClass}>Resume / CV</label>
 
-                  <label
-                    className={`group mt-2 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed ${
-                      resumeError
-                        ? "border-rose-400/50 bg-rose-400/[0.03]"
-                        : resume
-                          ? "border-blue-400/50 bg-blue-500/[0.06]"
-                          : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
-                    } px-5 py-7 text-center transition`}
-                  >
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      className="sr-only"
-                      onChange={(e) => handleResumeChange(e.target.files?.[0])}
-                    />
-
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
-                        resume
-                          ? "border-blue-400/40 bg-blue-500/20 text-blue-200"
-                          : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
-                      }`}
-                    >
-                      {resume ? (
-                        <CheckCircle2 className="h-5 w-5" />
-                      ) : (
-                        <UploadCloud className="h-5 w-5" />
-                      )}
-                    </div>
-
-                    <span className="mt-3 text-sm font-medium text-white">
-                      {resume ? resume.name : "Click to upload your resume"}
-                    </span>
-
-                    <span className="mt-1 text-xs text-zinc-500">
-                      {resume
-                        ? `${(resume.size / (1024 * 1024)).toFixed(2)} MB · Ready`
-                        : "PDF, DOC, or DOCX · Max 5 MB"}
-                    </span>
-                  </label>
-
-                  {resumeError && (
-                    <p className="mt-2 text-xs text-rose-300">{resumeError}</p>
-                  )}
-                </div>
-
-                {/* SUPPORTING FILES */}
-                <div className="mt-6">
-                  <label className={labelClass}>Supporting files</label>
-
-                  <p className="mt-1 text-xs leading-5 text-zinc-500">
-                    Add certificates or other relevant documents.
-                  </p>
-
-                  <label
-                    className={`group mt-3 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed ${
-                      supportingFilesError
-                        ? "border-rose-400/50 bg-rose-400/[0.03]"
-                        : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
-                    } px-5 py-7 text-center transition`}
-                  >
-                    <input
-                      type="file"
-                      multiple
-                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                      className="sr-only"
-                      onChange={(event) => {
-                        handleSupportingFilesChange(event.target.files);
-                        event.target.value = "";
-                      }}
-                    />
-
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300 transition group-hover:border-blue-400/40 group-hover:bg-blue-500/10">
-                      <UploadCloud className="h-5 w-5" />
-                    </div>
-
-                    <span className="mt-3 text-sm font-medium text-white">
-                      Choose supporting files
-                    </span>
-
-                    <span className="mt-1 text-xs text-zinc-500">
-                      PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB each
-                    </span>
-                  </label>
-
-                  {supportingFilesError && (
-                    <p className="mt-2 text-xs text-rose-300">
-                      {supportingFilesError}
+                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                      Upload your latest resume or CV.
                     </p>
-                  )}
 
-                  {supportingFiles.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      {supportingFiles.map((file) => (
-                        <div
-                          key={`${file.name}-${file.size}`}
-                          className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-3 py-2.5 transition hover:border-blue-400/25 hover:bg-blue-500/[0.04]"
-                        >
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/10 text-blue-300">
-                            <FileText className="h-4 w-4" />
-                          </div>
+                    <label
+                      className={`group mt-3 flex flex-1 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed ${
+                        resumeError
+                          ? "border-rose-400/50 bg-rose-400/[0.03]"
+                          : resume
+                            ? "border-blue-400/50 bg-blue-500/[0.06]"
+                            : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
+                      } px-5 py-7 text-center transition`}
+                    >
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        className="sr-only"
+                        onChange={(e) =>
+                          handleResumeChange(e.target.files?.[0])
+                        }
+                      />
 
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm text-zinc-200">
-                              {file.name}
-                            </p>
+                      <div
+                        className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
+                          resume
+                            ? "border-blue-400/40 bg-blue-500/20 text-blue-200"
+                            : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                        }`}
+                      >
+                        {resume ? (
+                          <CheckCircle2 className="h-5 w-5" />
+                        ) : (
+                          <UploadCloud className="h-5 w-5" />
+                        )}
+                      </div>
 
-                            <p className="text-xs text-zinc-500">
-                              {(file.size / (1024 * 1024)).toFixed(2)} MB
-                            </p>
-                          </div>
+                      <span className="mt-3 text-sm font-medium text-white">
+                        {resume ? resume.name : "Click to upload your resume"}
+                      </span>
 
-                          <button
-                            type="button"
-                            onClick={() => removeSupportingFile(file.name)}
-                            aria-label={`Remove ${file.name}`}
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                      <span className="mt-1 text-xs text-zinc-500">
+                        {resume
+                          ? `${(resume.size / (1024 * 1024)).toFixed(2)} MB · Ready`
+                          : "PDF, DOC, or DOCX · Max 5 MB"}
+                      </span>
+                    </label>
+
+                    {resumeError && (
+                      <p className="mt-2 text-xs text-rose-300">
+                        {resumeError}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* SUPPORTING FILES */}
+                  <div className="flex flex-col">
+                    <label className={labelClass}>Supporting files</label>
+
+                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                      Add certificates or other relevant documents.
+                    </p>
+
+                    <label
+                      className={`group mt-3 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed ${
+                        supportingFilesError
+                          ? "border-rose-400/50 bg-rose-400/[0.03]"
+                          : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
+                      } px-5 py-7 text-center transition`}
+                    >
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        className="sr-only"
+                        onChange={(event) => {
+                          handleSupportingFilesChange(event.target.files);
+                          event.target.value = "";
+                        }}
+                      />
+
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-blue-300 transition group-hover:border-blue-400/40 group-hover:bg-blue-500/10">
+                        <UploadCloud className="h-5 w-5" />
+                      </div>
+
+                      <span className="mt-3 text-sm font-medium text-white">
+                        Choose supporting files
+                      </span>
+
+                      <span className="mt-1 text-xs text-zinc-500">
+                        PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB each
+                      </span>
+                    </label>
+
+                    {supportingFilesError && (
+                      <p className="mt-2 text-xs text-rose-300">
+                        {supportingFilesError}
+                      </p>
+                    )}
+
+                    {supportingFiles.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        {supportingFiles.map((file) => (
+                          <div
+                            key={`${file.name}-${file.size}`}
+                            className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-3 py-2.5 transition hover:border-blue-400/25 hover:bg-blue-500/[0.04]"
                           >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-400/20 bg-blue-500/10 text-blue-300">
+                              <FileText className="h-4 w-4" />
+                            </div>
+
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm text-zinc-200">
+                                {file.name}
+                              </p>
+
+                              <p className="text-xs text-zinc-500">
+                                {(file.size / (1024 * 1024)).toFixed(2)} MB
+                              </p>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removeSupportingFile(file.name)}
+                              aria-label={`Remove ${file.name}`}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
