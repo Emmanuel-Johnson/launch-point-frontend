@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  createInstructorApplication,
   getInstructorApplicationFormData,
   type InstructorApplicationCategory,
   type InstructorApplicationFormData,
@@ -239,6 +240,60 @@ const InstructorApplicationModal = ({
     onClose();
   };
 
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      setLoadError("");
+
+      if (!resume) {
+        setResumeError("Please upload your resume.");
+        return;
+      }
+
+      if (form.categories_to_teach.length === 0) {
+        setLoadError("Please select at least one category.");
+        return;
+      }
+
+      const formData = new FormData();
+
+      formData.append("full_name", form.full_name);
+      formData.append("occupation", form.occupation);
+      formData.append("education", form.education);
+      formData.append("years_of_experience", form.years_of_experience);
+
+      form.categories_to_teach.forEach((categoryId) => {
+        formData.append("categories_to_teach", String(categoryId));
+      });
+
+      formData.append("short_bio", form.short_bio);
+      formData.append("phone_number", form.phone_number);
+      formData.append("location", form.location);
+      formData.append("linkedin_url", form.linkedin_url);
+      formData.append("github_url", form.github_url);
+      formData.append("portfolio_url", form.portfolio_url);
+      formData.append("motivation", form.motivation);
+      formData.append("terms_accepted", String(form.terms_accepted));
+
+      formData.append("resume", resume);
+
+      supportingFiles.forEach((file) => {
+        formData.append("supporting_files", file);
+      });
+
+      const response = await createInstructorApplication(formData);
+
+      console.log("Application submitted:", response);
+
+      closeAndReset();
+    } catch (error) {
+      console.error("Failed to submit instructor application:", error);
+
+      setLoadError("Unable to submit your application. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const inputClass =
     "mt-2 w-full rounded-xl border border-white/10 bg-[#0D0F15] px-4 py-3 text-sm text-white outline-none transition-colors duration-200 placeholder:text-zinc-600 hover:border-white/20 focus:border-blue-500 focus:bg-[#0F1218] focus:ring-4 focus:ring-blue-500/15";
 
@@ -927,14 +982,28 @@ const InstructorApplicationModal = ({
 
                 <button
                   type="button"
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 sm:flex-none"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
-                  Submit application
-                  <span
-                    aria-hidden="true"
-                    className="transition-transform group-hover:translate-x-0.5"
-                  >
-                    →
+                  <span className="flex h-5 min-w-[150px] items-center justify-center">
+                    {isLoading ? (
+                      <span
+                        className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                        aria-label="Submitting"
+                      />
+                    ) : (
+                      <>
+                        <span>Submit application</span>
+
+                        <span
+                          aria-hidden="true"
+                          className="ml-2 transition-transform group-hover:translate-x-0.5"
+                        >
+                          →
+                        </span>
+                      </>
+                    )}
                   </span>
                 </button>
               </div>

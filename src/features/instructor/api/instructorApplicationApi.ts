@@ -30,3 +30,20 @@ export const getInstructorApplicationFormData =
 
     return response.data;
   };
+
+export interface InstructorApplicationResponse {
+  id: number;
+  status: string;
+  submitted_at: string;
+}
+
+export const createInstructorApplication = async (
+  formData: FormData,
+): Promise<InstructorApplicationResponse> => {
+  const response = await api.post<InstructorApplicationResponse>(
+    "/instructors/application/",
+    formData,
+  );
+
+  return response.data;
+};
