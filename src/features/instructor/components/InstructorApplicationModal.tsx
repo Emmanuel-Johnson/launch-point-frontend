@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { z } from "zod";
 
 import {
   createInstructorApplication,
@@ -19,6 +20,179 @@ import {
   Plus,
   Check,
 } from "lucide-react";
+
+const DEFAULT_PROFILE_IMAGE = "/media/profile_images/default_profile.png";
+
+const hasRepeatedSpecialCharacter = (value: string): boolean => {
+  return /[^\p{L}\p{N}\s]{3,}/u.test(value);
+};
+
+const applicationSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .min(1, "Full name is required")
+    .min(3, "Full name must be at least 3 characters")
+    .max(50, "Full name cannot exceed 50 characters")
+    .refine(
+      (value) => !/\s{2,}/.test(value),
+      "Please don't enter multiple spaces between names",
+    )
+    .regex(
+      /^[\p{L}]+(?:\s[\p{L}]+)*$/u,
+      "Full name can contain only letters and spaces",
+    ),
+
+  profile_image: z
+    .union([z.instanceof(File), z.string()])
+    .nullable()
+    .refine((value) => value !== null && value !== "", {
+      message: "Please upload your profile picture.",
+    })
+    .refine(
+      (value) =>
+        !(value instanceof File) ||
+        ["image/jpeg", "image/png", "image/webp"].includes(value.type),
+      {
+        message: "Please choose a JPG, PNG, or WebP image.",
+      },
+    )
+    .refine(
+      (value) => !(value instanceof File) || value.size <= 5 * 1024 * 1024,
+      {
+        message: "Profile image must be 5 MB or smaller.",
+      },
+    ),
+
+  occupation: z
+    .string()
+    .trim()
+    .min(1, "Occupation is required")
+    .min(3, "Occupation must be at least 3 characters")
+    .max(100, "Occupation is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated 3 or more times consecutively",
+    ),
+
+  education: z
+    .string()
+    .trim()
+    .min(1, "Education is required")
+    .min(3, "Education must be at least 3 characters")
+    .max(150, "Education is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated 3 or more times consecutively",
+    ),
+
+  years_of_experience: z
+    .string()
+    .min(1, "Please select your years of experience"),
+
+  short_bio: z
+    .string()
+    .trim()
+    .min(1, "Short bio is required")
+    .min(10, "Short bio must be at least 10 characters")
+    .max(500, "Short bio cannot exceed 500 characters")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively",
+    ),
+
+  phone_number: z
+    .string()
+    .trim()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+
+  location: z
+    .string()
+    .trim()
+    .min(1, "Location is required")
+    .min(3, "Location must be at least 3 characters")
+    .max(100, "Location is too long")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "You cannot use 3 or more special characters consecutively",
+    ),
+
+  linkedin_url: z
+    .string()
+    .trim()
+    .min(1, "LinkedIn URL is required")
+    .url("Enter a valid LinkedIn URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "linkedin.com" ||
+            url.hostname === "www.linkedin.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "LinkedIn URL must be from linkedin.com"),
+
+  github_url: z
+    .string()
+    .trim()
+    .min(1, "GitHub URL is required")
+    .url("Enter a valid GitHub URL")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "github.com" || url.hostname === "www.github.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "GitHub URL must be from github.com"),
+
+  portfolio_url: z
+    .string()
+    .trim()
+    .min(1, "Portfolio URL is required")
+    .url("Enter a valid portfolio URL")
+    .refine((value) => {
+      try {
+        return new URL(value).protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "Portfolio URL must use HTTPS"),
+
+  motivation: z
+    .string()
+    .trim()
+    .min(1, "Motivation is required")
+    .min(10, "Motivation must be at least 10 characters")
+    .max(2000, "Motivation cannot exceed 2000 characters")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated 3 or more times consecutively",
+    ),
+
+  terms_accepted: z.boolean().refine((value) => value === true, {
+    message: "You must accept the terms before submitting.",
+  }),
+});
+
+type ValidationField = keyof z.infer<typeof applicationSchema>;
+type ValidationErrors = Partial<
+  Record<
+    | ValidationField
+    | "categories"
+    | "resume"
+    | "terms_accepted"
+    | "supporting_files",
+    string
+  >
+>;
 
 const experienceOptions = [
   { value: "less_than_one", label: "Less than 1 year" },
@@ -98,6 +272,9 @@ const InstructorApplicationModal = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {},
+  );
 
   useEffect(() => {
     if (!isOpen) return;
@@ -125,7 +302,10 @@ const InstructorApplicationModal = ({
           ...previous,
           full_name: data.user.full_name ?? "",
           email: data.user.email ?? "",
-          profile_image: data.user.profile_image ?? null,
+          profile_image:
+            data.user.profile_image === DEFAULT_PROFILE_IMAGE
+              ? null
+              : (data.user.profile_image ?? null),
           occupation: data.user.occupation ?? "",
           education: data.user.education ?? "",
           location: data.user.location ?? "",
@@ -168,6 +348,30 @@ const InstructorApplicationModal = ({
       ...previous,
       [field]: value,
     }));
+
+    if (field === "categories_to_teach") {
+      return;
+    }
+
+    if (field in applicationSchema.shape) {
+      const nextForm = { ...form, [field]: value };
+      const result = applicationSchema.safeParse(nextForm);
+      const issue = result.success
+        ? undefined
+        : result.error.issues.find((item) => item.path[0] === field);
+
+      setValidationErrors((previous) => {
+        const next = { ...previous };
+
+        if (issue) {
+          next[field as ValidationField] = issue.message;
+        } else {
+          delete next[field as ValidationField];
+        }
+
+        return next;
+      });
+    }
   };
 
   const handleProfileImageChange = (file?: File) => {
@@ -191,6 +395,11 @@ const InstructorApplicationModal = ({
     }
 
     setProfileImageFile(file);
+    setValidationErrors((previous) => {
+      const next = { ...previous };
+      delete next.profile_image;
+      return next;
+    });
 
     const previewUrl = URL.createObjectURL(file);
     setProfileImagePreview(previewUrl);
@@ -198,6 +407,11 @@ const InstructorApplicationModal = ({
 
   const handleResumeChange = (file?: File) => {
     setResumeError("");
+    setValidationErrors((previous) => {
+      const next = { ...previous };
+      delete next.resume;
+      return next;
+    });
 
     if (!file) {
       setResume(null);
@@ -208,21 +422,39 @@ const InstructorApplicationModal = ({
 
     if (!allowedExtensions.test(file.name)) {
       setResumeError("Please choose a PDF, DOC, or DOCX file.");
+      setValidationErrors((previous) => ({
+        ...previous,
+        resume: "Please choose a PDF, DOC, or DOCX file.",
+      }));
       setResume(null);
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       setResumeError("Your resume must be 5 MB or smaller.");
+      setValidationErrors((previous) => ({
+        ...previous,
+        resume: "Your resume must be 5 MB or smaller.",
+      }));
       setResume(null);
       return;
     }
 
     setResume(file);
+    setValidationErrors((previous) => {
+      const next = { ...previous };
+      delete next.resume;
+      return next;
+    });
   };
 
   const handleSupportingFilesChange = (files: FileList | null) => {
     setSupportingFilesError("");
+    setValidationErrors((previous) => {
+      const next = { ...previous };
+      delete next.supporting_files;
+      return next;
+    });
 
     if (!files || files.length === 0) return;
 
@@ -233,9 +465,12 @@ const InstructorApplicationModal = ({
 
     // Check total file count
     if (supportingFiles.length + selectedFiles.length > 5) {
-      setSupportingFilesError(
-        `You can upload up to 5 supporting files. You already selected ${supportingFiles.length}.`,
-      );
+      const message = `You can upload up to 5 supporting files. You already selected ${supportingFiles.length}.`;
+      setSupportingFilesError(message);
+      setValidationErrors((previous) => ({
+        ...previous,
+        supporting_files: message,
+      }));
       return;
     }
 
@@ -245,9 +480,13 @@ const InstructorApplicationModal = ({
     );
 
     if (invalidFile) {
-      setSupportingFilesError(
-        "Each file must be PDF, DOC, DOCX, PNG, or JPG and 5 MB or smaller.",
-      );
+      const message =
+        "Each file must be PDF, DOC, DOCX, PNG, or JPG and 5 MB or smaller.";
+      setSupportingFilesError(message);
+      setValidationErrors((previous) => ({
+        ...previous,
+        supporting_files: message,
+      }));
       return;
     }
 
@@ -291,6 +530,7 @@ const InstructorApplicationModal = ({
     setSupportingFilesError("");
 
     setLoadError("");
+    setValidationErrors({});
   };
 
   const closeAndReset = () => {
@@ -298,44 +538,84 @@ const InstructorApplicationModal = ({
     onClose();
   };
 
+  const validateForm = (): boolean => {
+    const validationData = {
+      ...form,
+      profile_image: profileImageFile ?? form.profile_image,
+    };
+
+    const result = applicationSchema.safeParse(validationData);
+    const nextErrors: ValidationErrors = {};
+
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as ValidationField | undefined;
+        if (field && !nextErrors[field]) {
+          nextErrors[field] = issue.message;
+        }
+      }
+    }
+
+    if (form.categories_to_teach.length === 0) {
+      nextErrors.categories = "Select at least one category.";
+    } else if (form.categories_to_teach.length > 10) {
+      nextErrors.categories = "You can select up to 10 categories.";
+    }
+
+    if (!resume) {
+      nextErrors.resume = "Please upload your resume.";
+    }
+
+    if (supportingFiles.length === 0) {
+      nextErrors.supporting_files =
+        "Please upload at least one supporting file.";
+    } else if (supportingFiles.length > 5) {
+      nextErrors.supporting_files = "You can upload up to 5 supporting files.";
+    }
+
+    setValidationErrors(nextErrors);
+
+    setResumeError(nextErrors.resume ?? "");
+    setSupportingFilesError(nextErrors.supporting_files ?? "");
+
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    setLoadError("");
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       setIsLoading(true);
-      setLoadError("");
-
-      if (!resume) {
-        setResumeError("Please upload your resume.");
-        return;
-      }
-
-      if (form.categories_to_teach.length === 0) {
-        setLoadError("Please select at least one category.");
-        return;
-      }
 
       const formData = new FormData();
 
-      formData.append("full_name", form.full_name);
-      formData.append("occupation", form.occupation);
-      formData.append("education", form.education);
+      formData.append("full_name", form.full_name.trim());
+      formData.append("occupation", form.occupation.trim());
+      formData.append("education", form.education.trim());
       formData.append("years_of_experience", form.years_of_experience);
 
       form.categories_to_teach.forEach((categoryId) => {
         formData.append("categories_to_teach", String(categoryId));
       });
 
-      formData.append("short_bio", form.short_bio);
-      formData.append("phone_number", form.phone_number);
-      formData.append("location", form.location);
-      formData.append("linkedin_url", form.linkedin_url);
-      formData.append("github_url", form.github_url);
-      formData.append("portfolio_url", form.portfolio_url);
-      formData.append("motivation", form.motivation);
+      formData.append("short_bio", form.short_bio.trim());
+      formData.append("phone_number", form.phone_number.trim());
+      formData.append("location", form.location.trim());
+      formData.append("linkedin_url", form.linkedin_url.trim());
+      formData.append("github_url", form.github_url.trim());
+      formData.append("portfolio_url", form.portfolio_url.trim());
+      formData.append("motivation", form.motivation.trim());
       formData.append("terms_accepted", String(form.terms_accepted));
+
       if (profileImageFile) {
         formData.append("profile_image", profileImageFile);
       }
-      formData.append("resume", resume);
+
+      formData.append("resume", resume!);
 
       supportingFiles.forEach((file) => {
         formData.append("supporting_files", file);
@@ -354,10 +634,23 @@ const InstructorApplicationModal = ({
       setIsLoading(false);
     }
   };
+
+  const getInputClass = (field: ValidationField): string =>
+    validationErrors[field]
+      ? `${inputClass} border-rose-400/60 focus:border-rose-400 focus:ring-rose-500/15`
+      : inputClass;
+
   const inputClass =
     "mt-2 w-full rounded-xl border border-white/10 bg-[#0D0F15] px-4 py-3 text-sm text-white outline-none transition-colors duration-200 placeholder:text-zinc-600 hover:border-white/20 focus:border-blue-500 focus:bg-[#0F1218] focus:ring-4 focus:ring-blue-500/15";
 
   const labelClass = "block text-sm font-medium text-zinc-300";
+
+  const fieldError = (
+    field: ValidationField | "categories" | "terms_accepted",
+  ) =>
+    validationErrors[field] ? (
+      <p className="mt-1 text-xs text-rose-300">{validationErrors[field]}</p>
+    ) : null;
 
   const sectionClass =
     "flex flex-col rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6";
@@ -365,9 +658,8 @@ const InstructorApplicationModal = ({
   const iconTileClass =
     "flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]";
 
-  const profileImageUrl = profileImagePreview
-    ? profileImagePreview
-    : form.profile_image
+  const profileImageUrl =
+    form.profile_image && form.profile_image !== DEFAULT_PROFILE_IMAGE
       ? `http://localhost:8000${form.profile_image}`
       : null;
 
@@ -441,7 +733,10 @@ const InstructorApplicationModal = ({
                         ...previous,
                         full_name: data.user.full_name ?? "",
                         email: data.user.email ?? "",
-                        profile_image: data.user.profile_image ?? null,
+                        profile_image:
+                          data.user.profile_image === DEFAULT_PROFILE_IMAGE
+                            ? null
+                            : (data.user.profile_image ?? null),
                         occupation: data.user.occupation ?? "",
                         education: data.user.education ?? "",
                         location: data.user.location ?? "",
@@ -491,9 +786,9 @@ const InstructorApplicationModal = ({
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                   {/* Profile Picture */}
                   <div className="flex w-full flex-col items-center gap-3 sm:w-28">
-                    {profileImageUrl ? (
+                    {profileImagePreview || profileImageUrl ? (
                       <img
-                        src={profileImageUrl}
+                        src={profileImagePreview || profileImageUrl || ""}
                         alt={form.full_name || "Profile"}
                         className="h-24 w-24 rounded-2xl border border-blue-400/20 object-cover shadow-lg shadow-blue-950/40 ring-2 ring-blue-500/10"
                       />
@@ -530,9 +825,9 @@ const InstructorApplicationModal = ({
                         event.target.value = "";
                       }}
                     />
-                    {profileImageError && (
+                    {(profileImageError || validationErrors.profile_image) && (
                       <p className="text-center text-xs text-rose-300">
-                        {profileImageError}
+                        {profileImageError || validationErrors.profile_image}
                       </p>
                     )}
                   </div>
@@ -542,16 +837,14 @@ const InstructorApplicationModal = ({
                     <label className={labelClass}>
                       Full name
                       <input
-                        className={inputClass}
+                        className={getInputClass("full_name")}
                         value={form.full_name}
                         onChange={(e) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            full_name: e.target.value,
-                          }))
+                          updateField("full_name", e.target.value)
                         }
                         placeholder="Enter your full name"
                       />
+                      {fieldError("full_name")}
                     </label>
 
                     <label className={labelClass}>
@@ -588,7 +881,7 @@ const InstructorApplicationModal = ({
                   <label className={labelClass}>
                     Occupation
                     <input
-                      className={inputClass}
+                      className={getInputClass("occupation")}
                       value={form.occupation}
                       onChange={(e) =>
                         updateField("occupation", e.target.value)
@@ -596,17 +889,19 @@ const InstructorApplicationModal = ({
                       placeholder="e.g. Full-stack developer"
                       maxLength={150}
                     />
+                    {fieldError("occupation")}
                   </label>
 
                   <label className={labelClass}>
                     Education
                     <input
-                      className={inputClass}
+                      className={getInputClass("education")}
                       value={form.education}
                       onChange={(e) => updateField("education", e.target.value)}
                       placeholder="e.g. B.Sc. Computer Science"
                       maxLength={200}
                     />
+                    {fieldError("education")}
                   </label>
 
                   <label className={labelClass}>
@@ -636,12 +931,13 @@ const InstructorApplicationModal = ({
 
                       <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-300/70" />
                     </div>
+                    {fieldError("years_of_experience")}
                   </label>
 
                   <label className={labelClass}>
                     Phone number
                     <input
-                      className={inputClass}
+                      className={getInputClass("phone_number")}
                       type="tel"
                       value={form.phone_number}
                       onChange={(e) =>
@@ -650,6 +946,7 @@ const InstructorApplicationModal = ({
                       placeholder="+91 98765 43210"
                       maxLength={20}
                     />
+                    {fieldError("phone_number")}
                   </label>
 
                   <label
@@ -657,12 +954,13 @@ const InstructorApplicationModal = ({
                   >
                     Location
                     <input
-                      className={inputClass}
+                      className={getInputClass("location")}
                       value={form.location}
                       onChange={(e) => updateField("location", e.target.value)}
                       placeholder="City, country"
                       maxLength={150}
                     />
+                    {fieldError("location")}
                   </label>
                 </div>
 
@@ -721,6 +1019,12 @@ const InstructorApplicationModal = ({
                                     ],
                               };
                             });
+
+                            setValidationErrors((previous) => {
+                              const next = { ...previous };
+                              delete next.categories;
+                              return next;
+                            });
                           }}
                           className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${
                             selected
@@ -746,6 +1050,7 @@ const InstructorApplicationModal = ({
                         </button>
                       );
                     })}
+                    {fieldError("categories")}
                   </div>
                 </div>
               </div>
@@ -773,7 +1078,7 @@ const InstructorApplicationModal = ({
                   <label className={`${labelClass} flex flex-1 flex-col`}>
                     Short professional bio
                     <textarea
-                      className={`${inputClass} min-h-28 flex-1 resize-none`}
+                      className={`${getInputClass("short_bio")} min-h-28 flex-1 resize-none`}
                       value={form.short_bio}
                       onChange={(e) => updateField("short_bio", e.target.value)}
                       placeholder="Share your background, skills, and what makes your teaching approach unique..."
@@ -782,6 +1087,7 @@ const InstructorApplicationModal = ({
                     <span className="mt-1 block text-right text-xs text-zinc-600">
                       {form.short_bio.length}/1000
                     </span>
+                    {fieldError("short_bio")}
                   </label>
                 </div>
 
@@ -807,7 +1113,7 @@ const InstructorApplicationModal = ({
                     <label className={labelClass}>
                       LinkedIn URL
                       <input
-                        className={inputClass}
+                        className={getInputClass("linkedin_url")}
                         type="url"
                         value={form.linkedin_url}
                         onChange={(e) =>
@@ -816,12 +1122,13 @@ const InstructorApplicationModal = ({
                         placeholder="https://linkedin.com/in/you"
                         maxLength={255}
                       />
+                      {fieldError("linkedin_url")}
                     </label>
 
                     <label className={labelClass}>
                       GitHub URL
                       <input
-                        className={inputClass}
+                        className={getInputClass("github_url")}
                         type="url"
                         value={form.github_url}
                         onChange={(e) =>
@@ -830,12 +1137,13 @@ const InstructorApplicationModal = ({
                         placeholder="https://github.com/you"
                         maxLength={255}
                       />
+                      {fieldError("github_url")}
                     </label>
 
                     <label className={labelClass}>
                       Portfolio
                       <input
-                        className={inputClass}
+                        className={getInputClass("portfolio_url")}
                         type="url"
                         value={form.portfolio_url}
                         onChange={(e) =>
@@ -844,6 +1152,7 @@ const InstructorApplicationModal = ({
                         placeholder="https://yourportfolio.com"
                         maxLength={255}
                       />
+                      {fieldError("portfolio_url")}
                     </label>
                   </div>
                 </div>
@@ -871,7 +1180,7 @@ const InstructorApplicationModal = ({
                 <label className={labelClass}>
                   Why do you want to become an instructor?
                   <textarea
-                    className={`${inputClass} min-h-32 resize-none`}
+                    className={`${getInputClass("motivation")} min-h-32 resize-none`}
                     value={form.motivation}
                     onChange={(e) => updateField("motivation", e.target.value)}
                     placeholder="What motivates you to teach, and how would you help learners succeed?"
@@ -880,6 +1189,7 @@ const InstructorApplicationModal = ({
                   <span className="mt-1 block text-right text-xs text-zinc-600">
                     {form.motivation.length}/2000
                   </span>
+                  {fieldError("motivation")}
                 </label>
 
                 {/* ───────────────────────────────────────────────
@@ -952,7 +1262,11 @@ const InstructorApplicationModal = ({
                             type="button"
                             onClick={() => {
                               setResume(null);
-                              setResumeError("");
+                              setResumeError("Please upload your resume.");
+                              setValidationErrors((previous) => ({
+                                ...previous,
+                                resume: "Please upload your resume.",
+                              }));
                             }}
                             aria-label="Remove resume"
                             className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
@@ -1249,6 +1563,11 @@ const InstructorApplicationModal = ({
                   I confirm that the information provided is accurate and agree
                   to the instructor application review process and platform
                   terms.
+                  {validationErrors.terms_accepted && (
+                    <span className="mt-1 block text-xs text-rose-300">
+                      {validationErrors.terms_accepted}
+                    </span>
+                  )}
                 </span>
               </label>
             </div>
