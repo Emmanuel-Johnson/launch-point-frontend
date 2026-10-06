@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import {
   getInstructorApplicationFormData,
+  type InstructorApplicationCategory,
   type InstructorApplicationFormData,
 } from "../api/instructorApplicationApi";
 
@@ -14,6 +15,8 @@ import {
   UploadCloud,
   CheckCircle2,
   ChevronDown,
+  Plus,
+  Check,
 } from "lucide-react";
 
 const experienceOptions = [
@@ -24,20 +27,6 @@ const experienceOptions = [
   { value: "ten_plus", label: "10+ years" },
 ];
 
-const CategoryOptions = [
-  "Python",
-  "Web Development",
-  "JavaScript",
-  "React",
-  "Django",
-  "Data Structures & Algorithms",
-  "Database Design",
-  "UI/UX Design",
-  "Data Science",
-  "Cloud Computing",
-  "Cybersecurity",
-];
-
 type ApplicationForm = {
   full_name: string;
   email: string;
@@ -46,7 +35,7 @@ type ApplicationForm = {
   occupation: string;
   education: string;
   years_of_experience: string;
-  categories_to_teach: string[];
+  categories_to_teach: number[];
   short_bio: string;
   phone_number: string;
   location: string;
@@ -90,7 +79,9 @@ const InstructorApplicationModal = ({
   onClose,
 }: InstructorApplicationModalProps) => {
   const [form, setForm] = useState<ApplicationForm>(initialApplicationForm);
-
+  const [categories, setCategories] = useState<InstructorApplicationCategory[]>(
+    [],
+  );
   const [resume, setResume] = useState<File | null>(null);
   const [resumeError, setResumeError] = useState("");
 
@@ -124,19 +115,19 @@ const InstructorApplicationModal = ({
 
         setForm((previous) => ({
           ...previous,
-
-          full_name: data.full_name ?? "",
-          email: data.email ?? "",
-          profile_image: data.profile_image ?? null,
-
-          occupation: data.occupation ?? "",
-          education: data.education ?? "",
-          location: data.location ?? "",
-
-          github_url: data.github_url ?? "",
-          linkedin_url: data.linkedin_url ?? "",
-          portfolio_url: data.portfolio_url ?? "",
+          full_name: data.user.full_name ?? "",
+          email: data.user.email ?? "",
+          profile_image: data.user.profile_image ?? null,
+          occupation: data.user.occupation ?? "",
+          education: data.user.education ?? "",
+          location: data.user.location ?? "",
+          github_url: data.user.github_url ?? "",
+          linkedin_url: data.user.linkedin_url ?? "",
+          portfolio_url: data.user.portfolio_url ?? "",
         }));
+
+        // This was missing
+        setCategories(data.categories);
       } catch (error) {
         console.error(
           "Failed to load instructor application form data:",
@@ -314,17 +305,7 @@ const InstructorApplicationModal = ({
 
         {isLoading ? (
           <div className="flex flex-1 items-center justify-center">
-            <div className="text-center">
-              <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-blue-500/15 border-t-blue-400" />
-
-              <p className="mt-4 text-sm font-medium text-white">
-                Loading your profile...
-              </p>
-
-              <p className="mt-1 text-xs text-zinc-500">
-                Fetching your saved information.
-              </p>
-            </div>
+            <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-500/15 border-t-blue-400" />
           </div>
         ) : loadError ? (
           <div className="flex flex-1 items-center justify-center px-6">
@@ -341,16 +322,18 @@ const InstructorApplicationModal = ({
                     .then((data) => {
                       setForm((previous) => ({
                         ...previous,
-                        full_name: data.full_name ?? "",
-                        email: data.email ?? "",
-                        profile_image: data.profile_image ?? null,
-                        occupation: data.occupation ?? "",
-                        education: data.education ?? "",
-                        location: data.location ?? "",
-                        github_url: data.github_url ?? "",
-                        linkedin_url: data.linkedin_url ?? "",
-                        portfolio_url: data.portfolio_url ?? "",
+                        full_name: data.user.full_name ?? "",
+                        email: data.user.email ?? "",
+                        profile_image: data.user.profile_image ?? null,
+                        occupation: data.user.occupation ?? "",
+                        education: data.user.education ?? "",
+                        location: data.user.location ?? "",
+                        github_url: data.user.github_url ?? "",
+                        linkedin_url: data.user.linkedin_url ?? "",
+                        portfolio_url: data.user.portfolio_url ?? "",
                       }));
+
+                      setCategories(data.categories);
                     })
                     .catch(() => {
                       setLoadError(
@@ -554,32 +537,74 @@ const InstructorApplicationModal = ({
                     </label>
 
                     <span className="rounded-full border border-blue-400/20 bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-200">
-                      {form.categories_to_teach.length}/10 selected
+                      {form.categories_to_teach.length}/{categories.length}{" "}
+                      selected
                     </span>
                   </div>
 
                   <p className="mt-1 text-xs text-zinc-500">
-                    Choose up to 10 Categories.
+                    Pick the categories you specialize in.
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {CategoryOptions.map((category) => {
-                      const selected =
-                        form.categories_to_teach.includes(category);
+                  <div className="mt-3 flex flex-wrap gap-2.5">
+                    {categories.map((category) => {
+                      const selected = form.categories_to_teach.includes(
+                        category.id,
+                      );
 
                       return (
                         <button
-                          key={category}
+                          key={category.id}
                           type="button"
                           aria-pressed={selected}
-                          className={`rounded-full border px-3 py-2 text-xs font-medium transition ${
+                          onClick={() => {
+                            setForm((previous) => {
+                              const alreadySelected =
+                                previous.categories_to_teach.includes(
+                                  category.id,
+                                );
+
+                              if (
+                                !alreadySelected &&
+                                previous.categories_to_teach.length >= 10
+                              ) {
+                                return previous;
+                              }
+
+                              return {
+                                ...previous,
+                                categories_to_teach: alreadySelected
+                                  ? previous.categories_to_teach.filter(
+                                      (id) => id !== category.id,
+                                    )
+                                  : [
+                                      ...previous.categories_to_teach,
+                                      category.id,
+                                    ],
+                              };
+                            });
+                          }}
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${
                             selected
                               ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-[0_0_14px_-4px_rgba(59,130,246,0.7)]"
                               : "border-white/10 bg-white/[0.02] text-zinc-400 hover:border-blue-400/40 hover:bg-blue-500/[0.06] hover:text-white"
                           }`}
                         >
-                          {selected ? "✓ " : "+ "}
-                          {category}
+                          <span
+                            className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                              selected
+                                ? "border-blue-300/60 bg-blue-400/20"
+                                : "border-zinc-600 bg-white/[0.03]"
+                            }`}
+                          >
+                            {selected ? (
+                              <Check className="h-2.5 w-2.5" />
+                            ) : (
+                              <Plus className="h-2.5 w-2.5" />
+                            )}
+                          </span>
+
+                          {category.name}
                         </button>
                       );
                     })}
@@ -867,8 +892,8 @@ const InstructorApplicationModal = ({
 
             <footer className="flex shrink-0 flex-col-reverse gap-3 border-t border-white/10 bg-gradient-to-t from-blue-500/[0.05] to-[#0A0B10]/95 px-5 py-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
               <p className="text-center text-[11px] text-zinc-500 sm:text-left">
-                Shared information will be updated in your student profile after
-                your application is approved.
+                Make sure your details are accurate. Our team will review your
+                application and notify you of the outcome.
               </p>
 
               <div className="flex gap-3">
