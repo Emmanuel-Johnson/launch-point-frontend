@@ -48,3 +48,20 @@ export const createInstructorApplication = async (
 
   return response.data;
 };
+
+export interface InstructorApplication {
+  id: number;
+  categories: string[];
+  submitted_at: string;
+  status: "pending" | "approved" | "rejected";
+}
+
+export const getInstructorApplications = async (): Promise<
+  InstructorApplication[]
+> => {
+  const response = await api.get<InstructorApplication[]>(
+    "/instructors/applications/",
+  );
+
+  return response.data;
+};
