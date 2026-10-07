@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -8,6 +9,7 @@ import {
   Clock3,
   Download,
   ExternalLink,
+  Eye,
   FileText,
   Globe,
   GraduationCap,
@@ -16,6 +18,7 @@ import {
   MapPin,
   Phone,
   UserRound,
+  X,
   XCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -57,6 +60,18 @@ interface Application {
 
   admin_message?: string | null;
 }
+
+/* ================================================================
+   DEMO PREVIEW SOURCES
+   The sample data uses placeholder ("#") URLs, so the preview shows
+   dummy content: every PDF shows this bundled PDF and every image
+   shows this dummy image. Drop test_1.pdf into your /public folder
+   (so it resolves at /test_1.pdf). For real previews, swap these for
+   the file's actual URL in <FilePreviewModal />.
+================================================================ */
+const DUMMY_PDF_URL = "/test_1.pdf";
+const DUMMY_IMAGE_URL =
+  "https://picsum.photos/seed/launchpoint-preview/900/1200";
 
 /* ================================================================
    BRAND ICONS
@@ -152,17 +167,17 @@ const application: Application = {
     },
     {
       id: 2,
-      name: "Previous Work.docx",
+      name: "Experience Letter.pdf",
       url: "#",
     },
     {
       id: 3,
-      name: "Skills Matrix.xlsx",
+      name: "Skills Summary.pdf",
       url: "#",
     },
     {
       id: 4,
-      name: "Intro Deck.pptx",
+      name: "Intro Notes.pdf",
       url: "#",
     },
     {
@@ -172,12 +187,12 @@ const application: Application = {
     },
     {
       id: 6,
-      name: "Source Code.zip",
-      url: "#",
+      name: "Project Photo.jpg",
+      url: "https://picsum.photos/seed/launchpoint2/200",
     },
     {
       id: 7,
-      name: "Reference Letter.txt",
+      name: "Reference Letter.pdf",
       url: "#",
     },
   ],
@@ -231,31 +246,19 @@ const getStatusConfig = (status: ApplicationStatus) => {
 
 /* ================================================================
    FILE-TYPE META
-   Maps a filename's extension to a label + semantic color, and
-   flags image types so we can render a real thumbnail instead of
-   a file-logo icon.
+   Uploads are restricted to PDF, PNG, and JPG, so only those types
+   are mapped here. Image types are flagged so we render a real
+   thumbnail instead of a file-logo icon. Anything unexpected from
+   the API falls back to a neutral chip (see getFileMeta).
 ================================================================ */
 
 type FileMeta = { label: string; color: string; image?: boolean };
 
 const FILE_TYPES: Record<string, FileMeta> = {
   pdf: { label: "PDF", color: "#EF4444" },
-  doc: { label: "DOC", color: "#2563EB" },
-  docx: { label: "DOCX", color: "#2563EB" },
-  xls: { label: "XLS", color: "#22C55E" },
-  xlsx: { label: "XLSX", color: "#22C55E" },
-  csv: { label: "CSV", color: "#22C55E" },
-  ppt: { label: "PPT", color: "#F97316" },
-  pptx: { label: "PPTX", color: "#F97316" },
-  zip: { label: "ZIP", color: "#F59E0B" },
-  rar: { label: "RAR", color: "#F59E0B" },
-  txt: { label: "TXT", color: "#94A3B8" },
   png: { label: "PNG", color: "#A855F7", image: true },
   jpg: { label: "JPG", color: "#A855F7", image: true },
   jpeg: { label: "JPEG", color: "#A855F7", image: true },
-  gif: { label: "GIF", color: "#A855F7", image: true },
-  webp: { label: "WEBP", color: "#A855F7", image: true },
-  svg: { label: "SVG", color: "#A855F7", image: true },
 };
 
 const getFileMeta = (name: string): FileMeta => {
@@ -263,6 +266,12 @@ const getFileMeta = (name: string): FileMeta => {
   return (
     FILE_TYPES[ext] ?? { label: ext.toUpperCase() || "FILE", color: "#64748B" }
   );
+};
+
+/** A file can be previewed inline when it's an image or a PDF. */
+const isPreviewable = (name: string): boolean => {
+  const meta = getFileMeta(name);
+  return Boolean(meta.image) || name.toLowerCase().endsWith(".pdf");
 };
 
 /** Append an alpha channel to a 6-digit hex color, e.g. hex("#EF4444", 0.12). */
@@ -323,6 +332,12 @@ const FileTypeIcon = ({
 
 const InstructorApplicationDetailsPage = () => {
   const navigate = useNavigate();
+
+  // Document currently open in the preview lightbox (null = closed).
+  const [previewFile, setPreviewFile] = useState<{
+    name: string;
+    url: string;
+  } | null>(null);
 
   const status = getStatusConfig(application.status);
   const StatusIcon = status.icon;
@@ -548,6 +563,12 @@ const InstructorApplicationDetailsPage = () => {
                     <DocumentCard
                       name={application.resume_name ?? "Resume.pdf"}
                       href={application.resume_url}
+                      onPreview={() =>
+                        setPreviewFile({
+                          name: application.resume_name ?? "Resume.pdf",
+                          url: application.resume_url ?? "",
+                        })
+                      }
                     />
                   ) : (
                     <EmptyState text="No resume was submitted." />
@@ -571,6 +592,9 @@ const InstructorApplicationDetailsPage = () => {
                         name={file.name}
                         href={file.url}
                         thumbnailUrl={file.url}
+                        onPreview={() =>
+                          setPreviewFile({ name: file.name, url: file.url })
+                        }
                       />
                     ))
                   ) : (
@@ -692,6 +716,18 @@ const InstructorApplicationDetailsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* ============================================================
+          FILE PREVIEW LIGHTBOX
+      ============================================================ */}
+      {previewFile && (
+        <FilePreviewModal
+          key={`${previewFile.name}-${previewFile.url}`}
+          name={previewFile.name}
+          url={previewFile.url}
+          onClose={() => setPreviewFile(null)}
+        />
+      )}
     </main>
   );
 };
@@ -803,6 +839,8 @@ type DocumentCardProps = {
   /** Pass the file URL for image types to render a real thumbnail. */
   thumbnailUrl?: string | null;
   primary?: boolean;
+  /** Called when the preview (eye) button is clicked. */
+  onPreview?: () => void;
 };
 
 const DocumentCard = ({
@@ -810,8 +848,10 @@ const DocumentCard = ({
   href,
   thumbnailUrl,
   primary = false,
+  onPreview,
 }: DocumentCardProps) => {
   const meta = getFileMeta(name);
+  const previewable = isPreviewable(name);
 
   return (
     <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
@@ -858,15 +898,29 @@ const DocumentCard = ({
         </p>
       </div>
 
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
-        aria-label={`Download ${name}`}
-      >
-        <Download className="h-4 w-4" />
-      </a>
+      {/* Actions — preview (eye) before download */}
+      <div className="flex shrink-0 items-center gap-1.5">
+        {onPreview && previewable && (
+          <button
+            type="button"
+            onClick={onPreview}
+            aria-label={`Preview ${name}`}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
+        )}
+
+        <a
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+          aria-label={`Download ${name}`}
+        >
+          <Download className="h-4 w-4" />
+        </a>
+      </div>
     </div>
   );
 };
@@ -881,5 +935,135 @@ const EmptyState = ({ text }: EmptyStateProps) => (
     <p className="mt-2 text-sm text-zinc-500">{text}</p>
   </div>
 );
+
+/* ================================================================
+   FILE PREVIEW MODAL
+   Lightbox for previewing a document.
+   - DEMO: because the sample data uses "#" URLs, every PDF shows the
+     bundled dummy PDF and every image shows a dummy image. For real
+     previews, use `url` as the source instead of the DUMMY_* values.
+   - PDFs render in an iframe, images render full-size.
+   Closes on backdrop click or Escape.
+================================================================ */
+
+type FilePreviewModalProps = {
+  name: string;
+  url: string;
+  onClose: () => void;
+};
+
+const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
+  const meta = getFileMeta(name);
+  const isPdf = name.toLowerCase().endsWith(".pdf");
+
+  // Demo preview source: dummy PDF for PDFs, dummy image for images.
+  // Swap these for `url` to preview the real file.
+  const previewSrc = meta.image ? DUMMY_IMAGE_URL : isPdf ? DUMMY_PDF_URL : url;
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Preview of ${name}`}
+        onClick={(event) => event.stopPropagation()}
+        className="relative flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0E1A] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10"
+      >
+        {/* Top gradient accent line */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+
+        {/* Header */}
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <FileTypeIcon
+              meta={meta}
+              className="h-9 w-7 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+            />
+
+            <div className="min-w-0">
+              <p
+                className="truncate text-sm font-medium text-white"
+                title={name}
+              >
+                {name}
+              </p>
+              <p className="mt-0.5 text-xs text-zinc-500">
+                {meta.image ? "Image" : `${meta.label} document`}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1.5">
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Download ${name}`}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
+            >
+              <Download className="h-4 w-4" />
+            </a>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close preview"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </header>
+
+        {/* Body */}
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[#07080C] p-4">
+          {meta.image ? (
+            <img
+              src={previewSrc}
+              alt={name}
+              className="mx-auto max-h-[70vh] w-auto max-w-full rounded-lg object-contain shadow-2xl shadow-black/50"
+            />
+          ) : isPdf ? (
+            <iframe
+              src={previewSrc}
+              title={name}
+              className="h-[70vh] w-full rounded-lg border border-white/10 bg-white"
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+              <FileTypeIcon
+                meta={meta}
+                className="h-16 w-12 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+              />
+
+              <p className="text-sm font-medium text-white">
+                Preview isn&apos;t available for this file type
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default InstructorApplicationDetailsPage;
