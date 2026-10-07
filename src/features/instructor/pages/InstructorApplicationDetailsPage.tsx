@@ -87,19 +87,19 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
 
 const BrandLogo = () => (
   <Link
-    to="/instructor/applications"
+    to="/instructor"
     className="group flex items-center gap-3 transition-all duration-300"
   >
-    <div className="flex h-9 w-9 items-center justify-center rounded-xl ring-1 ring-white/10 transition-all duration-300 group-hover:ring-blue-400/40">
+    <div className="flex h-9 w-9 items-center justify-center rounded-lg">
       <img
         src="/instructor_logo.png"
         alt="Launch Point Logo"
-        className="h-full w-full rounded-xl object-contain"
+        className="h-full w-full rounded-lg object-contain"
       />
     </div>
 
     <div>
-      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-200">
+      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-300">
         LAUNCH POINT
       </span>
 
@@ -336,18 +336,7 @@ const InstructorApplicationDetailsPage = () => {
     .toUpperCase();
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070E] text-zinc-100 antialiased">
-      {/* ============================================================
-          AMBIENT BACKGROUND
-      ============================================================ */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[720px] bg-[radial-gradient(130%_100%_at_50%_-15%,rgba(59,130,246,0.22),transparent_62%)]" />
-      <div className="pointer-events-none absolute -left-44 top-48 h-[28rem] w-[28rem] rounded-full bg-blue-600/10 blur-[140px]" />
-      <div className="pointer-events-none absolute -right-44 top-24 h-[28rem] w-[28rem] rounded-full bg-blue-500/10 blur-[140px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(5,7,14,0.6)_85%)]" />
-
-      {/* Top premium hairline */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
-
+    <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100 antialiased">
       {/* ============================================================
           HEADER
       ============================================================ */}
@@ -367,6 +356,13 @@ const InstructorApplicationDetailsPage = () => {
           </div>
         </div>
       </header>
+
+      {/* ============================================================
+          AMBIENT BLUE BACKDROP (sits below the header)
+      ============================================================ */}
+      <div className="pointer-events-none absolute inset-x-0 top-20 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 top-40 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 
       {/* ============================================================
           MAIN
@@ -425,8 +421,8 @@ const InstructorApplicationDetailsPage = () => {
                 )}
 
                 <div className="min-w-0">
-                  <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#E8C67A]/80">
-                    <span className="h-1 w-1 rounded-full bg-[#E8C67A]/80" />
+                  <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-200/70">
+                    <span className="h-1 w-1 rounded-full bg-blue-300/80 shadow-[0_0_6px_1px_rgba(59,130,246,0.7)]" />
                     Instructor Application
                   </p>
 
@@ -709,7 +705,7 @@ type PanelProps = {
 };
 
 const Panel = ({ children }: PanelProps) => (
-  <section className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_20px_50px_-40px_rgba(2,6,23,0.9)] transition-colors duration-200 hover:border-white/[0.11] sm:p-6">
+  <section className="group rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)] sm:p-6">
     {children}
   </section>
 );
