@@ -48,6 +48,7 @@ interface Application {
   submitted_at: string;
 
   resume_url?: string | null;
+  resume_name?: string | null;
   supporting_files?: {
     id: number;
     name: string;
@@ -141,6 +142,7 @@ const application: Application = {
   submitted_at: "October 7, 2026",
 
   resume_url: "#",
+  resume_name: "Emmanuel_Johnson_Resume.pdf",
 
   supporting_files: [
     {
@@ -150,7 +152,7 @@ const application: Application = {
     },
     {
       id: 2,
-      name: "Previous Work.pdf",
+      name: "Previous Work.docx",
       url: "#",
     },
   ],
@@ -202,8 +204,97 @@ const getStatusConfig = (status: ApplicationStatus) => {
   }
 };
 
-const getFileType = (name: string) =>
-  name.split(".").pop()?.toUpperCase() || "FILE";
+/* ================================================================
+   FILE-TYPE META
+   Maps a filename's extension to a label + semantic color, and
+   flags image types so we can render a real thumbnail instead of
+   a file-logo icon.
+================================================================ */
+
+type FileMeta = { label: string; color: string; image?: boolean };
+
+const FILE_TYPES: Record<string, FileMeta> = {
+  pdf: { label: "PDF", color: "#EF4444" },
+  doc: { label: "DOC", color: "#2563EB" },
+  docx: { label: "DOCX", color: "#2563EB" },
+  xls: { label: "XLS", color: "#22C55E" },
+  xlsx: { label: "XLSX", color: "#22C55E" },
+  csv: { label: "CSV", color: "#22C55E" },
+  ppt: { label: "PPT", color: "#F97316" },
+  pptx: { label: "PPTX", color: "#F97316" },
+  zip: { label: "ZIP", color: "#F59E0B" },
+  rar: { label: "RAR", color: "#F59E0B" },
+  txt: { label: "TXT", color: "#94A3B8" },
+  png: { label: "PNG", color: "#A855F7", image: true },
+  jpg: { label: "JPG", color: "#A855F7", image: true },
+  jpeg: { label: "JPEG", color: "#A855F7", image: true },
+  gif: { label: "GIF", color: "#A855F7", image: true },
+  webp: { label: "WEBP", color: "#A855F7", image: true },
+  svg: { label: "SVG", color: "#A855F7", image: true },
+};
+
+const getFileMeta = (name: string): FileMeta => {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+  return (
+    FILE_TYPES[ext] ?? { label: ext.toUpperCase() || "FILE", color: "#64748B" }
+  );
+};
+
+/** Append an alpha channel to a 6-digit hex color, e.g. hex("#EF4444", 0.12). */
+const hex = (c: string, a: number) =>
+  c +
+  Math.round(a * 255)
+    .toString(16)
+    .padStart(2, "0");
+
+/* ================================================================
+   FILE-TYPE LOGO
+   A real "file icon": white page with a folded corner, faint text
+   lines, and a colored type badge across the bottom.
+================================================================ */
+
+const FileTypeIcon = ({
+  meta,
+  className,
+}: {
+  meta: FileMeta;
+  className?: string;
+}) => {
+  const len = meta.label.length;
+  const fontSize = len <= 3 ? 9 : len === 4 ? 7 : 6;
+
+  return (
+    <svg viewBox="0 0 40 48" className={className} aria-hidden="true">
+      {/* page body */}
+      <path
+        d="M7 1.5h18.5L34 10v34.5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"
+        fill="#F8FAFC"
+        stroke="#E2E8F0"
+        strokeWidth="1"
+      />
+      {/* folded corner */}
+      <path d="M25.5 1.5 34 10h-6.5a2 2 0 0 1-2-2Z" fill="#E2E8F0" />
+      {/* faint text lines */}
+      <rect x="11" y="15" width="18" height="2" rx="1" fill="#E2E8F0" />
+      <rect x="11" y="20" width="18" height="2" rx="1" fill="#E2E8F0" />
+      <rect x="11" y="25" width="12" height="2" rx="1" fill="#E2E8F0" />
+      {/* colored type badge */}
+      <rect x="4" y="30" width="26" height="13" rx="3" fill={meta.color} />
+      <text
+        x="17"
+        y="39.2"
+        textAnchor="middle"
+        fontSize={fontSize}
+        fontWeight="700"
+        letterSpacing="0.3"
+        fill="#ffffff"
+        fontFamily="Inter, system-ui, sans-serif"
+      >
+        {meta.label}
+      </text>
+    </svg>
+  );
+};
 
 const InstructorApplicationDetailsPage = () => {
   const navigate = useNavigate();
@@ -257,7 +348,6 @@ const InstructorApplicationDetailsPage = () => {
       ============================================================ */}
       <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div className="mx-auto max-w-6xl">
-          {/* Breadcrumb */}
           {/* Breadcrumb */}
           <nav
             aria-label="Breadcrumb"
@@ -435,8 +525,7 @@ const InstructorApplicationDetailsPage = () => {
                 <div className="mt-6 space-y-3">
                   {application.resume_url ? (
                     <DocumentCard
-                      name="Resume / CV"
-                      type="PDF, DOC, or DOCX"
+                      name={application.resume_name ?? "Resume.pdf"}
                       href={application.resume_url}
                     />
                   ) : (
@@ -459,8 +548,8 @@ const InstructorApplicationDetailsPage = () => {
                       <DocumentCard
                         key={file.id}
                         name={file.name}
-                        type={getFileType(file.name)}
                         href={file.url}
+                        thumbnailUrl={file.url}
                       />
                     ))
                   ) : (
@@ -689,45 +778,83 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
 
 type DocumentCardProps = {
   name: string;
-  type: string;
   href: string;
+  /** Pass the file URL for image types to render a real thumbnail. */
+  thumbnailUrl?: string | null;
   primary?: boolean;
 };
 
 const DocumentCard = ({
   name,
-  type,
   href,
+  thumbnailUrl,
   primary = false,
-}: DocumentCardProps) => (
-  <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-400/15 bg-blue-500/[0.08] text-blue-300">
-      <FileText className="h-4 w-4" />
-    </div>
+}: DocumentCardProps) => {
+  const meta = getFileMeta(name);
 
-    <div className="min-w-0 flex-1">
-      <div className="flex flex-wrap items-center gap-2">
-        <p className="truncate text-sm font-medium text-zinc-200">{name}</p>
-        {primary && (
-          <span className="rounded-md border border-blue-400/20 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-blue-300">
-            Primary
+  return (
+    <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
+      {/* File logo: real thumbnail for images, white file-type icon otherwise */}
+      {meta.image && thumbnailUrl ? (
+        <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-md border border-white/10 bg-white/5">
+          <img
+            src={thumbnailUrl}
+            alt={name}
+            className="h-full w-full object-cover"
+          />
+          <span
+            className="absolute inset-x-0 bottom-0 text-center text-[8px] font-bold text-white"
+            style={{ background: meta.color }}
+          >
+            {meta.label}
           </span>
-        )}
-      </div>
-      <p className="mt-1 text-xs text-zinc-600">{type}</p>
-    </div>
+        </div>
+      ) : (
+        <FileTypeIcon
+          meta={meta}
+          className="h-12 w-10 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+        />
+      )}
 
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
-      aria-label={`Download ${name}`}
-    >
-      <Download className="h-4 w-4" />
-    </a>
-  </div>
-);
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="truncate text-sm font-medium text-zinc-200">{name}</p>
+
+          {/* type chip */}
+          <span
+            className="rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+            style={{
+              color: meta.color,
+              background: hex(meta.color, 0.12),
+              border: `1px solid ${hex(meta.color, 0.25)}`,
+            }}
+          >
+            {meta.label}
+          </span>
+
+          {primary && (
+            <span className="rounded-md border border-blue-400/20 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-blue-300">
+              Primary
+            </span>
+          )}
+        </div>
+        <p className="mt-1 text-xs text-zinc-600">
+          {meta.image ? "Image" : `${meta.label} document`}
+        </p>
+      </div>
+
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+        aria-label={`Download ${name}`}
+      >
+        <Download className="h-4 w-4" />
+      </a>
+    </div>
+  );
+};
 
 type EmptyStateProps = {
   text: string;
