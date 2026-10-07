@@ -40,6 +40,21 @@ function App() {
         progressClassName="admin-toast-progress"
         className="!z-[100000]"
       />
+
+      {/* Instructor Toast */}
+      <ToastContainer
+        containerId="instructor"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="dark"
+        toastClassName="instructor-toast"
+        progressClassName="instructor-toast-progress"
+        className="!z-[100000]"
+      />
     </>
   );
 }

@@ -32,6 +32,7 @@ export const getInstructorApplicationFormData =
   };
 
 export interface InstructorApplicationResponse {
+  message: string;
   id: number;
   status: string;
   submitted_at: string;

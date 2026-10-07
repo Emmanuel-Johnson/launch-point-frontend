@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import {
@@ -21,6 +22,8 @@ import {
   Check,
   Eye,
 } from "lucide-react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const DEFAULT_PROFILE_IMAGE = "/media/profile_images/default_profile.png";
 
@@ -599,6 +602,8 @@ const InstructorApplicationModal = ({
   isOpen,
   onClose,
 }: InstructorApplicationModalProps) => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState<ApplicationForm>(initialApplicationForm);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
@@ -617,6 +622,7 @@ const InstructorApplicationModal = ({
   const [isDraggingSupporting, setIsDraggingSupporting] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {},
@@ -939,7 +945,7 @@ const InstructorApplicationModal = ({
     }
 
     try {
-      setIsLoading(true);
+      setIsSubmitting(true);
 
       const formData = new FormData();
 
@@ -975,13 +981,27 @@ const InstructorApplicationModal = ({
 
       console.log("Application submitted:", response);
 
+      toast.success(response.message, {
+        containerId: "instructor",
+      });
+
       closeAndReset();
+
+      navigate("/instructor/applications");
     } catch (error) {
       console.error("Failed to submit instructor application:", error);
 
-      setLoadError("Unable to submit your application. Please try again.");
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data?.message ??
+          error.response?.data?.detail ??
+          "Unable to submit your application. Please try again.")
+        : "Unable to submit your application. Please try again.";
+
+      toast.error(message, {
+        containerId: "instructor",
+      });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -1912,11 +1932,11 @@ const InstructorApplicationModal = ({
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
                   <span className="flex h-5 min-w-[150px] items-center justify-center">
-                    {isLoading ? (
+                    {isSubmitting ? (
                       <span
                         className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"
                         aria-label="Submitting"
