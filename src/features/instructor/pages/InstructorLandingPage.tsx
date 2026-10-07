@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import InstructorApplicationModal from "../components/InstructorApplicationModal";
+
 import { Link } from "react-router-dom";
+
 import {
   ArrowLeft,
   CalendarClock,
@@ -12,9 +15,16 @@ import {
   MessagesSquare,
   Users,
 } from "lucide-react";
+
 import Reveal from "../../../shared/components/Reveal";
 
+import {
+  getInstructorApplications,
+  type InstructorApplication,
+} from "../api/instructorApplicationApi";
+
 /* ---------- Brand logo (matches PublicNavbar, uses instructor png) ---------- */
+
 const BrandLogo = () => (
   <Link
     to="/instructor"
@@ -32,6 +42,7 @@ const BrandLogo = () => (
       <span className="block text-sm font-semibold tracking-[3px] text-white transition-all duration-500 group-hover:text-blue-300">
         LAUNCH POINT
       </span>
+
       <p className="mt-0.5 hidden text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 transition-all duration-500 group-hover:text-zinc-300 sm:block">
         Study hard. Work hard.
       </p>
@@ -40,6 +51,7 @@ const BrandLogo = () => (
 );
 
 /* ---------- Data ---------- */
+
 const benefits = [
   {
     icon: CalendarClock,
@@ -113,6 +125,30 @@ const steps = [
 const InstructorLandingPage = () => {
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
 
+  const [latestApplication, setLatestApplication] =
+    useState<InstructorApplication | null>(null);
+
+  // Added only to prevent the button from changing while the API is loading
+  const [isApplicationLoading, setIsApplicationLoading] = useState(true);
+
+  useEffect(() => {
+    const loadApplication = async () => {
+      try {
+        const applications = await getInstructorApplications();
+
+        const latestApplication = applications[0];
+
+        setLatestApplication(latestApplication ?? null);
+      } catch (error) {
+        console.error("Failed to load instructor application:", error);
+      } finally {
+        setIsApplicationLoading(false);
+      }
+    };
+
+    void loadApplication();
+  }, []);
+
   const openApplication = () => setIsApplicationOpen(true);
   const closeApplication = () => setIsApplicationOpen(false);
 
@@ -123,6 +159,7 @@ const InstructorLandingPage = () => {
       <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Back button + Logo */}
+
           <div className="flex items-center gap-6 sm:gap-8">
             <Link
               to="/student/dashboard"
@@ -135,21 +172,39 @@ const InstructorLandingPage = () => {
             <BrandLogo />
           </div>
 
-          {/* Right: Apply button */}
-          <button
-            type="button"
-            onClick={openApplication}
-            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
-          >
-            <span className="hidden sm:inline">Become an Instructor</span>
-            <span className="sm:hidden">Apply</span>
-          </button>
+          {/* Right: Application button */}
+
+          {!isApplicationLoading && (
+            <>
+              {latestApplication?.status === "pending" ||
+              latestApplication?.status === "rejected" ? (
+                <Link
+                  to="/instructor/applications"
+                  className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-violet-500 hover:shadow-[0_0_15px_rgba(139,92,246,0.35)]"
+                >
+                  <span className="hidden sm:inline">View Status</span>
+                  <span className="sm:hidden">Status</span>
+                </Link>
+              ) : latestApplication?.status === "approved" ? null : (
+                <button
+                  type="button"
+                  onClick={openApplication}
+                  className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+                >
+                  <span className="hidden sm:inline">Become an Instructor</span>
+                  <span className="sm:hidden">Apply</span>
+                </button>
+              )}
+            </>
+          )}
         </div>
       </header>
 
       {/* ================= HERO ================= */}
+
       <section className="group relative overflow-hidden border-b border-white/10">
         {/* Background glow + subtle grid */}
+
         <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-[2200ms] ease-in-out group-hover:scale-125 group-hover:bg-blue-500/30" />
 
         <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:scale-125 group-hover:bg-sky-400/25" />
@@ -169,6 +224,7 @@ const InstructorLandingPage = () => {
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 py-24 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
           {/* Left content */}
+
           <div>
             <Reveal>
               <span className="inline-flex items-center rounded-full border border-blue-400/20 bg-blue-400/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
@@ -195,6 +251,7 @@ const InstructorLandingPage = () => {
           </div>
 
           {/* Right visual */}
+
           <Reveal delay={300}>
             <div className="relative">
               <div className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-blue-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:bg-blue-500/20 group-hover:scale-105" />
@@ -239,7 +296,9 @@ const InstructorLandingPage = () => {
           </Reveal>
         </div>
       </section>
+
       {/* ================= WHY TEACH WITH US ================= */}
+
       <section className="border-b border-white/10 bg-[#0F0F12] py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <Reveal delay={100}>
@@ -247,10 +306,12 @@ const InstructorLandingPage = () => {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
                 Why Teach with Us
               </p>
+
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 Built around
                 <span className="text-zinc-500"> your freedom.</span>
               </h2>
+
               <p className="mt-5 text-base leading-7 text-zinc-400 sm:text-lg">
                 The simple tools and fair terms you need to teach well and get
                 rewarded for it.
@@ -261,6 +322,7 @@ const InstructorLandingPage = () => {
           <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-2 lg:grid-cols-4">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon;
+
               return (
                 <Reveal key={benefit.title} delay={300 + index * 120}>
                   <div className="group h-full bg-[#0F0F12] p-8 transition-all duration-700 ease-out hover:-translate-y-1 hover:bg-white/[0.04] hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)]">
@@ -284,7 +346,9 @@ const InstructorLandingPage = () => {
           </div>
         </div>
       </section>
+
       {/* ================= FOUR STEPS ================= */}
+
       <section className="border-b border-white/10 bg-[#09090B] py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <Reveal delay={100}>
@@ -292,10 +356,12 @@ const InstructorLandingPage = () => {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
                 How It Works
               </p>
+
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 From sign-up to
                 <span className="text-zinc-500"> your first student.</span>
               </h2>
+
               <p className="mt-5 text-base leading-7 text-zinc-400 sm:text-lg">
                 Four simple steps. No complicated setup, no guesswork.
               </p>
@@ -309,26 +375,9 @@ const InstructorLandingPage = () => {
               {steps.map((step, index) => (
                 <Reveal key={step.number} delay={300 + index * 150}>
                   <div className="group relative">
-                    <div
-                      className="relative flex h-16 w-16 items-center justify-center
-                        rounded-full border border-white/10 bg-white/[0.03]
-                        text-sm font-semibold text-white
-                        shadow-[0_0_0_1px_rgba(255,255,255,0.02)]
-                        backdrop-blur-sm
-                        transition-all duration-1000 ease-out
-                        group-hover:scale-[1.04]
-                        group-hover:border-blue-400/70
-                        group-hover:bg-blue-500/10
-                        group-hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]"
-                    >
-                      <span
-                        className="absolute inset-1.5 rounded-full
-                          border border-blue-500/30
-                          transition-all duration-1000 ease-out
-                          group-hover:scale-105
-                          group-hover:border-blue-400/80
-                          group-hover:shadow-[inset_0_0_14px_rgba(59,130,246,0.25)]"
-                      />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-sm transition-all duration-1000 ease-out group-hover:scale-[1.04] group-hover:border-blue-400/70 group-hover:bg-blue-500/10 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]">
+                      <span className="absolute inset-1.5 rounded-full border border-blue-500/30 transition-all duration-1000 ease-out group-hover:scale-105 group-hover:border-blue-400/80 group-hover:shadow-[inset_0_0_14px_rgba(59,130,246,0.25)]" />
+
                       <span className="relative z-10">{step.number}</span>
                     </div>
 
@@ -336,6 +385,7 @@ const InstructorLandingPage = () => {
                       <h3 className="text-xl font-semibold text-white">
                         {step.title}
                       </h3>
+
                       <p className="mt-4 text-sm leading-7 text-zinc-500">
                         {step.description}
                       </p>
@@ -347,7 +397,9 @@ const InstructorLandingPage = () => {
           </div>
         </div>
       </section>
+
       {/* ================= FINAL CTA ================= */}
+
       <section className="relative overflow-hidden bg-[#0F0F12] py-24">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/15 blur-3xl" />
 
@@ -355,6 +407,7 @@ const InstructorLandingPage = () => {
           <Reveal>
             <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 to-indigo-600 px-6 py-16 text-center shadow-2xl shadow-blue-950/50 sm:px-12 lg:px-20 lg:py-20">
               <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+
               <div className="pointer-events-none absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-sky-300/10 blur-3xl" />
 
               <Reveal delay={150}>
@@ -373,26 +426,44 @@ const InstructorLandingPage = () => {
 
               <Reveal delay={450}>
                 <div className="relative mt-9">
-                  <button
-                    type="button"
-                    onClick={openApplication}
-                    className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
-                  >
-                    Apply to become an instructor
-                  </button>
+                  {!isApplicationLoading && (
+                    <>
+                      {latestApplication?.status === "pending" ||
+                      latestApplication?.status === "rejected" ? (
+                        <Link
+                          to="/instructor/applications"
+                          className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
+                        >
+                          View Application Status
+                        </Link>
+                      ) : latestApplication?.status === "approved" ? null : (
+                        <button
+                          type="button"
+                          onClick={openApplication}
+                          className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
+                        >
+                          Apply to become an instructor
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
               </Reveal>
             </div>
           </Reveal>
         </div>
       </section>
+
       {/* ================= FOOTER ================= */}
+
       <footer className="border-t border-white/10 bg-[#09090B] text-zinc-400">
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
           <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
             {/* Brand */}
+
             <div className="max-w-sm">
               <BrandLogo />
+
               <p className="mt-5 text-sm leading-7 text-zinc-500">
                 Teach what you love, reach learners worldwide, and build a
                 business around your knowledge.
@@ -400,25 +471,43 @@ const InstructorLandingPage = () => {
             </div>
 
             {/* Links */}
+
             <div className="flex gap-16">
               <div>
                 <h3 className="text-sm font-semibold text-white">
                   For Instructors
                 </h3>
+
                 <div className="mt-5 space-y-3">
-                  <button
-                    type="button"
-                    onClick={openApplication}
-                    className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
-                  >
-                    Apply
-                  </button>
+                  {!isApplicationLoading && (
+                    <>
+                      {latestApplication?.status === "pending" ||
+                      latestApplication?.status === "rejected" ? (
+                        <Link
+                          to="/instructor/applications"
+                          className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
+                        >
+                          View Status
+                        </Link>
+                      ) : latestApplication?.status === "approved" ? null : (
+                        <button
+                          type="button"
+                          onClick={openApplication}
+                          className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
+                        >
+                          Apply
+                        </button>
+                      )}
+                    </>
+                  )}
+
                   <Link
                     to="#"
                     className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
                   >
                     How it works
                   </Link>
+
                   <Link
                     to="#"
                     className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
@@ -430,6 +519,7 @@ const InstructorLandingPage = () => {
 
               <div>
                 <h3 className="text-sm font-semibold text-white">Company</h3>
+
                 <div className="mt-5 space-y-3">
                   <Link
                     to="/about"
@@ -437,12 +527,14 @@ const InstructorLandingPage = () => {
                   >
                     About
                   </Link>
+
                   <Link
                     to="/contact"
                     className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
                   >
                     Contact
                   </Link>
+
                   <Link
                     to="#"
                     className="block text-sm transition-all duration-500 hover:translate-x-1 hover:text-white"
@@ -455,6 +547,7 @@ const InstructorLandingPage = () => {
           </div>
 
           {/* Bottom */}
+
           <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-zinc-600">
               © {new Date().getFullYear()} Launch Point. All rights reserved.
@@ -467,12 +560,14 @@ const InstructorLandingPage = () => {
               >
                 LinkedIn
               </a>
+
               <a
                 href="#"
                 className="text-sm text-zinc-500 transition-all duration-500 hover:translate-x-1 hover:text-white"
               >
                 GitHub
               </a>
+
               <a
                 href="#"
                 className="text-sm text-zinc-500 transition-all duration-500 hover:translate-x-1 hover:text-white"
