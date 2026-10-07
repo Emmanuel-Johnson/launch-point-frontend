@@ -1012,26 +1012,14 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5">
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Download ${name}`}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
-            >
-              <Download className="h-4 w-4" />
-            </a>
-
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close preview"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close preview"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </header>
 
         {/* Body */}
