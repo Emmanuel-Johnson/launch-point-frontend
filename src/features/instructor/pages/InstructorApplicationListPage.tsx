@@ -102,19 +102,14 @@ const InstructorApplicationListPage = () => {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
-      {/* Ambient blue backdrop */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
-      <div className="pointer-events-none absolute -left-40 top-40 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 top-10 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
-
-      {/* Header */}
-      <header className="border-b border-white/10 bg-[#09090B]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+      {/* Header — full black, lifted above the ambient glows */}
+      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Back button + Logo */}
           <div className="flex items-center gap-6 sm:gap-8">
-            {/* Back */}
             <Link
               to="/instructor"
-              aria-label="Back to instructor page"
+              aria-label="Back to student dashboard"
               className="group flex shrink-0 items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
             >
               <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
@@ -125,13 +120,16 @@ const InstructorApplicationListPage = () => {
         </div>
       </header>
 
+      {/* Ambient blue backdrop (sits below the header) */}
+      <div className="pointer-events-none absolute inset-x-0 top-20 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 top-40 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
+
       {/* Main Content */}
       <section className="relative px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           {/* Page Header */}
           <div className="mb-8">
-          
-
             <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               <span className="text-white">My </span>
               <span className="bg-gradient-to-r from-[#DBEAFE] via-[#60A5FA] to-[#3B82F6] bg-clip-text text-transparent">
@@ -183,7 +181,6 @@ const InstructorApplicationListPage = () => {
                             {/* Title */}
                             <h2 className="text-base font-semibold text-white sm:text-lg">
                               Application{" "}
-                            
                             </h2>
 
                             {/* Meta: date + category count */}

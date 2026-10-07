@@ -120,10 +120,9 @@ const InstructorLandingPage = () => {
     <main className="bg-[#09090B] text-zinc-100">
       {/* ================= HEADER ================= */}
 
-      <header className="border-b border-white/10 bg-[#09090B]">
+      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Back button + Logo */}
-
           <div className="flex items-center gap-6 sm:gap-8">
             <Link
               to="/student/dashboard"
@@ -140,7 +139,7 @@ const InstructorLandingPage = () => {
           <button
             type="button"
             onClick={openApplication}
-            className="inline-flex origin-center items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer"
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
           >
             <span className="hidden sm:inline">Become an Instructor</span>
             <span className="sm:hidden">Apply</span>
