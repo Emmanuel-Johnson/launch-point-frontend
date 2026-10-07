@@ -4,12 +4,14 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
+  ChevronRight,
   Clock3,
   Download,
   ExternalLink,
   FileText,
   Globe,
   GraduationCap,
+  LayoutGrid,
   Mail,
   MapPin,
   Phone,
@@ -87,16 +89,16 @@ const BrandLogo = () => (
     to="/instructor/applications"
     className="group flex items-center gap-3 transition-all duration-300"
   >
-    <div className="flex h-9 w-9 items-center justify-center rounded-lg">
+    <div className="flex h-9 w-9 items-center justify-center rounded-xl ring-1 ring-white/10 transition-all duration-300 group-hover:ring-blue-400/40">
       <img
         src="/instructor_logo.png"
         alt="Launch Point Logo"
-        className="h-full w-full rounded-lg object-contain"
+        className="h-full w-full rounded-xl object-contain"
       />
     </div>
 
     <div>
-      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-300">
+      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-200">
         LAUNCH POINT
       </span>
 
@@ -165,9 +167,11 @@ const getStatusConfig = (status: ApplicationStatus) => {
           "Your application has been reviewed and approved. You can now continue to the instructor dashboard.",
         icon: CheckCircle2,
         iconClass: "text-emerald-300",
-        badgeClass: "border-emerald-400/25 bg-emerald-500/10 text-emerald-300",
-        glow: "bg-emerald-500/10",
-        accent: "from-emerald-400 to-emerald-500",
+        badgeClass:
+          "border-emerald-400/25 bg-emerald-500/[0.08] text-emerald-200",
+        dotClass: "bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.7)]",
+        glow: "bg-emerald-500/15",
+        accent: "from-emerald-400 via-emerald-400 to-emerald-500",
       };
 
     case "rejected":
@@ -177,9 +181,10 @@ const getStatusConfig = (status: ApplicationStatus) => {
           "Your application has been reviewed and was not approved at this time.",
         icon: XCircle,
         iconClass: "text-red-300",
-        badgeClass: "border-red-400/25 bg-red-500/10 text-red-300",
-        glow: "bg-red-500/10",
-        accent: "from-red-400 to-red-500",
+        badgeClass: "border-red-400/25 bg-red-500/[0.08] text-red-200",
+        dotClass: "bg-red-400 shadow-[0_0_10px_2px_rgba(248,113,113,0.7)]",
+        glow: "bg-red-500/15",
+        accent: "from-red-400 via-red-400 to-red-500",
       };
 
     default:
@@ -189,9 +194,10 @@ const getStatusConfig = (status: ApplicationStatus) => {
           "Your application has been successfully submitted and is currently under review. You’ll receive an update once the review process is complete.",
         icon: Clock3,
         iconClass: "text-amber-300",
-        badgeClass: "border-amber-400/25 bg-amber-500/10 text-amber-300",
-        glow: "bg-amber-500/10",
-        accent: "from-amber-400 to-amber-500",
+        badgeClass: "border-amber-400/25 bg-amber-500/[0.08] text-amber-200",
+        dotClass: "bg-amber-400 shadow-[0_0_10px_2px_rgba(251,191,36,0.7)]",
+        glow: "bg-amber-500/15",
+        accent: "from-amber-400 via-amber-400 to-amber-500",
       };
   }
 };
@@ -214,27 +220,31 @@ const InstructorApplicationDetailsPage = () => {
     .toUpperCase();
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070E] text-zinc-100 antialiased">
       {/* ============================================================
           AMBIENT BACKGROUND
       ============================================================ */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[620px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
-      <div className="pointer-events-none absolute -left-40 top-40 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[720px] bg-[radial-gradient(130%_100%_at_50%_-15%,rgba(59,130,246,0.22),transparent_62%)]" />
+      <div className="pointer-events-none absolute -left-44 top-48 h-[28rem] w-[28rem] rounded-full bg-blue-600/10 blur-[140px]" />
+      <div className="pointer-events-none absolute -right-44 top-24 h-[28rem] w-[28rem] rounded-full bg-blue-500/10 blur-[140px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(5,7,14,0.6)_85%)]" />
+
+      {/* Top premium hairline */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
 
       {/* ============================================================
           HEADER
       ============================================================ */}
-      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6 sm:gap-8">
+      <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-[#070A14]/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-20 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-5 sm:gap-7">
             <button
               type="button"
               onClick={() => navigate("/instructor/applications")}
               aria-label="Back to applications"
-              className="group flex shrink-0 cursor-pointer items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
+              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.02] text-zinc-400 transition-all duration-200 hover:border-blue-400/30 hover:bg-blue-500/[0.08] hover:text-white"
             >
-              <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              <ArrowLeft className="h-4.5 w-4.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
             </button>
 
             <BrandLogo />
@@ -245,21 +255,27 @@ const InstructorApplicationDetailsPage = () => {
       {/* ============================================================
           MAIN
       ============================================================ */}
-      <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-        <div className="mx-auto max-w-5xl">
+      <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+        <div className="mx-auto max-w-6xl">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-xs">
+          {/* Breadcrumb */}
+          <nav
+            aria-label="Breadcrumb"
+            className="flex items-center gap-1.5 text-xs"
+          >
             <button
               type="button"
               onClick={() => navigate("/instructor/applications")}
-              className="text-zinc-500 transition-colors hover:text-zinc-200"
+              className="group inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-zinc-500 transition-colors hover:bg-white/[0.04] hover:text-zinc-200"
             >
+              <LayoutGrid className="h-3.5 w-3.5 text-zinc-600 transition-colors group-hover:text-blue-300" />
               Applications
             </button>
 
-            <span className="text-zinc-700">/</span>
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-700" />
 
-            <span className="text-zinc-300">
+            <span className="inline-flex items-center gap-1.5 font-medium text-blue-100">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
               Application #{String(application.id).padStart(2, "0")}
             </span>
           </nav>
@@ -267,40 +283,43 @@ const InstructorApplicationDetailsPage = () => {
           {/* ========================================================
               HERO — identity + status (shown once)
           ======================================================== */}
-          <section className="relative mt-5 overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.09] via-white/[0.025] to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset]">
+          <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.10] via-white/[0.02] to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_30px_80px_-40px_rgba(2,6,23,0.9)]">
             {/* Accent + glow */}
             <div
               className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${status.accent}`}
             />
             <div
-              className={`pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full ${status.glow} blur-3xl`}
+              className={`pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full ${status.glow} blur-3xl`}
             />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_140%_at_0%_0%,rgba(59,130,246,0.08),transparent_55%)]" />
 
             <div className="relative flex flex-col gap-7 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
               {/* Applicant identity */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-5">
                 {application.profile_image ? (
                   <img
                     src={application.profile_image}
                     alt={application.full_name}
-                    className="h-16 w-16 shrink-0 rounded-2xl border border-blue-400/25 object-cover shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]"
+                    className="h-18 w-18 shrink-0 rounded-2xl border border-blue-400/25 object-cover shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-lg font-semibold text-blue-100 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+                  <div className="relative flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/30 to-blue-700/5 text-xl font-semibold text-blue-50 shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]">
+                    <span className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(70%_70%_at_30%_20%,rgba(255,255,255,0.18),transparent)]" />
                     {initials}
                   </div>
                 )}
 
                 <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-300/70">
+                  <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#E8C67A]/80">
+                    <span className="h-1 w-1 rounded-full bg-[#E8C67A]/80" />
                     Instructor Application
                   </p>
 
-                  <h1 className="mt-1.5 truncate text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  <h1 className="mt-2 truncate text-2xl font-bold tracking-tight text-white sm:text-[2rem] sm:leading-tight">
                     {application.full_name}
                   </h1>
 
-                  <p className="mt-1.5 flex items-center gap-1.5 text-xs text-zinc-500">
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-zinc-500">
                     <CalendarDays className="h-3.5 w-3.5 text-blue-300/60" />
                     Submitted {application.submitted_at}
                   </p>
@@ -309,15 +328,20 @@ const InstructorApplicationDetailsPage = () => {
 
               {/* Status block */}
               <div
-                className={`flex items-start gap-3 rounded-2xl border p-4 sm:max-w-xs ${status.badgeClass}`}
+                className={`flex items-start gap-3 rounded-2xl border p-4 backdrop-blur-sm sm:max-w-xs ${status.badgeClass}`}
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-black/20">
-                  <StatusIcon className={`h-4.5 w-4.5 ${status.iconClass}`} />
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/25">
+                  <StatusIcon className={`h-5 w-5 ${status.iconClass}`} />
                 </div>
 
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold">{status.label}</p>
-                  <p className="mt-1 text-xs leading-5 opacity-70">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${status.dotClass}`}
+                    />
+                    <p className="text-sm font-semibold">{status.label}</p>
+                  </div>
+                  <p className="mt-1.5 text-xs leading-5 opacity-80">
                     {status.description}
                   </p>
                 </div>
@@ -326,221 +350,219 @@ const InstructorApplicationDetailsPage = () => {
           </section>
 
           {/* ========================================================
-              CONTENT GRID — each field appears once
+              CONTENT — primary column + sticky summary rail
+              (each field appears once)
           ======================================================== */}
-          <div className="mt-5 grid gap-5 lg:grid-cols-2">
-            {/* CONTACT */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6">
-              <SectionHeader
-                icon={<UserRound className="h-4 w-4" />}
-                title="Contact"
-                description="How we can reach the applicant."
-              />
-
-              <div className="mt-6 space-y-5">
-                <InfoRow
-                  icon={<Mail className="h-4 w-4" />}
-                  label="Email address"
-                  value={application.email}
-                />
-                <InfoRow
-                  icon={<Phone className="h-4 w-4" />}
-                  label="Phone number"
-                  value={application.phone_number}
-                />
-                <InfoRow
-                  icon={<MapPin className="h-4 w-4" />}
-                  label="Location"
-                  value={application.location}
-                />
-              </div>
-            </section>
-
-            {/* BACKGROUND */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6">
-              <SectionHeader
-                icon={<BriefcaseBusiness className="h-4 w-4" />}
-                title="Background"
-                description="Professional and academic background."
-              />
-
-              <div className="mt-6 space-y-5">
-                <InfoRow
+          <div className="mt-5 grid gap-5 lg:grid-cols-3">
+            {/* ---------------- PRIMARY COLUMN ---------------- */}
+            <div className="space-y-5 lg:col-span-2">
+              {/* BACKGROUND */}
+              <Panel>
+                <SectionHeader
                   icon={<BriefcaseBusiness className="h-4 w-4" />}
-                  label="Occupation"
-                  value={application.occupation}
+                  title="Background"
+                  description="Professional and academic background."
                 />
-                <InfoRow
-                  icon={<GraduationCap className="h-4 w-4" />}
-                  label="Education"
-                  value={application.education}
-                />
-                <InfoRow
-                  icon={<Clock3 className="h-4 w-4" />}
-                  label="Experience"
-                  value={application.years_of_experience}
-                />
-              </div>
-            </section>
 
-            {/* TEACHING EXPERTISE */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
-              <SectionHeader
-                icon={<GraduationCap className="h-4 w-4" />}
-                title="Teaching Expertise"
-                description="Areas the applicant wants to teach."
-              />
-
-              <div className="mt-6 flex flex-wrap gap-2.5">
-                {application.categories_to_teach.map((category) => (
-                  <span
-                    key={category}
-                    className="inline-flex items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100"
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
-                    {category}
-                  </span>
-                ))}
-              </div>
-            </section>
-
-            {/* ABOUT */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
-              <SectionHeader
-                icon={<UserRound className="h-4 w-4" />}
-                title="About"
-                description="Introduction and motivation for teaching."
-              />
-
-              <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                <TextBlock
-                  label="Short professional bio"
-                  value={application.short_bio}
-                />
-                <TextBlock
-                  label="Why do you want to become an instructor?"
-                  value={application.motivation}
-                />
-              </div>
-            </section>
-
-            {/* PROFESSIONAL LINKS */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
-              <SectionHeader
-                icon={<Globe className="h-4 w-4" />}
-                title="Professional Links"
-                description="Profiles and work submitted with the application."
-              />
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                <LinkCard
-                  icon={<Globe className="h-4 w-4" />}
-                  label="Portfolio"
-                  description="View portfolio"
-                  href={application.portfolio_url}
-                />
-                <LinkCard
-                  icon={<LinkedinIcon className="h-4 w-4" />}
-                  label="LinkedIn"
-                  description="View LinkedIn profile"
-                  href={application.linkedin_url}
-                />
-                <LinkCard
-                  icon={<GithubIcon className="h-4 w-4" />}
-                  label="GitHub"
-                  description="View GitHub profile"
-                  href={application.github_url}
-                />
-              </div>
-            </section>
-
-            {/* RESUME / CV */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
-              <SectionHeader
-                icon={<FileText className="h-4 w-4" />}
-                title="Resume / CV"
-                description="Latest resume or CV submitted with the application."
-              />
-
-              <div className="mt-6 space-y-3">
-                {application.resume_url ? (
-                  <DocumentCard
-                    name="Resume / CV"
-                    type="PDF, DOC, or DOCX"
-                    href={application.resume_url}
-                   
+                <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                  <InfoRow
+                    icon={<BriefcaseBusiness className="h-4 w-4" />}
+                    label="Occupation"
+                    value={application.occupation}
                   />
-                ) : (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
-                    <FileText className="mx-auto h-6 w-6 text-zinc-600" />
-                    <p className="mt-2 text-sm text-zinc-500">
-                      No resume was submitted.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* SUPPORTING FILES */}
-            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
-              <SectionHeader
-                icon={<FileText className="h-4 w-4" />}
-                title="Supporting Files"
-                description="Certificates and other relevant documents."
-              />
-
-              <div className="mt-6 space-y-3">
-                {application.supporting_files?.length ? (
-                  application.supporting_files.map((file) => (
-                    <DocumentCard
-                      key={file.id}
-                      name={file.name}
-                      type={getFileType(file.name)}
-                      href={file.url}
-                    />
-                  ))
-                ) : (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
-                    <FileText className="mx-auto h-6 w-6 text-zinc-600" />
-                    <p className="mt-2 text-sm text-zinc-500">
-                      No supporting files were submitted.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* ADMIN MESSAGE */}
-            {application.admin_message && (
-              <section
-                className={`rounded-2xl border p-5 sm:p-6 lg:col-span-2 ${
-                  application.status === "rejected"
-                    ? "border-red-400/20 bg-red-500/[0.05]"
-                    : "border-blue-400/20 bg-blue-500/[0.05]"
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                      application.status === "rejected"
-                        ? "bg-red-500/10 text-red-300"
-                        : "bg-blue-500/10 text-blue-300"
-                    }`}
-                  >
-                    <FileText className="h-4 w-4" />
-                  </div>
-
-                  <div>
-                    <h2 className="text-sm font-semibold text-white">
-                      Message from Launch Point
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-zinc-400">
-                      {application.admin_message}
-                    </p>
-                  </div>
+                  <InfoRow
+                    icon={<GraduationCap className="h-4 w-4" />}
+                    label="Education"
+                    value={application.education}
+                  />
+                  <InfoRow
+                    icon={<Clock3 className="h-4 w-4" />}
+                    label="Experience"
+                    value={application.years_of_experience}
+                  />
                 </div>
-              </section>
-            )}
+              </Panel>
+
+              {/* TEACHING EXPERTISE */}
+              <Panel>
+                <SectionHeader
+                  icon={<GraduationCap className="h-4 w-4" />}
+                  title="Teaching Expertise"
+                  description="Areas the applicant wants to teach."
+                />
+
+                <div className="mt-6 flex flex-wrap gap-2.5">
+                  {application.categories_to_teach.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-flex items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
+                      {category}
+                    </span>
+                  ))}
+                </div>
+              </Panel>
+
+              {/* ABOUT */}
+              <Panel>
+                <SectionHeader
+                  icon={<UserRound className="h-4 w-4" />}
+                  title="About"
+                  description="Introduction and motivation for teaching."
+                />
+
+                <div className="mt-6 grid gap-5 lg:grid-cols-2">
+                  <TextBlock
+                    label="Short professional bio"
+                    value={application.short_bio}
+                  />
+                  <TextBlock
+                    label="Why do you want to become an instructor?"
+                    value={application.motivation}
+                  />
+                </div>
+              </Panel>
+
+              {/* RESUME / CV */}
+              <Panel>
+                <SectionHeader
+                  icon={<FileText className="h-4 w-4" />}
+                  title="Resume / CV"
+                  description="Latest resume or CV submitted with the application."
+                />
+
+                <div className="mt-6 space-y-3">
+                  {application.resume_url ? (
+                    <DocumentCard
+                      name="Resume / CV"
+                      type="PDF, DOC, or DOCX"
+                      href={application.resume_url}
+                    />
+                  ) : (
+                    <EmptyState text="No resume was submitted." />
+                  )}
+                </div>
+              </Panel>
+
+              {/* SUPPORTING FILES */}
+              <Panel>
+                <SectionHeader
+                  icon={<FileText className="h-4 w-4" />}
+                  title="Supporting Files"
+                  description="Certificates and other relevant documents."
+                />
+
+                <div className="mt-6 space-y-3">
+                  {application.supporting_files?.length ? (
+                    application.supporting_files.map((file) => (
+                      <DocumentCard
+                        key={file.id}
+                        name={file.name}
+                        type={getFileType(file.name)}
+                        href={file.url}
+                      />
+                    ))
+                  ) : (
+                    <EmptyState text="No supporting files were submitted." />
+                  )}
+                </div>
+              </Panel>
+
+              {/* ADMIN MESSAGE */}
+              {application.admin_message && (
+                <section
+                  className={`rounded-2xl border p-5 sm:p-6 ${
+                    application.status === "rejected"
+                      ? "border-red-400/20 bg-red-500/[0.05]"
+                      : "border-blue-400/20 bg-blue-500/[0.05]"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                        application.status === "rejected"
+                          ? "bg-red-500/10 text-red-300"
+                          : "bg-blue-500/10 text-blue-300"
+                      }`}
+                    >
+                      <FileText className="h-4 w-4" />
+                    </div>
+
+                    <div>
+                      <h2 className="text-sm font-semibold text-white">
+                        Message from Launch Point
+                      </h2>
+                      <p className="mt-2 text-sm leading-6 text-zinc-400">
+                        {application.admin_message}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
+
+            {/* ---------------- SUMMARY RAIL ---------------- */}
+            <aside className="lg:col-span-1">
+              <div className="space-y-5 lg:sticky lg:top-28">
+                {/* CONTACT */}
+                <Panel>
+                  <SectionHeader
+                    icon={<UserRound className="h-4 w-4" />}
+                    title="Contact"
+                    description="How we can reach the applicant."
+                  />
+
+                  <div className="mt-6 space-y-5">
+                    <InfoRow
+                      icon={<Mail className="h-4 w-4" />}
+                      label="Email address"
+                      value={application.email}
+                    />
+                    <InfoRow
+                      icon={<Phone className="h-4 w-4" />}
+                      label="Phone number"
+                      value={application.phone_number}
+                    />
+                    <InfoRow
+                      icon={<MapPin className="h-4 w-4" />}
+                      label="Location"
+                      value={application.location}
+                    />
+                  </div>
+                </Panel>
+
+                {/* PROFESSIONAL LINKS */}
+                <Panel>
+                  <SectionHeader
+                    icon={<Globe className="h-4 w-4" />}
+                    title="Professional Links"
+                    description="Profiles and work submitted with the application."
+                  />
+
+                  <div className="mt-6 space-y-3">
+                    <LinkCard
+                      icon={<Globe className="h-4 w-4" />}
+                      label="Portfolio"
+                      description="View portfolio"
+                      href={application.portfolio_url}
+                    />
+                    <LinkCard
+                      icon={<LinkedinIcon className="h-4 w-4" />}
+                      label="LinkedIn"
+                      description="View LinkedIn profile"
+                      href={application.linkedin_url}
+                    />
+                    <LinkCard
+                      icon={<GithubIcon className="h-4 w-4" />}
+                      label="GitHub"
+                      description="View GitHub profile"
+                      href={application.github_url}
+                    />
+                  </div>
+                </Panel>
+              </div>
+            </aside>
           </div>
 
           {/* ========================================================
@@ -551,10 +573,10 @@ const InstructorApplicationDetailsPage = () => {
               <button
                 type="button"
                 onClick={() => navigate("/instructor/dashboard")}
-                className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.8)] active:scale-[0.98]"
+                className="group inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-6 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98]"
               >
                 Go to Instructor Dashboard
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </button>
             )}
           </div>
@@ -567,6 +589,16 @@ const InstructorApplicationDetailsPage = () => {
 /* ================================================================
    REUSABLE COMPONENTS
 ================================================================ */
+
+type PanelProps = {
+  children: React.ReactNode;
+};
+
+const Panel = ({ children }: PanelProps) => (
+  <section className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_20px_50px_-40px_rgba(2,6,23,0.9)] transition-colors duration-200 hover:border-white/[0.11] sm:p-6">
+    {children}
+  </section>
+);
 
 type SectionHeaderProps = {
   icon: React.ReactNode;
@@ -581,7 +613,9 @@ const SectionHeader = ({ icon, title, description }: SectionHeaderProps) => (
     </div>
 
     <div>
-      <h2 className="text-sm font-semibold text-white">{title}</h2>
+      <h2 className="text-sm font-semibold tracking-tight text-white">
+        {title}
+      </h2>
       <p className="mt-0.5 text-xs text-zinc-500">{description}</p>
     </div>
   </div>
@@ -595,7 +629,7 @@ type InfoRowProps = {
 
 const InfoRow = ({ icon, label, value }: InfoRowProps) => (
   <div className="flex items-start gap-3">
-    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.025] text-blue-300/70">
+    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] text-blue-300/70">
       {icon}
     </div>
 
@@ -616,7 +650,7 @@ type TextBlockProps = {
 };
 
 const TextBlock = ({ label, value }: TextBlockProps) => (
-  <div className="rounded-xl border border-white/[0.06] bg-[#0D0F15]/60 p-5">
+  <div className="rounded-xl border border-white/[0.06] bg-[#0B0D14]/70 p-5 transition-colors duration-200 hover:border-blue-400/15">
     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-200/60">
       {label}
     </p>
@@ -636,9 +670,9 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0D0F15]/60 p-4 transition-all duration-200 hover:border-blue-400/30 hover:bg-blue-500/[0.06]"
+    className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-blue-500/[0.06]"
   >
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.08] text-blue-300">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.08] text-blue-300 transition-colors group-hover:border-blue-400/30">
       {icon}
     </div>
 
@@ -649,7 +683,7 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
       </p>
     </div>
 
-    <ExternalLink className="h-3.5 w-3.5 shrink-0 text-zinc-600 transition-colors group-hover:text-blue-300" />
+    <ExternalLink className="h-3.5 w-3.5 shrink-0 text-zinc-600 transition-all group-hover:translate-x-0.5 group-hover:text-blue-300" />
   </a>
 );
 
@@ -666,7 +700,7 @@ const DocumentCard = ({
   href,
   primary = false,
 }: DocumentCardProps) => (
-  <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0D0F15]/60 p-4 transition-all duration-200 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
+  <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-400/15 bg-blue-500/[0.08] text-blue-300">
       <FileText className="h-4 w-4" />
     </div>
@@ -692,6 +726,17 @@ const DocumentCard = ({
     >
       <Download className="h-4 w-4" />
     </a>
+  </div>
+);
+
+type EmptyStateProps = {
+  text: string;
+};
+
+const EmptyState = ({ text }: EmptyStateProps) => (
+  <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
+    <FileText className="mx-auto h-6 w-6 text-zinc-600" />
+    <p className="mt-2 text-sm text-zinc-500">{text}</p>
   </div>
 );
 
