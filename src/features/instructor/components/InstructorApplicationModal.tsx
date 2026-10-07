@@ -813,8 +813,8 @@ const InstructorApplicationModal = ({
     const maxFileSize = 5 * 1024 * 1024;
 
     // Check total file count
-    if (supportingFiles.length + selectedFiles.length > 5) {
-      const message = `You can upload up to 5 supporting files. You already selected ${supportingFiles.length}.`;
+    if (supportingFiles.length + selectedFiles.length > 10) {
+      const message = `You can upload up to 10 supporting files. You already selected ${supportingFiles.length}.`;
       setSupportingFilesError(message);
       setValidationErrors((previous) => ({
         ...previous,
@@ -916,11 +916,11 @@ const InstructorApplicationModal = ({
       nextErrors.resume = "Please upload your resume.";
     }
 
-    if (supportingFiles.length === 0) {
+    if (supportingFiles.length < 3) {
       nextErrors.supporting_files =
-        "Please upload at least one supporting file.";
-    } else if (supportingFiles.length > 5) {
-      nextErrors.supporting_files = "You can upload up to 5 supporting files.";
+        "Please upload at least 3 supporting files.";
+    } else if (supportingFiles.length > 10) {
+      nextErrors.supporting_files = "You can upload up to 10 supporting files.";
     }
 
     setValidationErrors(nextErrors);
@@ -1759,17 +1759,17 @@ const InstructorApplicationModal = ({
 
                       <span
                         className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-                          supportingFiles.length >= 5
+                          supportingFiles.length >= 3
                             ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
                             : "border-blue-400/20 bg-blue-500/10 text-blue-200"
                         }`}
                       >
-                        {supportingFiles.length}/5 files
+                        {supportingFiles.length}/10 files
                       </span>
                     </div>
 
                     {/* Drop zone — hidden once the limit is reached */}
-                    {supportingFiles.length < 5 && (
+                    {supportingFiles.length < 10 && (
                       <div
                         onDragOver={(event) => {
                           event.preventDefault();
@@ -1816,7 +1816,7 @@ const InstructorApplicationModal = ({
                         </span>
 
                         <span className="mt-1 text-xs text-zinc-500">
-                          PDF, PNG, or JPG · Up to 5 files · 5 MB each
+                          PDF, PNG, or JPG · 3–10 files · 5 MB each
                         </span>
 
                         {/* Select files button */}
