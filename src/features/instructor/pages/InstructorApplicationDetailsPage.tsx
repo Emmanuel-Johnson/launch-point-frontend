@@ -213,10 +213,6 @@ const InstructorApplicationDetailsPage = () => {
     .join("")
     .toUpperCase();
 
-  const hasDocuments =
-    Boolean(application.resume_url) ||
-    Boolean(application.supporting_files?.length);
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
       {/* ============================================================
@@ -458,38 +454,56 @@ const InstructorApplicationDetailsPage = () => {
               </div>
             </section>
 
-            {/* DOCUMENTS */}
+            {/* RESUME / CV */}
             <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
               <SectionHeader
                 icon={<FileText className="h-4 w-4" />}
-                title="Documents"
-                description="Files submitted with the application."
+                title="Resume / CV"
+                description="Latest resume or CV submitted with the application."
               />
 
               <div className="mt-6 space-y-3">
-                {application.resume_url && (
+                {application.resume_url ? (
                   <DocumentCard
-                    name="Resume"
-                    type="PDF / DOC"
+                    name="Resume / CV"
+                    type="PDF, DOC, or DOCX"
                     href={application.resume_url}
-                    primary
+                   
                   />
-                )}
-
-                {application.supporting_files?.map((file) => (
-                  <DocumentCard
-                    key={file.id}
-                    name={file.name}
-                    type={getFileType(file.name)}
-                    href={file.url}
-                  />
-                ))}
-
-                {!hasDocuments && (
+                ) : (
                   <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
                     <FileText className="mx-auto h-6 w-6 text-zinc-600" />
                     <p className="mt-2 text-sm text-zinc-500">
-                      No documents were submitted.
+                      No resume was submitted.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* SUPPORTING FILES */}
+            <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6 lg:col-span-2">
+              <SectionHeader
+                icon={<FileText className="h-4 w-4" />}
+                title="Supporting Files"
+                description="Certificates and other relevant documents."
+              />
+
+              <div className="mt-6 space-y-3">
+                {application.supporting_files?.length ? (
+                  application.supporting_files.map((file) => (
+                    <DocumentCard
+                      key={file.id}
+                      name={file.name}
+                      type={getFileType(file.name)}
+                      href={file.url}
+                    />
+                  ))
+                ) : (
+                  <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
+                    <FileText className="mx-auto h-6 w-6 text-zinc-600" />
+                    <p className="mt-2 text-sm text-zinc-500">
+                      No supporting files were submitted.
                     </p>
                   </div>
                 )}

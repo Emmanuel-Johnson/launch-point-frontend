@@ -171,7 +171,7 @@ const applicationSchema = z.object({
     .trim()
     .min(1, "Motivation is required")
     .min(10, "Motivation must be at least 10 characters")
-    .max(2000, "Motivation cannot exceed 2000 characters")
+    .max(1000, "Motivation cannot exceed 1000 characters")
     .refine(
       (value) => !hasRepeatedSpecialCharacter(value),
       "The same special character cannot be repeated 3 or more times consecutively",
@@ -1184,10 +1184,10 @@ const InstructorApplicationModal = ({
                     value={form.motivation}
                     onChange={(e) => updateField("motivation", e.target.value)}
                     placeholder="What motivates you to teach, and how would you help learners succeed?"
-                    maxLength={2000}
+                    maxLength={1000}
                   />
                   <span className="mt-1 block text-right text-xs text-zinc-600">
-                    {form.motivation.length}/2000
+                    {form.motivation.length}/1000
                   </span>
                   {fieldError("motivation")}
                 </label>
