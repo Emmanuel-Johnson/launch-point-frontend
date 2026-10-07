@@ -202,6 +202,170 @@ const experienceOptions = [
   { value: "ten_plus", label: "10+ years" },
 ];
 
+/* ================================================================
+   FILE-TYPE META + LOGO
+   Maps a filename's extension to a label + semantic color (and
+   flags image types), then renders a real "file icon": white page
+   with a folded corner, faint text lines, and a colored type
+   badge across the bottom.
+================================================================ */
+
+type FileMeta = { label: string; color: string; image?: boolean };
+
+const FILE_TYPES: Record<string, FileMeta> = {
+  pdf: { label: "PDF", color: "#EF4444" },
+  doc: { label: "DOC", color: "#2563EB" },
+  docx: { label: "DOCX", color: "#2563EB" },
+  xls: { label: "XLS", color: "#22C55E" },
+  xlsx: { label: "XLSX", color: "#22C55E" },
+  csv: { label: "CSV", color: "#22C55E" },
+  ppt: { label: "PPT", color: "#F97316" },
+  pptx: { label: "PPTX", color: "#F97316" },
+  zip: { label: "ZIP", color: "#F59E0B" },
+  rar: { label: "RAR", color: "#F59E0B" },
+  txt: { label: "TXT", color: "#94A3B8" },
+  png: { label: "PNG", color: "#A855F7", image: true },
+  jpg: { label: "JPG", color: "#A855F7", image: true },
+  jpeg: { label: "JPEG", color: "#A855F7", image: true },
+  gif: { label: "GIF", color: "#A855F7", image: true },
+  webp: { label: "WEBP", color: "#A855F7", image: true },
+  svg: { label: "SVG", color: "#A855F7", image: true },
+};
+
+const getFileMeta = (name: string): FileMeta => {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+  return (
+    FILE_TYPES[ext] ?? { label: ext.toUpperCase() || "FILE", color: "#64748B" }
+  );
+};
+
+const FileTypeIcon = ({
+  meta,
+  className,
+}: {
+  meta: FileMeta;
+  className?: string;
+}) => {
+  const len = meta.label.length;
+  const fontSize = len <= 3 ? 9 : len === 4 ? 7 : 6;
+
+  return (
+    <svg viewBox="0 0 40 48" className={className} aria-hidden="true">
+      {/* page body */}
+      <path
+        d="M7 1.5h18.5L34 10v34.5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"
+        fill="#F8FAFC"
+        stroke="#E2E8F0"
+        strokeWidth="1"
+      />
+      {/* folded corner */}
+      <path d="M25.5 1.5 34 10h-6.5a2 2 0 0 1-2-2Z" fill="#E2E8F0" />
+      {/* faint text lines */}
+      <rect x="11" y="15" width="18" height="2" rx="1" fill="#E2E8F0" />
+      <rect x="11" y="20" width="18" height="2" rx="1" fill="#E2E8F0" />
+      <rect x="11" y="25" width="12" height="2" rx="1" fill="#E2E8F0" />
+      {/* colored type badge */}
+      <rect x="4" y="30" width="26" height="13" rx="3" fill={meta.color} />
+      <text
+        x="17"
+        y="39.2"
+        textAnchor="middle"
+        fontSize={fontSize}
+        fontWeight="700"
+        letterSpacing="0.3"
+        fill="#ffffff"
+        fontFamily="Inter, system-ui, sans-serif"
+      >
+        {meta.label}
+      </text>
+    </svg>
+  );
+};
+
+/* A single supporting-file card. Shows a real thumbnail for image
+   files, otherwise the white file-type logo. Presentational only. */
+const SupportingFileCard = ({
+  file,
+  onRemove,
+}: {
+  file: File;
+  onRemove: () => void;
+}) => {
+  const meta = getFileMeta(file.name);
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+
+  // Read image files into a data URL. setState runs only inside the
+  // async onload callback (the compiler-safe pattern), and there's no
+  // object URL to revoke, so it's StrictMode-safe too.
+  useEffect(() => {
+    if (!meta.image) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setThumbnail(typeof reader.result === "string" ? reader.result : null);
+    };
+    reader.readAsDataURL(file);
+
+    return () => reader.abort();
+  }, [file, meta.image]);
+
+  return (
+    <div className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40">
+      <div className="flex items-start gap-3">
+        {/* File logo: clean thumbnail for images, file-type icon otherwise */}
+        {meta.image && thumbnail ? (
+          <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
+            <img
+              src={thumbnail}
+              alt={file.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        ) : (
+          <FileTypeIcon
+            meta={meta}
+            className="h-11 w-9 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+          />
+        )}
+
+        {/* File information */}
+        <div className="min-w-0 flex-1">
+          <p
+            className="truncate text-sm font-medium text-white"
+            title={file.name}
+          >
+            {file.name}
+          </p>
+
+          <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
+            <span>{meta.label} file</span>
+
+            <span className="text-zinc-700">•</span>
+
+            <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+          </div>
+        </div>
+
+        {/* Remove */}
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Remove ${file.name}`}
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Ready badge */}
+      <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
+        <CheckCircle2 className="h-3.5 w-3.5" />
+        <span>Ready to submit</span>
+      </div>
+    </div>
+  );
+};
+
 type ApplicationForm = {
   full_name: string;
   email: string;
@@ -1224,10 +1388,11 @@ const InstructorApplicationModal = ({
                       /* Selected resume */
                       <div className="mt-3 rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
                         <div className="flex items-center gap-4">
-                          {/* File icon */}
-                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-blue-500/10 text-blue-300">
-                            <FileText className="h-6 w-6" />
-                          </div>
+                          {/* File logo */}
+                          <FileTypeIcon
+                            meta={getFileMeta(resume.name)}
+                            className="h-14 w-11 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+                          />
 
                           {/* File information */}
                           <div className="min-w-0 flex-1">
@@ -1239,10 +1404,7 @@ const InstructorApplicationModal = ({
                             </p>
 
                             <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-                              <span>
-                                {resume.name.split(".").pop()?.toUpperCase()}{" "}
-                                file
-                              </span>
+                              <span>{getFileMeta(resume.name).label} file</span>
 
                               <span className="text-zinc-700">•</span>
 
@@ -1491,56 +1653,11 @@ const InstructorApplicationModal = ({
                     {supportingFiles.length > 0 && (
                       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         {supportingFiles.map((file, index) => (
-                          <div
+                          <SupportingFileCard
                             key={`${file.name}-${file.size}-${index}`}
-                            className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40"
-                          >
-                            <div className="flex items-start gap-3">
-                              {/* File icon */}
-                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-blue-500/10 text-blue-300">
-                                <FileText className="h-5 w-5" />
-                              </div>
-
-                              {/* File information */}
-                              <div className="min-w-0 flex-1">
-                                <p
-                                  className="truncate text-sm font-medium text-white"
-                                  title={file.name}
-                                >
-                                  {file.name}
-                                </p>
-
-                                <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-                                  <span>
-                                    {file.name.split(".").pop()?.toUpperCase()}{" "}
-                                    file
-                                  </span>
-
-                                  <span className="text-zinc-700">•</span>
-
-                                  <span>
-                                    {(file.size / (1024 * 1024)).toFixed(2)} MB
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Remove */}
-                              <button
-                                type="button"
-                                onClick={() => removeSupportingFile(file.name)}
-                                aria-label={`Remove ${file.name}`}
-                                className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            </div>
-
-                            {/* Ready badge */}
-                            <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
-                              <CheckCircle2 className="h-3.5 w-3.5" />
-                              <span>Ready to submit</span>
-                            </div>
-                          </div>
+                            file={file}
+                            onRemove={() => removeSupportingFile(file.name)}
+                          />
                         ))}
                       </div>
                     )}

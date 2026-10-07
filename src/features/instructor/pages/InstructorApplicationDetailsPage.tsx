@@ -326,17 +326,17 @@ const InstructorApplicationDetailsPage = () => {
       {/* ============================================================
           HEADER
       ============================================================ */}
-      <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-[#070A14]/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-5 sm:gap-7">
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/applications")}
-              aria-label="Back to applications"
-              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.02] text-zinc-400 transition-all duration-200 hover:border-blue-400/30 hover:bg-blue-500/[0.08] hover:text-white"
+      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Back button + Logo */}
+          <div className="flex items-center gap-6 sm:gap-8">
+            <Link
+              to="/instructor/applications"
+              aria-label="Back to student dashboard"
+              className="group flex shrink-0 items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
             >
-              <ArrowLeft className="h-4.5 w-4.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </button>
+              <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
+            </Link>
 
             <BrandLogo />
           </div>
