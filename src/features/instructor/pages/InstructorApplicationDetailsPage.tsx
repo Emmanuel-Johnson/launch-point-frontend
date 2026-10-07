@@ -155,6 +155,31 @@ const application: Application = {
       name: "Previous Work.docx",
       url: "#",
     },
+    {
+      id: 3,
+      name: "Skills Matrix.xlsx",
+      url: "#",
+    },
+    {
+      id: 4,
+      name: "Intro Deck.pptx",
+      url: "#",
+    },
+    {
+      id: 5,
+      name: "Portfolio Screenshot.png",
+      url: "https://picsum.photos/seed/launchpoint/200",
+    },
+    {
+      id: 6,
+      name: "Source Code.zip",
+      url: "#",
+    },
+    {
+      id: 7,
+      name: "Reference Letter.txt",
+      url: "#",
+    },
   ],
 
   admin_message: null,
@@ -794,20 +819,14 @@ const DocumentCard = ({
 
   return (
     <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
-      {/* File logo: real thumbnail for images, white file-type icon otherwise */}
+      {/* File logo: clean thumbnail for images, white file-type icon otherwise */}
       {meta.image && thumbnailUrl ? (
-        <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-md border border-white/10 bg-white/5">
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
           <img
             src={thumbnailUrl}
             alt={name}
             className="h-full w-full object-cover"
           />
-          <span
-            className="absolute inset-x-0 bottom-0 text-center text-[8px] font-bold text-white"
-            style={{ background: meta.color }}
-          >
-            {meta.label}
-          </span>
         </div>
       ) : (
         <FileTypeIcon
