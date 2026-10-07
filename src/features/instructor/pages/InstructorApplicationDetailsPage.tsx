@@ -41,7 +41,7 @@ interface Application {
 
   categories_to_teach: string[];
 
-  short_bio: string;
+  professional_bio: string;
   motivation: string;
 
   portfolio_url: string;
@@ -144,7 +144,7 @@ const application: Application = {
 
   categories_to_teach: ["Python", "Django", "Web Development"],
 
-  short_bio:
+  professional_bio:
     "Full stack developer passionate about teaching web development and helping students build real-world projects.",
 
   motivation:
@@ -540,8 +540,8 @@ const InstructorApplicationDetailsPage = () => {
 
                 <div className="mt-6 grid gap-5 lg:grid-cols-2">
                   <TextBlock
-                    label="Short professional bio"
-                    value={application.short_bio}
+                    label="Professional Bio"
+                    value={application.professional_bio}
                   />
                   <TextBlock
                     label="Why do you want to become an instructor?"

@@ -91,12 +91,12 @@ const applicationSchema = z.object({
     .string()
     .min(1, "Please select your years of experience"),
 
-  short_bio: z
+  professional_bio: z
     .string()
     .trim()
-    .min(1, "Short bio is required")
-    .min(10, "Short bio must be at least 10 characters")
-    .max(500, "Short bio cannot exceed 500 characters")
+    .min(1, "Professional bio is required")
+    .min(100, "Professional bio must be at least 100 characters")
+    .max(1000, "Professional bio cannot exceed 1000 characters")
     .refine(
       (value) => !hasRepeatedSpecialCharacter(value),
       "The same special character cannot be repeated consecutively",
@@ -171,7 +171,7 @@ const applicationSchema = z.object({
     .string()
     .trim()
     .min(1, "Motivation is required")
-    .min(10, "Motivation must be at least 10 characters")
+    .min(100, "Motivation must be at least 100 characters")
     .max(1000, "Motivation cannot exceed 1000 characters")
     .refine(
       (value) => !hasRepeatedSpecialCharacter(value),
@@ -557,7 +557,7 @@ type ApplicationForm = {
   education: string;
   years_of_experience: string;
   categories_to_teach: number[];
-  short_bio: string;
+  professional_bio: string;
   phone_number: string;
   location: string;
 
@@ -578,7 +578,7 @@ const initialApplicationForm: ApplicationForm = {
   education: "",
   years_of_experience: "",
   categories_to_teach: [],
-  short_bio: "",
+  professional_bio: "",
   phone_number: "",
   location: "",
 
@@ -952,7 +952,7 @@ const InstructorApplicationModal = ({
         formData.append("categories_to_teach", String(categoryId));
       });
 
-      formData.append("short_bio", form.short_bio.trim());
+      formData.append("professional_bio", form.professional_bio.trim());
       formData.append("phone_number", form.phone_number.trim());
       formData.append("location", form.location.trim());
       formData.append("linkedin_url", form.linkedin_url.trim());
@@ -1426,18 +1426,20 @@ const InstructorApplicationModal = ({
                   </div>
 
                   <label className={`${labelClass} flex flex-1 flex-col`}>
-                    Short professional bio
+                    Professional Bio
                     <textarea
-                      className={`${getInputClass("short_bio")} min-h-28 flex-1 resize-none`}
-                      value={form.short_bio}
-                      onChange={(e) => updateField("short_bio", e.target.value)}
+                      className={`${getInputClass("professional_bio")} min-h-28 flex-1 resize-none`}
+                      value={form.professional_bio}
+                      onChange={(e) =>
+                        updateField("professional_bio", e.target.value)
+                      }
                       placeholder="Share your background, skills, and what makes your teaching approach unique..."
                       maxLength={1000}
                     />
                     <span className="mt-1 block text-right text-xs text-zinc-600">
-                      {form.short_bio.length}/1000
+                      {form.professional_bio.length}/1000
                     </span>
-                    {fieldError("short_bio")}
+                    {fieldError("professional_bio")}
                   </label>
                 </div>
 
