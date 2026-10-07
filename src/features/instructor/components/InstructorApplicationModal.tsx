@@ -19,6 +19,7 @@ import {
   ChevronDown,
   Plus,
   Check,
+  Eye,
 } from "lucide-react";
 
 const DEFAULT_PROFILE_IMAGE = "/media/profile_images/default_profile.png";
@@ -239,6 +240,13 @@ const getFileMeta = (name: string): FileMeta => {
   );
 };
 
+/* A file is previewable in the lightbox when it's an image or a PDF.
+   Both render inline; anything else shows a graceful fallback. */
+const isPreviewable = (file: File): boolean => {
+  const meta = getFileMeta(file.name);
+  return Boolean(meta.image) || file.name.toLowerCase().endsWith(".pdf");
+};
+
 const FileTypeIcon = ({
   meta,
   className,
@@ -282,14 +290,171 @@ const FileTypeIcon = ({
   );
 };
 
+/* ================================================================
+   FILE PREVIEW MODAL
+   Self-contained lightbox for previewing an uploaded file.
+   - Images render full-size.
+   - PDFs render in an iframe.
+   - Anything else shows a graceful fallback.
+   The file is read into a data URL via FileReader; setState runs
+   only inside the async onload callback (the compiler-safe pattern),
+   so there's no synchronous setState in the effect body. The parent
+   keys this modal per file, so it remounts fresh — no manual reset.
+   Closes on backdrop click or Escape. The Escape handler runs in the
+   capture phase and stops propagation so it closes ONLY the preview,
+   never the parent application modal.
+================================================================ */
+const FilePreviewModal = ({
+  file,
+  onClose,
+}: {
+  file: File;
+  onClose: () => void;
+}) => {
+  const meta = getFileMeta(file.name);
+  const isPdf = file.name.toLowerCase().endsWith(".pdf");
+  const canPreview = Boolean(meta.image) || isPdf;
+
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!canPreview) return;
+
+    let cancelled = false;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (!cancelled) {
+        setDataUrl(typeof reader.result === "string" ? reader.result : null);
+      }
+    };
+    reader.readAsDataURL(file);
+
+    return () => {
+      cancelled = true;
+      reader.abort();
+    };
+  }, [file, canPreview]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        // Stop the parent modal's window-level Escape listener from
+        // also firing, so only the preview closes.
+        event.stopImmediatePropagation();
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Preview of ${file.name}`}
+        onClick={(event) => event.stopPropagation()}
+        className="relative flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0B10] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10"
+      >
+        {/* Top gradient accent line */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+
+        {/* Header */}
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <FileTypeIcon
+              meta={meta}
+              className="h-9 w-7 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+            />
+
+            <div className="min-w-0">
+              <p
+                className="truncate text-sm font-medium text-white"
+                title={file.name}
+              >
+                {file.name}
+              </p>
+
+              <div className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500">
+                <span>{meta.label} file</span>
+
+                <span className="text-zinc-700">•</span>
+
+                <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close preview"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/10 text-zinc-400 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </header>
+
+        {/* Body */}
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[#07080C] p-4">
+          {meta.image && dataUrl ? (
+            <img
+              src={dataUrl}
+              alt={file.name}
+              className="mx-auto max-h-[70vh] w-auto max-w-full rounded-lg object-contain shadow-2xl shadow-black/50"
+            />
+          ) : isPdf && dataUrl ? (
+            <iframe
+              src={dataUrl}
+              title={file.name}
+              className="h-[70vh] w-full rounded-lg border border-white/10 bg-white"
+            />
+          ) : canPreview ? (
+            /* Image / PDF still reading into a data URL */
+            <div className="flex items-center justify-center px-6 py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500/15 border-t-blue-400" />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+              <FileTypeIcon
+                meta={meta}
+                className="h-16 w-12 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+              />
+
+              <p className="text-sm font-medium text-white">
+                Preview isn&apos;t available for this file type
+              </p>
+
+              <p className="max-w-xs text-xs leading-5 text-zinc-500">
+                {meta.label} files can&apos;t be shown inline. They&apos;ll
+                still be submitted with your application.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* A single supporting-file card. Shows a real thumbnail for image
    files, otherwise the white file-type logo. Presentational only. */
 const SupportingFileCard = ({
   file,
   onRemove,
+  onPreview,
 }: {
   file: File;
   onRemove: () => void;
+  onPreview: () => void;
 }) => {
   const meta = getFileMeta(file.name);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
@@ -308,6 +473,8 @@ const SupportingFileCard = ({
 
     return () => reader.abort();
   }, [file, meta.image]);
+
+  const previewable = isPreviewable(file);
 
   return (
     <div className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40">
@@ -346,15 +513,30 @@ const SupportingFileCard = ({
           </div>
         </div>
 
-        {/* Remove */}
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={`Remove ${file.name}`}
-          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        {/* Actions */}
+        <div className="flex shrink-0 items-center gap-1">
+          {/* Preview */}
+          {previewable && (
+            <button
+              type="button"
+              onClick={onPreview}
+              aria-label={`Preview ${file.name}`}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-blue-400/10 hover:text-blue-300"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+          )}
+
+          {/* Remove */}
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label={`Remove ${file.name}`}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Ready badge */}
@@ -439,6 +621,9 @@ const InstructorApplicationModal = ({
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {},
   );
+
+  // File currently open in the preview lightbox (null = closed).
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -582,13 +767,13 @@ const InstructorApplicationModal = ({
       return;
     }
 
-    const allowedExtensions = /\.(pdf|doc|docx)$/i;
+    const allowedExtensions = /\.pdf$/i;
 
     if (!allowedExtensions.test(file.name)) {
-      setResumeError("Please choose a PDF, DOC, or DOCX file.");
+      setResumeError("Please choose a PDF file.");
       setValidationErrors((previous) => ({
         ...previous,
-        resume: "Please choose a PDF, DOC, or DOCX file.",
+        resume: "Please choose a PDF file.",
       }));
       setResume(null);
       return;
@@ -624,7 +809,7 @@ const InstructorApplicationModal = ({
 
     const selectedFiles = Array.from(files);
 
-    const allowedExtensions = /\.(pdf|doc|docx|png|jpe?g)$/i;
+    const allowedExtensions = /\.(pdf|png|jpe?g)$/i;
     const maxFileSize = 5 * 1024 * 1024;
 
     // Check total file count
@@ -644,8 +829,7 @@ const InstructorApplicationModal = ({
     );
 
     if (invalidFile) {
-      const message =
-        "Each file must be PDF, DOC, DOCX, PNG, or JPG and 5 MB or smaller.";
+      const message = "Each file must be PDF, PNG, or JPG and 5 MB or smaller.";
       setSupportingFilesError(message);
       setValidationErrors((previous) => ({
         ...previous,
@@ -692,6 +876,8 @@ const InstructorApplicationModal = ({
 
     setSupportingFiles([]);
     setSupportingFilesError("");
+
+    setPreviewFile(null);
 
     setLoadError("");
     setValidationErrors({});
@@ -1419,22 +1605,37 @@ const InstructorApplicationModal = ({
                             </div>
                           </div>
 
-                          {/* Remove resume */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setResume(null);
-                              setResumeError("Please upload your resume.");
-                              setValidationErrors((previous) => ({
-                                ...previous,
-                                resume: "Please upload your resume.",
-                              }));
-                            }}
-                            aria-label="Remove resume"
-                            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
+                          {/* Resume actions */}
+                          <div className="flex shrink-0 items-center gap-1">
+                            {/* Preview resume */}
+                            {isPreviewable(resume) && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewFile(resume)}
+                                aria-label="Preview resume"
+                                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-blue-400/10 hover:text-blue-300"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
+                            )}
+
+                            {/* Remove resume */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setResume(null);
+                                setResumeError("Please upload your resume.");
+                                setValidationErrors((previous) => ({
+                                  ...previous,
+                                  resume: "Please upload your resume.",
+                                }));
+                              }}
+                              aria-label="Remove resume"
+                              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
 
                         {/* Change resume */}
@@ -1448,7 +1649,7 @@ const InstructorApplicationModal = ({
                         <input
                           id="resume-upload"
                           type="file"
-                          accept=".pdf,.doc,.docx"
+                          accept=".pdf"
                           className="hidden"
                           onChange={(event) => {
                             handleResumeChange(event.target.files?.[0]);
@@ -1508,7 +1709,7 @@ const InstructorApplicationModal = ({
                         </span>
 
                         <span className="mt-1 text-xs text-zinc-500">
-                          PDF, DOC, or DOCX · Max 5 MB
+                          PDF · Max 5 MB
                         </span>
 
                         {/* Select button */}
@@ -1522,7 +1723,7 @@ const InstructorApplicationModal = ({
                         <input
                           id="resume-upload"
                           type="file"
-                          accept=".pdf,.doc,.docx"
+                          accept=".pdf"
                           className="hidden"
                           onChange={(event) => {
                             handleResumeChange(event.target.files?.[0]);
@@ -1613,8 +1814,7 @@ const InstructorApplicationModal = ({
                         </span>
 
                         <span className="mt-1 text-xs text-zinc-500">
-                          PDF, DOC, DOCX, PNG, or JPG · Up to 5 files · 5 MB
-                          each
+                          PDF, PNG, or JPG · Up to 5 files · 5 MB each
                         </span>
 
                         {/* Select files button */}
@@ -1630,7 +1830,7 @@ const InstructorApplicationModal = ({
                           id="supporting-files-upload"
                           type="file"
                           multiple
-                          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                          accept=".pdf,.png,.jpg,.jpeg"
                           className="hidden"
                           onChange={(event) => {
                             handleSupportingFilesChange(event.target.files);
@@ -1657,6 +1857,7 @@ const InstructorApplicationModal = ({
                             key={`${file.name}-${file.size}-${index}`}
                             file={file}
                             onRemove={() => removeSupportingFile(file.name)}
+                            onPreview={() => setPreviewFile(file)}
                           />
                         ))}
                       </div>
@@ -1737,6 +1938,15 @@ const InstructorApplicationModal = ({
           </div>
         )}
       </section>
+
+      {/* FILE PREVIEW LIGHTBOX */}
+      {previewFile && (
+        <FilePreviewModal
+          key={`${previewFile.name}-${previewFile.size}`}
+          file={previewFile}
+          onClose={() => setPreviewFile(null)}
+        />
+      )}
     </div>
   );
 };
