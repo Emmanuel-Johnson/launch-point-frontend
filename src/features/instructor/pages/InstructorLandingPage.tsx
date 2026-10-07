@@ -17,7 +17,7 @@ import Reveal from "../../../shared/components/Reveal";
 /* ---------- Brand logo (matches PublicNavbar, uses instructor png) ---------- */
 const BrandLogo = () => (
   <Link
-    to="/"
+    to="/instructor"
     className="group flex items-center gap-3 transition-all duration-500 hover:scale-105"
   >
     <div className="flex h-9 w-9 items-center justify-center rounded-lg">
