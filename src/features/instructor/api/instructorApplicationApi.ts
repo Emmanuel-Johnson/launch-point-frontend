@@ -65,3 +65,41 @@ export const getInstructorApplications = async (): Promise<
 
   return response.data;
 };
+
+export interface InstructorApplicationDetail {
+  id: number;
+  status: "pending" | "approved" | "rejected";
+  full_name: string;
+  email: string;
+  phone_number: string;
+  location: string;
+  profile_image: string | null;
+  occupation: string;
+  education: string;
+  years_of_experience: string;
+  categories_to_teach: string[];
+  professional_bio: string;
+  motivation: string;
+  portfolio_url: string;
+  linkedin_url: string;
+  github_url: string;
+  submitted_at: string;
+  resume_url: string | null;
+  resume_name: string | null;
+  supporting_files: {
+    id: number;
+    name: string;
+    url: string;
+  }[];
+  admin_message: string | null;
+}
+
+export const getInstructorApplication = async (
+  applicationId: number,
+): Promise<InstructorApplicationDetail> => {
+  const response = await api.get<InstructorApplicationDetail>(
+    `/instructors/applications/${applicationId}/`,
+  );
+
+  return response.data;
+};

@@ -21,45 +21,13 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  getInstructorApplication,
+  type InstructorApplicationDetail,
+} from "../api/instructorApplicationApi";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
-
-interface Application {
-  id: number;
-  status: ApplicationStatus;
-
-  full_name: string;
-  email: string;
-  phone_number: string;
-  location: string;
-  profile_image?: string | null;
-
-  occupation: string;
-  education: string;
-  years_of_experience: string;
-
-  categories_to_teach: string[];
-
-  professional_bio: string;
-  motivation: string;
-
-  portfolio_url: string;
-  linkedin_url: string;
-  github_url: string;
-
-  submitted_at: string;
-
-  resume_url?: string | null;
-  resume_name?: string | null;
-  supporting_files?: {
-    id: number;
-    name: string;
-    url: string;
-  }[];
-
-  admin_message?: string | null;
-}
 
 /* ================================================================
    DEMO PREVIEW SOURCES
@@ -69,9 +37,6 @@ interface Application {
    (so it resolves at /test_1.pdf). For real previews, swap these for
    the file's actual URL in <FilePreviewModal />.
 ================================================================ */
-const DUMMY_PDF_URL = "/test_1.pdf";
-const DUMMY_IMAGE_URL =
-  "https://picsum.photos/seed/launchpoint-preview/900/1200";
 
 /* ================================================================
    BRAND ICONS
@@ -124,81 +89,6 @@ const BrandLogo = () => (
     </div>
   </Link>
 );
-
-/*
- * Sample data — replace with API data later.
- */
-const application: Application = {
-  id: 1,
-  status: "pending",
-
-  full_name: "Emmanuel Johnson",
-  email: "emmanuel@example.com",
-  phone_number: "+91 9876543210",
-  location: "Kerala, India",
-  profile_image: null,
-
-  occupation: "Full Stack Developer",
-  education: "B.Sc. Computer Science",
-  years_of_experience: "3–5 years",
-
-  categories_to_teach: ["Python", "Django", "Web Development"],
-
-  professional_bio:
-    "Full stack developer passionate about teaching web development and helping students build real-world projects.",
-
-  motivation:
-    "I want to help aspiring developers learn practical development skills and build confidence through project-based learning.",
-
-  portfolio_url: "https://example.com",
-  linkedin_url: "https://linkedin.com/in/example",
-  github_url: "https://github.com/example",
-
-  submitted_at: "October 7, 2026",
-
-  resume_url: "#",
-  resume_name: "Emmanuel_Johnson_Resume.pdf",
-
-  supporting_files: [
-    {
-      id: 1,
-      name: "Project Certificate.pdf",
-      url: "#",
-    },
-    {
-      id: 2,
-      name: "Experience Letter.pdf",
-      url: "#",
-    },
-    {
-      id: 3,
-      name: "Skills Summary.pdf",
-      url: "#",
-    },
-    {
-      id: 4,
-      name: "Intro Notes.pdf",
-      url: "#",
-    },
-    {
-      id: 5,
-      name: "Portfolio Screenshot.png",
-      url: "https://picsum.photos/seed/launchpoint/200",
-    },
-    {
-      id: 6,
-      name: "Project Photo.jpg",
-      url: "https://picsum.photos/seed/launchpoint2/200",
-    },
-    {
-      id: 7,
-      name: "Reference Letter.pdf",
-      url: "#",
-    },
-  ],
-
-  admin_message: null,
-};
 
 const getStatusConfig = (status: ApplicationStatus) => {
   switch (status) {
@@ -332,13 +222,59 @@ const FileTypeIcon = ({
 
 const InstructorApplicationDetailsPage = () => {
   const navigate = useNavigate();
+  const { applicationId } = useParams<{ applicationId: string }>();
+  const [application, setApplication] =
+    useState<InstructorApplicationDetail | null>(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      if (!applicationId) {
+        setError("Application ID is missing.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await getInstructorApplication(Number(applicationId));
+
+        setApplication(data);
+      } catch (error) {
+        console.error("Failed to fetch instructor application:", error);
+        setError("Failed to load application.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchApplication();
+  }, [applicationId]);
   // Document currently open in the preview lightbox (null = closed).
   const [previewFile, setPreviewFile] = useState<{
     name: string;
     url: string;
   } | null>(null);
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+      </div>
+    );
+  }
+
+  if (error || !application) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-red-400">{error || "Application not found."}</p>
+      </div>
+    );
+  }
   const status = getStatusConfig(application.status);
   const StatusIcon = status.icon;
 
@@ -349,7 +285,6 @@ const InstructorApplicationDetailsPage = () => {
     .map((name) => name[0])
     .join("")
     .toUpperCase();
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100 antialiased">
       {/* ============================================================
@@ -958,7 +893,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
 
   // Demo preview source: dummy PDF for PDFs, dummy image for images.
   // Swap these for `url` to preview the real file.
-  const previewSrc = meta.image ? DUMMY_IMAGE_URL : isPdf ? DUMMY_PDF_URL : url;
+  const previewSrc = url;
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
