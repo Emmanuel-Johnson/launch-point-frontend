@@ -2,12 +2,74 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <link rel="icon" type="image/png" href="/student_logo.png" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Launch Point – Study Hard. Work Hard.</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-width: 100%;
+        min-height: 100%;
+        background: #09090b;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      #root {
+        min-height: 100vh;
+        background: #09090b;
+      }
+
+      .initial-loader {
+        width: 100%;
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #09090b;
+      }
+
+      .loader-spinner {
+        width: 32px;
+        height: 32px;
+
+        border: 3px solid rgba(139, 92, 246, 0.2);
+        border-top-color: #8b5cf6;
+
+        border-radius: 50%;
+
+        animation: launch-point-spin 0.8s linear infinite;
+      }
+
+      @keyframes launch-point-spin {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="initial-loader">
+        <div class="loader-spinner"></div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
