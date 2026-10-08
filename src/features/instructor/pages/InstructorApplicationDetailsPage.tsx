@@ -29,6 +29,14 @@ import {
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
 
+const experienceLabels: Record<string, string> = {
+  less_than_one: "Less than 1 year",
+  one_to_three: "1–3 years",
+  three_to_five: "3–5 years",
+  five_to_ten: "5–10 years",
+  ten_plus: "10+ years",
+};
+
 /* ================================================================
    DEMO PREVIEW SOURCES
    The sample data uses placeholder ("#") URLs, so the preview shows
@@ -382,7 +390,17 @@ const InstructorApplicationDetailsPage = () => {
 
                   <p className="mt-2 flex items-center gap-1.5 text-xs text-zinc-500">
                     <CalendarDays className="h-3.5 w-3.5 text-blue-300/60" />
-                    Submitted {application.submitted_at}
+                    Submitted{" "}
+                    {new Date(application.submitted_at).toLocaleString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      },
+                    )}
                   </p>
                 </div>
               </div>
@@ -439,7 +457,10 @@ const InstructorApplicationDetailsPage = () => {
                   <InfoRow
                     icon={<Clock3 className="h-4 w-4" />}
                     label="Experience"
-                    value={application.years_of_experience}
+                    value={
+                      experienceLabels[application.years_of_experience] ??
+                      application.years_of_experience
+                    }
                   />
                 </div>
               </Panel>
