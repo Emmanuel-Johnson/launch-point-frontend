@@ -180,6 +180,39 @@ const hex = (c: string, a: number) =>
     .padStart(2, "0");
 
 /* ================================================================
+   FILE DOWNLOAD
+   Forces an actual download (image or PDF) instead of opening the
+   file in a new tab. Browsers ignore the <a download> attribute for
+   cross-origin URLs (e.g. S3), so we fetch the file as a blob and
+   download that. Works for any file type — it just saves the raw
+   bytes under the given name. Falls back to opening in a new tab if
+   the fetch fails (e.g. the host blocks CORS).
+================================================================ */
+
+const downloadFile = async (name: string, url: string) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Failed to download file:", error);
+    // Fallback: open in a new tab so the user can still save it manually.
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+};
+
+/* ================================================================
    FILE-TYPE LOGO
    A real "file icon": white page with a folded corner, faint text
    lines, and a colored type badge across the bottom.
@@ -867,15 +900,14 @@ const DocumentCard = ({
           </button>
         )}
 
-        <a
-          href={href}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={() => downloadFile(name, href)}
           className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
           aria-label={`Download ${name}`}
         >
           <Download className="h-4 w-4" />
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -895,10 +927,13 @@ const EmptyState = ({ text }: EmptyStateProps) => (
 /* ================================================================
    FILE PREVIEW MODAL
    Lightbox for previewing a document.
-   - DEMO: because the sample data uses "#" URLs, every PDF shows the
-     bundled dummy PDF and every image shows a dummy image. For real
-     previews, use `url` as the source instead of the DUMMY_* values.
-   - PDFs render in an iframe, images render full-size.
+   - Images render full-size straight from the URL.
+   - PDFs are fetched into a same-origin blob: URL and shown in an
+     iframe. A remote PDF URL often won't render inline because the
+     host sends `Content-Disposition: attachment` (forces a download)
+     or blocks framing (X-Frame-Options / CSP). A blob: URL sidesteps
+     both. If the fetch fails (e.g. CORS), we show a fallback with an
+     "open in new tab" link.
    Closes on backdrop click or Escape.
 ================================================================ */
 
@@ -912,10 +947,12 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
   const meta = getFileMeta(name);
   const isPdf = name.toLowerCase().endsWith(".pdf");
 
-  // Demo preview source: dummy PDF for PDFs, dummy image for images.
-  // Swap these for `url` to preview the real file.
-  const previewSrc = url;
+  // PDF is streamed into a blob: URL so the iframe can always render it.
+  const [pdfSrc, setPdfSrc] = useState<string | null>(null);
+  const [isPdfLoading, setIsPdfLoading] = useState(isPdf);
+  const [pdfError, setPdfError] = useState(false);
 
+  // Lock scroll + close on Escape.
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -930,6 +967,46 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
+
+  // Fetch the PDF as a blob URL (images render fine from the direct URL).
+  useEffect(() => {
+    if (!isPdf) return;
+
+    let objectUrl: string | null = null;
+    let cancelled = false;
+
+    const loadPdf = async () => {
+      setIsPdfLoading(true);
+      setPdfError(false);
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+        const blob = await response.blob();
+        // Tag the blob as a PDF so the browser opens its viewer.
+        const pdfBlob =
+          blob.type === "application/pdf"
+            ? blob
+            : new Blob([blob], { type: "application/pdf" });
+
+        objectUrl = window.URL.createObjectURL(pdfBlob);
+        if (!cancelled) setPdfSrc(objectUrl);
+      } catch (error) {
+        console.error("Failed to load PDF preview:", error);
+        if (!cancelled) setPdfError(true);
+      } finally {
+        if (!cancelled) setIsPdfLoading(false);
+      }
+    };
+
+    loadPdf();
+
+    return () => {
+      cancelled = true;
+      if (objectUrl) window.URL.revokeObjectURL(objectUrl);
+    };
+  }, [isPdf, url]);
 
   return (
     <div
@@ -982,16 +1059,48 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[#07080C] p-4">
           {meta.image ? (
             <img
-              src={previewSrc}
+              src={url}
               alt={name}
               className="mx-auto max-h-[70vh] w-auto max-w-full rounded-lg object-contain shadow-2xl shadow-black/50"
             />
           ) : isPdf ? (
-            <iframe
-              src={previewSrc}
-              title={name}
-              className="h-[70vh] w-full rounded-lg border border-white/10 bg-white"
-            />
+            isPdfLoading ? (
+              <div className="flex h-[70vh] w-full flex-col items-center justify-center gap-3">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                <p className="text-sm text-zinc-500">Loading preview…</p>
+              </div>
+            ) : pdfError ? (
+              <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+                <FileTypeIcon
+                  meta={meta}
+                  className="h-16 w-12 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+                />
+
+                <p className="text-sm font-medium text-white">
+                  Couldn&apos;t load the preview
+                </p>
+                <p className="max-w-sm text-xs text-zinc-500">
+                  The file host may be blocking inline previews. You can still
+                  open it in a new tab.
+                </p>
+
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-flex items-center gap-2 rounded-lg border border-blue-400/30 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-200 transition hover:border-blue-400/50 hover:bg-blue-500/20"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open in new tab
+                </a>
+              </div>
+            ) : pdfSrc ? (
+              <iframe
+                src={pdfSrc}
+                title={name}
+                className="h-[70vh] w-full rounded-lg border border-white/10 bg-white"
+              />
+            ) : null
           ) : (
             <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
               <FileTypeIcon
