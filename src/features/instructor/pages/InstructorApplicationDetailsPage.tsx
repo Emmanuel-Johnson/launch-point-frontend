@@ -341,25 +341,36 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
       <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div className="mx-auto max-w-6xl">
           {/* Breadcrumb */}
+
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-1.5 text-xs"
+            className="flex items-center gap-2 text-sm"
           >
             <button
               type="button"
               onClick={() => navigate("/instructor/applications")}
-              className="group inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-zinc-500 transition-colors hover:bg-white/[0.04] hover:text-zinc-200"
+              className="group inline-flex items-center gap-2 rounded-md py-1 text-slate-400 transition-all duration-200 hover:text-white"
             >
-              <LayoutGrid className="h-3.5 w-3.5 text-zinc-600 transition-colors group-hover:text-blue-300" />
-              Applications
+              <LayoutGrid className="h-4 w-4 text-slate-500 transition-colors duration-200 group-hover:text-blue-400" />
+
+              <span>Applications</span>
             </button>
 
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-700" />
+            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-600" />
 
-            <span className="inline-flex items-center gap-1.5 font-medium text-blue-100">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
-              Application #{String(application.id).padStart(2, "0")}
-            </span>
+            <div className="inline-flex items-center gap-2 rounded-lg border border-blue-400/10 bg-blue-400/[0.06] px-3 py-1.5">
+              <FileText className="h-3.5 w-3.5 text-blue-400" />
+
+              <span className="font-medium tracking-wide text-blue-100">
+                Application
+              </span>
+
+              <span className="h-3 w-px bg-blue-300/20" />
+
+              <span className="font-mono text-xs font-medium text-blue-300">
+                #{String(application.id).padStart(2, "0")}
+              </span>
+            </div>
           </nav>
 
           {/* ========================================================
@@ -440,7 +451,6 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </div>
             </div>
           </section>
-
           {/* ========================================================
               CONTENT — primary column + sticky summary rail
               (each field appears once)
@@ -667,7 +677,6 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </div>
             </aside>
           </div>
-
           {/* ========================================================
               BOTTOM ACTIONS
           ======================================================== */}
