@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import {
@@ -21,6 +22,8 @@ import {
   Check,
   Eye,
 } from "lucide-react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const DEFAULT_PROFILE_IMAGE = "/media/profile_images/default_profile.png";
 
@@ -599,6 +602,8 @@ const InstructorApplicationModal = ({
   isOpen,
   onClose,
 }: InstructorApplicationModalProps) => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState<ApplicationForm>(initialApplicationForm);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
@@ -617,6 +622,7 @@ const InstructorApplicationModal = ({
   const [isDraggingSupporting, setIsDraggingSupporting] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {},
@@ -813,8 +819,8 @@ const InstructorApplicationModal = ({
     const maxFileSize = 5 * 1024 * 1024;
 
     // Check total file count
-    if (supportingFiles.length + selectedFiles.length > 5) {
-      const message = `You can upload up to 5 supporting files. You already selected ${supportingFiles.length}.`;
+    if (supportingFiles.length + selectedFiles.length > 10) {
+      const message = `You can upload up to 10 supporting files. You already selected ${supportingFiles.length}.`;
       setSupportingFilesError(message);
       setValidationErrors((previous) => ({
         ...previous,
@@ -916,11 +922,11 @@ const InstructorApplicationModal = ({
       nextErrors.resume = "Please upload your resume.";
     }
 
-    if (supportingFiles.length === 0) {
+    if (supportingFiles.length < 3) {
       nextErrors.supporting_files =
-        "Please upload at least one supporting file.";
-    } else if (supportingFiles.length > 5) {
-      nextErrors.supporting_files = "You can upload up to 5 supporting files.";
+        "Please upload at least 3 supporting files.";
+    } else if (supportingFiles.length > 10) {
+      nextErrors.supporting_files = "You can upload up to 10 supporting files.";
     }
 
     setValidationErrors(nextErrors);
@@ -939,7 +945,7 @@ const InstructorApplicationModal = ({
     }
 
     try {
-      setIsLoading(true);
+      setIsSubmitting(true);
 
       const formData = new FormData();
 
@@ -975,13 +981,27 @@ const InstructorApplicationModal = ({
 
       console.log("Application submitted:", response);
 
+      toast.success(response.message, {
+        containerId: "instructor",
+      });
+
       closeAndReset();
+
+      navigate("/instructor/applications");
     } catch (error) {
       console.error("Failed to submit instructor application:", error);
 
-      setLoadError("Unable to submit your application. Please try again.");
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data?.message ??
+          error.response?.data?.detail ??
+          "Unable to submit your application. Please try again.")
+        : "Unable to submit your application. Please try again.";
+
+      toast.error(message, {
+        containerId: "instructor",
+      });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -1759,17 +1779,17 @@ const InstructorApplicationModal = ({
 
                       <span
                         className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-                          supportingFiles.length >= 5
+                          supportingFiles.length >= 3
                             ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
                             : "border-blue-400/20 bg-blue-500/10 text-blue-200"
                         }`}
                       >
-                        {supportingFiles.length}/5 files
+                        {supportingFiles.length}/10 files
                       </span>
                     </div>
 
                     {/* Drop zone — hidden once the limit is reached */}
-                    {supportingFiles.length < 5 && (
+                    {supportingFiles.length < 10 && (
                       <div
                         onDragOver={(event) => {
                           event.preventDefault();
@@ -1816,7 +1836,7 @@ const InstructorApplicationModal = ({
                         </span>
 
                         <span className="mt-1 text-xs text-zinc-500">
-                          PDF, PNG, or JPG · Up to 5 files · 5 MB each
+                          PDF, PNG, or JPG · 3–10 files · 5 MB each
                         </span>
 
                         {/* Select files button */}
@@ -1912,11 +1932,11 @@ const InstructorApplicationModal = ({
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
                   <span className="flex h-5 min-w-[150px] items-center justify-center">
-                    {isLoading ? (
+                    {isSubmitting ? (
                       <span
                         className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"
                         aria-label="Submitting"

@@ -822,3 +822,181 @@ html {
   );
   background-clip: content-box;
 }
+
+/* =========================================================
+   INSTRUCTOR TOAST
+   Blue theme — same structure as Admin Toast
+   ========================================================= */
+
+.instructor-toast {
+  position: relative !important;
+
+  min-height: 60px !important;
+  padding: 15px 18px !important;
+
+  background: #050505 !important;
+  color: #dbeafe !important;
+
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  border-radius: 8px !important;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(59, 130, 246, 0.03) !important;
+}
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.instructor-toast.Toastify__toast--success {
+  background: #050505 !important;
+
+  border-color: rgba(59, 130, 246, 0.35) !important;
+
+  --toastify-color-progress: #3b82f6 !important;
+  --toastify-color-progress-success: #3b82f6 !important;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.instructor-toast.Toastify__toast--error {
+  background: #050505 !important;
+
+  border-color: rgba(239, 68, 68, 0.35) !important;
+
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+/* =========================================================
+   WARNING
+   ========================================================= */
+
+.instructor-toast.Toastify__toast--warning {
+  background: #050505 !important;
+
+  border-color: rgba(234, 179, 8, 0.35) !important;
+
+  --toastify-color-progress: #eab308 !important;
+  --toastify-color-progress-warning: #eab308 !important;
+}
+
+/* =========================================================
+   INFO
+   ========================================================= */
+
+.instructor-toast.Toastify__toast--info {
+  background: #050505 !important;
+
+  border-color: rgba(59, 130, 246, 0.35) !important;
+
+  --toastify-color-progress: #3b82f6 !important;
+  --toastify-color-progress-info: #3b82f6 !important;
+}
+
+/* =========================================================
+   REMOVE DEFAULT EFFECTS
+   ========================================================= */
+
+.instructor-toast::before,
+.instructor-toast::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.instructor-toast .Toastify__toast-icon {
+  margin-inline-end: 12px !important;
+}
+
+.instructor-toast.Toastify__toast--success .Toastify__toast-icon {
+  color: #3b82f6 !important;
+}
+
+.instructor-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--warning .Toastify__toast-icon {
+  color: #eab308 !important;
+}
+
+.instructor-toast.Toastify__toast--info .Toastify__toast-icon {
+  color: #3b82f6 !important;
+}
+
+.instructor-toast .Toastify__toast-icon svg {
+  fill: currentColor !important;
+  color: currentColor !important;
+}
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.instructor-toast .Toastify__toast-body {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+.instructor-toast-progress {
+  height: 3px !important;
+  background: #3b82f6 !important;
+  opacity: 1 !important;
+}
+
+.instructor-toast.Toastify__toast--error .instructor-toast-progress {
+  background: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--warning .instructor-toast-progress {
+  background: #eab308 !important;
+}
+
+.instructor-toast.Toastify__toast--info .instructor-toast-progress {
+  background: #3b82f6 !important;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.instructor-toast .Toastify__close-button {
+  color: #93c5fd !important;
+  opacity: 0.7 !important;
+
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease !important;
+}
+
+.instructor-toast .Toastify__close-button:hover {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.instructor-toast:hover {
+  border-color: rgba(59, 130, 246, 0.45) !important;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(59, 130, 246, 0.06) !important;
+}

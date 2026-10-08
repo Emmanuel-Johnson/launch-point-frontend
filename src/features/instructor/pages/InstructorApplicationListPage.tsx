@@ -9,15 +9,13 @@ import {
   XCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  getInstructorApplications,
+  type InstructorApplication,
+} from "../api/instructorApplicationApi";
+import { useEffect, useState } from "react";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
-
-interface Application {
-  id: number;
-  categories: string[];
-  submitted_at: string;
-  status: ApplicationStatus;
-}
 
 const BrandLogo = () => (
   <Link
@@ -43,31 +41,6 @@ const BrandLogo = () => (
     </div>
   </Link>
 );
-
-/*
- * Sample data
- * Replace this with your API data later.
- */
-const applications: Application[] = [
-  {
-    id: 1,
-    categories: ["Python", "Django", "Web Development"],
-    submitted_at: "October 7, 2026",
-    status: "pending",
-  },
-  {
-    id: 2,
-    categories: ["React", "TypeScript", "Frontend Development"],
-    submitted_at: "September 12, 2026",
-    status: "approved",
-  },
-  {
-    id: 3,
-    categories: ["Python", "Machine Learning", "Data Science"],
-    submitted_at: "August 20, 2026",
-    status: "rejected",
-  },
-];
 
 const getStatusConfig = (status: ApplicationStatus) => {
   switch (status) {
@@ -99,6 +72,29 @@ const getStatusConfig = (status: ApplicationStatus) => {
 
 const InstructorApplicationListPage = () => {
   const navigate = useNavigate();
+  const [applications, setApplications] = useState<InstructorApplication[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadApplications = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const data = await getInstructorApplications();
+
+        setApplications(data);
+      } catch (error) {
+        console.error("Failed to load instructor applications:", error);
+        setError("Unable to load your applications. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadApplications();
+  }, []);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
@@ -143,7 +139,39 @@ const InstructorApplicationListPage = () => {
           </div>
 
           {/* Applications */}
-          {applications.length > 0 ? (
+          {isLoading ? (
+            /* Loading State */
+            <div className="flex min-h-[300px] items-center justify-center">
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-400/20 border-t-blue-400" />
+            </div>
+          ) : error ? (
+            /* Error State */
+            <div className="relative overflow-hidden rounded-2xl border border-red-400/15 bg-gradient-to-b from-red-500/[0.06] to-transparent px-6 py-16 text-center">
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl" />
+
+              <div className="relative">
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-red-400/25 bg-red-500/10 text-red-300">
+                  <XCircle className="h-7 w-7" />
+                </div>
+
+                <h2 className="text-lg font-semibold text-white">
+                  Something went wrong
+                </h2>
+
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-400">
+                  {error}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : applications.length > 0 ? (
             <div className="space-y-4">
               {applications.map((application, index) => {
                 const status = getStatusConfig(application.status);
@@ -187,7 +215,16 @@ const InstructorApplicationListPage = () => {
                             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-zinc-400">
                               <span className="inline-flex items-center gap-1.5">
                                 <CalendarDays className="h-3.5 w-3.5 shrink-0 text-blue-300/70" />
-                                Submitted {application.submitted_at}
+                                Submitted{" "}
+                                {new Date(
+                                  application.submitted_at,
+                                ).toLocaleString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                })}
                               </span>
 
                               <span className="hidden h-3 w-px bg-white/10 sm:block" />
