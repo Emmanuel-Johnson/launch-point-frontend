@@ -937,10 +937,63 @@ const InstructorApplicationModal = ({
     return Object.keys(nextErrors).length === 0;
   };
 
+  const scrollToFirstValidationError = () => {
+    setTimeout(() => {
+      // 1. Profile image
+      if (!profileImageFile && !form.profile_image) {
+        document.getElementById("profile-image-section")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        return;
+      }
+
+      // 2. Categories
+      if (form.categories_to_teach.length === 0) {
+        document.getElementById("categories-section")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        return;
+      }
+
+      // 3. Resume
+      if (!resume) {
+        document.getElementById("resume-section")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        return;
+      }
+
+      // 4. Supporting files
+      if (supportingFiles.length < 3) {
+        document.getElementById("supporting-files-section")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        return;
+      }
+
+      // 5. Normal input errors
+      const firstError = document.querySelector('[class*="border-rose-400"]');
+
+      firstError?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 0);
+  };
+
   const handleSubmit = async () => {
     setLoadError("");
 
     if (!validateForm()) {
+      scrollToFirstValidationError();
       return;
     }
 
@@ -1155,7 +1208,10 @@ const InstructorApplicationModal = ({
 
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                   {/* Profile Picture */}
-                  <div className="flex w-full flex-col items-center gap-3 sm:w-28">
+                  <div
+                    id="profile-image-section"
+                    className="flex w-full flex-col items-center gap-3 sm:w-28"
+                  >
                     {profileImagePreview || profileImageUrl ? (
                       <img
                         src={profileImagePreview || profileImageUrl || ""}
@@ -1336,7 +1392,10 @@ const InstructorApplicationModal = ({
 
                 {/* CATEGORIES */}
 
-                <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#0D0F15]/60 p-4">
+                <div
+                  id="categories-section"
+                  className="mt-6 rounded-xl border border-white/[0.06] bg-[#0D0F15]/60 p-4"
+                >
                   <div className="flex items-center justify-between gap-3">
                     <label className={labelClass}>
                       Categories you want to teach
@@ -1571,7 +1630,7 @@ const InstructorApplicationModal = ({
                    ─────────────────────────────────────────────── */}
                 <div className="mt-6 space-y-6">
                   {/* RESUME / CV */}
-                  <div className="flex flex-col">
+                  <div id="resume-section" className="flex flex-col">
                     <div className="flex items-end justify-between gap-3">
                       <div>
                         <label className={labelClass}>Resume / CV</label>
@@ -1767,7 +1826,7 @@ const InstructorApplicationModal = ({
                   <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                   {/* SUPPORTING FILES */}
-                  <div className="flex flex-col">
+                  <div id="supporting-files-section" className="flex flex-col">
                     <div className="flex items-end justify-between gap-3">
                       <div>
                         <label className={labelClass}>Supporting files</label>
@@ -1889,7 +1948,10 @@ const InstructorApplicationModal = ({
               </div>
 
               {/* TERMS */}
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-gradient-to-b from-blue-500/[0.05] to-white/[0.01] p-4 transition hover:border-blue-400/25">
+              <label
+                id="terms-section"
+                className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-gradient-to-b from-blue-500/[0.05] to-white/[0.01] p-4 transition hover:border-blue-400/25"
+              >
                 <input
                   type="checkbox"
                   checked={form.terms_accepted}
