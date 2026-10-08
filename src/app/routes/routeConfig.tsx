@@ -52,6 +52,9 @@ import InstructorPublicLayout from "../../features/instructor/layout/InstructorP
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
 import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
 import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
+import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
+import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
+import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -229,6 +232,30 @@ export const routeConfig: RouteObject[] = [
           {
             path: "students/:studentId",
             element: <StudentDetailPage />,
+          },
+          // Applications — list views share the Instructor/Course toggle
+          {
+            path: "applications",
+            element: <ApplicationLayout />,
+            children: [
+              {
+                index: true,
+                element: <Navigate to="instructors" replace />,
+              },
+              {
+                path: "instructors",
+                element: <InstructorApplicationAdminListPage />,
+              },
+              {
+                path: "courses",
+                element: <div>Course applications will appear here.</div>,
+              },
+            ],
+          },
+          // Application detail — standalone, no toggle
+          {
+            path: "applications/instructors/:applicationId",
+            element: <InstructorApplicationAdminDetailPage />,
           },
           // Categories
           {
