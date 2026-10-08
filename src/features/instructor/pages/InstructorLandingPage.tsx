@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
-
-import InstructorApplicationModal from "../components/InstructorApplicationModal";
-
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 import {
-  ArrowLeft,
   CalendarClock,
   BadgeDollarSign,
   TrendingUp,
@@ -18,10 +13,7 @@ import {
 
 import Reveal from "../../../shared/components/Reveal";
 
-import {
-  getInstructorApplications,
-  type InstructorApplication,
-} from "../api/instructorApplicationApi";
+import type { InstructorPublicContext } from "../layout/InstructorPublicLayout";
 
 /* ---------- Brand logo (matches PublicNavbar, uses instructor png) ---------- */
 
@@ -123,83 +115,12 @@ const steps = [
 ];
 
 const InstructorLandingPage = () => {
-  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
-
-  const [latestApplication, setLatestApplication] =
-    useState<InstructorApplication | null>(null);
-
-  // Added only to prevent the button from changing while the API is loading
-  const [isApplicationLoading, setIsApplicationLoading] = useState(true);
-
-  useEffect(() => {
-    const loadApplication = async () => {
-      try {
-        const applications = await getInstructorApplications();
-
-        const latestApplication = applications[0];
-
-        setLatestApplication(latestApplication ?? null);
-      } catch (error) {
-        console.error("Failed to load instructor application:", error);
-      } finally {
-        setIsApplicationLoading(false);
-      }
-    };
-
-    void loadApplication();
-  }, []);
-
-  const openApplication = () => setIsApplicationOpen(true);
-  const closeApplication = () => setIsApplicationOpen(false);
+  // Shared application state comes from InstructorPublicLayout via the Outlet.
+  const { latestApplication, isApplicationLoading, openApplication } =
+    useOutletContext<InstructorPublicContext>();
 
   return (
     <main className="bg-[#09090B] text-zinc-100">
-      {/* ================= HEADER ================= */}
-
-      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Back button + Logo */}
-
-          <div className="flex items-center gap-6 sm:gap-8">
-            <Link
-              to="/student/dashboard"
-              aria-label="Back to student dashboard"
-              className="group flex shrink-0 items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
-            >
-              <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </Link>
-
-            <BrandLogo />
-          </div>
-
-          {/* Right: Application button */}
-
-          {!isApplicationLoading && (
-            <>
-              {latestApplication?.status === "pending" ||
-              latestApplication?.status === "rejected" ? (
-                <Link
-                  to="/instructor/applications"
-                  className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-violet-500 hover:shadow-[0_0_15px_rgba(139,92,246,0.35)]"
-                >
-                  <span className="hidden sm:inline">View Status</span>
-                  <span className="sm:hidden">Status</span>
-                </Link>
-              ) : latestApplication?.status === "approved" ? null : (
-                <button
-                  type="button"
-                  onClick={openApplication}
-                  className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
-                >
-                  <span className="hidden sm:inline">Become an Instructor</span>
-                  <span className="sm:hidden">Apply</span>
-                </button>
-              )}
-            </>
-          )}
-        </div>
-      </header>
-
       {/* ================= HERO ================= */}
 
       <section className="group relative overflow-hidden border-b border-white/10">
@@ -578,11 +499,6 @@ const InstructorLandingPage = () => {
           </div>
         </div>
       </footer>
-
-      <InstructorApplicationModal
-        isOpen={isApplicationOpen}
-        onClose={closeApplication}
-      />
     </main>
   );
 };

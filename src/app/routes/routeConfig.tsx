@@ -48,9 +48,10 @@ import StudentProfilePage from "../../features/student/pages/StudentProfilePage"
 import CategoryListPage from "../../features/admin/pages/CategoryListPage";
 import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
 
+import InstructorPublicLayout from "../../features/instructor/layout/InstructorPublicLayout";
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
-import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
 import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
+import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -161,15 +162,21 @@ export const routeConfig: RouteObject[] = [
     children: [
       {
         path: "/instructor",
-        element: <InstructorLandingPage />,
-      },
-      {
-        path: "/instructor/applications",
-        element: <InstructorApplicationListPage />,
-      },
-      {
-        path: "/instructor/applications/:applicationId",
-        element: <InstructorApplicationDetailsPage />,
+        element: <InstructorPublicLayout />,
+        children: [
+          {
+            index: true,
+            element: <InstructorLandingPage />,
+          },
+          {
+            path: "applications",
+            element: <InstructorApplicationListPage />,
+          },
+          {
+            path: "applications/:applicationId",
+            element: <InstructorApplicationDetailsPage />,
+          },
+        ],
       },
       {
         path: "/instructor/dashboard",

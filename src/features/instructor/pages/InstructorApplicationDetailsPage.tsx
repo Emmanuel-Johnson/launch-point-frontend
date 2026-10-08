@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   BriefcaseBusiness,
   CalendarDays,
@@ -21,7 +20,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getInstructorApplication,
   type InstructorApplicationDetail,
@@ -71,31 +70,6 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
   >
     <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
   </svg>
-);
-
-const BrandLogo = () => (
-  <Link
-    to="/instructor"
-    className="group flex items-center gap-3 transition-all duration-300"
-  >
-    <div className="flex h-9 w-9 items-center justify-center rounded-lg">
-      <img
-        src="/instructor_logo.png"
-        alt="Launch Point Logo"
-        className="h-full w-full rounded-lg object-contain"
-      />
-    </div>
-
-    <div>
-      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-300">
-        LAUNCH POINT
-      </span>
-
-      <p className="mt-0.5 hidden text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 sm:block">
-        Study hard. Work hard.
-      </p>
-    </div>
-  </Link>
 );
 
 const getStatusConfig = (status: ApplicationStatus) => {
@@ -262,56 +236,82 @@ const FileTypeIcon = ({
 };
 
 const InstructorApplicationDetailsPage = () => {
-  const navigate = useNavigate();
   const { applicationId } = useParams<{ applicationId: string }>();
+
+  // Keying by applicationId remounts the inner view when the route param
+  // changes, so its state (loading / application / error) resets cleanly —
+  // without calling setState synchronously inside an effect.
+  return (
+    <ApplicationDetails key={applicationId} applicationId={applicationId} />
+  );
+};
+
+type ApplicationDetailsProps = {
+  applicationId: string | undefined;
+};
+
+const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
+  const navigate = useNavigate();
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchApplication = async () => {
-      if (!applicationId) {
-        setError("Application ID is missing.");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const data = await getInstructorApplication(Number(applicationId));
-
-        setApplication(data);
-      } catch (error) {
-        console.error("Failed to fetch instructor application:", error);
-        setError("Failed to load application.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchApplication();
-  }, [applicationId]);
   // Document currently open in the preview lightbox (null = closed).
   const [previewFile, setPreviewFile] = useState<{
     name: string;
     url: string;
   } | null>(null);
 
+  useEffect(() => {
+    if (!applicationId) return;
+
+    let cancelled = false;
+
+    const fetchApplication = async () => {
+      try {
+        const data = await getInstructorApplication(Number(applicationId));
+
+        if (!cancelled) setApplication(data);
+      } catch (error) {
+        console.error("Failed to fetch instructor application:", error);
+        if (!cancelled) setError("Failed to load application.");
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    void fetchApplication();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applicationId]);
+
+  if (!applicationId) {
+    return (
+      <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#070A12]">
+        <p className="text-red-400">Application ID is missing.</p>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#070A12]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+      <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#07111F]">
+        <div className="relative flex h-12 w-12 items-center justify-center">
+          <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl animate-pulse" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-400/10 border-t-blue-400 border-r-blue-400/60" />
+          <div className="absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
+        </div>
       </div>
     );
   }
 
   if (error || !application) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#070A12]">
         <p className="text-red-400">{error || "Application not found."}</p>
       </div>
     );
@@ -329,29 +329,9 @@ const InstructorApplicationDetailsPage = () => {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100 antialiased">
       {/* ============================================================
-          HEADER
+          AMBIENT BLUE BACKDROP (sits below the shared header)
       ============================================================ */}
-      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Back button + Logo */}
-          <div className="flex items-center gap-6 sm:gap-8">
-            <Link
-              to="/instructor/applications"
-              aria-label="Back to student dashboard"
-              className="group flex shrink-0 items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
-            >
-              <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </Link>
-
-            <BrandLogo />
-          </div>
-        </div>
-      </header>
-
-      {/* ============================================================
-          AMBIENT BLUE BACKDROP (sits below the header)
-      ============================================================ */}
-      <div className="pointer-events-none absolute inset-x-0 top-20 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
       <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
       <div className="pointer-events-none absolute -right-40 top-40 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 

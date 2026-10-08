@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   ArrowRight,
   CalendarDays,
   CheckCircle2,
@@ -8,7 +7,7 @@ import {
   Layers,
   XCircle,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   getInstructorApplications,
   type InstructorApplication,
@@ -16,31 +15,6 @@ import {
 import { useEffect, useState } from "react";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
-
-const BrandLogo = () => (
-  <Link
-    to="/instructor"
-    className="group flex items-center gap-3 transition-all duration-300"
-  >
-    <div className="flex h-9 w-9 items-center justify-center rounded-lg">
-      <img
-        src="/instructor_logo.png"
-        alt="Launch Point Logo"
-        className="h-full w-full rounded-lg object-contain"
-      />
-    </div>
-
-    <div>
-      <span className="block text-sm font-semibold tracking-[3px] text-white transition-colors duration-300 group-hover:text-blue-300">
-        LAUNCH POINT
-      </span>
-
-      <p className="mt-0.5 hidden text-[9px] font-medium uppercase tracking-[0.25em] text-zinc-500 sm:block">
-        Study hard. Work hard.
-      </p>
-    </div>
-  </Link>
-);
 
 const getStatusConfig = (status: ApplicationStatus) => {
   switch (status) {
@@ -79,9 +53,6 @@ const InstructorApplicationListPage = () => {
   useEffect(() => {
     const loadApplications = async () => {
       try {
-        setIsLoading(true);
-        setError("");
-
         const data = await getInstructorApplications();
 
         setApplications(data);
@@ -97,29 +68,11 @@ const InstructorApplicationListPage = () => {
   }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
-      {/* Header — full black, lifted above the ambient glows */}
-      <header className="relative z-10 border-b border-white/[0.08] bg-[#0A0E1A]">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Back button + Logo */}
-          <div className="flex items-center gap-6 sm:gap-8">
-            <Link
-              to="/instructor"
-              aria-label="Back to student dashboard"
-              className="group flex shrink-0 items-center justify-center text-zinc-400 transition-colors duration-200 hover:text-white"
-            >
-              <ArrowLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </Link>
-
-            <BrandLogo />
-          </div>
-        </div>
-      </header>
-
-      {/* Ambient blue backdrop (sits below the header) */}
-      <div className="pointer-events-none absolute inset-x-0 top-20 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
-      <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 top-40 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
+      {/* Ambient blue backdrop (sits below the shared header) */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute -left-40 top-40 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 
       {/* Main Content */}
       <section className="relative px-4 py-10 sm:px-6 lg:px-8">
@@ -141,8 +94,13 @@ const InstructorApplicationListPage = () => {
           {/* Applications */}
           {isLoading ? (
             /* Loading State */
+
             <div className="flex min-h-[300px] items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-400/20 border-t-blue-400" />
+              <div className="relative flex h-12 w-12 items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl animate-pulse" />
+                <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-400/10 border-t-blue-400 border-r-blue-400/60" />
+                <div className="absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
+              </div>
             </div>
           ) : error ? (
             /* Error State */
@@ -323,7 +281,7 @@ const InstructorApplicationListPage = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 
