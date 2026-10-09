@@ -527,8 +527,18 @@ const InstructorApplicationAdminListPage = () => {
                         {/* Applicant */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                               {getInitials(application.full_name)}
+                              {application.profile_image && (
+                                <img
+                                  src={application.profile_image}
+                                  alt={`${application.full_name}'s profile`}
+                                  className="absolute inset-0 h-full w-full rounded-full object-cover"
+                                  onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              )}
                             </div>
 
                             <div className="min-w-0">

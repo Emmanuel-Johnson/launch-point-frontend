@@ -6,6 +6,7 @@ export interface InstructorApplication {
   id: number;
   full_name: string;
   email: string;
+  profile_image: string | null;
   occupation: string;
   years_of_experience: string;
   status: ApplicationStatus;
