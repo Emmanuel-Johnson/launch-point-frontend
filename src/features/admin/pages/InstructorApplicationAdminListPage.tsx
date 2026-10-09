@@ -44,26 +44,7 @@ const applications: InstructorApplication[] = [
     submitted_at: "2026-10-07T14:20:00+05:30",
     categories: ["Frontend Development", "Web Development"],
   },
-  {
-    id: 14,
-    full_name: "Ananya Menon",
-    email: "ananya@example.com",
-    occupation: "Python Developer",
-    years_of_experience: 4,
-    status: "pending",
-    submitted_at: "2026-10-06T11:30:00+05:30",
-    categories: ["Python", "Backend Development"],
-  },
-  {
-    id: 13,
-    full_name: "Rahul Nair",
-    email: "rahul@example.com",
-    occupation: "Software Engineer",
-    years_of_experience: 6,
-    status: "rejected",
-    submitted_at: "2026-10-05T09:15:00+05:30",
-    categories: ["Full Stack Development"],
-  },
+  
 ];
 
 /*

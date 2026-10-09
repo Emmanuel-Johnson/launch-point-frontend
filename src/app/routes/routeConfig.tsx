@@ -248,7 +248,7 @@ export const routeConfig: RouteObject[] = [
               },
               {
                 path: "courses",
-                element: <div>Course applications will appear here.</div>,
+                element: <div></div>,
               },
             ],
           },
