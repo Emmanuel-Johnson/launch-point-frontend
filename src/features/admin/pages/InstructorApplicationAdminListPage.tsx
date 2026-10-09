@@ -536,7 +536,7 @@ const InstructorApplicationAdminListPage = () => {
                                 className="truncate text-sm font-medium text-white"
                                 title={application.full_name}
                               >
-                                {truncateText(application.full_name)}
+                                {truncateText(application.full_name, 20)}
                               </p>
 
                               <p
