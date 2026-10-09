@@ -518,13 +518,27 @@ const InstructorApplicationAdminDetailPage = () => {
 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#34D399]/25 bg-gradient-to-br from-[#34D399]/25 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7] ring-1 ring-[#34D399]/10 shadow-[0_0_30px_-8px_rgba(52,211,153,0.5)]">
+            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-br from-[#34D399]/25 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7] ring-1 ring-[#34D399]/10 shadow-[0_0_30px_-8px_rgba(52,211,153,0.5)]">
+              {/* Fallback initials */}
               {application.full_name
                 .split(" ")
+                .filter(Boolean)
                 .map((part) => part[0])
                 .join("")
                 .slice(0, 2)
                 .toUpperCase()}
+
+              {/* Profile image */}
+              {application.profile_image && (
+                <img
+                  src={application.profile_image}
+                  alt={application.full_name}
+                  className="absolute inset-0 h-full w-full rounded-2xl object-cover"
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
             </div>
 
             <div className="min-w-0">
