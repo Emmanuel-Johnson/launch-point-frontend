@@ -10,6 +10,12 @@ const AdminLayout = () => {
 
   const location = useLocation();
 
+  const isApplicationsRoute =
+    location.pathname === "/admin/applications/instructors/" ||
+    location.pathname === "/admin/applications/instructors" ||
+    location.pathname === "/admin/applications/courses/" ||
+    location.pathname === "/admin/applications/courses";
+
   const toggleSidebar = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };
@@ -43,7 +49,9 @@ const AdminLayout = () => {
         <main className="admin-scrollbar absolute inset-x-0 bottom-0 top-20 overflow-y-auto bg-black">
           <div
             key={location.pathname}
-            className="animate-page-enter min-h-full bg-black px-8 pb-10 pt-8"
+            className={`min-h-full bg-black px-8 pb-10 pt-8 ${
+              isApplicationsRoute ? "" : "animate-page-enter"
+            }`}
           >
             <Outlet />
           </div>

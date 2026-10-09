@@ -48,9 +48,13 @@ import StudentProfilePage from "../../features/student/pages/StudentProfilePage"
 import CategoryListPage from "../../features/admin/pages/CategoryListPage";
 import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
 
+import InstructorPublicLayout from "../../features/instructor/layout/InstructorPublicLayout";
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
-import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
 import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
+import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
+import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
+import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
+import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -161,15 +165,21 @@ export const routeConfig: RouteObject[] = [
     children: [
       {
         path: "/instructor",
-        element: <InstructorLandingPage />,
-      },
-      {
-        path: "/instructor/applications",
-        element: <InstructorApplicationListPage />,
-      },
-      {
-        path: "/instructor/applications/:applicationId",
-        element: <InstructorApplicationDetailsPage />,
+        element: <InstructorPublicLayout />,
+        children: [
+          {
+            index: true,
+            element: <InstructorLandingPage />,
+          },
+          {
+            path: "applications",
+            element: <InstructorApplicationListPage />,
+          },
+          {
+            path: "applications/:applicationId",
+            element: <InstructorApplicationDetailsPage />,
+          },
+        ],
       },
       {
         path: "/instructor/dashboard",
@@ -222,6 +232,30 @@ export const routeConfig: RouteObject[] = [
           {
             path: "students/:studentId",
             element: <StudentDetailPage />,
+          },
+          // Applications — list views share the Instructor/Course toggle
+          {
+            path: "applications",
+            element: <ApplicationLayout />,
+            children: [
+              {
+                index: true,
+                element: <Navigate to="instructors" replace />,
+              },
+              {
+                path: "instructors",
+                element: <InstructorApplicationAdminListPage />,
+              },
+              {
+                path: "courses",
+                element: <div></div>,
+              },
+            ],
+          },
+          // Application detail — standalone, no toggle
+          {
+            path: "applications/instructors/:applicationId",
+            element: <InstructorApplicationAdminDetailPage />,
           },
           // Categories
           {

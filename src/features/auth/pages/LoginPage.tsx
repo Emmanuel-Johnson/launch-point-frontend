@@ -104,7 +104,7 @@ const LoginPage = () => {
 
       dispatch(setCredentials(response.user));
 
-      toast.success("Google login successful!");
+      toast.success("Welcome to Launch Point! Let’s get started.");
 
       navigate("/student/dashboard", { replace: true });
     } catch (error) {
