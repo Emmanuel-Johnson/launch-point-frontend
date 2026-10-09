@@ -31,7 +31,8 @@ import {
   Hover emerald #6EE7B7   lighter step for hover states
 
   Status colours (amber / emerald / red) stay semantic. The approve action
-  uses the solid theme emerald; reject stays red.
+  uses the solid theme emerald; reject stays red. The application status
+  lives in a single place — the applicant header — so it never shows twice.
 */
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
@@ -46,6 +47,7 @@ type SupportingFile = {
    FILE-TYPE META
    Uploads are restricted to PDF, PNG, and JPG. Image types are
    flagged so a real thumbnail renders instead of a file-logo icon.
+   PDF keeps its red identity; images carry the theme emerald.
 ================================================================ */
 
 type FileMeta = { label: string; color: string; image?: boolean };
@@ -107,6 +109,9 @@ const downloadFile = async (name: string, url: string) => {
 
 /* ================================================================
    FILE-TYPE LOGO
+   The whole document sheet is tinted with the file-type colour — PDF
+   reads fully red, PNG/JPG read emerald — with a darkened fold, white
+   content lines, and a dark label band so the type reads at a glance.
 ================================================================ */
 
 const FileTypeIcon = ({
@@ -121,17 +126,57 @@ const FileTypeIcon = ({
 
   return (
     <svg viewBox="0 0 40 48" className={className} aria-hidden="true">
+      {/* Page body — tinted with the file-type colour (PDF = red) */}
       <path
         d="M7 1.5h18.5L34 10v34.5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"
-        fill="#F8FAFC"
-        stroke="#E2E8F0"
+        fill={meta.color}
+        stroke={hex(meta.color, 0.85)}
         strokeWidth="1"
       />
-      <path d="M25.5 1.5 34 10h-6.5a2 2 0 0 1-2-2Z" fill="#E2E8F0" />
-      <rect x="11" y="15" width="18" height="2" rx="1" fill="#E2E8F0" />
-      <rect x="11" y="20" width="18" height="2" rx="1" fill="#E2E8F0" />
-      <rect x="11" y="25" width="12" height="2" rx="1" fill="#E2E8F0" />
-      <rect x="4" y="30" width="26" height="13" rx="3" fill={meta.color} />
+      {/* Folded corner — darkened */}
+      <path
+        d="M25.5 1.5 34 10h-6.5a2 2 0 0 1-2-2Z"
+        fill="#000000"
+        fillOpacity="0.22"
+      />
+      {/* Content lines */}
+      <rect
+        x="11"
+        y="15"
+        width="18"
+        height="2"
+        rx="1"
+        fill="#ffffff"
+        fillOpacity="0.6"
+      />
+      <rect
+        x="11"
+        y="20"
+        width="18"
+        height="2"
+        rx="1"
+        fill="#ffffff"
+        fillOpacity="0.6"
+      />
+      <rect
+        x="11"
+        y="25"
+        width="12"
+        height="2"
+        rx="1"
+        fill="#ffffff"
+        fillOpacity="0.42"
+      />
+      {/* Label band — darkened plate over the tint */}
+      <rect
+        x="4"
+        y="30"
+        width="26"
+        height="13"
+        rx="3"
+        fill="#000000"
+        fillOpacity="0.3"
+      />
       <text
         x="17"
         y="39.2"
@@ -152,6 +197,11 @@ const FileTypeIcon = ({
    SMALL PRESENTATIONAL PIECES
 ================================================================ */
 
+/**
+ * A single applicant detail. Icons are kept light and unboxed — the
+ * same treatment as Professional Links — so these read as supporting
+ * sub-items rather than headings.
+ */
 const InfoItem = ({
   icon: Icon,
   label,
@@ -162,9 +212,7 @@ const InfoItem = ({
   value: string | number;
 }) => (
   <div className="flex min-w-0 items-start gap-3">
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03]">
-      <Icon size={16} className="text-white/55" />
-    </div>
+    <Icon size={18} className="mt-0.5 shrink-0 text-[#34D399]" />
 
     <div className="min-w-0">
       <p className="text-xs text-white/45">{label}</p>
@@ -185,18 +233,40 @@ const SectionHeading = ({
   description?: string;
 }) => (
   <div className="mb-6 flex items-start gap-3">
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#34D399]/20 bg-[#34D399]/10">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#34D399]/20 bg-gradient-to-br from-[#34D399]/15 to-[#34D399]/[0.04] shadow-[0_0_18px_-8px_rgba(52,211,153,0.7)]">
       <Icon size={19} className="text-[#34D399]" />
     </div>
 
     <div>
-      <h2 className="font-semibold text-white">{title}</h2>
+      <h2 className="text-[15px] font-semibold tracking-tight text-white">
+        {title}
+      </h2>
       {description && (
         <p className="mt-1 text-sm text-white/45">{description}</p>
       )}
     </div>
   </div>
 );
+
+/** A single key/value line in the review summary. */
+const ReviewRow = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
+    <span className="text-white/45">{label}</span>
+    <span className="truncate text-right font-medium text-white/80">
+      {children}
+    </span>
+  </div>
+);
+
+/** Shared premium card surface — layered shadow + a faint top highlight. */
+const cardSurface =
+  "rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_48px_-28px_rgba(0,0,0,0.9)]";
 
 type DocumentCardProps = {
   name: string;
@@ -219,20 +289,20 @@ const DocumentCard = ({
   const previewable = isPreviewable(name);
 
   return (
-    <div className="group flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04]">
-      {/* File logo: clean thumbnail for images, white file-type icon otherwise */}
+    <div className="group flex items-center gap-3.5 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04] hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]">
+      {/* File logo: clean thumbnail for images, tinted sheet otherwise */}
       {meta.image && thumbnailUrl ? (
         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
           <img
             src={thumbnailUrl}
             alt={name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       ) : (
         <FileTypeIcon
           meta={meta}
-          className="h-12 w-10 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+          className="h-12 w-10 shrink-0 drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
         />
       )}
 
@@ -355,15 +425,18 @@ const InstructorApplicationAdminDetailPage = () => {
   } | null>(null);
 
   const statusStyles: Record<ApplicationStatus, string> = {
-    pending: "border-amber-500/20 bg-amber-500/10 text-amber-400",
-    approved: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
-    rejected: "border-red-500/20 bg-red-500/10 text-red-400",
+    pending:
+      "border-amber-500/25 bg-amber-500/10 text-amber-300 shadow-[0_0_20px_-8px_rgba(245,158,11,0.8)]",
+    approved:
+      "border-emerald-500/25 bg-emerald-500/10 text-emerald-300 shadow-[0_0_20px_-8px_rgba(52,211,153,0.9)]",
+    rejected:
+      "border-red-500/25 bg-red-500/10 text-red-300 shadow-[0_0_20px_-8px_rgba(239,68,68,0.8)]",
   };
 
-  const statusText: Record<ApplicationStatus, string> = {
-    pending: "text-amber-400",
-    approved: "text-emerald-400",
-    rejected: "text-red-400",
+  const statusLabel: Record<ApplicationStatus, string> = {
+    pending: "Pending review",
+    approved: "Approved",
+    rejected: "Rejected",
   };
 
   const formattedDate = new Date(application.submitted_at).toLocaleString(
@@ -376,6 +449,10 @@ const InstructorApplicationAdminDetailPage = () => {
       minute: "2-digit",
     },
   );
+
+  // Total documents attached to the application (resume + supporting files).
+  const documentCount =
+    (application.resume_url ? 1 : 0) + application.supporting_files.length;
 
   const professionalLinks = [
     { label: "Portfolio", url: application.portfolio_url, icon: Globe },
@@ -398,11 +475,17 @@ const InstructorApplicationAdminDetailPage = () => {
         </button>
       </div>
 
-      {/* Applicant Header */}
-      <div className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-7">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+      {/* Applicant Header — the single home for the application status */}
+      <div
+        className={`relative overflow-hidden p-5 sm:p-7 ${cardSurface} rounded-2xl`}
+      >
+        {/* Ambient emerald glow + top hairline for depth */}
+        <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-[#34D399]/[0.07] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/40 to-transparent" />
+
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#34D399]/20 bg-gradient-to-br from-[#34D399]/20 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7]">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#34D399]/25 bg-gradient-to-br from-[#34D399]/25 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7] ring-1 ring-[#34D399]/10 shadow-[0_0_30px_-8px_rgba(52,211,153,0.5)]">
               {application.full_name
                 .split(" ")
                 .map((part) => part[0])
@@ -413,16 +496,9 @@ const InstructorApplicationAdminDetailPage = () => {
 
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-xl font-semibold text-white sm:text-2xl">
+                <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
                   {application.full_name}
                 </h1>
-
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium capitalize ${statusStyles[status]}`}
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                  {status}
-                </span>
               </div>
 
               <p className="mt-2 break-all text-sm text-white/55">
@@ -443,15 +519,17 @@ const InstructorApplicationAdminDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 sm:min-w-44">
-            <p className="text-xs text-white/45">Application status</p>
-            <p
-              className={`mt-1 text-sm font-medium capitalize ${statusText[status]}`}
-            >
-              {status} review
-            </p>
-            <p className="mt-1 text-xs text-white/45">Submitted by applicant</p>
-          </div>
+          {/* Premium Status Badge */}
+          <span
+            className={`inline-flex shrink-0 items-center gap-2 self-start rounded-lg border px-3.5 py-2 text-sm font-semibold ${statusStyles[status]}`}
+          >
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-30" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+            </span>
+
+            {statusLabel[status]}
+          </span>
         </div>
       </div>
 
@@ -459,7 +537,7 @@ const InstructorApplicationAdminDetailPage = () => {
       <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0 space-y-6">
           {/* Applicant Information */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={UserRound}
               title="Applicant Information"
@@ -511,7 +589,7 @@ const InstructorApplicationAdminDetailPage = () => {
           </section>
 
           {/* Teaching Categories */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={GraduationCap}
               title="Teaching Categories"
@@ -522,7 +600,7 @@ const InstructorApplicationAdminDetailPage = () => {
               {application.categories.map((category) => (
                 <span
                   key={category}
-                  className="rounded-lg border border-[#34D399]/20 bg-[#34D399]/[0.08] px-3 py-2 text-sm text-[#6EE7B7]"
+                  className="rounded-lg border border-[#34D399]/20 bg-[#34D399]/[0.08] px-3 py-2 text-sm text-[#6EE7B7] transition hover:border-[#34D399]/40 hover:bg-[#34D399]/[0.12]"
                 >
                   {category}
                 </span>
@@ -531,7 +609,7 @@ const InstructorApplicationAdminDetailPage = () => {
           </section>
 
           {/* Professional Profile */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={MessageSquareText}
               title="Professional Profile"
@@ -560,7 +638,7 @@ const InstructorApplicationAdminDetailPage = () => {
           </section>
 
           {/* Professional Links */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={Globe}
               title="Professional Links"
@@ -574,7 +652,7 @@ const InstructorApplicationAdminDetailPage = () => {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04]"
+                  className="group flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04] hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]"
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <Icon size={18} className="shrink-0 text-[#34D399]" />
@@ -582,14 +660,17 @@ const InstructorApplicationAdminDetailPage = () => {
                       {label}
                     </span>
                   </div>
-                  <ExternalLink size={15} className="shrink-0 text-white/40" />
+                  <ExternalLink
+                    size={15}
+                    className="shrink-0 text-white/40 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#34D399]"
+                  />
                 </a>
               ))}
             </div>
           </section>
 
           {/* Resume / CV */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={FileText}
               title="Resume / CV"
@@ -614,7 +695,7 @@ const InstructorApplicationAdminDetailPage = () => {
           </section>
 
           {/* Supporting Documents */}
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5 sm:p-6">
+          <section className={`p-5 sm:p-6 ${cardSurface}`}>
             <SectionHeading
               icon={FileText}
               title="Supporting Documents"
@@ -647,37 +728,31 @@ const InstructorApplicationAdminDetailPage = () => {
           </section>
         </div>
 
-        {/* Review Sidebar */}
+        {/* Review Sidebar — actions only; status is shown in the header */}
         <aside className="space-y-6 xl:sticky xl:top-6">
-          <section className="rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-5">
-            <h2 className="font-semibold text-white">Application Review</h2>
+          <section className={`relative overflow-hidden p-5 ${cardSurface}`}>
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/40 to-transparent" />
+
+            <h2 className="text-[15px] font-semibold tracking-tight text-white">
+              Application Review
+            </h2>
 
             <p className="mt-2 text-sm leading-6 text-white/55">
               Review the applicant&apos;s experience, teaching categories, and
               professional documents before making a decision.
             </p>
 
-            <div className="mt-5 space-y-3">
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-white/45">Application ID</span>
-                <span className="font-medium text-white/80">
-                  #{application.id}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-white/45">Status</span>
-                <span className={`capitalize ${statusText[status]}`}>
-                  {status}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-white/45">Experience</span>
-                <span className="text-white/80">
-                  {application.years_of_experience} years
-                </span>
-              </div>
+            {/* At-a-glance summary of the decision-relevant facts */}
+            <div className="mt-5 divide-y divide-white/[0.06] overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02]">
+              <ReviewRow label="Occupation">{application.occupation}</ReviewRow>
+              <ReviewRow label="Experience">
+                {application.years_of_experience} years
+              </ReviewRow>
+              <ReviewRow label="Education">{application.education}</ReviewRow>
+              <ReviewRow label="Teaching areas">
+                {application.categories.length}
+              </ReviewRow>
+              <ReviewRow label="Documents">{documentCount}</ReviewRow>
             </div>
 
             {status === "pending" ? (
@@ -687,40 +762,36 @@ const InstructorApplicationAdminDetailPage = () => {
                 <button
                   type="button"
                   onClick={() => setStatus("approved")}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#34D399] px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#6EE7B7]"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#34D399] px-4 py-3 text-sm font-semibold text-black shadow-[0_8px_24px_-10px_rgba(52,211,153,0.8)] transition hover:bg-[#6EE7B7] hover:shadow-[0_10px_28px_-8px_rgba(52,211,153,0.9)] active:scale-[0.99]"
                 >
                   <CheckCircle2 size={17} />
-                  Approve Application
+                  Approve application
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setStatus("rejected")}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/[0.04] px-4 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500/10"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/[0.04] px-4 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500/10 active:scale-[0.99]"
                 >
                   <XCircle size={17} />
-                  Reject Application
+                  Reject application
                 </button>
               </>
             ) : (
               <>
                 <div className="my-5 border-t border-white/[0.08]" />
 
-                <div
-                  className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium capitalize ${statusStyles[status]}`}
-                >
-                  {status === "approved" ? (
-                    <CheckCircle2 size={17} />
-                  ) : (
-                    <XCircle size={17} />
-                  )}
-                  Application {status}
-                </div>
+                <p className="text-sm text-white/55">
+                  {status === "approved"
+                    ? "You approved this application."
+                    : "You rejected this application."}{" "}
+                  Reset it to review again.
+                </p>
 
                 <button
                   type="button"
                   onClick={() => setStatus("pending")}
-                  className="mt-3 w-full rounded-xl border border-white/[0.1] px-4 py-2.5 text-sm font-medium text-white/70 transition hover:border-[#34D399]/30 hover:text-white"
+                  className="mt-4 w-full rounded-xl border border-white/[0.1] px-4 py-2.5 text-sm font-medium text-white/70 transition hover:border-[#34D399]/30 hover:text-white active:scale-[0.99]"
                 >
                   Reset to pending
                 </button>
