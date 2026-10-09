@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  getAdminInstructorApplicationDetail,
+  type AdminInstructorApplicationDetail,
+} from "../api/adminApplicationApi";
+import {
   ArrowLeft,
   BriefcaseBusiness,
   CalendarDays,
@@ -37,12 +41,6 @@ import {
 */
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
-
-type SupportingFile = {
-  id: number;
-  name: string;
-  url: string;
-};
 
 /* ================================================================
    FILE-TYPE META
@@ -375,60 +373,55 @@ const InstructorApplicationAdminDetailPage = () => {
   const navigate = useNavigate();
   const { applicationId } = useParams();
 
-  // Sample data for UI only.
-  const application = {
-    id: applicationId ?? "16",
-    full_name: "Harshibar",
-    email: "harshibar@example.com",
-    phone_number: "+91 9876543210",
-    location: "Kochi, Kerala, India",
-    occupation: "Full Stack Developer",
-    education: "B.Tech Computer Science",
-    years_of_experience: 3,
-    professional_bio:
-      "Full stack developer passionate about building scalable web applications and helping aspiring developers develop practical programming skills.",
-    motivation:
-      "I want to become an instructor because I enjoy sharing knowledge and helping students build confidence through hands-on projects. My goal is to make complex concepts easier to understand and prepare students for real-world development.",
-    categories: [
-      "Frontend Development",
-      "Full Stack Development",
-      "Web Development",
-    ],
-    portfolio_url: "https://example.com",
-    linkedin_url: "https://linkedin.com",
-    github_url: "https://github.com",
-    submitted_at: "2026-10-08T02:00:54+05:30",
-    resume_name: "harshibar_resume.pdf",
-    resume_url:
-      "https://example.com/media/instructor_applications/resumes/harshibar_resume.pdf",
-    // Mix of PDF and image uploads so thumbnails + image previews render.
-    supporting_files: [
-      {
-        id: 1,
-        name: "certificate-react.pdf",
-        url: "https://example.com/media/instructor_applications/documents/certificate-react.pdf",
-      },
-      {
-        id: 2,
-        name: "reference-letter.pdf",
-        url: "https://example.com/media/instructor_applications/documents/reference-letter.pdf",
-      },
-      {
-        id: 3,
-        name: "portfolio-screenshot.png",
-        url: "https://picsum.photos/seed/portfolio/900/600",
-      },
-      {
-        id: 4,
-        name: "workshop-photo.jpg",
-        url: "https://picsum.photos/seed/workshop/900/600",
-      },
-    ] as SupportingFile[],
-  };
-
-  // Local status so the Approve / Reject buttons are interactive in this
-  // UI-only version. Swap for the real admin review call when wiring the API.
+  const [application, setApplication] =
+    useState<AdminInstructorApplicationDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [status, setStatus] = useState<ApplicationStatus>("pending");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadApplication = async () => {
+      if (!applicationId || !Number.isInteger(Number(applicationId))) {
+        setLoadError("Invalid instructor application ID.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+
+        const data = await getAdminInstructorApplicationDetail(
+          Number(applicationId),
+        );
+
+        if (!cancelled) {
+          setApplication(data);
+          setStatus(data.status);
+        }
+      } catch (error) {
+        console.error("Failed to load instructor application:", error);
+
+        if (!cancelled) {
+          setLoadError(
+            "Could not load this instructor application. Please try again.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadApplication();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applicationId]);
 
   // Document currently open in the preview lightbox (null = closed).
   const [previewFile, setPreviewFile] = useState<{
@@ -450,6 +443,34 @@ const InstructorApplicationAdminDetailPage = () => {
     approved: "Approved",
     rejected: "Rejected",
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center text-sm text-white/60">
+        Loading instructor application…
+      </div>
+    );
+  }
+
+  if (loadError || !application) {
+    return (
+      <div className="mx-auto max-w-7xl space-y-4 pb-10">
+        <button
+          type="button"
+          onClick={() => navigate("/admin/applications")}
+          className="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to applications
+        </button>
+        <div className={`${cardSurface} rounded-2xl p-6`}>
+          <p className="text-sm text-red-300">
+            {loadError ?? "Instructor application not found."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const formattedDate = new Date(application.submitted_at).toLocaleString(
     "en-IN",
@@ -578,19 +599,19 @@ const InstructorApplicationAdminDetailPage = () => {
                 value={application.location}
               />
               <InfoItem
-                icon={BriefcaseBusiness}
-                label="Occupation"
-                value={application.occupation}
-              />
-              <InfoItem
                 icon={GraduationCap}
                 label="Education"
                 value={application.education}
               />
               <InfoItem
+                icon={BriefcaseBusiness}
+                label="Occupation"
+                value={application.occupation}
+              />
+              <InfoItem
                 icon={Clock3}
                 label="Industry experience"
-                value={`${application.years_of_experience} years`}
+                value={application.years_of_experience}
               />
               <InfoItem
                 icon={CalendarDays}
@@ -691,13 +712,13 @@ const InstructorApplicationAdminDetailPage = () => {
 
             {application.resume_url ? (
               <DocumentCard
-                name={application.resume_name}
+                name={application.resume_name ?? "resume.pdf"}
                 href={application.resume_url}
                 primary
                 onPreview={() =>
                   setPreviewFile({
-                    name: application.resume_name,
-                    url: application.resume_url,
+                    name: application.resume_name ?? "resume.pdf",
+                    url: application.resume_url!,
                   })
                 }
               />
@@ -756,11 +777,11 @@ const InstructorApplicationAdminDetailPage = () => {
 
             {/* At-a-glance summary of the decision-relevant facts */}
             <div className="mt-5 divide-y divide-white/[0.06] overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02]">
+              <ReviewRow label="Education">{application.education}</ReviewRow>
               <ReviewRow label="Occupation">{application.occupation}</ReviewRow>
               <ReviewRow label="Experience">
-                {application.years_of_experience} years
+                {application.years_of_experience}
               </ReviewRow>
-              <ReviewRow label="Education">{application.education}</ReviewRow>
               <ReviewRow label="Teaching areas">
                 {application.categories.length}
               </ReviewRow>
