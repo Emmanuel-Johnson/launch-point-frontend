@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -400,6 +401,7 @@ const InstructorApplicationAdminDetailPage = () => {
     resume_name: "harshibar_resume.pdf",
     resume_url:
       "https://example.com/media/instructor_applications/resumes/harshibar_resume.pdf",
+    // Mix of PDF and image uploads so thumbnails + image previews render.
     supporting_files: [
       {
         id: 1,
@@ -410,6 +412,16 @@ const InstructorApplicationAdminDetailPage = () => {
         id: 2,
         name: "reference-letter.pdf",
         url: "https://example.com/media/instructor_applications/documents/reference-letter.pdf",
+      },
+      {
+        id: 3,
+        name: "portfolio-screenshot.png",
+        url: "https://picsum.photos/seed/portfolio/900/600",
+      },
+      {
+        id: 4,
+        name: "workshop-photo.jpg",
+        url: "https://picsum.photos/seed/workshop/900/600",
       },
     ] as SupportingFile[],
   };
@@ -801,7 +813,8 @@ const InstructorApplicationAdminDetailPage = () => {
         </aside>
       </div>
 
-      {/* File Preview Lightbox */}
+      {/* File Preview Lightbox — portaled to <body> so it covers the whole
+          viewport on top of everything, never clipped by the admin layout */}
       {previewFile && (
         <FilePreviewModal
           key={`${previewFile.name}-${previewFile.url}`}
@@ -816,11 +829,15 @@ const InstructorApplicationAdminDetailPage = () => {
 
 /* ================================================================
    FILE PREVIEW MODAL
+   - Rendered through a React portal into document.body, so it escapes
+     the admin layout outlet and any transformed/overflow-clipped
+     ancestor, covering the full viewport above all other UI.
    - Images render full-size straight from the URL.
    - PDFs are fetched into a same-origin blob: URL and shown in an
      iframe (sidesteps Content-Disposition / X-Frame-Options issues).
      If the fetch fails (e.g. CORS), a fallback with "open in new tab"
      is shown. Closes on backdrop click or Escape.
+   - Preview only: the header carries a single close button, no download.
 ================================================================ */
 
 type FilePreviewModalProps = {
@@ -892,9 +909,9 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
     };
   }, [isPdf, url]);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
       role="presentation"
       onClick={onClose}
     >
@@ -907,7 +924,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent" />
 
-        {/* Header */}
+        {/* Header — preview only, so just a close button */}
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-[#34D399]/[0.06] to-transparent px-5 py-4">
           <div className="flex min-w-0 items-center gap-3">
             <FileTypeIcon
@@ -927,24 +944,14 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => downloadFile(name, url)}
-              aria-label="Download"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-white/60 transition hover:border-[#34D399]/40 hover:bg-[#34D399]/10 hover:text-[#34D399]"
-            >
-              <Download size={16} />
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close preview"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-white/60 transition hover:border-[#34D399]/40 hover:bg-[#34D399]/10 hover:text-white"
-            >
-              <X size={16} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close preview"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 text-white/60 transition hover:border-[#34D399]/40 hover:bg-[#34D399]/10 hover:text-white"
+          >
+            <X size={16} />
+          </button>
         </header>
 
         {/* Body */}
@@ -1004,7 +1011,8 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
