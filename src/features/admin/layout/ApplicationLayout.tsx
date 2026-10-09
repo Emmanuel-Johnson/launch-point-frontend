@@ -1,80 +1,109 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-
-import AdminHeader from "../components/AdminHeader";
-import AdminSidebar from "../components/AdminSidebar";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { BookOpen, GraduationCap } from "lucide-react";
 
 /*
-  ADMIN SHELL — green & black, premium/restrained
+  GREEN & BLACK THEME (matches the Admin sidebar / header / dashboard)
   -----------------------------------------------------------------
-  - scrollbar-gutter: stable  → gutter is always reserved, so switching
-    between a tall page and a short one never shifts content sideways.
-  - max-w-[1600px] + mx-auto   → content sits in an intentional centered
-    column on wide screens instead of stretching to the edges.
-  - sticky top fade            → content dissolves softly under the header
-    on scroll (occupies no layout space, so nothing moves).
+  Switch surface  #0A0A0A   near-black rail
+  Primary         #34D399   emerald — the single accent colour
+  Hover emerald   #6EE7B7   lighter step for hover states
+
+  Two equal halves (grid-cols-2). Active vs inactive differ ONLY in
+  background tint + text/icon colour — same box, padding, border and text —
+  so nothing shifts position when you toggle.
+
+  Active (matches the sidebar nav items):
+    - background tint bg-[#34D399]/10
+    - LABEL stays white; only the ICON turns emerald (+ slight scale)
+
+  Hover:
+    - emerald shine sweep on BOTH tabs, symmetric about the centre line
+    - icon dims at rest (white/45), scales up + brightens on hover
+    - label brightens to white/90 on hover
 */
 
-const AdminLayout = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
+const ApplicationLayout = () => {
   const location = useLocation();
 
-  const isApplicationsRoute = location.pathname.startsWith(
-    "/admin/applications",
-  );
-
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed((prev) => !prev);
-  };
-
-  useEffect(() => {
-    const mainElement = document.querySelector(".admin-scrollbar");
-
-    if (mainElement) {
-      mainElement.scrollTo({
-        top: 0,
-        behavior: "auto",
-      });
-    }
-  }, [location.pathname]);
-
   return (
-    <div className="h-screen overflow-hidden bg-black text-white">
-      {/* SIDEBAR */}
-      <AdminSidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
+    <div className="space-y-6">
+      {/* Application Type Switch */}
+      <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A]">
+        <NavLink
+          to="/admin/applications/instructors"
+          className={({ isActive }) =>
+            `group relative flex items-center justify-center gap-2 overflow-hidden px-4 py-4 text-sm font-medium transition-colors duration-300 ${
+              isActive
+                ? "bg-[#34D399]/10 text-white"
+                : "text-white/55 hover:bg-white/[0.04] hover:text-white/90"
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              {/* Hover Shine */}
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
-      {/* MAIN APPLICATION AREA */}
-      <div
-        className={`relative h-screen transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isSidebarCollapsed ? "ml-20" : "ml-[280px]"
-        }`}
-      >
-        {/* HEADER */}
-        <AdminHeader isSidebarCollapsed={isSidebarCollapsed} />
+              {/* Icon */}
+              <span
+                className={`relative z-10 shrink-0 transition-all duration-300 ${
+                  isActive
+                    ? "scale-105 text-[#34D399]"
+                    : "text-white/45 group-hover:scale-110 group-hover:text-white/80"
+                }`}
+              >
+                <GraduationCap size={18} strokeWidth={1.8} />
+              </span>
 
-        {/* CONTENT */}
-        <main className="admin-scrollbar absolute inset-x-0 bottom-0 top-20 overflow-y-auto bg-black [scrollbar-gutter:stable]">
-          {/* Soft fade so content slips under the header on scroll.
-              -mb-6 cancels the 6px it adds, so it takes no layout space. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none sticky top-0 z-10 -mb-6 h-6 bg-gradient-to-b from-black via-black/70 to-transparent"
-          />
+              {/* Label */}
+              <span className="relative z-10 whitespace-nowrap transition-all duration-300">
+                Instructor Applications
+              </span>
+            </>
+          )}
+        </NavLink>
 
-          <div
-            key={location.pathname}
-            className={`mx-auto min-h-full w-full max-w-[1600px] bg-black px-8 pb-10 pt-8 ${
-              isApplicationsRoute ? "" : "animate-page-enter"
-            }`}
-          >
-            <Outlet />
-          </div>
-        </main>
+        <NavLink
+          to="/admin/applications/courses"
+          className={({ isActive }) =>
+            `group relative flex items-center justify-center gap-2 overflow-hidden px-4 py-4 text-sm font-medium transition-colors duration-300 ${
+              isActive
+                ? "bg-[#34D399]/10 text-white"
+                : "text-white/55 hover:bg-white/[0.04] hover:text-white/90"
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              {/* Hover Shine */}
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+              {/* Icon */}
+              <span
+                className={`relative z-10 shrink-0 transition-all duration-300 ${
+                  isActive
+                    ? "scale-105 text-[#34D399]"
+                    : "text-white/45 group-hover:scale-110 group-hover:text-white/80"
+                }`}
+              >
+                <BookOpen size={18} strokeWidth={1.8} />
+              </span>
+
+              {/* Label */}
+              <span className="relative z-10 whitespace-nowrap transition-all duration-300">
+                Course Applications
+              </span>
+            </>
+          )}
+        </NavLink>
+      </div>
+
+      {/* Animate only the content below the switch */}
+      <div key={location.pathname} className="animate-page-enter">
+        <Outlet />
       </div>
     </div>
   );
 };
 
-export default AdminLayout;
+export default ApplicationLayout;
