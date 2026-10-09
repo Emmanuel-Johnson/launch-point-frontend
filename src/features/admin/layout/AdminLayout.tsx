@@ -10,9 +10,11 @@ const AdminLayout = () => {
 
   const location = useLocation();
 
-  const isApplicationsRoute = location.pathname.startsWith(
-    "/admin/applications",
-  );
+  const isApplicationsRoute =
+    location.pathname === "/admin/applications/instructors/" ||
+    location.pathname === "/admin/applications/instructors" ||
+    location.pathname === "/admin/applications/courses/" ||
+    location.pathname === "/admin/applications/courses";
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed((prev) => !prev);
