@@ -460,8 +460,12 @@ const InstructorApplicationAdminListPage = () => {
           </div>
 
           {isLoading && (
-            <div className="px-6 py-12 text-center text-sm text-white/45">
-              Loading instructor applications...
+            <div
+              className="flex flex-col items-center justify-center gap-3 px-6 py-16"
+              role="status"
+              aria-label="Loading instructor applications"
+            >
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
             </div>
           )}
 

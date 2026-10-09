@@ -446,8 +446,12 @@ const InstructorApplicationAdminDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center text-sm text-white/60">
-        Loading instructor application…
+      <div
+        className="flex min-h-[40vh] flex-col items-center justify-center gap-3"
+        role="status"
+        aria-label="Loading instructor application"
+      >
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
       </div>
     );
   }
@@ -999,9 +1003,12 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
             />
           ) : isPdf ? (
             isPdfLoading ? (
-              <div className="flex h-[70vh] w-full flex-col items-center justify-center gap-3">
+              <div
+                className="flex h-[70vh] w-full flex-col items-center justify-center gap-3"
+                role="status"
+                aria-label="Loading PDF preview"
+              >
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
-                <p className="text-sm text-white/45">Loading preview…</p>
               </div>
             ) : pdfError ? (
               <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
