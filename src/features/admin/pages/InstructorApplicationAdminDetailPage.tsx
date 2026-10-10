@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   getAdminInstructorApplicationDetail,
+  approveAdminInstructorApplication,
   rejectAdminInstructorApplication,
   type AdminInstructorApplicationDetail,
 } from "../api/adminApplicationApi";
@@ -36,7 +37,7 @@ import {
 
   GREEN & BLACK THEME (matches the Admin sidebar / header / dashboard)
 
-  -----------------------------------------------------------------
+  \-----------------------------------------------------------------
 
   Card surface  #0A0A0A   near-black
 
@@ -45,8 +46,6 @@ import {
   Primary       #34D399   emerald — the single accent colour
 
   Hover emerald #6EE7B7   lighter step for hover states
-
-
 
   Status colours (amber / emerald / red) stay semantic. The approve action
 
@@ -68,7 +67,7 @@ type ApplicationStatus = "pending" | "approved" | "rejected";
 
    PDF keeps its red identity; images carry the theme emerald.
 
-================================================================ */
+\================================================================ */
 
 type FileMeta = { label: string; color: string; image?: boolean };
 
@@ -116,7 +115,7 @@ const hex = (c: string, a: number) =>
 
    <a download> is ignored). Falls back to opening in a new tab.
 
-================================================================ */
+\================================================================ */
 
 const downloadFile = async (name: string, url: string) => {
   try {
@@ -158,7 +157,7 @@ const downloadFile = async (name: string, url: string) => {
 
    content lines, and a dark label band so the type reads at a glance.
 
-================================================================ */
+\================================================================ */
 
 const FileTypeIcon = ({
   meta,
@@ -256,7 +255,7 @@ const FileTypeIcon = ({
 
    SMALL PRESENTATIONAL PIECES
 
-================================================================ */
+\================================================================ */
 
 /**
 
@@ -462,6 +461,54 @@ const InstructorApplicationAdminDetailPage = () => {
 
   const [status, setStatus] = useState<ApplicationStatus>("pending");
 
+  const handleApproveApplication = async () => {
+    if (!application) return;
+
+    const enteredMessage = window.prompt(
+      "Enter an approval message for this instructor application:",
+    );
+
+    if (enteredMessage === null) return;
+
+    const adminMessage = enteredMessage.trim();
+
+    if (!adminMessage) {
+      window.alert("Please enter an approval message.");
+
+      return;
+    }
+
+    try {
+      const response = await approveAdminInstructorApplication(
+        application.id,
+
+        adminMessage,
+      );
+
+      setStatus(response.status);
+
+      setApplication((currentApplication) =>
+        currentApplication
+          ? {
+              ...currentApplication,
+
+              status: response.status,
+
+              admin_message: response.admin_message,
+
+              reviewed_at: response.reviewed_at,
+            }
+          : currentApplication,
+      );
+    } catch (error) {
+      console.error("Failed to approve instructor application:", error);
+
+      window.alert(
+        "Could not approve this instructor application. Please try again.",
+      );
+    }
+  };
+
   const handleRejectApplication = async () => {
     if (!application) return;
 
@@ -475,28 +522,35 @@ const InstructorApplicationAdminDetailPage = () => {
 
     if (!adminMessage) {
       window.alert("Please enter a rejection reason.");
+
       return;
     }
 
     try {
       const response = await rejectAdminInstructorApplication(
         application.id,
+
         adminMessage,
       );
 
       setStatus(response.status);
+
       setApplication((currentApplication) =>
         currentApplication
           ? {
               ...currentApplication,
+
               status: response.status,
+
               admin_message: response.admin_message,
+
               reviewed_at: response.reviewed_at,
             }
           : currentApplication,
       );
     } catch (error) {
       console.error("Failed to reject instructor application:", error);
+
       window.alert(
         "Could not reject this instructor application. Please try again.",
       );
@@ -958,7 +1012,7 @@ const InstructorApplicationAdminDetailPage = () => {
           <section className={`relative overflow-hidden p-5 ${cardSurface}`}>
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/40 to-transparent" />
 
-            {status !== "rejected" && (
+            {status === "pending" && (
               <>
                 <h2 className="text-[15px] font-semibold tracking-tight text-white">
                   Application Review
@@ -977,7 +1031,7 @@ const InstructorApplicationAdminDetailPage = () => {
 
                 <button
                   type="button"
-                  onClick={() => setStatus("approved")}
+                  onClick={handleApproveApplication}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#34D399] px-4 py-3 text-sm font-semibold text-black shadow-[0_8px_24px_-10px_rgba(52,211,153,0.8)] transition hover:bg-[#6EE7B7] hover:shadow-[0_10px_28px_-8px_rgba(52,211,153,0.9)] active:scale-[0.99]"
                 >
                   <CheckCircle2 size={17} />
@@ -995,47 +1049,54 @@ const InstructorApplicationAdminDetailPage = () => {
               </>
             ) : (
               <>
-                {status !== "rejected" && (
-                  <div className="my-5 border-t border-white/[0.08]" />
-                )}
+                <div className="space-y-4">
+                  <div>
+                    <p
+                      className={`text-xs font-semibold uppercase tracking-[0.14em] ${
+                        status === "rejected"
+                          ? "text-red-400"
+                          : "text-emerald-400"
+                      }`}
+                    >
+                      {status === "rejected"
+                        ? "Rejection reason"
+                        : "Approval message"}
+                    </p>
 
-                {status === "rejected" ? (
-                  <div className="space-y-4">
+                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/75">
+                      {application?.admin_message ||
+                        (status === "rejected"
+                          ? "No rejection reason was provided."
+                          : "No approval message was provided.")}
+                    </p>
+                  </div>
+
+                  {application?.reviewed_at && (
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-red-400">
-                        Rejection reason
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+                        Reviewed at
                       </p>
-                      <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/75">
-                        {application?.admin_message ||
-                          "No rejection reason was provided."}
+
+                      <p className="mt-2 text-sm text-white/70">
+                        {new Date(application.reviewed_at).toLocaleString(
+                          "en-IN",
+
+                          {
+                            day: "2-digit",
+
+                            month: "short",
+
+                            year: "numeric",
+
+                            hour: "2-digit",
+
+                            minute: "2-digit",
+                          },
+                        )}
                       </p>
                     </div>
-
-                    {application?.reviewed_at && (
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
-                          Reviewed at
-                        </p>
-                        <p className="mt-2 text-sm text-white/70">
-                          {new Date(application.reviewed_at).toLocaleString(
-                            "en-IN",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            },
-                          )}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-sm text-white/55">
-                    You approved this application.
-                  </p>
-                )}
+                  )}
+                </div>
               </>
             )}
           </section>
@@ -1062,15 +1123,15 @@ const InstructorApplicationAdminDetailPage = () => {
 
    FILE PREVIEW MODAL
 
-   - Rendered through a React portal into document.body, so it escapes
+   \- Rendered through a React portal into document.body, so it escapes
 
      the admin layout outlet and any transformed/overflow-clipped
 
      ancestor, covering the full viewport above all other UI.
 
-   - Images render full-size straight from the URL.
+   \- Images render full-size straight from the URL.
 
-   - PDFs are fetched into a same-origin blob: URL and shown in an
+   \- PDFs are fetched into a same-origin blob: URL and shown in an
 
      iframe (sidesteps Content-Disposition / X-Frame-Options issues).
 
@@ -1078,9 +1139,9 @@ const InstructorApplicationAdminDetailPage = () => {
 
      is shown. Closes on backdrop click or Escape.
 
-   - Preview only: the header carries a single close button, no download.
+   \- Preview only: the header carries a single close button, no download.
 
-================================================================ */
+\================================================================ */
 
 type FilePreviewModalProps = {
   name: string;
