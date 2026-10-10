@@ -62,3 +62,22 @@ export const getAdminInstructorApplicationDetail = async (
 
   return response.data;
 };
+
+export interface RejectInstructorApplicationResponse {
+  message: string;
+  status: ApplicationStatus;
+  admin_message: string | null;
+  reviewed_at: string | null;
+}
+
+export const rejectAdminInstructorApplication = async (
+  applicationId: number,
+  adminMessage: string,
+): Promise<RejectInstructorApplicationResponse> => {
+  const response = await api.post<RejectInstructorApplicationResponse>(
+    `/admins/instructor-applications/${applicationId}/reject/`,
+    { admin_message: adminMessage },
+  );
+
+  return response.data;
+};
