@@ -96,11 +96,7 @@ const InstructorApplicationListPage = () => {
             /* Loading State */
 
             <div className="flex min-h-[300px] items-center justify-center">
-              <div className="relative flex h-12 w-12 items-center justify-center">
-                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl animate-pulse" />
-                <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-400/10 border-t-blue-400 border-r-blue-400/60" />
-                <div className="absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
-              </div>
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-blue-400" />
             </div>
           ) : error ? (
             /* Error State */
