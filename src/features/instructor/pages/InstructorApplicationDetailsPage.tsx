@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import {
-  ArrowRight,
   BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
@@ -454,38 +453,62 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
       <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div className="mx-auto max-w-6xl">
-          {/* Breadcrumb */}
+          {/* Breadcrumb row — breadcrumb on the left, status action on the right */}
 
-          <nav
-            aria-label="Breadcrumb"
-            className="flex items-center gap-2 text-sm"
-          >
-            <button
-              type="button"
-              onClick={() => navigate("/instructor/applications")}
-              className="group inline-flex items-center gap-2 rounded-md py-1 text-slate-400 transition-all duration-200 hover:text-white"
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center gap-2 text-sm"
             >
-              <LayoutGrid className="h-4 w-4 text-slate-500 transition-colors duration-200 group-hover:text-blue-400" />
+              <button
+                type="button"
+                onClick={() => navigate("/instructor/applications")}
+                className="group inline-flex items-center gap-2 rounded-md py-1 text-slate-400 transition-all duration-200 hover:text-white"
+              >
+                <LayoutGrid className="h-4 w-4 text-slate-500 transition-colors duration-200 group-hover:text-blue-400" />
 
-              <span>Applications</span>
-            </button>
+                <span>Applications</span>
+              </button>
 
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-600" />
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-600" />
 
-            <div className="inline-flex items-center gap-2 rounded-lg border border-blue-400/10 bg-blue-400/[0.06] px-3 py-1.5">
-              <FileText className="h-3.5 w-3.5 text-blue-400" />
+              <div className="inline-flex items-center gap-2 rounded-lg border border-blue-400/10 bg-blue-400/[0.06] px-3 py-1.5">
+                <FileText className="h-3.5 w-3.5 text-blue-400" />
 
-              <span className="font-medium tracking-wide text-blue-100">
-                Application
-              </span>
+                <span className="font-medium tracking-wide text-blue-100">
+                  Application
+                </span>
 
-              <span className="h-3 w-px bg-blue-300/20" />
+                <span className="h-3 w-px bg-blue-300/20" />
 
-              <span className="font-mono text-xs font-medium text-blue-300">
-                #{String(application.id).padStart(2, "0")}
-              </span>
-            </div>
-          </nav>
+                <span className="font-mono text-xs font-medium text-blue-300">
+                  #{String(application.id).padStart(2, "0")}
+                </span>
+              </div>
+            </nav>
+
+            {/* Status action — mirrors the hero decision CTA, placed beside the breadcrumb */}
+
+            {application.status === "approved" && (
+              <button
+                type="button"
+                onClick={() => navigate("/instructor/dashboard")}
+                className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
+              >
+                Open Instructor Dashboard
+              </button>
+            )}
+
+            {application.status === "rejected" && (
+              <button
+                type="button"
+                onClick={() => navigate("/instructor/apply")}
+                className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
+              >
+                Apply Again
+              </button>
+            )}
+          </div>
 
           {/* ========================================================
 
@@ -577,28 +600,6 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     </p>
                   </div>
                 </div>
-
-                {application.status === "approved" && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/instructor/dashboard")}
-                    className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98]"
-                  >
-                    Go to Instructor Dashboard
-                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </button>
-                )}
-
-                {application.status === "rejected" && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/instructor/apply")}
-                    className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/30 bg-gradient-to-b from-red-500/90 to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-red-400 hover:to-red-500 active:scale-[0.98]"
-                  >
-                    Apply Again
-                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </button>
-                )}
               </div>
             </div>
           </section>
