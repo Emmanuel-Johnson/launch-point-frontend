@@ -530,7 +530,7 @@ const StudentListPage = () => {
                                 </p>
 
                                 <p className="mt-0.5 text-xs tabular-nums text-white/35">
-                                  ID #{student.id}
+                                  ID: {student.id}
                                 </p>
                               </div>
                             </div>

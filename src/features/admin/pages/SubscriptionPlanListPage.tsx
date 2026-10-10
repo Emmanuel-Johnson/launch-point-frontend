@@ -512,7 +512,7 @@ const SubscriptionPlanListPage = () => {
                               </p>
 
                               <p className="text-xs text-white/40">
-                                Plan #{plan.id}
+                                Plan: {plan.id}
                               </p>
                             </div>
                           </button>

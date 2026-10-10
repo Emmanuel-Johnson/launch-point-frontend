@@ -1,6 +1,5 @@
 import {
   ArrowUpRight,
-  Briefcase,
   CalendarDays,
   CheckCircle2,
   ChevronLeft,
@@ -12,44 +11,13 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  getAdminInstructorApplications,
+  type ApplicationStatus,
+  type InstructorApplication,
+} from "../api/adminApplicationApi";
 import { useNavigate } from "react-router-dom";
-
-type ApplicationStatus = "pending" | "approved" | "rejected";
-
-type InstructorApplication = {
-  id: number;
-  full_name: string;
-  email: string;
-  occupation: string;
-  years_of_experience: number;
-  status: ApplicationStatus;
-  submitted_at: string;
-  categories: string[];
-};
-
-const applications: InstructorApplication[] = [
-  {
-    id: 16,
-    full_name: "Harshibar",
-    email: "harshibar@example.com",
-    occupation: "Full Stack Developer",
-    years_of_experience: 3,
-    status: "pending",
-    submitted_at: "2026-10-08T02:00:54+05:30",
-    categories: ["Frontend Development", "Full Stack Development"],
-  },
-  {
-    id: 15,
-    full_name: "John Doe",
-    email: "john@example.com",
-    occupation: "Frontend Developer",
-    years_of_experience: 5,
-    status: "approved",
-    submitted_at: "2026-10-07T14:20:00+05:30",
-    categories: ["Frontend Development", "Web Development"],
-  },
-];
 
 /*
   Status colours stay semantic (amber / emerald / red) — the same way the
@@ -91,6 +59,26 @@ const APPLICATIONS_PER_PAGE = 5;
 const InstructorApplicationAdminListPage = () => {
   const navigate = useNavigate();
 
+  const [applications, setApplications] = useState<InstructorApplication[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadApplications = async () => {
+      try {
+        const data = await getAdminInstructorApplications();
+        setApplications(data);
+      } catch (error) {
+        console.error("Failed to load admin instructor applications:", error);
+        setError("Unable to load instructor applications. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadApplications();
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -111,7 +99,7 @@ const InstructorApplicationAdminListPage = () => {
 
       return matchesSearch && matchesStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [applications, searchQuery, statusFilter]);
 
   const totalPages = Math.ceil(
     filteredApplications.length / APPLICATIONS_PER_PAGE,
@@ -470,240 +458,269 @@ const InstructorApplicationAdminListPage = () => {
             </div>
           </div>
 
-          {/* Desktop Table */}
-          <div className="hidden overflow-x-auto md:block">
-            {/* table-fixed + explicit column widths keep every column in the
-                exact same position across pages, regardless of cell content. */}
-            <table className="w-full table-fixed">
-              <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
-                  <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Applicant
-                  </th>
-
-                  <th className="w-[22%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Occupation
-                  </th>
-
-                  <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Experience
-                  </th>
-
-                  <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Applied
-                  </th>
-
-                  <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                    Status
-                  </th>
-
-                  {/* "Action" label aligned to the right, above the View button
-                      that sits below it. */}
-                  <th className="w-[12%] px-6 py-4">
-                    <div className="flex justify-end">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                        Action
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginatedApplications.map((application, index) => {
-                  const status = statusConfig[application.status];
-
-                  return (
-                    <tr
-                      key={`${application.id}-${index}`}
-                      onClick={() => openApplication(application.id)}
-                      className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
-                    >
-                      {/* Applicant */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                            {getInitials(application.full_name)}
-                          </div>
-
-                          <div className="min-w-0">
-                            <p
-                              className="truncate text-sm font-medium text-white"
-                              title={application.full_name}
-                            >
-                              {truncateText(application.full_name)}
-                            </p>
-
-                            <p
-                              className="mt-0.5 truncate text-xs text-white/35"
-                              title={application.email}
-                            >
-                              {truncateText(application.email)}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Occupation */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm text-white/60">
-                          <Briefcase className="h-4 w-4 shrink-0 text-white/30" />
-
-                          <span
-                            className="truncate"
-                            title={application.occupation}
-                          >
-                            {application.occupation}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Experience */}
-                      <td className="px-6 py-4">
-                        <span className="text-sm tabular-nums text-white/55">
-                          {application.years_of_experience}{" "}
-                          {application.years_of_experience === 1
-                            ? "year"
-                            : "years"}
-                        </span>
-                      </td>
-
-                      {/* Applied */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
-                          <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
-
-                          <span className="truncate">
-                            {formatDate(application.submitted_at)}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Status */}
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex h-7 w-24 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${status.badge}`}
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
-                          />
-
-                          {status.label}
-                        </span>
-                      </td>
-
-                      {/* Action */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end">
-                          <button
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              openApplication(application.id);
-                            }}
-                            aria-label={`View ${application.full_name}'s application`}
-                            className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 text-xs font-medium text-white/60 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
-                          >
-                            <Eye className="h-4 w-4" strokeWidth={1.8} />
-                            View
-                            <ArrowUpRight
-                              className="h-3.5 w-3.5"
-                              strokeWidth={1.8}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                {/* Height-reserving placeholder rows keep the page structure
-                    fixed when the last page is partially filled. */}
-                {Array.from({ length: placeholderCount }).map((_, index) => (
-                  <tr
-                    key={`placeholder-${index}`}
-                    aria-hidden="true"
-                    className="border-b border-white/[0.03]"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="h-11" />
-                    </td>
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                    <td className="px-6 py-4" />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {filteredApplications.length > 0 && totalPages > 1 && (
-            <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              {/* Showing range */}
-              <p className="text-xs text-white/40">
-                Showing{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {startItem}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {endItem}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium tabular-nums text-white/70">
-                  {filteredApplications.length}
-                </span>{" "}
-                applications
-              </p>
-
-              {/* Pagination Controls */}
-              <div className="flex items-center justify-center gap-1">
-                {/* Previous */}
-                <button
-                  type="button"
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-
-                {/* Page Numbers */}
-                {getPageNumbers().map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => handlePageChange(page)}
-                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
-                      currentPage === page
-                        ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-
-                {/* Next */}
-                <button
-                  type="button"
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
-                  aria-label="Next page"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
+          {isLoading && (
+            <div
+              className="flex flex-col items-center justify-center gap-3 px-6 py-16"
+              role="status"
+              aria-label="Loading instructor applications"
+            >
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
             </div>
           )}
 
+          {!isLoading && error && (
+            <div
+              role="alert"
+              className="px-6 py-12 text-center text-sm text-red-400"
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Desktop Table */}
+          {!isLoading && !error && (
+            <div className="hidden overflow-x-auto md:block">
+              {/* table-fixed + explicit column widths keep every column in the
+                exact same position across pages, regardless of cell content. */}
+              <table className="w-full table-fixed">
+                <thead className="cursor-default">
+                  <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                    <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      Applicant
+                    </th>
+
+                    <th className="w-[22%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      Email
+                    </th>
+
+                    <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      Experience
+                    </th>
+
+                    <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      Applied
+                    </th>
+
+                    <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                      Status
+                    </th>
+
+                    {/* "Action" label aligned to the right, above the View button
+                      that sits below it. */}
+                    <th className="w-[12%] px-6 py-4">
+                      <div className="flex justify-end">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                          Action
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {paginatedApplications.map((application, index) => {
+                    const status = statusConfig[application.status];
+
+                    return (
+                      <tr
+                        key={`${application.id}-${index}`}
+                        onClick={() => openApplication(application.id)}
+                        className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
+                      >
+                        {/* Applicant */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#34D399]/10 text-sm font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                              {getInitials(application.full_name)}
+                              {application.profile_image && (
+                                <img
+                                  src={application.profile_image}
+                                  alt={`${application.full_name}'s profile`}
+                                  className="absolute inset-0 h-full w-full rounded-full object-cover"
+                                  onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                  }}
+                                />
+                              )}
+                            </div>
+
+                            <div className="min-w-0">
+                              <p
+                                className="truncate text-sm font-medium text-white"
+                                title={application.full_name}
+                              >
+                                {truncateText(application.full_name, 20)}
+                              </p>
+
+                              <p
+                                className="mt-0.5 truncate text-xs text-white/35"
+                                title={`Application ID: ${application.id}`}
+                              >
+                                ID: {application.id}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Email */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-sm text-white/60">
+                            <span
+                              className="truncate"
+                              title={application.email}
+                            >
+                              {application.email}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Experience */}
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-white/55">
+                            {application.years_of_experience}
+                          </span>
+                        </td>
+
+                        {/* Applied */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
+                            <CalendarDays className="h-4 w-4 shrink-0 text-white/30" />
+
+                            <span className="truncate">
+                              {formatDate(application.submitted_at)}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex h-7 w-24 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${status.badge}`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
+                            />
+
+                            {status.label}
+                          </span>
+                        </td>
+
+                        {/* Action */}
+                        <td className="px-6 py-4">
+                          <div className="flex justify-end">
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                openApplication(application.id);
+                              }}
+                              aria-label={`View ${application.full_name}'s application`}
+                              className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 text-xs font-medium text-white/60 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                            >
+                              <Eye className="h-4 w-4" strokeWidth={1.8} />
+                              View
+                              <ArrowUpRight
+                                className="h-3.5 w-3.5"
+                                strokeWidth={1.8}
+                              />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+
+                  {/* Height-reserving placeholder rows keep the page structure
+                    fixed when the last page is partially filled. */}
+                  {Array.from({ length: placeholderCount }).map((_, index) => (
+                    <tr
+                      key={`placeholder-${index}`}
+                      aria-hidden="true"
+                      className="border-b border-white/[0.03]"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="h-11" />
+                      </td>
+                      <td className="px-6 py-4" />
+                      <td className="px-6 py-4" />
+                      <td className="px-6 py-4" />
+                      <td className="px-6 py-4" />
+                      <td className="px-6 py-4" />
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {!isLoading &&
+            !error &&
+            filteredApplications.length > 0 &&
+            totalPages > 1 && (
+              <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Showing range */}
+                <p className="text-xs text-white/40">
+                  Showing{" "}
+                  <span className="font-medium tabular-nums text-white/70">
+                    {startItem}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium tabular-nums text-white/70">
+                    {endItem}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium tabular-nums text-white/70">
+                    {filteredApplications.length}
+                  </span>{" "}
+                  applications
+                </p>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-center gap-1">
+                  {/* Previous */}
+                  <button
+                    type="button"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+
+                  {/* Page Numbers */}
+                  {getPageNumbers().map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => handlePageChange(page)}
+                      className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
+                        currentPage === page
+                          ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                          : "text-white/45 hover:bg-white/[0.04] hover:text-white"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  {/* Next */}
+                  <button
+                    type="button"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
           {/* Empty State */}
-          {filteredApplications.length === 0 && (
+          {!isLoading && !error && filteredApplications.length === 0 && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
                 <Users className="h-6 w-6" />
