@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -20,7 +21,9 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
   getInstructorApplication,
   type InstructorApplicationDetail,
@@ -30,24 +33,38 @@ type ApplicationStatus = "pending" | "approved" | "rejected";
 
 const experienceLabels: Record<string, string> = {
   less_than_one: "Less than 1 year",
+
   one_to_three: "1–3 years",
+
   three_to_five: "3–5 years",
+
   five_to_ten: "5–10 years",
+
   ten_plus: "10+ years",
 };
 
 /* ================================================================
+
    DEMO PREVIEW SOURCES
+
    The sample data uses placeholder ("#") URLs, so the preview shows
+
    dummy content: every PDF shows this bundled PDF and every image
+
    shows this dummy image. Drop test_1.pdf into your /public folder
+
    (so it resolves at /test_1.pdf). For real previews, swap these for
+
    the file's actual URL in <FilePreviewModal />.
+
 ================================================================ */
 
 /* ================================================================
+
    BRAND ICONS
+
    lucide-react dropped brand-icon exports, so these are inline.
+
 ================================================================ */
 
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -77,148 +94,218 @@ const getStatusConfig = (status: ApplicationStatus) => {
     case "approved":
       return {
         label: "Approved",
+
         description:
           "Your application has been reviewed and approved. You can now continue to the instructor dashboard.",
+
         icon: CheckCircle2,
+
         iconClass: "text-emerald-300",
+
         badgeClass:
           "border-emerald-400/25 bg-emerald-500/[0.08] text-emerald-200",
+
         dotClass: "bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.7)]",
+
         glow: "bg-emerald-500/15",
+
         accent: "from-emerald-400 via-emerald-400 to-emerald-500",
       };
 
     case "rejected":
       return {
         label: "Rejected",
+
         description:
           "Your application has been reviewed and was not approved at this time.",
+
         icon: XCircle,
+
         iconClass: "text-red-300",
+
         badgeClass: "border-red-400/25 bg-red-500/[0.08] text-red-200",
+
         dotClass: "bg-red-400 shadow-[0_0_10px_2px_rgba(248,113,113,0.7)]",
+
         glow: "bg-red-500/15",
+
         accent: "from-red-400 via-red-400 to-red-500",
       };
 
     default:
       return {
         label: "Pending Review",
+
         description:
           "Your application has been successfully submitted and is currently under review. You’ll receive an update once the review process is complete.",
+
         icon: Clock3,
+
         iconClass: "text-amber-300",
+
         badgeClass: "border-amber-400/25 bg-amber-500/[0.08] text-amber-200",
+
         dotClass: "bg-amber-400 shadow-[0_0_10px_2px_rgba(251,191,36,0.7)]",
+
         glow: "bg-amber-500/15",
+
         accent: "from-amber-400 via-amber-400 to-amber-500",
       };
   }
 };
 
 /* ================================================================
+
    FILE-TYPE META
+
    Uploads are restricted to PDF, PNG, and JPG, so only those types
+
    are mapped here. Image types are flagged so we render a real
+
    thumbnail instead of a file-logo icon. Anything unexpected from
+
    the API falls back to a neutral chip (see getFileMeta).
+
 ================================================================ */
 
 type FileMeta = { label: string; color: string; image?: boolean };
 
 const FILE_TYPES: Record<string, FileMeta> = {
   pdf: { label: "PDF", color: "#EF4444" },
+
   png: { label: "PNG", color: "#A855F7", image: true },
+
   jpg: { label: "JPG", color: "#A855F7", image: true },
+
   jpeg: { label: "JPEG", color: "#A855F7", image: true },
 };
 
 const getFileMeta = (name: string): FileMeta => {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
+
   return (
     FILE_TYPES[ext] ?? { label: ext.toUpperCase() || "FILE", color: "#64748B" }
   );
 };
 
 /** A file can be previewed inline when it's an image or a PDF. */
+
 const isPreviewable = (name: string): boolean => {
   const meta = getFileMeta(name);
+
   return Boolean(meta.image) || name.toLowerCase().endsWith(".pdf");
 };
 
 /** Append an alpha channel to a 6-digit hex color, e.g. hex("#EF4444", 0.12). */
+
 const hex = (c: string, a: number) =>
   c +
   Math.round(a * 255)
+
     .toString(16)
+
     .padStart(2, "0");
 
 /* ================================================================
+
    FILE DOWNLOAD
+
    Forces an actual download (image or PDF) instead of opening the
+
    file in a new tab. Browsers ignore the <a download> attribute for
+
    cross-origin URLs (e.g. S3), so we fetch the file as a blob and
+
    download that. Works for any file type — it just saves the raw
+
    bytes under the given name. Falls back to opening in a new tab if
+
    the fetch fails (e.g. the host blocks CORS).
+
 ================================================================ */
 
 const downloadFile = async (name: string, url: string) => {
   try {
     const response = await fetch(url);
+
     if (!response.ok) throw new Error(`Request failed: ${response.status}`);
 
     const blob = await response.blob();
+
     const blobUrl = window.URL.createObjectURL(blob);
 
     const link = document.createElement("a");
+
     link.href = blobUrl;
+
     link.download = name;
+
     document.body.appendChild(link);
+
     link.click();
+
     document.body.removeChild(link);
 
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error("Failed to download file:", error);
+
     // Fallback: open in a new tab so the user can still save it manually.
+
     window.open(url, "_blank", "noopener,noreferrer");
   }
 };
 
 /* ================================================================
+
    FILE-TYPE LOGO
+
    A real "file icon": white page with a folded corner, faint text
+
    lines, and a colored type badge across the bottom.
+
 ================================================================ */
 
 const FileTypeIcon = ({
   meta,
+
   className,
 }: {
   meta: FileMeta;
+
   className?: string;
 }) => {
   const len = meta.label.length;
+
   const fontSize = len <= 3 ? 9 : len === 4 ? 7 : 6;
 
   return (
     <svg viewBox="0 0 40 48" className={className} aria-hidden="true">
       {/* page body */}
+
       <path
         d="M7 1.5h18.5L34 10v34.5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"
         fill="#F8FAFC"
         stroke="#E2E8F0"
         strokeWidth="1"
       />
+
       {/* folded corner */}
+
       <path d="M25.5 1.5 34 10h-6.5a2 2 0 0 1-2-2Z" fill="#E2E8F0" />
+
       {/* faint text lines */}
+
       <rect x="11" y="15" width="18" height="2" rx="1" fill="#E2E8F0" />
+
       <rect x="11" y="20" width="18" height="2" rx="1" fill="#E2E8F0" />
+
       <rect x="11" y="25" width="12" height="2" rx="1" fill="#E2E8F0" />
+
       {/* colored type badge */}
+
       <rect x="4" y="30" width="26" height="13" rx="3" fill={meta.color} />
+
       <text
         x="17"
         y="39.2"
@@ -239,8 +326,11 @@ const InstructorApplicationDetailsPage = () => {
   const { applicationId } = useParams<{ applicationId: string }>();
 
   // Keying by applicationId remounts the inner view when the route param
+
   // changes, so its state (loading / application / error) resets cleanly —
+
   // without calling setState synchronously inside an effect.
+
   return (
     <ApplicationDetails key={applicationId} applicationId={applicationId} />
   );
@@ -252,15 +342,19 @@ type ApplicationDetailsProps = {
 
 const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   const navigate = useNavigate();
+
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
 
   // Document currently open in the preview lightbox (null = closed).
+
   const [previewFile, setPreviewFile] = useState<{
     name: string;
+
     url: string;
   } | null>(null);
 
@@ -276,6 +370,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
         if (!cancelled) setApplication(data);
       } catch (error) {
         console.error("Failed to fetch instructor application:", error);
+
         if (!cancelled) setError("Failed to load application.");
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -302,7 +397,9 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
       <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#07111F]">
         <div className="relative flex h-12 w-12 items-center justify-center">
           <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl animate-pulse" />
+
           <div className="h-9 w-9 animate-spin rounded-full border-2 border-blue-400/10 border-t-blue-400 border-r-blue-400/60" />
+
           <div className="absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
         </div>
       </div>
@@ -316,28 +413,45 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
       </div>
     );
   }
+
   const status = getStatusConfig(application.status);
+
   const StatusIcon = status.icon;
 
   const initials = application.full_name
+
     .split(" ")
+
     .filter(Boolean)
+
     .slice(0, 2)
+
     .map((name) => name[0])
+
     .join("")
+
     .toUpperCase();
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100 antialiased">
       {/* ============================================================
+
           AMBIENT BLUE BACKDROP (sits below the shared header)
+
       ============================================================ */}
+
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+
       <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+
       <div className="pointer-events-none absolute -right-40 top-40 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 
       {/* ============================================================
+
           MAIN
+
       ============================================================ */}
+
       <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div className="mx-auto max-w-6xl">
           {/* Breadcrumb */}
@@ -374,20 +488,27 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
           </nav>
 
           {/* ========================================================
+
               HERO — identity + status (shown once)
+
           ======================================================== */}
+
           <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.10] via-white/[0.02] to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_30px_80px_-40px_rgba(2,6,23,0.9)]">
             {/* Accent + glow */}
+
             <div
               className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${status.accent}`}
             />
+
             <div
               className={`pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full ${status.glow} blur-3xl`}
             />
+
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_140%_at_0%_0%,rgba(59,130,246,0.08),transparent_55%)]" />
 
             <div className="relative flex flex-col gap-7 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
               {/* Applicant identity */}
+
               <div className="flex items-center gap-5">
                 {application.profile_image ? (
                   <img
@@ -398,6 +519,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 ) : (
                   <div className="relative flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/30 to-blue-700/5 text-xl font-semibold text-blue-50 shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]">
                     <span className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(70%_70%_at_30%_20%,rgba(255,255,255,0.18),transparent)]" />
+
                     {initials}
                   </div>
                 )}
@@ -417,11 +539,16 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     Submitted{" "}
                     {new Date(application.submitted_at).toLocaleString(
                       "en-US",
+
                       {
                         month: "short",
+
                         day: "numeric",
+
                         year: "numeric",
+
                         hour: "numeric",
+
                         minute: "2-digit",
                       },
                     )}
@@ -429,36 +556,67 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 </div>
               </div>
 
-              {/* Status block */}
-              <div
-                className={`flex items-start gap-3 rounded-2xl border p-4 backdrop-blur-sm sm:max-w-xs ${status.badgeClass}`}
-              >
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/25">
-                  <StatusIcon className={`h-5 w-5 ${status.iconClass}`} />
+              {/* Status block and decision message */}
+              <div className="w-full space-y-3 lg:max-w-md">
+                <div
+                  className={`flex items-start gap-3 rounded-2xl border p-4 backdrop-blur-sm ${status.badgeClass}`}
+                >
+                  <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/25">
+                    <StatusIcon className={`h-5 w-5 ${status.iconClass}`} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${status.dotClass}`}
+                      />
+                      <p className="text-sm font-semibold">{status.label}</p>
+                    </div>
+                    <p className="mt-1.5 text-xs leading-5 opacity-80">
+                      {application.admin_message}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${status.dotClass}`}
-                    />
-                    <p className="text-sm font-semibold">{status.label}</p>
-                  </div>
-                  <p className="mt-1.5 text-xs leading-5 opacity-80">
-                    {status.description}
-                  </p>
-                </div>
+                {application.status === "approved" && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/instructor/dashboard")}
+                    className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98]"
+                  >
+                    Go to Instructor Dashboard
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </button>
+                )}
+
+                {application.status === "rejected" && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/instructor/apply")}
+                    className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/30 bg-gradient-to-b from-red-500/90 to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-red-400 hover:to-red-500 active:scale-[0.98]"
+                  >
+                    Apply Again
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </button>
+                )}
               </div>
             </div>
           </section>
+
           {/* ========================================================
+
               CONTENT — primary column + sticky summary rail
+
               (each field appears once)
+
           ======================================================== */}
+
           <div className="mt-5 grid gap-5 lg:grid-cols-3">
             {/* ---------------- PRIMARY COLUMN ---------------- */}
+
             <div className="space-y-5 lg:col-span-2">
               {/* BACKGROUND */}
+
               <Panel>
                 <SectionHeader
                   icon={<BriefcaseBusiness className="h-4 w-4" />}
@@ -472,11 +630,13 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     label="Occupation"
                     value={application.occupation}
                   />
+
                   <InfoRow
                     icon={<GraduationCap className="h-4 w-4" />}
                     label="Education"
                     value={application.education}
                   />
+
                   <InfoRow
                     icon={<Clock3 className="h-4 w-4" />}
                     label="Experience"
@@ -489,6 +649,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </Panel>
 
               {/* TEACHING EXPERTISE */}
+
               <Panel>
                 <SectionHeader
                   icon={<GraduationCap className="h-4 w-4" />}
@@ -503,6 +664,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       className="inline-flex items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
+
                       {category}
                     </span>
                   ))}
@@ -510,6 +672,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </Panel>
 
               {/* ABOUT */}
+
               <Panel>
                 <SectionHeader
                   icon={<UserRound className="h-4 w-4" />}
@@ -522,6 +685,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     label="Professional Bio"
                     value={application.professional_bio}
                   />
+
                   <TextBlock
                     label="Why do you want to become an instructor?"
                     value={application.motivation}
@@ -530,6 +694,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </Panel>
 
               {/* RESUME / CV */}
+
               <Panel>
                 <SectionHeader
                   icon={<FileText className="h-4 w-4" />}
@@ -545,6 +710,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       onPreview={() =>
                         setPreviewFile({
                           name: application.resume_name ?? "Resume.pdf",
+
                           url: application.resume_url ?? "",
                         })
                       }
@@ -556,6 +722,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </Panel>
 
               {/* SUPPORTING FILES */}
+
               <Panel>
                 <SectionHeader
                   icon={<FileText className="h-4 w-4" />}
@@ -581,44 +748,14 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                   )}
                 </div>
               </Panel>
-
-              {/* ADMIN MESSAGE */}
-              {application.admin_message && (
-                <section
-                  className={`rounded-2xl border p-5 sm:p-6 ${
-                    application.status === "rejected"
-                      ? "border-red-400/20 bg-red-500/[0.05]"
-                      : "border-blue-400/20 bg-blue-500/[0.05]"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                        application.status === "rejected"
-                          ? "bg-red-500/10 text-red-300"
-                          : "bg-blue-500/10 text-blue-300"
-                      }`}
-                    >
-                      <FileText className="h-4 w-4" />
-                    </div>
-
-                    <div>
-                      <h2 className="text-sm font-semibold text-white">
-                        Message from Launch Point
-                      </h2>
-                      <p className="mt-2 text-sm leading-6 text-zinc-400">
-                        {application.admin_message}
-                      </p>
-                    </div>
-                  </div>
-                </section>
-              )}
             </div>
 
             {/* ---------------- SUMMARY RAIL ---------------- */}
+
             <aside className="lg:col-span-1">
               <div className="space-y-5 lg:sticky lg:top-28">
                 {/* CONTACT */}
+
                 <Panel>
                   <SectionHeader
                     icon={<UserRound className="h-4 w-4" />}
@@ -632,11 +769,13 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       label="Email address"
                       value={application.email}
                     />
+
                     <InfoRow
                       icon={<Phone className="h-4 w-4" />}
                       label="Phone number"
                       value={application.phone_number}
                     />
+
                     <InfoRow
                       icon={<MapPin className="h-4 w-4" />}
                       label="Location"
@@ -646,6 +785,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 </Panel>
 
                 {/* PROFESSIONAL LINKS */}
+
                 <Panel>
                   <SectionHeader
                     icon={<Globe className="h-4 w-4" />}
@@ -660,12 +800,14 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       description="View portfolio"
                       href={application.portfolio_url}
                     />
+
                     <LinkCard
                       icon={<LinkedinIcon className="h-4 w-4" />}
                       label="LinkedIn"
                       description="View LinkedIn profile"
                       href={application.linkedin_url}
                     />
+
                     <LinkCard
                       icon={<GithubIcon className="h-4 w-4" />}
                       label="GitHub"
@@ -677,27 +819,15 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </div>
             </aside>
           </div>
-          {/* ========================================================
-              BOTTOM ACTIONS
-          ======================================================== */}
-          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-white/[0.06] pt-6 sm:flex-row sm:items-center sm:justify-between">
-            {application.status === "approved" && (
-              <button
-                type="button"
-                onClick={() => navigate("/instructor/dashboard")}
-                className="group inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-6 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98]"
-              >
-                Go to Instructor Dashboard
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </button>
-            )}
-          </div>
         </div>
       </section>
 
       {/* ============================================================
+
           FILE PREVIEW LIGHTBOX
+
       ============================================================ */}
+
       {previewFile && (
         <FilePreviewModal
           key={`${previewFile.name}-${previewFile.url}`}
@@ -711,7 +841,9 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 };
 
 /* ================================================================
+
    REUSABLE COMPONENTS
+
 ================================================================ */
 
 type PanelProps = {
@@ -726,7 +858,9 @@ const Panel = ({ children }: PanelProps) => (
 
 type SectionHeaderProps = {
   icon: React.ReactNode;
+
   title: string;
+
   description: string;
 };
 
@@ -740,6 +874,7 @@ const SectionHeader = ({ icon, title, description }: SectionHeaderProps) => (
       <h2 className="text-sm font-semibold tracking-tight text-white">
         {title}
       </h2>
+
       <p className="mt-0.5 text-xs text-zinc-500">{description}</p>
     </div>
   </div>
@@ -747,7 +882,9 @@ const SectionHeader = ({ icon, title, description }: SectionHeaderProps) => (
 
 type InfoRowProps = {
   icon: React.ReactNode;
+
   label: string;
+
   value: string;
 };
 
@@ -761,6 +898,7 @@ const InfoRow = ({ icon, label, value }: InfoRowProps) => (
       <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-zinc-600">
         {label}
       </p>
+
       <p className="mt-1 break-words text-sm font-medium text-zinc-200">
         {value}
       </p>
@@ -770,6 +908,7 @@ const InfoRow = ({ icon, label, value }: InfoRowProps) => (
 
 type TextBlockProps = {
   label: string;
+
   value: string;
 };
 
@@ -778,14 +917,18 @@ const TextBlock = ({ label, value }: TextBlockProps) => (
     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-200/60">
       {label}
     </p>
+
     <p className="mt-3 text-sm leading-7 text-zinc-400">{value}</p>
   </div>
 );
 
 type LinkCardProps = {
   icon: React.ReactNode;
+
   label: string;
+
   description: string;
+
   href: string;
 };
 
@@ -802,6 +945,7 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
 
     <div className="min-w-0 flex-1">
       <p className="text-xs font-medium text-zinc-500">{label}</p>
+
       <p className="mt-1 truncate text-sm font-medium text-blue-300 transition-colors group-hover:text-blue-200">
         {description}
       </p>
@@ -813,27 +957,39 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
 
 type DocumentCardProps = {
   name: string;
+
   href: string;
+
   /** Pass the file URL for image types to render a real thumbnail. */
+
   thumbnailUrl?: string | null;
+
   primary?: boolean;
+
   /** Called when the preview (eye) button is clicked. */
+
   onPreview?: () => void;
 };
 
 const DocumentCard = ({
   name,
+
   href,
+
   thumbnailUrl,
+
   primary = false,
+
   onPreview,
 }: DocumentCardProps) => {
   const meta = getFileMeta(name);
+
   const previewable = isPreviewable(name);
 
   return (
     <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
       {/* File logo: clean thumbnail for images, white file-type icon otherwise */}
+
       {meta.image && thumbnailUrl ? (
         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
           <img
@@ -854,11 +1010,14 @@ const DocumentCard = ({
           <p className="truncate text-sm font-medium text-zinc-200">{name}</p>
 
           {/* type chip */}
+
           <span
             className="rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
             style={{
               color: meta.color,
+
               background: hex(meta.color, 0.12),
+
               border: `1px solid ${hex(meta.color, 0.25)}`,
             }}
           >
@@ -871,12 +1030,14 @@ const DocumentCard = ({
             </span>
           )}
         </div>
+
         <p className="mt-1 text-xs text-zinc-600">
           {meta.image ? "Image" : `${meta.label} document`}
         </p>
       </div>
 
       {/* Actions — preview (eye) before download */}
+
       <div className="flex shrink-0 items-center gap-1.5">
         {onPreview && previewable && (
           <button
@@ -909,80 +1070,110 @@ type EmptyStateProps = {
 const EmptyState = ({ text }: EmptyStateProps) => (
   <div className="rounded-xl border border-dashed border-white/10 bg-black/10 px-5 py-8 text-center">
     <FileText className="mx-auto h-6 w-6 text-zinc-600" />
+
     <p className="mt-2 text-sm text-zinc-500">{text}</p>
   </div>
 );
 
 /* ================================================================
+
    FILE PREVIEW MODAL
+
    Lightbox for previewing a document.
+
    - Images render full-size straight from the URL.
+
    - PDFs are fetched into a same-origin blob: URL and shown in an
+
      iframe. A remote PDF URL often won't render inline because the
+
      host sends `Content-Disposition: attachment` (forces a download)
+
      or blocks framing (X-Frame-Options / CSP). A blob: URL sidesteps
+
      both. If the fetch fails (e.g. CORS), we show a fallback with an
+
      "open in new tab" link.
+
    Closes on backdrop click or Escape.
+
 ================================================================ */
 
 type FilePreviewModalProps = {
   name: string;
+
   url: string;
+
   onClose: () => void;
 };
 
 const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
   const meta = getFileMeta(name);
+
   const isPdf = name.toLowerCase().endsWith(".pdf");
 
   // PDF is streamed into a blob: URL so the iframe can always render it.
+
   const [pdfSrc, setPdfSrc] = useState<string | null>(null);
+
   const [isPdfLoading, setIsPdfLoading] = useState(isPdf);
+
   const [pdfError, setPdfError] = useState(false);
 
   // Lock scroll + close on Escape.
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
+
     document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
+
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.body.style.overflow = previousOverflow;
+
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
 
   // Fetch the PDF as a blob URL (images render fine from the direct URL).
+
   useEffect(() => {
     if (!isPdf) return;
 
     let objectUrl: string | null = null;
+
     let cancelled = false;
 
     const loadPdf = async () => {
       setIsPdfLoading(true);
+
       setPdfError(false);
 
       try {
         const response = await fetch(url);
+
         if (!response.ok) throw new Error(`Request failed: ${response.status}`);
 
         const blob = await response.blob();
+
         // Tag the blob as a PDF so the browser opens its viewer.
+
         const pdfBlob =
           blob.type === "application/pdf"
             ? blob
             : new Blob([blob], { type: "application/pdf" });
 
         objectUrl = window.URL.createObjectURL(pdfBlob);
+
         if (!cancelled) setPdfSrc(objectUrl);
       } catch (error) {
         console.error("Failed to load PDF preview:", error);
+
         if (!cancelled) setPdfError(true);
       } finally {
         if (!cancelled) setIsPdfLoading(false);
@@ -993,6 +1184,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
 
     return () => {
       cancelled = true;
+
       if (objectUrl) window.URL.revokeObjectURL(objectUrl);
     };
   }, [isPdf, url]);
@@ -1011,9 +1203,11 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
         className="relative flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0E1A] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10"
       >
         {/* Top gradient accent line */}
+
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
 
         {/* Header */}
+
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-4">
           <div className="flex min-w-0 items-center gap-3">
             <FileTypeIcon
@@ -1028,6 +1222,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
               >
                 {name}
               </p>
+
               <p className="mt-0.5 text-xs text-zinc-500">
                 {meta.image ? "Image" : `${meta.label} document`}
               </p>
@@ -1045,6 +1240,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
         </header>
 
         {/* Body */}
+
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[#07080C] p-4">
           {meta.image ? (
             <img
@@ -1056,6 +1252,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
             isPdfLoading ? (
               <div className="flex h-[70vh] w-full flex-col items-center justify-center gap-3">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+
                 <p className="text-sm text-zinc-500">Loading preview…</p>
               </div>
             ) : pdfError ? (
@@ -1066,8 +1263,9 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
                 />
 
                 <p className="text-sm font-medium text-white">
-                  Couldn&apos;t load the preview
+                  Couldn't load the preview
                 </p>
+
                 <p className="max-w-sm text-xs text-zinc-500">
                   The file host may be blocking inline previews. You can still
                   open it in a new tab.
@@ -1098,7 +1296,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
               />
 
               <p className="text-sm font-medium text-white">
-                Preview isn&apos;t available for this file type
+                Preview isn't available for this file type
               </p>
             </div>
           )}
