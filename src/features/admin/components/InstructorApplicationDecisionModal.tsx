@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, X, XCircle } from "lucide-react";
+import { z } from "zod";
 
 export type ApplicationDecision = "approved" | "rejected";
 
@@ -10,6 +11,14 @@ interface InstructorApplicationDecisionModalProps {
   onClose: () => void;
   onConfirm: (message: string) => void;
 }
+
+const applicationDecisionSchema = z.object({
+  message: z
+    .string()
+    .trim()
+    .min(10, "Message must be at least 10 characters.")
+    .max(2000, "Message cannot exceed 2000 characters."),
+});
 
 const DEFAULT_APPROVAL_MESSAGE =
   "Congratulations! Your application has been approved. Welcome to our team of instructors. We look forward to having you share your knowledge and help learners grow.";
@@ -25,6 +34,7 @@ const InstructorApplicationDecisionModal = ({
   const [message, setMessage] = useState(
     isApproval ? DEFAULT_APPROVAL_MESSAGE : "",
   );
+  const [messageError, setMessageError] = useState("");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -46,6 +56,32 @@ const InstructorApplicationDecisionModal = ({
 
   const trimmedMessage = message.trim();
   const DecisionIcon = isApproval ? CheckCircle2 : XCircle;
+
+  const handleMessageChange = (value: string) => {
+    setMessage(value);
+
+    if (messageError) {
+      const result = applicationDecisionSchema.safeParse({
+        message: value,
+      });
+
+      setMessageError(result.success ? "" : result.error.issues[0].message);
+    }
+  };
+
+  const handleConfirm = () => {
+    const result = applicationDecisionSchema.safeParse({
+      message,
+    });
+
+    if (!result.success) {
+      setMessageError(result.error.issues[0].message);
+      return;
+    }
+
+    setMessageError("");
+    onConfirm(result.data.message);
+  };
 
   return createPortal(
     <div
@@ -187,26 +223,49 @@ const InstructorApplicationDecisionModal = ({
             <textarea
               id="application-admin-message"
               value={message}
-              onChange={(event) => setMessage(event.target.value)}
+              onChange={(event) => handleMessageChange(event.target.value)}
               rows={5}
               maxLength={2000}
               required
               disabled={isSubmitting}
+              aria-invalid={Boolean(messageError)}
+              aria-describedby={
+                messageError
+                  ? "application-admin-message-error"
+                  : "application-admin-message-help"
+              }
               placeholder={
                 isApproval
                   ? "Write an approval message for the applicant..."
                   : "Explain why this application is being rejected..."
               }
-              className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm leading-6 text-white outline-none transition-all duration-200 placeholder:text-white/25 hover:border-white/[0.12] focus:border-[#34D399]/40 focus:ring-2 focus:ring-[#34D399]/[0.08] disabled:cursor-not-allowed disabled:opacity-50"
+              className={`w-full resize-none rounded-xl border bg-white/[0.025] px-4 py-3 text-sm leading-6 text-white outline-none transition-all duration-200 placeholder:text-white/25 hover:border-white/[0.12] focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                messageError
+                  ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/[0.08]"
+                  : "border-white/[0.08] focus:border-[#34D399]/40 focus:ring-[#34D399]/[0.08]"
+              }`}
             />
 
-            <div className="mt-2 flex items-center justify-between gap-3">
-              <p className="text-xs text-white/35">
+            {messageError ? (
+              <p
+                id="application-admin-message-error"
+                role="alert"
+                className="mt-2 text-xs text-red-400"
+              >
+                {messageError}
+              </p>
+            ) : (
+              <p
+                id="application-admin-message-help"
+                className="mt-2 text-xs text-white/35"
+              >
                 {trimmedMessage
                   ? "Message will be saved with the decision."
                   : "A message is required."}
               </p>
+            )}
 
+            <div className="mt-2 flex justify-end">
               <span className="shrink-0 text-xs tabular-nums text-white/30">
                 {message.length}/2000
               </span>
@@ -226,8 +285,10 @@ const InstructorApplicationDecisionModal = ({
 
             <button
               type="button"
-              disabled={!trimmedMessage || isSubmitting}
-              onClick={() => onConfirm(trimmedMessage)}
+              disabled={
+                isSubmitting || (decision === "rejected" && !trimmedMessage)
+              }
+              onClick={handleConfirm}
               aria-label={
                 isSubmitting
                   ? isApproval
