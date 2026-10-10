@@ -4,6 +4,10 @@ import { createPortal } from "react-dom";
 
 import { useNavigate, useParams } from "react-router-dom";
 
+import InstructorApplicationDecisionModal, {
+  type ApplicationDecision,
+} from "../components/InstructorApplicationDecisionModal";
+
 import {
   getAdminInstructorApplicationDetail,
   approveAdminInstructorApplication,
@@ -461,99 +465,63 @@ const InstructorApplicationAdminDetailPage = () => {
 
   const [status, setStatus] = useState<ApplicationStatus>("pending");
 
-  const handleApproveApplication = async () => {
-    if (!application) return;
+  const [decisionModal, setDecisionModal] =
+    useState<ApplicationDecision | null>(null);
 
-    const enteredMessage = window.prompt(
-      "Enter an approval message for this instructor application:",
-    );
+  const [isSubmittingDecision, setIsSubmittingDecision] = useState(false);
 
-    if (enteredMessage === null) return;
-
-    const adminMessage = enteredMessage.trim();
-
-    if (!adminMessage) {
-      window.alert("Please enter an approval message.");
-
-      return;
-    }
-
-    try {
-      const response = await approveAdminInstructorApplication(
-        application.id,
-
-        adminMessage,
-      );
-
-      setStatus(response.status);
-
-      setApplication((currentApplication) =>
-        currentApplication
-          ? {
-              ...currentApplication,
-
-              status: response.status,
-
-              admin_message: response.admin_message,
-
-              reviewed_at: response.reviewed_at,
-            }
-          : currentApplication,
-      );
-    } catch (error) {
-      console.error("Failed to approve instructor application:", error);
-
-      window.alert(
-        "Could not approve this instructor application. Please try again.",
-      );
-    }
+  const handleApproveApplication = () => {
+    if (!application || status !== "pending") return;
+    setDecisionModal("approved");
   };
 
-  const handleRejectApplication = async () => {
-    if (!application) return;
+  const handleRejectApplication = () => {
+    if (!application || status !== "pending") return;
+    setDecisionModal("rejected");
+  };
 
-    const enteredMessage = window.prompt(
-      "Enter the reason for rejecting this instructor application:",
-    );
+  const handleConfirmDecision = async (adminMessage: string) => {
+    if (!application || !decisionModal) return;
 
-    if (enteredMessage === null) return;
+    const trimmedMessage = adminMessage.trim();
+    if (!trimmedMessage) return;
 
-    const adminMessage = enteredMessage.trim();
-
-    if (!adminMessage) {
-      window.alert("Please enter a rejection reason.");
-
-      return;
-    }
+    setIsSubmittingDecision(true);
 
     try {
-      const response = await rejectAdminInstructorApplication(
-        application.id,
-
-        adminMessage,
-      );
+      const response =
+        decisionModal === "approved"
+          ? await approveAdminInstructorApplication(
+              application.id,
+              trimmedMessage,
+            )
+          : await rejectAdminInstructorApplication(
+              application.id,
+              trimmedMessage,
+            );
 
       setStatus(response.status);
-
       setApplication((currentApplication) =>
         currentApplication
           ? {
               ...currentApplication,
-
               status: response.status,
-
               admin_message: response.admin_message,
-
               reviewed_at: response.reviewed_at,
             }
           : currentApplication,
       );
+      setDecisionModal(null);
     } catch (error) {
-      console.error("Failed to reject instructor application:", error);
-
-      window.alert(
-        "Could not reject this instructor application. Please try again.",
+      console.error(
+        `Failed to ${decisionModal === "approved" ? "approve" : "reject"} instructor application:`,
+        error,
       );
+      window.alert(
+        `Could not ${decisionModal === "approved" ? "approve" : "reject"} this instructor application. Please try again.`,
+      );
+    } finally {
+      setIsSubmittingDecision(false);
     }
   };
 
@@ -1106,6 +1074,19 @@ const InstructorApplicationAdminDetailPage = () => {
       {/* File Preview Lightbox — portaled to <body> so it covers the whole
 
           viewport on top of everything, never clipped by the admin layout */}
+
+      {decisionModal &&
+        createPortal(
+          <InstructorApplicationDecisionModal
+            decision={decisionModal}
+            isSubmitting={isSubmittingDecision}
+            onClose={() => {
+              if (!isSubmittingDecision) setDecisionModal(null);
+            }}
+            onConfirm={handleConfirmDecision}
+          />,
+          document.body,
+        )}
 
       {previewFile && (
         <FilePreviewModal
