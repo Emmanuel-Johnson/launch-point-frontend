@@ -538,10 +538,15 @@ const CategoryListPage = () => {
                           onClick={() =>
                             navigate(`/admin/categories/${category.id}`)
                           }
-                          className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
+                          className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04]"
                         >
                           {/* Category */}
-                          <td className="px-6 py-4">
+                          <td className="relative px-6 py-4">
+                            <span
+                              aria-hidden="true"
+                              className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-[#34D399] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                            />
+
                             <div className="flex items-center gap-3">
                               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                                 <Tags className="h-5 w-5" strokeWidth={1.8} />
