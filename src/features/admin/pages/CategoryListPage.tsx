@@ -561,7 +561,7 @@ const CategoryListPage = () => {
                                 </p>
 
                                 <p className="mt-0.5 text-xs tabular-nums text-white/35">
-                                  ID #{category.id}
+                                  ID: {category.id}
                                 </p>
                               </div>
                             </div>

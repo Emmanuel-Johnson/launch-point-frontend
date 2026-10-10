@@ -1,6 +1,5 @@
 import {
   ArrowUpRight,
-  Briefcase,
   CalendarDays,
   CheckCircle2,
   ChevronLeft,
@@ -491,7 +490,7 @@ const InstructorApplicationAdminListPage = () => {
                     </th>
 
                     <th className="w-[22%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Occupation
+                      Email
                     </th>
 
                     <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
@@ -555,24 +554,22 @@ const InstructorApplicationAdminListPage = () => {
 
                               <p
                                 className="mt-0.5 truncate text-xs text-white/35"
-                                title={application.email}
+                                title={`Application ID: ${application.id}`}
                               >
-                                {truncateText(application.email)}
+                                ID: {application.id}
                               </p>
                             </div>
                           </div>
                         </td>
 
-                        {/* Occupation */}
+                        {/* Email */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-sm text-white/60">
-                            <Briefcase className="h-4 w-4 shrink-0 text-white/30" />
-
                             <span
                               className="truncate"
-                              title={application.occupation}
+                              title={application.email}
                             >
-                              {application.occupation}
+                              {application.email}
                             </span>
                           </div>
                         </td>
