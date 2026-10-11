@@ -733,7 +733,7 @@ const InstructorApplicationAdminDetailPage = () => {
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/45">
                 <span className="inline-flex items-center gap-1.5">
                   <FileText size={14} />
-                  Application #{application.id}
+                  Application ID: {application.id}
                 </span>
 
                 <span className="inline-flex items-center gap-1.5">

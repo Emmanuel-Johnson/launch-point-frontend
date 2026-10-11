@@ -509,7 +509,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 <span className="h-3 w-px bg-blue-300/20" />
 
                 <span className="font-mono text-xs font-medium text-blue-300">
-                  \#{String(application.id).padStart(2, "0")}
+                  ID: {String(application.id).padStart(2, "0")}
                 </span>
               </div>
             </nav>
