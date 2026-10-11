@@ -358,9 +358,12 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                       setIsProfileOpen(false);
 
                       if (canSwitchToInstructor) {
-                        toast.success("Welcome to your Instructor Dashboard!", {
-                          containerId: "instructor",
-                        });
+                        toast.success(
+                          "Switched to your Instructor Dashboard!",
+                          {
+                            containerId: "instructor",
+                          },
+                        );
 
                         navigate("/instructor/dashboard");
                       } else {

@@ -58,7 +58,9 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
   const handleSwitchToStudent = () => {
     setIsProfileOpen(false);
 
-    toast.success("Welcome to your Student Dashboard!");
+    toast.success(
+      "Switched to your Student Dashboard. Keep learning and growing!",
+    );
 
     navigate("/student/dashboard");
   };
