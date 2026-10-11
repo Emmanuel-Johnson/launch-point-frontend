@@ -36,6 +36,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 /*
 
@@ -501,6 +502,15 @@ const InstructorApplicationAdminDetailPage = () => {
             );
 
       setStatus(response.status);
+      if (response.status === "approved") {
+        toast.success("Instructor application approved successfully.", {
+          containerId: "admin",
+        });
+      } else if (response.status === "rejected") {
+        toast.success("Instructor application rejected successfully.", {
+          containerId: "admin",
+        });
+      }
       setApplication((currentApplication) =>
         currentApplication
           ? {
@@ -512,13 +522,19 @@ const InstructorApplicationAdminDetailPage = () => {
           : currentApplication,
       );
       setDecisionModal(null);
+      navigate("/admin/applications/instructors");
     } catch (error) {
       console.error(
         `Failed to ${decisionModal === "approved" ? "approve" : "reject"} instructor application:`,
         error,
       );
-      window.alert(
-        `Could not ${decisionModal === "approved" ? "approve" : "reject"} this instructor application. Please try again.`,
+      toast.error(
+        `Could not ${
+          decisionModal === "approved" ? "approve" : "reject"
+        } this instructor application. Please try again.`,
+        {
+          containerId: "admin",
+        },
       );
     } finally {
       setIsSubmittingDecision(false);
