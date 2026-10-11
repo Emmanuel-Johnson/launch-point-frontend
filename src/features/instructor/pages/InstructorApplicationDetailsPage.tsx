@@ -29,6 +29,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   getInstructorApplication,
+  getInstructorApplications,
   markInstructorDashboardAsOpened,
   type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
@@ -355,6 +356,9 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
 
+  // Apply Again is available only when this is the user's latest application.
+  const [isLatestApplication, setIsLatestApplication] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState<string | null>(null);
@@ -374,10 +378,22 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
     const fetchApplication = async () => {
       try {
-        const data = await getInstructorApplication(Number(applicationId));
+        const [data, applications] = await Promise.all([
+          getInstructorApplication(Number(applicationId)),
+          getInstructorApplications(),
+        ]);
+
+        // Sort by submission time so the newest application is identified
+        // even if the list API's ordering changes.
+        const latestApplication = [...applications].sort(
+          (a, b) =>
+            new Date(b.submitted_at).getTime() -
+            new Date(a.submitted_at).getTime(),
+        )[0];
 
         if (!cancelled) {
           setApplication(data);
+          setIsLatestApplication(latestApplication?.id === data.id);
         }
       } catch (error) {
         console.error("Failed to fetch instructor application:", error);
@@ -529,7 +545,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 </button>
               )}
 
-            {application.status === "rejected" && (
+            {application.status === "rejected" && isLatestApplication && (
               <button
                 type="button"
                 onClick={() => openApplication(application)}
