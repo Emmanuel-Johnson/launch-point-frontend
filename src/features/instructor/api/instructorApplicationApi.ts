@@ -54,6 +54,7 @@ export interface InstructorApplication {
   categories: string[];
   submitted_at: string;
   status: "pending" | "approved" | "rejected";
+  is_dashboard_opened: boolean;
 }
 
 export const getInstructorApplications = async (): Promise<
@@ -69,6 +70,7 @@ export const getInstructorApplications = async (): Promise<
 export interface InstructorApplicationDetail {
   id: number;
   status: "pending" | "approved" | "rejected";
+  is_dashboard_opened: boolean;
   full_name: string;
   email: string;
   phone_number: string;
@@ -102,4 +104,8 @@ export const getInstructorApplication = async (
   );
 
   return response.data;
+};
+
+export const markInstructorDashboardAsOpened = async (): Promise<void> => {
+  await api.post("/instructors/dashboard/opened/");
 };

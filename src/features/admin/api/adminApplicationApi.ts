@@ -81,3 +81,22 @@ export const rejectAdminInstructorApplication = async (
 
   return response.data;
 };
+
+export interface ApproveInstructorApplicationResponse {
+  message: string;
+  status: ApplicationStatus;
+  admin_message: string | null;
+  reviewed_at: string | null;
+}
+
+export const approveAdminInstructorApplication = async (
+  applicationId: number,
+  adminMessage: string,
+): Promise<ApproveInstructorApplicationResponse> => {
+  const response = await api.post<ApproveInstructorApplicationResponse>(
+    `/admins/instructor-applications/${applicationId}/approve/`,
+    { admin_message: adminMessage },
+  );
+
+  return response.data;
+};
