@@ -594,6 +594,11 @@ const initialApplicationForm: ApplicationForm = {
   terms_accepted: false,
 };
 
+type ExistingApplicationFile = {
+  name: string;
+  url: string;
+};
+
 type InstructorApplicationModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -617,10 +622,15 @@ const InstructorApplicationModal = ({
     [],
   );
   const [resume, setResume] = useState<File | null>(null);
+  const [existingResume, setExistingResume] =
+    useState<ExistingApplicationFile | null>(null);
   const [resumeError, setResumeError] = useState("");
   const [isDraggingResume, setIsDraggingResume] = useState(false);
 
   const [supportingFiles, setSupportingFiles] = useState<File[]>([]);
+  const [existingSupportingFiles, setExistingSupportingFiles] = useState<
+    (ExistingApplicationFile & { id: number })[]
+  >([]);
   const [supportingFilesError, setSupportingFilesError] = useState("");
   const [isDraggingSupporting, setIsDraggingSupporting] = useState(false);
 
@@ -657,6 +667,26 @@ const InstructorApplicationModal = ({
           await getInstructorApplicationFormData();
 
         setCategories(data.categories);
+
+        // Keep the rejected application's saved documents visible in the
+        // retry form. Browser file inputs cannot be populated programmatically.
+        setExistingResume(
+          initialApplication?.resume_url
+            ? {
+                name: initialApplication.resume_name || "Existing resume.pdf",
+                url: initialApplication.resume_url,
+              }
+            : null,
+        );
+        setExistingSupportingFiles(
+          (initialApplication?.supporting_files ?? []).map((file) => ({
+            id: file.id,
+            name: file.name,
+            url: file.url,
+          })),
+        );
+        setResume(null);
+        setSupportingFiles([]);
 
         // Start from the user's current profile, then override it with the
         // rejected application being retried so the form matches its details.
@@ -836,6 +866,7 @@ const InstructorApplicationModal = ({
     }
 
     setResume(file);
+    setExistingResume(null);
     setValidationErrors((previous) => {
       const next = { ...previous };
       delete next.resume;
@@ -859,8 +890,13 @@ const InstructorApplicationModal = ({
     const maxFileSize = 5 * 1024 * 1024;
 
     // Check total file count
-    if (supportingFiles.length + selectedFiles.length > 10) {
-      const message = `You can upload up to 10 supporting files. You already selected ${supportingFiles.length}.`;
+    if (
+      existingSupportingFiles.length +
+        supportingFiles.length +
+        selectedFiles.length >
+      10
+    ) {
+      const message = `You can upload up to 10 supporting files. You already have ${existingSupportingFiles.length + supportingFiles.length}.`;
       setSupportingFilesError(message);
       setValidationErrors((previous) => ({
         ...previous,
@@ -891,10 +927,20 @@ const InstructorApplicationModal = ({
           (existingFile) =>
             existingFile.name === newFile.name &&
             existingFile.size === newFile.size,
+        ) &&
+        !existingSupportingFiles.some(
+          (existingFile) => existingFile.name === newFile.name,
         ),
     );
 
     setSupportingFiles((previous) => [...previous, ...newFiles]);
+  };
+
+  const removeExistingSupportingFile = (fileId: number) => {
+    setExistingSupportingFiles((previous) =>
+      previous.filter((file) => file.id !== fileId),
+    );
+    setSupportingFilesError("");
   };
 
   const removeSupportingFile = (fileName: string) => {
@@ -918,9 +964,11 @@ const InstructorApplicationModal = ({
     setProfileImageError("");
 
     setResume(null);
+    setExistingResume(null);
     setResumeError("");
 
     setSupportingFiles([]);
+    setExistingSupportingFiles([]);
     setSupportingFilesError("");
 
     setPreviewFile(null);
@@ -958,14 +1006,17 @@ const InstructorApplicationModal = ({
       nextErrors.categories = "You can select up to 10 categories.";
     }
 
-    if (!resume) {
+    if (!resume && !existingResume) {
       nextErrors.resume = "Please upload your resume.";
     }
 
-    if (supportingFiles.length < 3) {
+    const totalSupportingFiles =
+      existingSupportingFiles.length + supportingFiles.length;
+
+    if (totalSupportingFiles < 3) {
       nextErrors.supporting_files =
         "Please upload at least 3 supporting files.";
-    } else if (supportingFiles.length > 10) {
+    } else if (totalSupportingFiles > 10) {
       nextErrors.supporting_files = "You can upload up to 10 supporting files.";
     }
 
@@ -1000,7 +1051,7 @@ const InstructorApplicationModal = ({
       }
 
       // 3. Resume
-      if (!resume) {
+      if (!resume && !existingResume) {
         document.getElementById("resume-section")?.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -1010,7 +1061,7 @@ const InstructorApplicationModal = ({
       }
 
       // 4. Supporting files
-      if (supportingFiles.length < 3) {
+      if (existingSupportingFiles.length + supportingFiles.length < 3) {
         document.getElementById("supporting-files-section")?.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -1064,7 +1115,42 @@ const InstructorApplicationModal = ({
         formData.append("profile_image", profileImageFile);
       }
 
-      formData.append("resume", resume!);
+      // Reuse existing server-side files by downloading their bytes and
+      // attaching them to the new application request. This does not attempt
+      // to set the browser's file input value.
+      if (resume) {
+        formData.append("resume", resume);
+      } else if (existingResume) {
+        const response = await fetch(existingResume.url);
+        if (!response.ok) {
+          throw new Error(
+            `Unable to load existing resume (${response.status}). Please upload it again.`,
+          );
+        }
+        const blob = await response.blob();
+        formData.append(
+          "resume",
+          new File([blob], existingResume.name, {
+            type: blob.type || "application/pdf",
+          }),
+        );
+      }
+
+      for (const existingFile of existingSupportingFiles) {
+        const response = await fetch(existingFile.url);
+        if (!response.ok) {
+          throw new Error(
+            `Unable to load existing file "${existingFile.name}" (${response.status}). Please upload it again.`,
+          );
+        }
+        const blob = await response.blob();
+        formData.append(
+          "supporting_files",
+          new File([blob], existingFile.name, {
+            type: blob.type || "application/octet-stream",
+          }),
+        );
+      }
 
       supportingFiles.forEach((file) => {
         formData.append("supporting_files", file);
@@ -1730,14 +1816,53 @@ const InstructorApplicationModal = ({
 
                       <span
                         className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-                          resume
+                          resume || existingResume
                             ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
                             : "border-blue-400/20 bg-blue-500/10 text-blue-200"
                         }`}
                       >
-                        {resume ? "Attached" : "Required"}
+                        {resume || existingResume ? "Attached" : "Required"}
                       </span>
                     </div>
+
+                    {existingResume && !resume && (
+                      <div className="mt-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.04] p-4">
+                        <div className="flex items-center gap-4">
+                          <FileTypeIcon
+                            meta={getFileMeta(existingResume.name)}
+                            className="h-14 w-11 shrink-0"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p
+                              className="truncate text-sm font-medium text-white"
+                              title={existingResume.name}
+                            >
+                              {existingResume.name}
+                            </p>
+                            <p className="mt-1 text-xs text-emerald-300">
+                              Existing resume from your previous application
+                            </p>
+                            <a
+                              href={existingResume.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="mt-2 inline-flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
+                            >
+                              View existing resume{" "}
+                              <Eye className="h-3.5 w-3.5" />
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setExistingResume(null)}
+                            aria-label="Remove existing resume"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     {resume ? (
                       /* Selected resume */
@@ -1926,17 +2051,22 @@ const InstructorApplicationModal = ({
 
                       <span
                         className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-                          supportingFiles.length >= 3
+                          existingSupportingFiles.length +
+                            supportingFiles.length >=
+                          3
                             ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300"
                             : "border-blue-400/20 bg-blue-500/10 text-blue-200"
                         }`}
                       >
-                        {supportingFiles.length}/10 files
+                        {existingSupportingFiles.length +
+                          supportingFiles.length}
+                        /10 files
                       </span>
                     </div>
 
                     {/* Drop zone — hidden once the limit is reached */}
-                    {supportingFiles.length < 10 && (
+                    {existingSupportingFiles.length + supportingFiles.length <
+                      10 && (
                       <div
                         onDragOver={(event) => {
                           event.preventDefault();
@@ -2016,6 +2146,52 @@ const InstructorApplicationModal = ({
                       <p className="mt-2 text-xs text-rose-300">
                         {supportingFilesError}
                       </p>
+                    )}
+
+                    {/* Files retained from the rejected application */}
+                    {existingSupportingFiles.length > 0 && (
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        {existingSupportingFiles.map((file) => (
+                          <div
+                            key={`existing-${file.id}`}
+                            className="flex min-w-0 items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.035] p-4"
+                          >
+                            <FileTypeIcon
+                              meta={getFileMeta(file.name)}
+                              className="h-11 w-9 shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p
+                                className="truncate text-sm font-medium text-white"
+                                title={file.name}
+                              >
+                                {file.name}
+                              </p>
+                              <p className="mt-1 text-xs text-emerald-300">
+                                Existing file
+                              </p>
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-2 inline-flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
+                              >
+                                View file <Eye className="h-3.5 w-3.5" />
+                              </a>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeExistingSupportingFile(file.id)
+                              }
+                              aria-label={`Remove ${file.name}`}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     )}
 
                     {/* Selected files — resume-style cards in a responsive grid */}
