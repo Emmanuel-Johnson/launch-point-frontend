@@ -7,6 +7,7 @@ import {
   getInstructorApplicationFormData,
   type InstructorApplicationCategory,
   type InstructorApplicationFormData,
+  type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
 
 import {
@@ -596,11 +597,13 @@ const initialApplicationForm: ApplicationForm = {
 type InstructorApplicationModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  initialApplication?: InstructorApplicationDetail | null;
 };
 
 const InstructorApplicationModal = ({
   isOpen,
   onClose,
+  initialApplication = null,
 }: InstructorApplicationModalProps) => {
   const navigate = useNavigate();
 
@@ -653,24 +656,61 @@ const InstructorApplicationModal = ({
         const data: InstructorApplicationFormData =
           await getInstructorApplicationFormData();
 
-        setForm((previous) => ({
-          ...previous,
-          full_name: data.user.full_name ?? "",
-          email: data.user.email ?? "",
-          profile_image:
-            data.user.profile_image === DEFAULT_PROFILE_IMAGE
-              ? null
-              : (data.user.profile_image ?? null),
-          occupation: data.user.occupation ?? "",
-          education: data.user.education ?? "",
-          location: data.user.location ?? "",
-          github_url: data.user.github_url ?? "",
-          linkedin_url: data.user.linkedin_url ?? "",
-          portfolio_url: data.user.portfolio_url ?? "",
-        }));
-
-        // This was missing
         setCategories(data.categories);
+
+        // Start from the user's current profile, then override it with the
+        // rejected application being retried so the form matches its details.
+        setForm((previous) => {
+          const profileDefaults: ApplicationForm = {
+            ...initialApplicationForm,
+            full_name: data.user.full_name ?? "",
+            email: data.user.email ?? "",
+            profile_image:
+              data.user.profile_image === DEFAULT_PROFILE_IMAGE
+                ? null
+                : (data.user.profile_image ?? null),
+            occupation: data.user.occupation ?? "",
+            education: data.user.education ?? "",
+            location: data.user.location ?? "",
+            github_url: data.user.github_url ?? "",
+            linkedin_url: data.user.linkedin_url ?? "",
+            portfolio_url: data.user.portfolio_url ?? "",
+          };
+
+          if (!initialApplication) return { ...previous, ...profileDefaults };
+
+          const selectedCategoryIds = data.categories
+            .filter((category) =>
+              initialApplication.categories_to_teach.includes(category.name),
+            )
+            .map((category) => category.id);
+
+          return {
+            ...profileDefaults,
+            full_name:
+              initialApplication.full_name ?? profileDefaults.full_name,
+            email: initialApplication.email ?? profileDefaults.email,
+            profile_image:
+              initialApplication.profile_image ?? profileDefaults.profile_image,
+            occupation:
+              initialApplication.occupation ?? profileDefaults.occupation,
+            education:
+              initialApplication.education ?? profileDefaults.education,
+            years_of_experience: initialApplication.years_of_experience ?? "",
+            categories_to_teach: selectedCategoryIds,
+            professional_bio: initialApplication.professional_bio ?? "",
+            phone_number: initialApplication.phone_number ?? "",
+            location: initialApplication.location ?? profileDefaults.location,
+            linkedin_url:
+              initialApplication.linkedin_url ?? profileDefaults.linkedin_url,
+            github_url:
+              initialApplication.github_url ?? profileDefaults.github_url,
+            portfolio_url:
+              initialApplication.portfolio_url ?? profileDefaults.portfolio_url,
+            motivation: initialApplication.motivation ?? "",
+            terms_accepted: false,
+          };
+        });
       } catch (error) {
         console.error(
           "Failed to load instructor application form data:",
@@ -691,7 +731,7 @@ const InstructorApplicationModal = ({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, initialApplication]);
 
   if (!isOpen) return null;
 
@@ -1083,7 +1123,9 @@ const InstructorApplicationModal = ({
 
   const profileImageUrl =
     form.profile_image && form.profile_image !== DEFAULT_PROFILE_IMAGE
-      ? `http://localhost:8000${form.profile_image}`
+      ? form.profile_image.startsWith("http")
+        ? form.profile_image
+        : `http://localhost:8000${form.profile_image}`
       : null;
 
   return (
@@ -1152,23 +1194,69 @@ const InstructorApplicationModal = ({
 
                   void getInstructorApplicationFormData()
                     .then((data) => {
-                      setForm((previous) => ({
-                        ...previous,
-                        full_name: data.user.full_name ?? "",
-                        email: data.user.email ?? "",
-                        profile_image:
-                          data.user.profile_image === DEFAULT_PROFILE_IMAGE
-                            ? null
-                            : (data.user.profile_image ?? null),
-                        occupation: data.user.occupation ?? "",
-                        education: data.user.education ?? "",
-                        location: data.user.location ?? "",
-                        github_url: data.user.github_url ?? "",
-                        linkedin_url: data.user.linkedin_url ?? "",
-                        portfolio_url: data.user.portfolio_url ?? "",
-                      }));
-
                       setCategories(data.categories);
+                      setForm((previous) => {
+                        const profileDefaults: ApplicationForm = {
+                          ...initialApplicationForm,
+                          full_name: data.user.full_name ?? "",
+                          email: data.user.email ?? "",
+                          profile_image:
+                            data.user.profile_image === DEFAULT_PROFILE_IMAGE
+                              ? null
+                              : (data.user.profile_image ?? null),
+                          occupation: data.user.occupation ?? "",
+                          education: data.user.education ?? "",
+                          location: data.user.location ?? "",
+                          github_url: data.user.github_url ?? "",
+                          linkedin_url: data.user.linkedin_url ?? "",
+                          portfolio_url: data.user.portfolio_url ?? "",
+                        };
+                        if (!initialApplication)
+                          return { ...previous, ...profileDefaults };
+                        return {
+                          ...profileDefaults,
+                          full_name:
+                            initialApplication.full_name ??
+                            profileDefaults.full_name,
+                          email:
+                            initialApplication.email ?? profileDefaults.email,
+                          profile_image:
+                            initialApplication.profile_image ??
+                            profileDefaults.profile_image,
+                          occupation:
+                            initialApplication.occupation ??
+                            profileDefaults.occupation,
+                          education:
+                            initialApplication.education ??
+                            profileDefaults.education,
+                          years_of_experience:
+                            initialApplication.years_of_experience ?? "",
+                          categories_to_teach: data.categories
+                            .filter((category) =>
+                              initialApplication.categories_to_teach.includes(
+                                category.name,
+                              ),
+                            )
+                            .map((category) => category.id),
+                          professional_bio:
+                            initialApplication.professional_bio ?? "",
+                          phone_number: initialApplication.phone_number ?? "",
+                          location:
+                            initialApplication.location ??
+                            profileDefaults.location,
+                          linkedin_url:
+                            initialApplication.linkedin_url ??
+                            profileDefaults.linkedin_url,
+                          github_url:
+                            initialApplication.github_url ??
+                            profileDefaults.github_url,
+                          portfolio_url:
+                            initialApplication.portfolio_url ??
+                            profileDefaults.portfolio_url,
+                          motivation: initialApplication.motivation ?? "",
+                          terms_accepted: false,
+                        };
+                      });
                     })
                     .catch(() => {
                       setLoadError(

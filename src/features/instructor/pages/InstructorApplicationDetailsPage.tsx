@@ -349,7 +349,8 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
   const [isOpeningDashboard, setIsOpeningDashboard] = useState(false);
 
-  const { refreshApplication } = useOutletContext<InstructorPublicContext>();
+  const { refreshApplication, openApplication } =
+    useOutletContext<InstructorPublicContext>();
 
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
@@ -531,7 +532,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
             {application.status === "rejected" && (
               <button
                 type="button"
-                onClick={() => navigate("/instructor/apply")}
+                onClick={() => openApplication(application)}
                 className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
               >
                 Apply Again

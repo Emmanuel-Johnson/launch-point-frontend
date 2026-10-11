@@ -7,6 +7,7 @@ import InstructorApplicationModal from "../components/InstructorApplicationModal
 import {
   getInstructorApplications,
   type InstructorApplication,
+  type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
 
 /**
@@ -16,7 +17,7 @@ import {
 export type InstructorPublicContext = {
   latestApplication: InstructorApplication | null;
   isApplicationLoading: boolean;
-  openApplication: () => void;
+  openApplication: (application?: InstructorApplicationDetail | null) => void;
   refreshApplication: () => void;
 };
 
@@ -36,6 +37,8 @@ export type InstructorPublicContext = {
  */
 const InstructorPublicLayout = () => {
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+  const [applicationToPrefill, setApplicationToPrefill] =
+    useState<InstructorApplicationDetail | null>(null);
 
   const [latestApplication, setLatestApplication] =
     useState<InstructorApplication | null>(null);
@@ -68,10 +71,16 @@ const InstructorPublicLayout = () => {
     };
   }, [refreshKey]);
 
-  const openApplication = () => setIsApplicationOpen(true);
+  const openApplication = (
+    application?: InstructorApplicationDetail | null,
+  ) => {
+    setApplicationToPrefill(application ?? null);
+    setIsApplicationOpen(true);
+  };
 
   const closeApplication = () => {
     setIsApplicationOpen(false);
+    setApplicationToPrefill(null);
     // Re-sync the header CTA after a submit (silent refresh — no loader flicker).
     setRefreshKey((key) => key + 1);
   };
@@ -101,6 +110,7 @@ const InstructorPublicLayout = () => {
       <InstructorApplicationModal
         isOpen={isApplicationOpen}
         onClose={closeApplication}
+        initialApplication={applicationToPrefill}
       />
     </div>
   );
