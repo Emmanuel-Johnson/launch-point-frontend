@@ -14,94 +14,134 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+
 import { useState } from "react";
+
 import { Link, NavLink, useNavigate } from "react-router-dom";
+
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 interface InstructorSidebarProps {
   isCollapsed: boolean;
+
   onToggle: () => void;
 }
 
 interface NavItem {
   name: string;
+
   path: string;
+
   icon: LucideIcon;
 }
 
 interface NavSection {
   title: string;
+
   items: NavItem[];
 }
 
 /*
+
   BLUE & BLACK THEME (matches the Instructor dashboard)
-  -----------------------------------------------------------------
+
+  \-----------------------------------------------------------------
+
   Rail surface  #0A0A0A   near-black — sits one step above the #000000
+
                           dashboard so the sidebar reads as an elevated
+
                           rail rather than merging into the page.
+
   Primary       #3B82F6   royal blue — the single accent colour
+
   Hover blue    #60A5FA   lighter step for hover states
 
+
+
   The logout action stays red — a semantic destructive signal, intentionally
+
   not folded into the blue palette.
+
 */
+
 const navSections: NavSection[] = [
   {
     title: "Overview",
+
     items: [
       {
         name: "Dashboard",
+
         path: "/instructor/dashboard",
+
         icon: LayoutDashboard,
       },
     ],
   },
+
   {
     title: "Courses",
+
     items: [
       { name: "My Courses", path: "/instructor/courses", icon: BookOpen },
+
       {
         name: "Submissions",
+
         path: "/instructor/submissions",
+
         icon: ClipboardCheck,
       },
     ],
   },
+
   {
     title: "Students",
+
     items: [
       { name: "My Students", path: "/instructor/students", icon: Users },
+
       { name: "Doubts", path: "/instructor/doubts", icon: HelpCircle },
     ],
   },
+
   {
     title: "Community",
+
     items: [
       { name: "Community", path: "/instructor/community", icon: MessageCircle },
+
       { name: "Notifications", path: "/instructor/notifications", icon: Bell },
     ],
   },
+
   {
     title: "Finance",
+
     items: [
       { name: "Revenue", path: "/instructor/revenue", icon: IndianRupee },
+
       { name: "Analytics", path: "/instructor/analytics", icon: LineChart },
     ],
   },
+
   {
     title: "Account",
+
     items: [{ name: "Profile", path: "/instructor/profile", icon: UserRound }],
   },
 ];
 
 const InstructorSidebar = ({
   isCollapsed,
+
   onToggle,
 }: InstructorSidebarProps) => {
   const navigate = useNavigate();
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -113,6 +153,7 @@ const InstructorSidebar = ({
       console.error("Logout failed:", error);
     } finally {
       localStorage.removeItem("access");
+
       localStorage.removeItem("refresh");
 
       navigate("/login", { replace: true });
@@ -122,19 +163,23 @@ const InstructorSidebar = ({
   return (
     <>
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`student-sidebar instructor-sidebar fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
         {/* =====================================================
+
             LOGO / TOGGLE
-        ====================================================== */}
+
+        \====================================================== */}
+
         <div
           className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
           {/* BRAND */}
+
           <Link
             to="/instructor"
             className={`flex min-w-0 items-center transition-all duration-500 ${
@@ -142,6 +187,7 @@ const InstructorSidebar = ({
             }`}
           >
             {/* Logo */}
+
             <div className="group relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg">
               <img
                 src="/instructor_logo.png"
@@ -150,10 +196,12 @@ const InstructorSidebar = ({
               />
 
               {/* Logo Shine */}
+
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </div>
 
             {/* Brand */}
+
             <div
               className={`grid overflow-hidden transition-all duration-500 ease-out ${
                 isCollapsed
@@ -174,6 +222,7 @@ const InstructorSidebar = ({
           </Link>
 
           {/* TOGGLE */}
+
           <button
             type="button"
             onClick={onToggle}
@@ -186,6 +235,7 @@ const InstructorSidebar = ({
             }`}
           >
             {/* Toggle Shine */}
+
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {isCollapsed ? (
@@ -203,8 +253,11 @@ const InstructorSidebar = ({
         </div>
 
         {/* =====================================================
+
             NAVIGATION
-        ====================================================== */}
+
+        \====================================================== */}
+
         <div className="instructor-sidebar-scrollbar min-h-0 flex-1 overflow-y-auto px-3 py-6">
           <nav className="space-y-6">
             {navSections.map((section, sectionIndex) => (
@@ -214,6 +267,7 @@ const InstructorSidebar = ({
                 style={{ animationDelay: `${120 + sectionIndex * 80}ms` }}
               >
                 {/* Section Title */}
+
                 <div
                   className={`mb-2 overflow-hidden transition-all duration-300 ${
                     isCollapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
@@ -225,6 +279,7 @@ const InstructorSidebar = ({
                 </div>
 
                 {/* Items */}
+
                 <div className="space-y-1">
                   {section.items.map((item, itemIndex) => {
                     const Icon = item.icon;
@@ -252,11 +307,13 @@ const InstructorSidebar = ({
                         {({ isActive }) => (
                           <>
                             {/* Shine Effect */}
+
                             {!isActive && (
                               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                             )}
 
                             {/* Active Indicator */}
+
                             <span
                               className={`absolute left-0 rounded-full bg-[#3B82F6] transition-all duration-300 ${
                                 isActive
@@ -266,6 +323,7 @@ const InstructorSidebar = ({
                             />
 
                             {/* Icon */}
+
                             <span
                               className={`relative z-10 shrink-0 transition-all duration-300 ${
                                 isActive
@@ -277,6 +335,7 @@ const InstructorSidebar = ({
                             </span>
 
                             {/* Label */}
+
                             <span
                               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
                                 isCollapsed
@@ -298,8 +357,11 @@ const InstructorSidebar = ({
         </div>
 
         {/* =====================================================
+
             LOGOUT
-        ====================================================== */}
+
+        \====================================================== */}
+
         <div className="shrink-0 border-t border-white/[0.08] p-3">
           <button
             type="button"
@@ -311,15 +373,18 @@ const InstructorSidebar = ({
             }`}
           >
             {/* Logout Shine */}
+
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
+
             <LogOut
               className="relative z-10 h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
               strokeWidth={1.8}
             />
 
             {/* Label */}
+
             <span
               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ${
                 isCollapsed
@@ -334,8 +399,11 @@ const InstructorSidebar = ({
       </aside>
 
       {/* =====================================================
+
           LOGOUT MODAL
-      ====================================================== */}
+
+      \====================================================== */}
+
       <LogoutConfirmModal
         isOpen={showLogoutConfirm}
         isLoading={isLoggingOut}
