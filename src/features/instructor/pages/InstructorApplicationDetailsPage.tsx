@@ -29,9 +29,11 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   getInstructorApplication,
+  getInstructorApplications,
   markInstructorDashboardAsOpened,
   type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
+import { toast } from "react-toastify";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
 
@@ -349,10 +351,14 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
   const [isOpeningDashboard, setIsOpeningDashboard] = useState(false);
 
-  const { refreshApplication } = useOutletContext<InstructorPublicContext>();
+  const { refreshApplication, openApplication } =
+    useOutletContext<InstructorPublicContext>();
 
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
+
+  // Apply Again is available only when this is the user's latest application.
+  const [isLatestApplication, setIsLatestApplication] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -373,10 +379,22 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
     const fetchApplication = async () => {
       try {
-        const data = await getInstructorApplication(Number(applicationId));
+        const [data, applications] = await Promise.all([
+          getInstructorApplication(Number(applicationId)),
+          getInstructorApplications(),
+        ]);
+
+        // Sort by submission time so the newest application is identified
+        // even if the list API's ordering changes.
+        const latestApplication = [...applications].sort(
+          (a, b) =>
+            new Date(b.submitted_at).getTime() -
+            new Date(a.submitted_at).getTime(),
+        )[0];
 
         if (!cancelled) {
           setApplication(data);
+          setIsLatestApplication(latestApplication?.id === data.id);
         }
       } catch (error) {
         console.error("Failed to fetch instructor application:", error);
@@ -408,9 +426,20 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
       refreshApplication();
 
+      toast.success("Welcome to your Instructor Dashboard!", {
+        containerId: "instructor",
+      });
+
       navigate("/instructor/dashboard");
     } catch (error) {
       console.error("Failed to open instructor dashboard:", error);
+
+      toast.error(
+        "Unable to open the instructor dashboard. Please try again.",
+        {
+          containerId: "instructor",
+        },
+      );
     } finally {
       setIsOpeningDashboard(false);
     }
@@ -528,13 +557,13 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 </button>
               )}
 
-            {application.status === "rejected" && (
+            {application.status === "rejected" && isLatestApplication && (
               <button
                 type="button"
-                onClick={() => navigate("/instructor/apply")}
+                onClick={() => openApplication(application)}
                 className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
               >
-                Apply Again
+                Resubmit Application
               </button>
             )}
           </div>

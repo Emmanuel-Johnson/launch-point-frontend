@@ -1000,3 +1000,105 @@ html {
     0 12px 35px rgba(0, 0, 0, 0.6),
     0 0 20px rgba(59, 130, 246, 0.06) !important;
 }
+
+/* =========================================================
+   STUDENT TOAST
+   Violet theme — matches Admin and Instructor Toast
+   ========================================================= */
+
+.student-toast {
+  position: relative !important;
+  min-height: 60px !important;
+  padding: 15px 18px !important;
+  background: #050505 !important;
+  color: #ede9fe !important;
+  border: 1px solid rgba(139, 92, 246, 0.25) !important;
+  border-radius: 8px !important;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(139, 92, 246, 0.03) !important;
+}
+
+.student-toast.Toastify__toast--success {
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  --toastify-color-progress: #8b5cf6 !important;
+  --toastify-color-progress-success: #8b5cf6 !important;
+}
+
+.student-toast.Toastify__toast--error {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--warning {
+  border-color: rgba(234, 179, 8, 0.35) !important;
+  --toastify-color-progress: #eab308 !important;
+  --toastify-color-progress-warning: #eab308 !important;
+}
+
+.student-toast.Toastify__toast--info {
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  --toastify-color-progress: #3b82f6 !important;
+  --toastify-color-progress-info: #3b82f6 !important;
+}
+
+.student-toast::before,
+.student-toast::after {
+  display: none !important;
+  content: none !important;
+}
+
+.student-toast .Toastify__toast-icon {
+  margin-inline-end: 12px !important;
+}
+
+.student-toast.Toastify__toast--success .Toastify__toast-icon {
+  color: #8b5cf6 !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--warning .Toastify__toast-icon {
+  color: #eab308 !important;
+}
+
+.student-toast.Toastify__toast--info .Toastify__toast-icon {
+  color: #3b82f6 !important;
+}
+
+.student-toast .Toastify__toast-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+.student-toast .Toastify__close-button {
+  color: #c4b5fd !important;
+  opacity: 0.7 !important;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease !important;
+}
+
+.student-toast .Toastify__close-button:hover {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.student-toast:hover {
+  border-color: rgba(139, 92, 246, 0.45) !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(139, 92, 246, 0.06) !important;
+}
+
+.student-toast .Toastify__progress-bar {
+  height: 3px !important;
+  background: #8b5cf6 !important;
+  opacity: 1 !important;
+}

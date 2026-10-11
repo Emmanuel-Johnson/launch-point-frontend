@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
+import { toast } from "react-toastify";
 
 interface InstructorHeaderProps {
   isSidebarCollapsed: boolean;
@@ -53,6 +54,16 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleSwitchToStudent = () => {
+    setIsProfileOpen(false);
+
+    toast.success(
+      "Switched to your Student Dashboard. Keep learning and growing!",
+    );
+
+    navigate("/student/dashboard");
+  };
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem("refresh");
@@ -256,7 +267,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               <div className="p-2">
                 <button
                   type="button"
-                  onClick={() => navigate("/student/dashboard")}
+                  onClick={handleSwitchToStudent}
                   className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#3B82F6]/[0.06]"
                 >
                   {/* Shine */}
