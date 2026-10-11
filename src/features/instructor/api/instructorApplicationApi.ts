@@ -103,3 +103,7 @@ export const getInstructorApplication = async (
 
   return response.data;
 };
+
+export const markInstructorDashboardAsOpened = async (): Promise<void> => {
+  await api.post("/instructors/dashboard/opened/");
+};

@@ -25,6 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   getInstructorApplication,
+  markInstructorDashboardAsOpened,
   type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
 
@@ -342,6 +343,8 @@ type ApplicationDetailsProps = {
 const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   const navigate = useNavigate();
 
+  const [isOpeningDashboard, setIsOpeningDashboard] = useState(false);
+
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
 
@@ -382,6 +385,22 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
       cancelled = true;
     };
   }, [applicationId]);
+
+  const handleOpenInstructorDashboard = async () => {
+    if (isOpeningDashboard) return;
+
+    try {
+      setIsOpeningDashboard(true);
+
+      await markInstructorDashboardAsOpened();
+
+      navigate("/instructor/dashboard");
+    } catch (error) {
+      console.error("Failed to open instructor dashboard:", error);
+    } finally {
+      setIsOpeningDashboard(false);
+    }
+  };
 
   if (!applicationId) {
     return (
@@ -486,7 +505,8 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
             {application.status === "approved" && (
               <button
                 type="button"
-                onClick={() => navigate("/instructor/dashboard")}
+                onClick={handleOpenInstructorDashboard}
+                disabled={isOpeningDashboard}
                 className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
               >
                 Open Instructor Dashboard
