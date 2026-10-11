@@ -333,15 +333,27 @@ const InstructorLandingPage = () => {
 
               <Reveal delay={150}>
                 <h2 className="relative mx-auto max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                  Ready to start teaching?
+                  {latestApplication?.status === "approved"
+                    ? "Welcome to Your Teaching Journey!"
+                    : "Ready to start teaching?"}
                 </h2>
               </Reveal>
 
               <Reveal delay={300}>
                 <p className="relative mx-auto mt-6 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg">
-                  Share your knowledge, create courses, and help learners grow.
-                  Apply today and take the first step toward becoming an
-                  instructor.
+                  {latestApplication?.status === "approved" ? (
+                    <p>
+                      Your instructor application has been approved. You’re
+                      ready to create courses, share your expertise, and inspire
+                      learners.
+                    </p>
+                  ) : (
+                    <p>
+                      Share your knowledge, create courses, and help learners
+                      grow. Apply today and take the first step toward becoming
+                      an instructor.
+                    </p>
+                  )}
                 </p>
               </Reveal>
 
