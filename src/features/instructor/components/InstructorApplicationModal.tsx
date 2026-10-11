@@ -1112,7 +1112,29 @@ const InstructorApplicationModal = ({
       formData.append("terms_accepted", String(form.terms_accepted));
 
       if (profileImageFile) {
+        // A newly selected image takes priority over the saved profile image.
         formData.append("profile_image", profileImageFile);
+      } else if (profileImageUrl) {
+        // When reapplying, profile_image is usually a URL from the rejected
+        // application or the user's profile, not a browser File. Convert the
+        // saved image into a File so the new application receives the upload.
+        const imageResponse = await fetch(profileImageUrl);
+        if (!imageResponse.ok) {
+          throw new Error(
+            `Unable to load the existing profile image (${imageResponse.status}). Please choose the image again.`,
+          );
+        }
+
+        const imageBlob = await imageResponse.blob();
+        const imageName =
+          profileImageUrl.split("/").pop()?.split("?")[0] ||
+          "profile-image.png";
+        const imageType = imageBlob.type || "image/png";
+
+        formData.append(
+          "profile_image",
+          new File([imageBlob], imageName, { type: imageType }),
+        );
       }
 
       // Reuse existing server-side files by downloading their bytes and
