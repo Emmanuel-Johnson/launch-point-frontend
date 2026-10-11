@@ -561,7 +561,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
             <div className="relative flex flex-col gap-7 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
               {/* Applicant identity */}
 
-              <div className="flex items-center gap-5">
+              <div className="flex min-w-0 items-center gap-5">
                 {application.profile_image ? (
                   <img
                     src={application.profile_image}
@@ -582,7 +582,10 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     Instructor Application
                   </p>
 
-                  <h1 className="mt-2 truncate text-2xl font-bold tracking-tight text-white sm:text-[2rem] sm:leading-tight">
+                  <h1
+                    className="mt-2 truncate text-2xl font-bold tracking-tight text-white sm:text-[2rem] sm:leading-tight"
+                    title={application.full_name}
+                  >
                     {application.full_name}
                   </h1>
 
@@ -627,8 +630,11 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       <p className="text-sm font-semibold">{status.label}</p>
                     </div>
 
-                    <p className="mt-1.5 text-xs leading-5 opacity-80">
-                      {application.admin_message}
+                    <p className="mt-1.5 break-words text-xs leading-5 opacity-80">
+                      {application.admin_message ||
+                        (application.status === "pending"
+                          ? "Your application is currently under review by our team. We’ll notify you as soon as a decision has been made."
+                          : status.description)}
                     </p>
                   </div>
                 </div>
@@ -647,7 +653,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
           <div className="mt-5 grid gap-5 lg:grid-cols-3">
             {/* ---------------- PRIMARY COLUMN ---------------- */}
 
-            <div className="space-y-5 lg:col-span-2">
+            <div className="min-w-0 space-y-5 lg:col-span-2">
               {/* BACKGROUND */}
 
               <Panel>
@@ -694,11 +700,13 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                   {application.categories_to_teach.map((category) => (
                     <span
                       key={category}
-                      className="inline-flex items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
+                      className="inline-flex max-w-full items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
 
-                      {category}
+                      <span className="min-w-0 truncate" title={category}>
+                        {category}
+                      </span>
                     </span>
                   ))}
                 </div>
@@ -785,7 +793,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
             {/* ---------------- SUMMARY RAIL ---------------- */}
 
-            <aside className="lg:col-span-1">
+            <aside className="min-w-0 lg:col-span-1">
               <div className="space-y-5 lg:sticky lg:top-28">
                 {/* CONTACT */}
 
@@ -884,7 +892,7 @@ type PanelProps = {
 };
 
 const Panel = ({ children }: PanelProps) => (
-  <section className="group rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)] sm:p-6">
+  <section className="group min-w-0 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)] sm:p-6">
     {children}
   </section>
 );
@@ -922,17 +930,20 @@ type InfoRowProps = {
 };
 
 const InfoRow = ({ icon, label, value }: InfoRowProps) => (
-  <div className="flex items-start gap-3">
+  <div className="flex min-w-0 items-start gap-3">
     <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] text-blue-300/70">
       {icon}
     </div>
 
-    <div className="min-w-0">
+    <div className="min-w-0 flex-1">
       <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-zinc-600">
         {label}
       </p>
 
-      <p className="mt-1 break-words text-sm font-medium text-zinc-200">
+      <p
+        className="mt-1 truncate text-sm font-medium text-zinc-200"
+        title={value}
+      >
         {value}
       </p>
     </div>
@@ -945,15 +956,41 @@ type TextBlockProps = {
   value: string;
 };
 
-const TextBlock = ({ label, value }: TextBlockProps) => (
-  <div className="rounded-xl border border-white/[0.06] bg-[#0B0D14]/70 p-5 transition-colors duration-200 hover:border-blue-400/15">
-    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-200/60">
-      {label}
-    </p>
+/** Text longer than this collapses behind a "Show more" toggle. */
 
-    <p className="mt-3 text-sm leading-7 text-zinc-400">{value}</p>
-  </div>
-);
+const TEXT_BLOCK_CLAMP_LENGTH = 300;
+
+const TextBlock = ({ label, value }: TextBlockProps) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const isLong = value.length > TEXT_BLOCK_CLAMP_LENGTH;
+
+  return (
+    <div className="min-w-0 rounded-xl border border-white/[0.06] bg-[#0B0D14]/70 p-5 transition-colors duration-200 hover:border-blue-400/15">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-200/60">
+        {label}
+      </p>
+
+      <p
+        className={`mt-3 whitespace-pre-line break-words text-sm leading-7 text-zinc-400 ${
+          isLong && !expanded ? "line-clamp-6" : ""
+        }`}
+      >
+        {value}
+      </p>
+
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="mt-2 text-xs font-medium text-blue-300 transition-colors hover:text-blue-200"
+        >
+          {expanded ? "Show less" : "Show more"}
+        </button>
+      )}
+    </div>
+  );
+};
 
 type LinkCardProps = {
   icon: React.ReactNode;
@@ -970,7 +1007,7 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-blue-500/[0.06]"
+    className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-blue-500/[0.06]"
   >
     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.08] text-blue-300 transition-colors group-hover:border-blue-400/30">
       {icon}
@@ -1020,7 +1057,7 @@ const DocumentCard = ({
   const previewable = isPreviewable(name);
 
   return (
-    <div className="group flex items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
+    <div className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
       {/* File logo: clean thumbnail for images, white file-type icon otherwise */}
 
       {meta.image && thumbnailUrl ? (
@@ -1039,13 +1076,18 @@ const DocumentCard = ({
       )}
 
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="truncate text-sm font-medium text-zinc-200">{name}</p>
+        <div className="flex min-w-0 items-center gap-2">
+          <p
+            className="min-w-0 truncate text-sm font-medium text-zinc-200"
+            title={name}
+          >
+            {name}
+          </p>
 
           {/* type chip */}
 
           <span
-            className="rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+            className="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
             style={{
               color: meta.color,
 
@@ -1058,7 +1100,7 @@ const DocumentCard = ({
           </span>
 
           {primary && (
-            <span className="rounded-md border border-blue-400/20 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-blue-300">
+            <span className="shrink-0 rounded-md border border-blue-400/20 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-blue-300">
               Primary
             </span>
           )}
@@ -1114,9 +1156,9 @@ const EmptyState = ({ text }: EmptyStateProps) => (
 
    Lightbox for previewing a document.
 
-   \- Images render full-size straight from the URL.
+   - Images render full-size straight from the URL.
 
-   \- PDFs are fetched into a same-origin blob: URL and shown in an
+   - PDFs are fetched into a same-origin blob: URL and shown in an
 
      iframe. A remote PDF URL often won't render inline because the
 

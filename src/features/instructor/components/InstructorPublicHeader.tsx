@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { History, LayoutDashboard } from "lucide-react";
+import { History, LayoutDashboard, FileSearch } from "lucide-react";
 import type { InstructorApplication } from "../api/instructorApplicationApi";
 
 /* ---------- Brand logo (matches PublicNavbar, uses instructor png) ---------- */
@@ -93,48 +93,49 @@ const InstructorPublicHeader = ({
             Waits for the status to load, then renders the correct label once
             (no text/color flip): "View Status" if an application exists,
             otherwise "Become an Instructor". */}
+
         {isLanding &&
           !isApplicationLoading &&
           (hasApplication ? (
-            <div className="flex items-center gap-3">
+            hasOpenedDashboard ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/instructor/applications"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-blue-400/30 bg-blue-950/60 px-4 py-2.5 text-sm font-semibold text-blue-100 transition-all duration-300 hover:scale-105 hover:border-blue-400/50 hover:bg-blue-900/70 hover:shadow-[0_0_15px_rgba(59,130,246,0.25)]"
+                >
+                  <History className="h-4 w-4 shrink-0" />
+
+                  <span className="hidden sm:inline">
+                    Application Submission History
+                  </span>
+                  <span className="sm:hidden">History</span>
+                </Link>
+
+                <Link
+                  to="/instructor/dashboard"
+                  className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+                >
+                  <LayoutDashboard className="h-4 w-4 shrink-0" />
+
+                  <span className="hidden sm:inline">Instructor Dashboard</span>
+                  <span className="sm:hidden">Dashboard</span>
+                </Link>
+              </div>
+            ) : (
               <Link
                 to="/instructor/applications"
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-blue-400/30 bg-blue-950/60 px-4 py-2.5 text-sm font-semibold text-blue-100 transition-all duration-1000 ease-in-out hover:scale-105 hover:border-blue-400/50 hover:bg-blue-900/70 hover:shadow-[0_0_15px_rgba(59,130,246,0.25)]"
+                className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg border border-violet-400/30 bg-violet-600/20 px-5 py-2.5 text-sm font-semibold text-violet-200 transition-all duration-300 hover:scale-105 hover:border-violet-400/50 hover:bg-violet-600/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.25)]"
               >
-                <History className="h-4 w-4 shrink-0" />
+                <FileSearch className="h-4 w-4 shrink-0" />
 
-                <span className="hidden sm:inline">
-                  Application Submission History
-                </span>
-                <span className="sm:hidden">History</span>
+                <span>View Status</span>
               </Link>
-
-              <Link
-                to={
-                  hasOpenedDashboard
-                    ? "/instructor/dashboard"
-                    : "/instructor/applications"
-                }
-                className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
-              >
-                {hasOpenedDashboard && (
-                  <LayoutDashboard className="h-4 w-4 shrink-0" />
-                )}
-
-                <span className="hidden sm:inline">
-                  {hasOpenedDashboard ? "Instructor Dashboard" : "View Status"}
-                </span>
-
-                <span className="sm:hidden">
-                  {hasOpenedDashboard ? "Dashboard" : "Status"}
-                </span>
-              </Link>
-            </div>
+            )
           ) : (
             <button
               type="button"
               onClick={onApply}
-              className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+              className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
             >
               <span className="hidden sm:inline">Become an Instructor</span>
               <span className="sm:hidden">Apply</span>
