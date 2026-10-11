@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { useOutletContext } from "react-router-dom";
+
+import type { InstructorPublicContext } from "../layout/InstructorPublicLayout";
+
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -345,6 +349,8 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
   const [isOpeningDashboard, setIsOpeningDashboard] = useState(false);
 
+  const { refreshApplication } = useOutletContext<InstructorPublicContext>();
+
   const [application, setApplication] =
     useState<InstructorApplicationDetail | null>(null);
 
@@ -369,7 +375,9 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
       try {
         const data = await getInstructorApplication(Number(applicationId));
 
-        if (!cancelled) setApplication(data);
+        if (!cancelled) {
+          setApplication(data);
+        }
       } catch (error) {
         console.error("Failed to fetch instructor application:", error);
 
@@ -387,12 +395,18 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   }, [applicationId]);
 
   const handleOpenInstructorDashboard = async () => {
-    if (isOpeningDashboard) return;
+    if (isOpeningDashboard || !application) return;
 
     try {
       setIsOpeningDashboard(true);
 
       await markInstructorDashboardAsOpened();
+
+      setApplication((prev) =>
+        prev ? { ...prev, is_dashboard_opened: true } : prev,
+      );
+
+      refreshApplication();
 
       navigate("/instructor/dashboard");
     } catch (error) {
@@ -495,23 +509,24 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 <span className="h-3 w-px bg-blue-300/20" />
 
                 <span className="font-mono text-xs font-medium text-blue-300">
-                  #{String(application.id).padStart(2, "0")}
+                  \#{String(application.id).padStart(2, "0")}
                 </span>
               </div>
             </nav>
 
             {/* Status action — mirrors the hero decision CTA, placed beside the breadcrumb */}
 
-            {application.status === "approved" && (
-              <button
-                type="button"
-                onClick={handleOpenInstructorDashboard}
-                disabled={isOpeningDashboard}
-                className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
-              >
-                Open Instructor Dashboard
-              </button>
-            )}
+            {application.status === "approved" &&
+              !application.is_dashboard_opened && (
+                <button
+                  type="button"
+                  onClick={handleOpenInstructorDashboard}
+                  disabled={isOpeningDashboard}
+                  className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
+                >
+                  Open Instructor Dashboard
+                </button>
+              )}
 
             {application.status === "rejected" && (
               <button
@@ -594,6 +609,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               </div>
 
               {/* Status block and decision message */}
+
               <div className="w-full space-y-3 lg:max-w-md">
                 <div
                   className={`flex items-start gap-3 rounded-2xl border p-4 backdrop-blur-sm ${status.badgeClass}`}
@@ -607,8 +623,10 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${status.dotClass}`}
                       />
+
                       <p className="text-sm font-semibold">{status.label}</p>
                     </div>
+
                     <p className="mt-1.5 text-xs leading-5 opacity-80">
                       {application.admin_message}
                     </p>
@@ -1096,9 +1114,9 @@ const EmptyState = ({ text }: EmptyStateProps) => (
 
    Lightbox for previewing a document.
 
-   - Images render full-size straight from the URL.
+   \- Images render full-size straight from the URL.
 
-   - PDFs are fetched into a same-origin blob: URL and shown in an
+   \- PDFs are fetched into a same-origin blob: URL and shown in an
 
      iframe. A remote PDF URL often won't render inline because the
 

@@ -1,4 +1,5 @@
 import {
+  ArrowRightLeft,
   Bell,
   ChevronDown,
   ChevronRight,
@@ -8,6 +9,10 @@ import {
   Search,
   User,
 } from "lucide-react";
+import {
+  getInstructorApplications,
+  type InstructorApplication,
+} from "../../instructor/api/instructorApplicationApi";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
@@ -38,7 +43,30 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const [latestApplication, setLatestApplication] =
+    useState<InstructorApplication | null>(null);
 
+  const [isApplicationLoading, setIsApplicationLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInstructorApplication = async () => {
+      try {
+        const applications = await getInstructorApplications();
+        setLatestApplication(applications[0] ?? null);
+      } catch (error) {
+        console.error("Failed to fetch instructor application:", error);
+        setLatestApplication(null);
+      } finally {
+        setIsApplicationLoading(false);
+      }
+    };
+
+    fetchInstructorApplication();
+  }, []);
+
+  const canSwitchToInstructor =
+    latestApplication?.status === "approved" &&
+    latestApplication.is_dashboard_opened === true;
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -319,43 +347,64 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               <div className="border-t border-white/[0.08]" />
 
               {/* =====================================================
-                BECOME AN INSTRUCTOR
-            ====================================================== */}
-              <div className="p-2">
-                <button
-                  type="button"
-                  onClick={() => navigate("/instructor/")}
-                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#7C5CFF]/[0.06]"
-                >
-                  {/* Shine */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+    INSTRUCTOR NAVIGATION
+====================================================== */}
+              {!isApplicationLoading && (
+                <div className="p-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileOpen(false);
 
-                  {/* Icon */}
-                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7C5CFF]/[0.08] text-[#7C5CFF] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/[0.14] group-hover:text-[#9D82FF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
-                    <GraduationCap
-                      className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
-                      strokeWidth={1.8}
+                      if (canSwitchToInstructor) {
+                        navigate("/instructor/dashboard");
+                      } else {
+                        navigate("/instructor");
+                      }
+                    }}
+                    className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#7C5CFF]/[0.06]"
+                  >
+                    {/* Shine */}
+                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+                    {/* Icon */}
+                    <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7C5CFF]/[0.08] text-[#7C5CFF] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/[0.14] group-hover:text-[#9D82FF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
+                      {canSwitchToInstructor ? (
+                        <ArrowRightLeft
+                          className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
+                          strokeWidth={1.8}
+                        />
+                      ) : (
+                        <GraduationCap
+                          className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
+                          strokeWidth={1.8}
+                        />
+                      )}
+                    </div>
+
+                    {/* Text */}
+                    <div className="relative z-10 min-w-0 flex-1">
+                      <p className="text-sm font-medium text-[#9D82FF] transition-colors duration-200 group-hover:text-white">
+                        {canSwitchToInstructor
+                          ? "Switch to Instructor"
+                          : "Become an Instructor"}
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
+                        {canSwitchToInstructor
+                          ? "Open your instructor dashboard"
+                          : "Share your knowledge with others"}
+                      </p>
+                    </div>
+
+                    {/* Arrow */}
+                    <ChevronRight
+                      className="relative z-10 h-4 w-4 shrink-0 text-[#7C5CFF]/70 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#9D82FF]"
+                      strokeWidth={2}
                     />
-                  </div>
-
-                  {/* Text */}
-                  <div className="relative z-10 min-w-0 flex-1">
-                    <p className="text-sm font-medium text-[#9D82FF] transition-colors duration-200 group-hover:text-white">
-                      Become an Instructor
-                    </p>
-
-                    <p className="mt-0.5 text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
-                      Share your knowledge with others
-                    </p>
-                  </div>
-
-                  {/* Arrow */}
-                  <ChevronRight
-                    className="relative z-10 h-4 w-4 shrink-0 text-[#7C5CFF]/70 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#9D82FF]"
-                    strokeWidth={2}
-                  />
-                </button>
-              </div>
+                  </button>
+                </div>
+              )}
 
               {/* =====================================================
                 DIVIDER

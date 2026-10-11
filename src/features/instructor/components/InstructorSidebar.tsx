@@ -15,7 +15,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 
 interface InstructorSidebarProps {
@@ -135,7 +135,8 @@ const InstructorSidebar = ({
           }`}
         >
           {/* BRAND */}
-          <div
+          <Link
+            to="/instructor"
             className={`flex min-w-0 items-center transition-all duration-500 ${
               isCollapsed ? "justify-center" : "gap-3"
             }`}
@@ -170,7 +171,7 @@ const InstructorSidebar = ({
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* TOGGLE */}
           <button

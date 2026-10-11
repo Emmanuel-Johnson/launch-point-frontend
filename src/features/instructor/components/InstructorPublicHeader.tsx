@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-
+import { History, LayoutDashboard } from "lucide-react";
 import type { InstructorApplication } from "../api/instructorApplicationApi";
 
 /* ---------- Brand logo (matches PublicNavbar, uses instructor png) ---------- */
@@ -55,15 +55,23 @@ const InstructorPublicHeader = ({
 
   const isLanding = pathname === "/instructor" || pathname === "/instructor/";
 
+  const hasOpenedDashboard =
+    latestApplication?.status === "approved" &&
+    latestApplication.is_dashboard_opened;
+
   // Any existing application (pending / rejected / approved) → "View Status".
   const hasApplication = latestApplication != null;
 
   // Back target per page — only the `to` changes, the button never moves.
+
   const backTo = pathname.startsWith("/instructor/applications/")
     ? "/instructor/applications"
     : pathname === "/instructor/applications"
       ? "/instructor"
-      : "/student/dashboard";
+      : latestApplication?.status === "approved" &&
+          latestApplication.is_dashboard_opened
+        ? "/instructor/dashboard"
+        : "/student/dashboard";
 
   return (
     <header className="relative z-20 border-b border-white/[0.08] bg-[#0A0E1A]">
@@ -88,13 +96,40 @@ const InstructorPublicHeader = ({
         {isLanding &&
           !isApplicationLoading &&
           (hasApplication ? (
-            <Link
-              to="/instructor/applications"
-              className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-violet-500 hover:shadow-[0_0_15px_rgba(139,92,246,0.35)]"
-            >
-              <span className="hidden sm:inline">View Status</span>
-              <span className="sm:hidden">Status</span>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/instructor/applications"
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-blue-400/30 bg-blue-950/60 px-4 py-2.5 text-sm font-semibold text-blue-100 transition-all duration-1000 ease-in-out hover:scale-105 hover:border-blue-400/50 hover:bg-blue-900/70 hover:shadow-[0_0_15px_rgba(59,130,246,0.25)]"
+              >
+                <History className="h-4 w-4 shrink-0" />
+
+                <span className="hidden sm:inline">
+                  Application Submission History
+                </span>
+                <span className="sm:hidden">History</span>
+              </Link>
+
+              <Link
+                to={
+                  hasOpenedDashboard
+                    ? "/instructor/dashboard"
+                    : "/instructor/applications"
+                }
+                className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-1000 ease-in-out hover:scale-105 hover:bg-blue-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+              >
+                {hasOpenedDashboard && (
+                  <LayoutDashboard className="h-4 w-4 shrink-0" />
+                )}
+
+                <span className="hidden sm:inline">
+                  {hasOpenedDashboard ? "Instructor Dashboard" : "View Status"}
+                </span>
+
+                <span className="sm:hidden">
+                  {hasOpenedDashboard ? "Dashboard" : "Status"}
+                </span>
+              </Link>
+            </div>
           ) : (
             <button
               type="button"
