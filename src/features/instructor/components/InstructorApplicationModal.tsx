@@ -2376,7 +2376,7 @@ const InstructorApplicationModal = ({
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                  className="w-60 group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
                   <span className="flex h-5 min-w-[150px] items-center justify-center">
                     {isSubmitting ? (
@@ -2386,7 +2386,11 @@ const InstructorApplicationModal = ({
                       />
                     ) : (
                       <>
-                        <span>Submit application</span>
+                        <span>
+                          {initialApplication?.status === "rejected"
+                            ? "Resubmit Application"
+                            : "Submit Application"}
+                        </span>
 
                         <span
                           aria-hidden="true"
