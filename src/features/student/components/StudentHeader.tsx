@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import { useAppSelector } from "../../../app/store/hooks";
+import { toast } from "react-toastify";
 
 interface StudentHeaderProps {
   isSidebarCollapsed: boolean;
@@ -357,6 +358,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                       setIsProfileOpen(false);
 
                       if (canSwitchToInstructor) {
+                        toast.success("Welcome to your Instructor Dashboard!", {
+                          containerId: "instructor",
+                        });
+
                         navigate("/instructor/dashboard");
                       } else {
                         navigate("/instructor");

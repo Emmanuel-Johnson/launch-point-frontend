@@ -33,6 +33,7 @@ import {
   markInstructorDashboardAsOpened,
   type InstructorApplicationDetail,
 } from "../api/instructorApplicationApi";
+import { toast } from "react-toastify";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
 
@@ -425,9 +426,20 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
       refreshApplication();
 
+      toast.success("Welcome to your Instructor Dashboard!", {
+        containerId: "instructor",
+      });
+
       navigate("/instructor/dashboard");
     } catch (error) {
       console.error("Failed to open instructor dashboard:", error);
+
+      toast.error(
+        "Unable to open the instructor dashboard. Please try again.",
+        {
+          containerId: "instructor",
+        },
+      );
     } finally {
       setIsOpeningDashboard(false);
     }
@@ -551,7 +563,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                 onClick={() => openApplication(application)}
                 className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
               >
-                Apply Again
+                Resubmit Application
               </button>
             )}
           </div>
