@@ -244,6 +244,11 @@ const getFileMeta = (name: string): FileMeta => {
   );
 };
 
+const formatFileSize = (size: number): string => {
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(0)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+};
+
 /* A file is previewable in the lightbox when it's an image or a PDF.
    Both render inline; anything else shows a graceful fallback. */
 const isPreviewable = (file: File): boolean => {
@@ -597,6 +602,7 @@ const initialApplicationForm: ApplicationForm = {
 type ExistingApplicationFile = {
   name: string;
   url: string;
+  size?: number;
 };
 
 type InstructorApplicationModalProps = {
@@ -670,21 +676,61 @@ const InstructorApplicationModal = ({
 
         // Keep the rejected application's saved documents visible in the
         // retry form. Browser file inputs cannot be populated programmatically.
-        setExistingResume(
-          initialApplication?.resume_url
-            ? {
-                name: initialApplication.resume_name || "Existing resume.pdf",
-                url: initialApplication.resume_url,
-              }
-            : null,
-        );
-        setExistingSupportingFiles(
-          (initialApplication?.supporting_files ?? []).map((file) => ({
-            id: file.id,
-            name: file.name,
-            url: file.url,
-          })),
-        );
+        const savedResume = initialApplication?.resume_url
+          ? {
+              name: initialApplication.resume_name || "Existing resume.pdf",
+              url: initialApplication.resume_url,
+            }
+          : null;
+        setExistingResume(savedResume);
+
+        const savedSupportingFiles = (
+          initialApplication?.supporting_files ?? []
+        ).map((file) => ({
+          id: file.id,
+          name: file.name,
+          url: file.url,
+        }));
+        setExistingSupportingFiles(savedSupportingFiles);
+
+        // Resolve the actual sizes of saved server-side files so their cards
+        // can display the same file type and size metadata as newly selected files.
+        const readSavedFileSize = async (
+          url: string,
+        ): Promise<number | undefined> => {
+          try {
+            const response = await fetch(url);
+            if (!response.ok) return undefined;
+            const blob = await response.blob();
+            return blob.size;
+          } catch {
+            return undefined;
+          }
+        };
+
+        if (savedResume) {
+          void readSavedFileSize(savedResume.url).then((size) => {
+            if (size !== undefined) {
+              setExistingResume((current) =>
+                current?.url === savedResume.url
+                  ? { ...current, size }
+                  : current,
+              );
+            }
+          });
+        }
+
+        savedSupportingFiles.forEach((savedFile) => {
+          void readSavedFileSize(savedFile.url).then((size) => {
+            if (size !== undefined) {
+              setExistingSupportingFiles((current) =>
+                current.map((file) =>
+                  file.id === savedFile.id ? { ...file, size } : file,
+                ),
+              );
+            }
+          });
+        });
         setResume(null);
         setSupportingFiles([]);
 
@@ -1848,11 +1894,11 @@ const InstructorApplicationModal = ({
                     </div>
 
                     {existingResume && !resume && (
-                      <div className="mt-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.04] p-4">
+                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
                         <div className="flex items-center gap-4">
                           <FileTypeIcon
                             meta={getFileMeta(existingResume.name)}
-                            className="h-14 w-11 shrink-0"
+                            className="h-14 w-11 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
                           />
                           <div className="min-w-0 flex-1">
                             <p
@@ -1861,28 +1907,59 @@ const InstructorApplicationModal = ({
                             >
                               {existingResume.name}
                             </p>
-                            <p className="mt-1 text-xs text-emerald-300">
-                              Existing resume from your previous application
-                            </p>
+                            <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
+                              <span>
+                                {getFileMeta(existingResume.name).label} file
+                              </span>
+                              <span className="text-zinc-700">•</span>
+                              <span>
+                                {existingResume.size !== undefined
+                                  ? formatFileSize(existingResume.size)
+                                  : "Checking size…"}
+                              </span>
+                            </div>
+                            <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Existing resume</span>
+                            </div>
+                          </div>
+                          <div className="flex shrink-0 items-center gap-1">
                             <a
                               href={existingResume.url}
                               target="_blank"
                               rel="noreferrer"
-                              className="mt-2 inline-flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
+                              aria-label="Preview existing resume"
+                              title="Preview resume"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-blue-400/10 hover:text-blue-300"
                             >
-                              View existing resume{" "}
-                              <Eye className="h-3.5 w-3.5" />
+                              <Eye className="h-4 w-4" />
                             </a>
+                            <button
+                              type="button"
+                              onClick={() => setExistingResume(null)}
+                              aria-label="Remove existing resume"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setExistingResume(null)}
-                            aria-label="Remove existing resume"
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
                         </div>
+                        <label
+                          htmlFor="existing-resume-upload"
+                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+                        >
+                          Change resume
+                        </label>
+                        <input
+                          id="existing-resume-upload"
+                          type="file"
+                          accept=".pdf"
+                          className="hidden"
+                          onChange={(event) => {
+                            handleResumeChange(event.target.files?.[0]);
+                            event.target.value = "";
+                          }}
+                        />
                       </div>
                     )}
 
@@ -1973,7 +2050,7 @@ const InstructorApplicationModal = ({
                           }}
                         />
                       </div>
-                    ) : (
+                    ) : !existingResume ? (
                       /* Upload / drag & drop */
                       <div
                         onDragOver={(event) => {
@@ -2047,7 +2124,7 @@ const InstructorApplicationModal = ({
                           }}
                         />
                       </div>
-                    )}
+                    ) : null}
 
                     {/* Resume error */}
                     {resumeError && (
@@ -2176,41 +2253,59 @@ const InstructorApplicationModal = ({
                         {existingSupportingFiles.map((file) => (
                           <div
                             key={`existing-${file.id}`}
-                            className="flex min-w-0 items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.035] p-4"
+                            className="flex min-w-0 flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40"
                           >
-                            <FileTypeIcon
-                              meta={getFileMeta(file.name)}
-                              className="h-11 w-9 shrink-0"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <p
-                                className="truncate text-sm font-medium text-white"
-                                title={file.name}
-                              >
-                                {file.name}
-                              </p>
-                              <p className="mt-1 text-xs text-emerald-300">
-                                Existing file
-                              </p>
-                              <a
-                                href={file.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="mt-2 inline-flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
-                              >
-                                View file <Eye className="h-3.5 w-3.5" />
-                              </a>
+                            <div className="flex min-w-0 items-start gap-3">
+                              <FileTypeIcon
+                                meta={getFileMeta(file.name)}
+                                className="h-11 w-9 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p
+                                  className="truncate text-sm font-medium text-white"
+                                  title={file.name}
+                                >
+                                  {file.name}
+                                </p>
+                                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                                  <span>
+                                    {getFileMeta(file.name).label} file
+                                  </span>
+                                  <span className="text-zinc-700">•</span>
+                                  <span>
+                                    {file.size !== undefined
+                                      ? formatFileSize(file.size)
+                                      : "Checking size…"}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex shrink-0 items-center gap-1">
+                                <a
+                                  href={file.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  aria-label={`Preview ${file.name}`}
+                                  title="Preview file"
+                                  className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-blue-400/10 hover:text-blue-300"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    removeExistingSupportingFile(file.id)
+                                  }
+                                  aria-label={`Remove ${file.name}`}
+                                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                removeExistingSupportingFile(file.id)
-                              }
-                              aria-label={`Remove ${file.name}`}
-                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-rose-400/10 hover:text-rose-300"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
+                            <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>Existing file</span>
+                            </div>
                           </div>
                         ))}
                       </div>
