@@ -360,7 +360,7 @@ const InstructorLandingPage = () => {
                       ) : latestApplication?.status === "approved" ? null : (
                         <button
                           type="button"
-                          onClick={openApplication}
+                          onClick={() => openApplication()}
                           className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
                         >
                           Apply to become an instructor
@@ -413,7 +413,7 @@ const InstructorLandingPage = () => {
                       ) : latestApplication?.status === "approved" ? null : (
                         <button
                           type="button"
-                          onClick={openApplication}
+                          onClick={() => openApplication()}
                           className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
                         >
                           Apply

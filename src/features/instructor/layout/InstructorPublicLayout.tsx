@@ -12,7 +12,6 @@ import {
 
 /**
  * Value shared with the routed pages via <Outlet context={...} />.
- * The landing page reads this with `useOutletContext<InstructorPublicContext>()`.
  */
 export type InstructorPublicContext = {
   latestApplication: InstructorApplication | null;
@@ -21,32 +20,17 @@ export type InstructorPublicContext = {
   refreshApplication: () => void;
 };
 
-/**
- * Layout that wraps the three instructor public pages.
- *
- * React Router keeps this layout mounted while only swapping <Outlet />, so:
- *  - the header (logo + back button) never re-mounts / refreshes on navigation
- *  - the application status is fetched here and shared down
- *  - the "Apply" modal lives here and stays alive across page changes
- *
- * The fetch is defined INLINE inside the effect (its setState runs only after
- * `await`), so the React Compiler doesn't flag it. Because the layout never
- * unmounts, a `refreshKey` bump is used to re-run the fetch after the modal
- * closes — otherwise the header's "Become an Instructor" button would never
- * flip to "View Status" within the same session.
- */
 const InstructorPublicLayout = () => {
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+
   const [applicationToPrefill, setApplicationToPrefill] =
     useState<InstructorApplicationDetail | null>(null);
 
   const [latestApplication, setLatestApplication] =
     useState<InstructorApplication | null>(null);
 
-  // Kept so the header CTA doesn't flicker while the status is loading.
   const [isApplicationLoading, setIsApplicationLoading] = useState(true);
 
-  // Bumping this re-runs the fetch effect (e.g. after submitting an application).
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -56,11 +40,15 @@ const InstructorPublicLayout = () => {
       try {
         const applications = await getInstructorApplications();
 
-        if (!cancelled) setLatestApplication(applications[0] ?? null);
+        if (!cancelled) {
+          setLatestApplication(applications[0] ?? null);
+        }
       } catch (error) {
         console.error("Failed to load instructor application:", error);
       } finally {
-        if (!cancelled) setIsApplicationLoading(false);
+        if (!cancelled) {
+          setIsApplicationLoading(false);
+        }
       }
     };
 
@@ -71,6 +59,7 @@ const InstructorPublicLayout = () => {
     };
   }, [refreshKey]);
 
+  // Open a fresh application form or prefill it for reapplication.
   const openApplication = (
     application?: InstructorApplicationDetail | null,
   ) => {
@@ -78,14 +67,22 @@ const InstructorPublicLayout = () => {
     setIsApplicationOpen(true);
   };
 
+  // Explicit handler for the header's Become an Instructor button.
+  const handleBecomeInstructor = () => {
+    openApplication(null);
+  };
+
   const closeApplication = () => {
     setIsApplicationOpen(false);
     setApplicationToPrefill(null);
-    // Re-sync the header CTA after a submit (silent refresh — no loader flicker).
+
+    // Refresh application status after the modal closes/submission.
     setRefreshKey((key) => key + 1);
   };
 
-  const refreshApplication = () => setRefreshKey((key) => key + 1);
+  const refreshApplication = () => {
+    setRefreshKey((key) => key + 1);
+  };
 
   const context: InstructorPublicContext = {
     latestApplication,
@@ -96,17 +93,17 @@ const InstructorPublicLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#070A12] text-zinc-100">
-      {/* Persistent header — rendered once, never re-mounts between pages */}
+      {/* Persistent header */}
       <InstructorPublicHeader
         latestApplication={latestApplication}
         isApplicationLoading={isApplicationLoading}
-        onApply={openApplication}
+        onApply={handleBecomeInstructor}
       />
 
-      {/* Only this swaps on navigation */}
+      {/* Routed instructor public pages */}
       <Outlet context={context} />
 
-      {/* Shared application modal — stays mounted across page changes */}
+      {/* Shared application modal */}
       <InstructorApplicationModal
         isOpen={isApplicationOpen}
         onClose={closeApplication}
