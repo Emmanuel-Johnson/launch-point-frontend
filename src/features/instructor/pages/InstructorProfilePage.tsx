@@ -281,8 +281,8 @@ const InstructorProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-64 items-center justify-center bg-black text-white">
-        <p className="text-sm text-white/60">Loading your profile...</p>
+      <div className="flex min-h-64 items-center justify-center bg-black">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-[#4D8DFF]" />
       </div>
     );
   }
