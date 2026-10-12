@@ -225,7 +225,10 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               <div className="p-2">
                 <button
                   type="button"
-                  onClick={() => navigate("/instructor/profile")}
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    navigate("/instructor/profile");
+                  }}
                   className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/[0.05]"
                 >
                   {/* Shine */}
