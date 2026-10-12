@@ -13,6 +13,7 @@ import {
   Check,
   GraduationCap,
   Link as LinkIcon,
+  LoaderCircle,
   MapPin,
   Plus,
   User,
@@ -131,7 +132,7 @@ const EditInstructorProfileModal = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewObjectUrlRef = useRef<string | null>(null);
 
-  // Preserve the existing Escape-key and object-URL cleanup behavior.
+  // Preserve Escape-key behavior and object-URL cleanup.
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isSaving) {
@@ -150,8 +151,8 @@ const EditInstructorProfileModal = ({
     };
   }, [isSaving, onClose]);
 
-  // Load all available categories and preselect the profile's current ones.
-  // The profile API returns category names, while the update API needs IDs.
+  // Load categories and preselect the profile's current ones.
+  // The profile API returns category names; the update API needs IDs.
   useEffect(() => {
     let isCancelled = false;
 
@@ -175,7 +176,9 @@ const EditInstructorProfileModal = ({
       } catch (error) {
         if (!isCancelled) {
           console.error("Failed to load teaching categories:", error);
-          toast.error("Failed to load teaching categories.");
+          toast.error("Failed to load teaching categories.", {
+            containerId: "instructor",
+          });
         }
       } finally {
         if (!isCancelled) {
@@ -261,7 +264,9 @@ const EditInstructorProfileModal = ({
       }
 
       if (previous.length >= 10) {
-        toast.error("You can select up to 10 categories.");
+        toast.error("You can select up to 10 categories.", {
+          containerId: "instructor",
+        });
         return previous;
       }
 
@@ -273,22 +278,30 @@ const EditInstructorProfileModal = ({
     event.preventDefault();
 
     if (!form.full_name.trim()) {
-      toast.error("Full name is required.");
+      toast.error("Full name is required.", {
+        containerId: "instructor",
+      });
       return;
     }
 
     if (form.professional_bio.trim().length > 1000) {
-      toast.error("Professional bio cannot exceed 1000 characters.");
+      toast.error("Professional bio cannot exceed 1000 characters.", {
+        containerId: "instructor",
+      });
       return;
     }
 
     if (!form.years_of_experience) {
-      toast.error("Please select your years of experience.");
+      toast.error("Please select your years of experience.", {
+        containerId: "instructor",
+      });
       return;
     }
 
     if (imageError) {
-      toast.error(imageError);
+      toast.error(imageError, {
+        containerId: "instructor",
+      });
       return;
     }
 
@@ -315,6 +328,9 @@ const EditInstructorProfileModal = ({
       console.error("Failed to update instructor profile:", error);
       toast.error(
         "Failed to update profile. Please check your details and try again.",
+        {
+          containerId: "instructor",
+        },
       );
     } finally {
       setIsSaving(false);
@@ -324,14 +340,7 @@ const EditInstructorProfileModal = ({
   const initials = getInitials(form.full_name);
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-[10000] flex h-[100dvh] w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !isSaving) {
-          onClose();
-        }
-      }}
-    >
+    <div className="fixed inset-0 z-[10000] flex h-[100dvh] w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
       <div
         className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
         role="dialog"
@@ -368,7 +377,7 @@ const EditInstructorProfileModal = ({
             onClick={onClose}
             disabled={isSaving}
             aria-label="Close edit instructor profile"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] text-white/50 transition hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] text-white/50 transition hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
@@ -435,7 +444,7 @@ const EditInstructorProfileModal = ({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isSaving}
-                      className="rounded-xl border border-[#4D8DFF]/25 bg-[#4D8DFF]/10 px-4 py-2 text-xs font-medium text-[#6FA3FF] transition hover:border-[#4D8DFF]/45 hover:bg-[#4D8DFF]/15 hover:text-white disabled:opacity-40"
+                      className="cursor-pointer rounded-xl border border-[#4D8DFF]/25 bg-[#4D8DFF]/10 px-4 py-2 text-xs font-medium text-[#6FA3FF] transition hover:border-[#4D8DFF]/45 hover:bg-[#4D8DFF]/15 hover:text-white disabled:opacity-40"
                     >
                       {selectedImage ? "Change Photo" : "Choose Photo"}
                     </button>
@@ -445,7 +454,7 @@ const EditInstructorProfileModal = ({
                         type="button"
                         onClick={handleRemoveImage}
                         disabled={isSaving}
-                        className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition hover:border-red-500/30 hover:text-red-400 disabled:opacity-40"
+                        className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition hover:border-red-500/30 hover:text-red-400 disabled:opacity-40"
                       >
                         Remove
                       </button>
@@ -547,6 +556,7 @@ const EditInstructorProfileModal = ({
                     <option value="" className="bg-[#0A0A0A]">
                       Select experience
                     </option>
+
                     {EXPERIENCE_OPTIONS.map((option) => (
                       <option
                         key={option.value}
@@ -591,7 +601,7 @@ const EditInstructorProfileModal = ({
                   maxLength={1000}
                   rows={5}
                   disabled={isSaving}
-                  className={`${inputClassName} resize-y`}
+                  className={`${inputClassName} resize-none overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20`}
                   placeholder="Introduce yourself and describe your expertise..."
                 />
                 <span className="mt-1 block text-right text-xs text-white/30">
@@ -664,6 +674,7 @@ const EditInstructorProfileModal = ({
                   <p className="text-sm font-medium text-white/70">
                     Teaching Categories
                   </p>
+
                   <p className="mt-1 text-xs leading-relaxed text-white/40">
                     Select the categories you want to teach. You can select up
                     to 10 categories.
@@ -730,7 +741,7 @@ const EditInstructorProfileModal = ({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
+              className="cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
             >
               Cancel
             </button>
@@ -738,9 +749,17 @@ const EditInstructorProfileModal = ({
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-xl border border-[#4D8DFF]/30 bg-[#4D8DFF]/15 px-5 py-3 text-sm font-semibold text-[#8FBAFF] transition hover:border-[#4D8DFF]/50 hover:bg-[#4D8DFF]/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label={isSaving ? "Saving changes" : "Save changes"}
+              className="inline-flex h-[46px] w-[150px] shrink-0 cursor-pointer items-center justify-center rounded-xl border border-[#4D8DFF]/30 bg-[#4D8DFF]/15 px-5 py-3 text-sm font-semibold text-[#8FBAFF] transition hover:border-[#4D8DFF]/50 hover:bg-[#4D8DFF]/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSaving ? "Saving Changes..." : "Save Changes"}
+              {isSaving ? (
+                <LoaderCircle
+                  className="h-5 w-5 animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </div>
         </form>

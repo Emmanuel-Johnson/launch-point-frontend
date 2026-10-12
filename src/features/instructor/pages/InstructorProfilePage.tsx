@@ -585,7 +585,9 @@ const InstructorProfilePage = () => {
           onSaved={(updatedProfile) => {
             setProfile(updatedProfile);
             setIsEditModalOpen(false);
-            toast.success("Instructor profile updated successfully!");
+            toast.success("Instructor profile updated successfully!", {
+              containerId: "instructor",
+            });
           }}
         />
       )}
