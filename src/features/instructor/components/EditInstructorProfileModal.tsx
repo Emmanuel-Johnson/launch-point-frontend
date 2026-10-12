@@ -7,6 +7,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
+import { z } from "zod";
 import {
   Briefcase,
   Camera,
@@ -19,7 +20,6 @@ import {
   User,
   X,
 } from "lucide-react";
-
 import {
   updateInstructorProfile,
   type InstructorProfile,
@@ -40,6 +40,127 @@ const EXPERIENCE_OPTIONS = [
   { value: "ten_plus", label: "10+ years" },
 ] as const;
 
+const hasRepeatedSpecialCharacter = (value: string): boolean => {
+  return /[^\p{L}\p{N}\s]{3,}/u.test(value);
+};
+
+// Uses the instructor application validation rules.
+// Profile images remain optional when editing an existing profile.
+const instructorProfileSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .min(1, "Full name is required.")
+    .min(3, "Full name must be at least 3 characters.")
+    .max(50, "Full name cannot exceed 50 characters.")
+    .refine(
+      (value) => !/\s{2,}/.test(value),
+      "Please don't enter multiple spaces between names.",
+    )
+    .regex(
+      /^[\p{L}]+(?:\s[\p{L}]+)*$/u,
+      "Full name can contain only letters and spaces.",
+    ),
+
+  occupation: z
+    .string()
+    .trim()
+    .min(1, "Occupation is required.")
+    .min(3, "Occupation must be at least 3 characters.")
+    .max(100, "Occupation is too long.")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated 3 or more times consecutively.",
+    ),
+
+  education: z
+    .string()
+    .trim()
+    .min(1, "Education is required.")
+    .min(3, "Education must be at least 3 characters.")
+    .max(150, "Education is too long.")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated 3 or more times consecutively.",
+    ),
+
+  years_of_experience: z
+    .string()
+    .min(1, "Please select your years of experience."),
+
+  professional_bio: z
+    .string()
+    .trim()
+    .min(1, "Professional bio is required.")
+    .min(100, "Professional bio must be at least 100 characters.")
+    .max(1000, "Professional bio cannot exceed 1000 characters.")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "The same special character cannot be repeated consecutively.",
+    ),
+
+  location: z
+    .string()
+    .trim()
+    .min(1, "Location is required.")
+    .min(3, "Location must be at least 3 characters.")
+    .max(100, "Location is too long.")
+    .refine(
+      (value) => !hasRepeatedSpecialCharacter(value),
+      "You cannot use 3 or more special characters consecutively.",
+    ),
+
+  linkedin_url: z
+    .string()
+    .trim()
+    .min(1, "LinkedIn URL is required.")
+    .url("Enter a valid LinkedIn URL.")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "linkedin.com" ||
+            url.hostname === "www.linkedin.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "LinkedIn URL must be from linkedin.com."),
+
+  github_url: z
+    .string()
+    .trim()
+    .min(1, "GitHub URL is required.")
+    .url("Enter a valid GitHub URL.")
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "github.com" || url.hostname === "www.github.com")
+        );
+      } catch {
+        return false;
+      }
+    }, "GitHub URL must be from github.com."),
+
+  portfolio_url: z
+    .string()
+    .trim()
+    .min(1, "Portfolio URL is required.")
+    .url("Enter a valid portfolio URL.")
+    .refine((value) => {
+      try {
+        return new URL(value).protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "Portfolio URL must use HTTPS."),
+});
+
 interface EditInstructorProfileModalProps {
   profile: InstructorProfile;
   onClose: () => void;
@@ -57,6 +178,8 @@ interface FormValues {
   github_url: string;
   portfolio_url: string;
 }
+
+type ValidationErrors = Partial<Record<keyof FormValues, string>>;
 
 const resolveImage = (path: string | null): string | null => {
   if (!path) {
@@ -97,6 +220,24 @@ const inputClassName =
 
 const labelClassName = "text-sm font-medium text-white/70";
 
+const getFieldClassName = (hasError: boolean, extraClasses = ""): string => {
+  return `${inputClassName} ${extraClasses} ${
+    hasError ? "border-red-500 focus:border-red-500 focus:ring-red-500/10" : ""
+  }`;
+};
+
+const FieldError = ({ message }: { message?: string }) => {
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <p className="mt-1.5 text-xs text-red-400" role="alert">
+      {message}
+    </p>
+  );
+};
+
 const EditInstructorProfileModal = ({
   profile,
   onClose,
@@ -118,11 +259,18 @@ const EditInstructorProfileModal = ({
   const [previewImage, setPreviewImage] = useState<string | null>(
     resolveImage(profile.profile_image),
   );
-  const [removeProfileImage, setRemoveProfileImage] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
+
+  // Field-level validation state for red borders and error messages.
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {},
+  );
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
+
   const [isSaving, setIsSaving] = useState(false);
 
-  // Teaching categories
+  // Teaching categories.
   const [categories, setCategories] = useState<InstructorApplicationCategory[]>(
     [],
   );
@@ -176,6 +324,7 @@ const EditInstructorProfileModal = ({
       } catch (error) {
         if (!isCancelled) {
           console.error("Failed to load teaching categories:", error);
+
           toast.error("Failed to load teaching categories.", {
             containerId: "instructor",
           });
@@ -205,6 +354,31 @@ const EditInstructorProfileModal = ({
       ...previous,
       [name]: value,
     }));
+
+    if (name in form) {
+      const fieldName = name as keyof FormValues;
+
+      // Clear the old error before validating the updated value.
+      setValidationErrors((previous) => {
+        const nextErrors = { ...previous };
+        delete nextErrors[fieldName];
+        return nextErrors;
+      });
+
+      // After the first submit, validate the field while the user edits it.
+      if (hasAttemptedSubmit) {
+        const fieldSchema = instructorProfileSchema.shape[fieldName];
+        const result = fieldSchema.safeParse(value);
+
+        if (!result.success) {
+          setValidationErrors((previous) => ({
+            ...previous,
+            [fieldName]:
+              result.error.issues[0]?.message ?? "Please check this field.",
+          }));
+        }
+      }
+    }
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -237,25 +411,14 @@ const EditInstructorProfileModal = ({
 
     setSelectedImage(file);
     setPreviewImage(objectUrl);
-    setRemoveProfileImage(false);
     setImageError(null);
 
     event.target.value = "";
   };
 
-  const handleRemoveImage = () => {
-    if (previewObjectUrlRef.current) {
-      URL.revokeObjectURL(previewObjectUrlRef.current);
-      previewObjectUrlRef.current = null;
-    }
-
-    setSelectedImage(null);
-    setPreviewImage(null);
-    setRemoveProfileImage(true);
-    setImageError(null);
-  };
-
   const toggleCategory = (categoryId: number) => {
+    setCategoryError(null);
+
     setSelectedCategoryIds((previous) => {
       const isSelected = previous.includes(categoryId);
 
@@ -267,6 +430,7 @@ const EditInstructorProfileModal = ({
         toast.error("You can select up to 10 categories.", {
           containerId: "instructor",
         });
+
         return previous;
       }
 
@@ -276,25 +440,55 @@ const EditInstructorProfileModal = ({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setHasAttemptedSubmit(true);
 
-    if (!form.full_name.trim()) {
-      toast.error("Full name is required.", {
-        containerId: "instructor",
+    // Validate all fields and show the errors beside the corresponding inputs.
+    const validationResult = instructorProfileSchema.safeParse(form);
+
+    if (!validationResult.success) {
+      const nextErrors: ValidationErrors = {};
+
+      validationResult.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0];
+
+        if (
+          typeof fieldName === "string" &&
+          fieldName in form &&
+          !nextErrors[fieldName as keyof FormValues]
+        ) {
+          nextErrors[fieldName as keyof FormValues] = issue.message;
+        }
       });
+
+      setValidationErrors(nextErrors);
       return;
     }
 
-    if (form.professional_bio.trim().length > 1000) {
-      toast.error("Professional bio cannot exceed 1000 characters.", {
-        containerId: "instructor",
-      });
+    setValidationErrors({});
+
+    if (isLoadingCategories) {
+      toast.error(
+        "Please wait for the teaching categories to finish loading.",
+        {
+          containerId: "instructor",
+        },
+      );
+
       return;
     }
 
-    if (!form.years_of_experience) {
-      toast.error("Please select your years of experience.", {
+    if (selectedCategoryIds.length === 0) {
+      setCategoryError("Select at least one teaching category.");
+      return;
+    }
+
+    setCategoryError(null);
+
+    if (selectedCategoryIds.length > 10) {
+      toast.error("You can select up to 10 categories.", {
         containerId: "instructor",
       });
+
       return;
     }
 
@@ -302,6 +496,7 @@ const EditInstructorProfileModal = ({
       toast.error(imageError, {
         containerId: "instructor",
       });
+
       return;
     }
 
@@ -309,23 +504,24 @@ const EditInstructorProfileModal = ({
       setIsSaving(true);
 
       const updatedProfile = await updateInstructorProfile({
-        full_name: form.full_name.trim(),
-        occupation: form.occupation.trim(),
-        professional_bio: form.professional_bio.trim(),
-        education: form.education.trim(),
-        location: form.location.trim(),
-        years_of_experience: form.years_of_experience,
-        linkedin_url: form.linkedin_url.trim(),
-        github_url: form.github_url.trim(),
-        portfolio_url: form.portfolio_url.trim(),
+        full_name: validationResult.data.full_name,
+        occupation: validationResult.data.occupation,
+        professional_bio: validationResult.data.professional_bio,
+        education: validationResult.data.education,
+        location: validationResult.data.location,
+        years_of_experience: validationResult.data.years_of_experience,
+        linkedin_url: validationResult.data.linkedin_url,
+        github_url: validationResult.data.github_url,
+        portfolio_url: validationResult.data.portfolio_url,
         profile_image: selectedImage,
-        remove_profile_image: removeProfileImage,
+        remove_profile_image: false,
         categories: selectedCategoryIds,
       });
 
       onSaved(updatedProfile);
     } catch (error) {
       console.error("Failed to update instructor profile:", error);
+
       toast.error(
         "Failed to update profile. Please check your details and try again.",
         {
@@ -387,6 +583,7 @@ const EditInstructorProfileModal = ({
         <form
           onSubmit={handleSubmit}
           className="relative flex min-h-0 flex-1 flex-col"
+          noValidate
         >
           <div className="relative space-y-7 overflow-y-auto px-6 py-6 sm:px-7">
             {/* Profile photo */}
@@ -400,6 +597,7 @@ const EditInstructorProfileModal = ({
                   <h3 className="text-sm font-semibold text-white">
                     Profile Photo
                   </h3>
+
                   <p className="text-xs text-white/35">
                     JPG, PNG or WebP. Maximum size 5 MB.
                   </p>
@@ -448,17 +646,6 @@ const EditInstructorProfileModal = ({
                     >
                       {selectedImage ? "Change Photo" : "Choose Photo"}
                     </button>
-
-                    {previewImage && (
-                      <button
-                        type="button"
-                        onClick={handleRemoveImage}
-                        disabled={isSaving}
-                        className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition hover:border-red-500/30 hover:text-red-400 disabled:opacity-40"
-                      >
-                        Remove
-                      </button>
-                    )}
                   </div>
 
                   {imageError && (
@@ -482,17 +669,20 @@ const EditInstructorProfileModal = ({
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className={labelClassName}>
-                  Full Name *
+                  Full Name
                   <input
                     name="full_name"
                     value={form.full_name}
                     onChange={handleChange}
-                    maxLength={150}
-                    required
+                    maxLength={50}
                     disabled={isSaving}
-                    className={inputClassName}
+                    aria-invalid={Boolean(validationErrors.full_name)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.full_name),
+                    )}
                     placeholder="Your full name"
                   />
+                  <FieldError message={validationErrors.full_name} />
                 </label>
 
                 <label className={labelClassName}>
@@ -503,12 +693,17 @@ const EditInstructorProfileModal = ({
                       name="occupation"
                       value={form.occupation}
                       onChange={handleChange}
-                      maxLength={150}
+                      maxLength={100}
                       disabled={isSaving}
-                      className={`${inputClassName} pl-10`}
+                      aria-invalid={Boolean(validationErrors.occupation)}
+                      className={getFieldClassName(
+                        Boolean(validationErrors.occupation),
+                        "pl-10",
+                      )}
                       placeholder="e.g. Full Stack Developer"
                     />
                   </span>
+                  <FieldError message={validationErrors.occupation} />
                 </label>
 
                 <label className={labelClassName}>
@@ -519,12 +714,17 @@ const EditInstructorProfileModal = ({
                       name="education"
                       value={form.education}
                       onChange={handleChange}
-                      maxLength={200}
+                      maxLength={150}
                       disabled={isSaving}
-                      className={`${inputClassName} pl-10`}
+                      aria-invalid={Boolean(validationErrors.education)}
+                      className={getFieldClassName(
+                        Boolean(validationErrors.education),
+                        "pl-10",
+                      )}
                       placeholder="Your education"
                     />
                   </span>
+                  <FieldError message={validationErrors.education} />
                 </label>
 
                 <label className={labelClassName}>
@@ -535,28 +735,31 @@ const EditInstructorProfileModal = ({
                       name="location"
                       value={form.location}
                       onChange={handleChange}
-                      maxLength={150}
+                      maxLength={100}
                       disabled={isSaving}
-                      className={`${inputClassName} pl-10`}
+                      aria-invalid={Boolean(validationErrors.location)}
+                      className={getFieldClassName(
+                        Boolean(validationErrors.location),
+                        "pl-10",
+                      )}
                       placeholder="Your location"
                     />
                   </span>
+                  <FieldError message={validationErrors.location} />
                 </label>
 
                 <label className={labelClassName}>
-                  Years of Experience *
+                  Years of Experience
                   <select
                     name="years_of_experience"
                     value={form.years_of_experience}
                     onChange={handleChange}
-                    required
                     disabled={isSaving}
-                    className={inputClassName}
+                    aria-invalid={Boolean(validationErrors.years_of_experience)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.years_of_experience),
+                    )}
                   >
-                    <option value="" className="bg-[#0A0A0A]">
-                      Select experience
-                    </option>
-
                     {EXPERIENCE_OPTIONS.map((option) => (
                       <option
                         key={option.value}
@@ -567,6 +770,7 @@ const EditInstructorProfileModal = ({
                       </option>
                     ))}
                   </select>
+                  <FieldError message={validationErrors.years_of_experience} />
                 </label>
 
                 <label className={labelClassName}>
@@ -601,9 +805,13 @@ const EditInstructorProfileModal = ({
                   maxLength={1000}
                   rows={5}
                   disabled={isSaving}
-                  className={`${inputClassName} resize-none overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20`}
+                  aria-invalid={Boolean(validationErrors.professional_bio)}
+                  className={`${getFieldClassName(
+                    Boolean(validationErrors.professional_bio),
+                  )} resize-none overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20`}
                   placeholder="Introduce yourself and describe your expertise..."
                 />
+                <FieldError message={validationErrors.professional_bio} />
                 <span className="mt-1 block text-right text-xs text-white/30">
                   {form.professional_bio.length}/1000
                 </span>
@@ -632,9 +840,13 @@ const EditInstructorProfileModal = ({
                     onChange={handleChange}
                     maxLength={255}
                     disabled={isSaving}
-                    className={inputClassName}
+                    aria-invalid={Boolean(validationErrors.github_url)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.github_url),
+                    )}
                     placeholder="https://github.com/username"
                   />
+                  <FieldError message={validationErrors.github_url} />
                 </label>
 
                 <label className={labelClassName}>
@@ -646,9 +858,13 @@ const EditInstructorProfileModal = ({
                     onChange={handleChange}
                     maxLength={255}
                     disabled={isSaving}
-                    className={inputClassName}
+                    aria-invalid={Boolean(validationErrors.linkedin_url)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.linkedin_url),
+                    )}
                     placeholder="https://linkedin.com/in/username"
                   />
+                  <FieldError message={validationErrors.linkedin_url} />
                 </label>
 
                 <label className={labelClassName}>
@@ -660,24 +876,30 @@ const EditInstructorProfileModal = ({
                     onChange={handleChange}
                     maxLength={255}
                     disabled={isSaving}
-                    className={inputClassName}
+                    aria-invalid={Boolean(validationErrors.portfolio_url)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.portfolio_url),
+                    )}
                     placeholder="https://your-portfolio.com"
                   />
+                  <FieldError message={validationErrors.portfolio_url} />
                 </label>
               </div>
             </section>
 
             {/* Editable teaching categories */}
-            <section className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+            <section
+              className={`rounded-xl border ${
+                categoryError ? "border-red-500" : "border-white/[0.06]"
+              } bg-white/[0.02] p-4`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-white/70">
                     Teaching Categories
                   </p>
-
                   <p className="mt-1 text-xs leading-relaxed text-white/40">
-                    Select the categories you want to teach. You can select up
-                    to 10 categories.
+                    Select at least 1 category and up to 10 categories.
                   </p>
                 </div>
 
@@ -730,6 +952,12 @@ const EditInstructorProfileModal = ({
               ) : (
                 <p className="mt-4 text-xs text-white/35">
                   No teaching categories are available.
+                </p>
+              )}
+
+              {categoryError && (
+                <p className="mt-3 text-xs text-red-400" role="alert">
+                  {categoryError}
                 </p>
               )}
             </section>
