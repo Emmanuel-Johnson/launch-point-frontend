@@ -55,6 +55,7 @@ import InstructorApplicationDetailsPage from "../../features/instructor/pages/In
 import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
 import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
 import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
+import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -165,29 +166,39 @@ export const routeConfig: RouteObject[] = [
     children: [
       {
         path: "/instructor",
-        element: <InstructorPublicLayout />,
         children: [
+          // Public instructor pages
           {
-            index: true,
-            element: <InstructorLandingPage />,
+            element: <InstructorPublicLayout />,
+            children: [
+              {
+                index: true,
+                element: <InstructorLandingPage />,
+              },
+              {
+                path: "applications",
+                element: <InstructorApplicationListPage />,
+              },
+              {
+                path: "applications/:applicationId",
+                element: <InstructorApplicationDetailsPage />,
+              },
+            ],
           },
+
+          // Instructor dashboard pages
           {
-            path: "applications",
-            element: <InstructorApplicationListPage />,
-          },
-          {
-            path: "applications/:applicationId",
-            element: <InstructorApplicationDetailsPage />,
-          },
-        ],
-      },
-      {
-        path: "/instructor/dashboard",
-        element: <InstructorLayout />,
-        children: [
-          {
-            index: true,
-            element: <InstructorDashboardPage />,
+            element: <InstructorLayout />,
+            children: [
+              {
+                path: "dashboard",
+                element: <InstructorDashboardPage />,
+              },
+              {
+                path: "profile",
+                element: <InstructorProfilePage />,
+              },
+            ],
           },
         ],
       },
