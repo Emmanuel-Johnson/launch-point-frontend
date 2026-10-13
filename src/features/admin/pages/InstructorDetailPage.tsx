@@ -15,55 +15,14 @@ import {
   User,
   X,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  getAdminInstructorDetail,
+  type AdminInstructorDetail,
+} from "../api/instructorApi";
 
-interface Instructor {
-  id: number;
-  full_name: string;
-  email: string;
-  profile_image: string | null;
-  occupation: string;
-  professional_bio: string;
-  education: string;
-  location: string;
-  years_of_experience: string;
-  categories: string[];
-  linkedin_url: string;
-  github_url: string;
-  portfolio_url: string;
-  became_instructor_at: string;
-  updated_at: string;
-  is_active: boolean;
-}
-
-const SAMPLE_INSTRUCTOR: Instructor = {
-  id: 4,
-  full_name: "Emmanuel Johnson",
-  email: "emmanuel.johnson.sde@gmail.com",
-  profile_image:
-    "http://127.0.0.1:8000/media/instructor_applications/profile_images/Yuta_okkotsu___JJK.jpeg",
-  occupation: "Software Developer",
-  professional_bio: "Professional bio provided by the instructor.",
-  education: "B.Tech Computer Science",
-  location: "Kerala, India",
-  years_of_experience: "1–3 years",
-  categories: [
-    "Flutter",
-    "Frontend Development",
-    "Full Stack Development",
-    "JavaScript",
-    "PostgreSQL",
-    "React",
-    "Web Development",
-  ],
-  linkedin_url: "https://linkedin.com/in/emmanuel",
-  github_url: "https://github.com/emmanuel",
-  portfolio_url: "https://emmanuel.dev",
-  became_instructor_at: "2026-10-14T02:59:23.760498+05:30",
-  updated_at: "2026-10-14T02:59:23.764456+05:30",
-  is_active: true,
-};
+type Instructor = AdminInstructorDetail;
 
 const getInitials = (name: string) =>
   name
@@ -202,24 +161,89 @@ const InstructorDetailPage = () => {
   const navigate = useNavigate();
   const { instructorId } = useParams<{ instructorId: string }>();
 
-  const instructor: Instructor = {
-    ...SAMPLE_INSTRUCTOR,
-    id: Number(instructorId) || SAMPLE_INSTRUCTOR.id,
-  };
-
-  const [isActive, setIsActive] = useState(instructor.is_active);
+  const [instructor, setInstructor] = useState<Instructor | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  // The detail API does not currently return is_active. Keep the existing
+  // status control as a UI-only toggle until a backend status API is available.
+  const [isActive, setIsActive] = useState(true);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 
-  const imageUrl = instructor.profile_image?.startsWith("http")
-    ? instructor.profile_image
-    : instructor.profile_image
-      ? `http://127.0.0.1:8000${instructor.profile_image}`
-      : null;
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadInstructor = async () => {
+      const parsedId = Number(instructorId);
+
+      if (!Number.isInteger(parsedId) || parsedId <= 0) {
+        setError("Invalid instructor ID.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError("");
+        const data = await getAdminInstructorDetail(parsedId);
+
+        if (isMounted) {
+          setInstructor(data);
+        }
+      } catch (requestError) {
+        console.error("Failed to load instructor details:", requestError);
+        if (isMounted) {
+          setError("Unable to load instructor details. Please try again.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadInstructor();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [instructorId]);
+
+  const imageUrl = instructor?.profile_image
+    ? instructor.profile_image.startsWith("http")
+      ? instructor.profile_image
+      : `http://127.0.0.1:8000${instructor.profile_image}`
+    : null;
 
   const handleToggleStatus = () => {
     setIsActive((currentStatus) => !currentStatus);
     setIsStatusModalOpen(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-full w-full items-center justify-center bg-black px-6 py-16 text-sm text-white/50">
+        <span className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
+        Loading instructor details...
+      </div>
+    );
+  }
+
+  if (error || !instructor) {
+    return (
+      <div className="min-h-full w-full bg-black px-6 py-16 text-center">
+        <p className="text-sm text-red-400" role="alert">
+          {error || "Instructor details not found."}
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/admin/instructors")}
+          className="mt-4 text-sm font-medium text-white/60 transition-colors hover:text-white"
+        >
+          Back to instructors
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-full w-full bg-black text-white">
@@ -380,6 +404,7 @@ const InstructorDetailPage = () => {
         </section>
 
         {/* Basic Information */}
+
         <section
           className="animate-page-item"
           style={{ animationDelay: "280ms" }}
@@ -389,35 +414,29 @@ const InstructorDetailPage = () => {
             description="Personal and professional information about the instructor."
           />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-            <InfoCard
-              icon={<Mail size={18} strokeWidth={1.8} />}
-              label="Email"
-              value={instructor.email}
-            />
-
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoCard
               icon={<MapPin size={18} strokeWidth={1.8} />}
               label="Location"
-              value={instructor.location}
+              value={instructor.location || ""}
             />
 
             <InfoCard
               icon={<GraduationCap size={18} strokeWidth={1.8} />}
               label="Education"
-              value={instructor.education}
+              value={instructor.education || ""}
             />
 
             <InfoCard
               icon={<BriefcaseBusiness size={18} strokeWidth={1.8} />}
               label="Occupation"
-              value={instructor.occupation}
+              value={instructor.occupation || ""}
             />
 
             <InfoCard
               icon={<Clock3 size={18} strokeWidth={1.8} />}
               label="Experience"
-              value={instructor.years_of_experience}
+              value={instructor.years_of_experience || ""}
             />
           </div>
         </section>
@@ -474,17 +493,17 @@ const InstructorDetailPage = () => {
           <div className="grid gap-4 md:grid-cols-3">
             <SocialCard
               name="GitHub"
-              url={instructor.github_url}
+              url={instructor.github_url || ""}
               icon={<GithubMark />}
             />
             <SocialCard
               name="LinkedIn"
-              url={instructor.linkedin_url}
+              url={instructor.linkedin_url || ""}
               icon={<LinkedinMark />}
             />
             <SocialCard
               name="Portfolio"
-              url={instructor.portfolio_url}
+              url={instructor.portfolio_url || ""}
               icon={<Globe size={20} strokeWidth={1.8} />}
             />
           </div>
@@ -571,17 +590,22 @@ const InstructorDetailPage = () => {
                   </div>
                 </div>
               </div>
+
               <div className="border-b border-white/[0.06] p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <CalendarDays size={16} strokeWidth={1.8} />
                   </div>
+
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">
                       Became an Instructor
                     </p>
+
                     <p className="mt-1 break-words text-sm font-medium text-white">
-                      {formatDate(instructor.became_instructor_at)}
+                      {instructor.became_instructor_at
+                        ? formatDate(instructor.became_instructor_at)
+                        : "Not available"}
                     </p>
                   </div>
                 </div>

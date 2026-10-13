@@ -1,5 +1,6 @@
 import adminApi from "../../../shared/api/adminAxios";
 
+/** Instructor record returned by GET /api/admins/instructors/. */
 export interface AdminInstructor {
   id: number;
   full_name: string;
@@ -12,10 +13,31 @@ export interface AdminInstructor {
   became_instructor_at?: string | null;
 }
 
+/** Fetch all approved instructors for the admin instructor list page. */
 export const getAdminInstructors = async (): Promise<AdminInstructor[]> => {
   const response = await adminApi.get<AdminInstructor[]>(
     "/admins/instructors/",
   );
+  return response.data;
+};
 
+/** Full instructor profile returned by GET /api/admins/instructors/:id/. */
+export interface AdminInstructorDetail extends AdminInstructor {
+  professional_bio: string | null;
+  education: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  portfolio_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Fetch one instructor's full profile for the admin detail page. */
+export const getAdminInstructorDetail = async (
+  instructorId: number,
+): Promise<AdminInstructorDetail> => {
+  const response = await adminApi.get<AdminInstructorDetail>(
+    `/admins/instructors/${instructorId}/`,
+  );
   return response.data;
 };
