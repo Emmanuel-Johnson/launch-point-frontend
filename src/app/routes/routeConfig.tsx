@@ -58,6 +58,7 @@ import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
 import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
 import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
 import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
+import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -249,6 +250,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "instructors",
             element: <InstructorListPage />,
+          },
+          {
+            path: "instructors/:instructorId",
+            element: <InstructorDetailPage />,
           },
           {
             path: "applications",
