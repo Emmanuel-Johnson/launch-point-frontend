@@ -522,7 +522,6 @@ const InstructorApplicationAdminDetailPage = () => {
           : currentApplication,
       );
       setDecisionModal(null);
-      navigate("/admin/applications/instructors");
     } catch (error) {
       console.error(
         `Failed to ${decisionModal === "approved" ? "approve" : "reject"} instructor application:`,

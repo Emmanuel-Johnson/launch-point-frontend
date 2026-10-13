@@ -1102,3 +1102,37 @@ html {
   background: #8b5cf6 !important;
   opacity: 1 !important;
 }
+
+/* Student error toast — red */
+.student-toast.Toastify__toast--error {
+  background: #050505 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__progress-bar {
+  background: #ef4444 !important;
+}
+
+/* Instructor error toast — red */
+.instructor-toast.Toastify__toast--error {
+  background: #050505 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--error .Toastify__progress-bar {
+  background: #ef4444 !important;
+}
