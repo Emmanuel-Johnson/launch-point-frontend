@@ -4,6 +4,9 @@ import { useOutletContext } from "react-router-dom";
 
 import type { InstructorPublicContext } from "../layout/InstructorPublicLayout";
 
+import { useAppDispatch } from "../../../app/store/hooks";
+import { setCredentials } from "../../auth/slices/authSlice";
+
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -348,6 +351,7 @@ type ApplicationDetailsProps = {
 
 const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [isOpeningDashboard, setIsOpeningDashboard] = useState(false);
 
@@ -418,18 +422,25 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
     try {
       setIsOpeningDashboard(true);
 
-      await markInstructorDashboardAsOpened();
+      const response = await markInstructorDashboardAsOpened();
 
+      // Update the authenticated user in Redux.
+      dispatch(setCredentials(response.user));
+
+      // Update the current application state.
       setApplication((prev) =>
         prev ? { ...prev, is_dashboard_opened: true } : prev,
       );
 
+      // Refresh the shared application state.
       refreshApplication();
 
-      toast.success("Welcome to your Instructor Dashboard!", {
+      // Show the API's welcome message.
+      toast.success(response.message, {
         containerId: "instructor",
       });
 
+      // Navigate to the instructor dashboard.
       navigate("/instructor/dashboard");
     } catch (error) {
       console.error("Failed to open instructor dashboard:", error);
