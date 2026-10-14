@@ -230,7 +230,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                 </p>
 
                 <p className="text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
-                  <p>{user?.role}</p>
+                  {user?.role}
                 </p>
               </div>
 

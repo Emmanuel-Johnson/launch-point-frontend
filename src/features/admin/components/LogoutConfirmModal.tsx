@@ -14,7 +14,9 @@ const LogoutConfirmModal = ({
   onCancel,
   onConfirm,
 }: LogoutConfirmModalProps) => {
-  const admin = useAppSelector((state) => state.admin.admin);
+  const admin = useAppSelector((state) =>
+    state.auth.user?.role === "admin" ? state.auth.user : null,
+  );
   // Escape to dismiss + lock background scroll while the modal is open.
   useEffect(() => {
     if (!isOpen) {

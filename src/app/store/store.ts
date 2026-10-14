@@ -11,7 +11,6 @@ import {
 } from "redux-persist";
 
 import authReducer from "../../features/auth/slices/authSlice";
-import adminReducer from "../../features/admin/slices/adminSlice";
 
 const storage = {
   getItem: (key: string) => {
@@ -31,13 +30,12 @@ const storage = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  admin: adminReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "admin"],
+  whitelist: ["auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

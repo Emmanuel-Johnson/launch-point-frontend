@@ -1,4 +1,4 @@
-import adminApi from "../../../shared/api/adminAxios";
+import api from "../../../shared/api/axios";
 
 // =========================================================
 // Admin Login
@@ -26,7 +26,7 @@ export interface AdminLoginResponse {
 export const adminLogin = async (
   credentials: AdminLoginCredentials,
 ): Promise<AdminLoginResponse> => {
-  const response = await adminApi.post<AdminLoginResponse>(
+  const response = await api.post<AdminLoginResponse>(
     "/auth/admin/login/",
     credentials,
   );
@@ -45,12 +45,9 @@ export interface AdminLogoutResponse {
 export const logoutAdmin = async (
   refreshToken: string,
 ): Promise<AdminLogoutResponse> => {
-  const response = await adminApi.post<AdminLogoutResponse>(
-    "/auth/admin/logout/",
-    {
-      admin_refresh: refreshToken,
-    },
-  );
+  const response = await api.post<AdminLogoutResponse>("/auth/admin/logout/", {
+    refresh: refreshToken,
+  });
 
   return response.data;
 };
@@ -69,7 +66,7 @@ export interface AdminStudent {
 }
 
 export const getAdminStudents = async (): Promise<AdminStudent[]> => {
-  const response = await adminApi.get<AdminStudent[]>("/admins/students/");
+  const response = await api.get<AdminStudent[]>("/admins/students/");
 
   return response.data;
 };
@@ -98,7 +95,7 @@ export interface AdminStudentDetail {
 export const getAdminStudent = async (
   studentId: number,
 ): Promise<AdminStudentDetail> => {
-  const response = await adminApi.get<AdminStudentDetail>(
+  const response = await api.get<AdminStudentDetail>(
     `/admins/students/${studentId}`,
   );
 
@@ -114,7 +111,7 @@ export const updateStudentStatus = async (
   studentId: number,
   isActive: boolean,
 ): Promise<UpdateStudentStatusResponse> => {
-  const response = await adminApi.patch<UpdateStudentStatusResponse>(
+  const response = await api.patch<UpdateStudentStatusResponse>(
     `/admins/students/${studentId}/status/`,
     {
       is_active: isActive,
