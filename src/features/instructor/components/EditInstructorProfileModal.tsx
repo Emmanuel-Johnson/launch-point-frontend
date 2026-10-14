@@ -28,6 +28,8 @@ import {
   getInstructorApplicationFormData,
   type InstructorApplicationCategory,
 } from "../api/instructorApplicationApi";
+import { useAppDispatch } from "../../../app/store/hooks";
+import { updateUser } from "../../auth/slices/authSlice";
 
 const MEDIA_BASE_URL = "http://localhost:8000";
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
@@ -151,6 +153,10 @@ const instructorProfileSchema = z.object({
     .string()
     .trim()
     .min(1, "Portfolio URL is required.")
+    .refine(
+      (value) => value.includes("."),
+      "Please enter a valid portfolio URL (e.g., https://example.com).",
+    )
     .url("Enter a valid portfolio URL.")
     .refine((value) => {
       try {
@@ -254,7 +260,7 @@ const EditInstructorProfileModal = ({
     github_url: profile.github_url ?? "",
     portfolio_url: profile.portfolio_url ?? "",
   });
-
+  const dispatch = useAppDispatch();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(
     resolveImage(profile.profile_image),
@@ -442,7 +448,7 @@ const EditInstructorProfileModal = ({
     event.preventDefault();
     setHasAttemptedSubmit(true);
 
-    // Validate all fields and show the errors beside the corresponding inputs.
+    // Validate all fields and show errors beside the corresponding inputs.
     const validationResult = instructorProfileSchema.safeParse(form);
 
     if (!validationResult.success) {
@@ -473,7 +479,6 @@ const EditInstructorProfileModal = ({
           containerId: "instructor",
         },
       );
-
       return;
     }
 
@@ -488,7 +493,6 @@ const EditInstructorProfileModal = ({
       toast.error("You can select up to 10 categories.", {
         containerId: "instructor",
       });
-
       return;
     }
 
@@ -496,7 +500,6 @@ const EditInstructorProfileModal = ({
       toast.error(imageError, {
         containerId: "instructor",
       });
-
       return;
     }
 
@@ -518,6 +521,15 @@ const EditInstructorProfileModal = ({
         categories: selectedCategoryIds,
       });
 
+      // Update the Redux auth state with the latest profile details.
+      dispatch(
+        updateUser({
+          full_name: updatedProfile.full_name,
+          profile_image: resolveImage(updatedProfile.profile_image),
+        }),
+      );
+
+      // Update the parent component's profile state.
       onSaved(updatedProfile);
     } catch (error) {
       console.error("Failed to update instructor profile:", error);
