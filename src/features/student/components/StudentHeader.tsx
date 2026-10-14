@@ -17,8 +17,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
-import { useAppSelector } from "../../../app/store/hooks";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { clearCredentials } from "../../auth/slices/authSlice";
+import { persistor } from "../../../app/store/store";
 
 interface StudentHeaderProps {
   isSidebarCollapsed: boolean;
@@ -38,6 +40,7 @@ interface StudentHeaderProps {
 
 const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -92,19 +95,33 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
     setIsLoggingOut(true);
 
     try {
+      // Call the backend logout API when a refresh token exists.
       if (refreshToken) {
         await logoutUser(refreshToken);
       }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Student logout failed:", error);
     } finally {
+      // Remove student authentication tokens.
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
-      setShowLogoutConfirm(false);
-      setIsProfileOpen(false);
+      // Clear the user and authentication status from Redux.
+      dispatch(clearCredentials());
 
-      navigate("/login", { replace: true });
+      // Ensure the cleared Redux state is persisted.
+      try {
+        await persistor.flush();
+      } catch (error) {
+        console.error("Failed to persist logout state:", error);
+      } finally {
+        setShowLogoutConfirm(false);
+        setIsProfileOpen(false);
+        setIsLoggingOut(false);
+
+        // Redirect to the student login page.
+        navigate("/login", { replace: true });
+      }
     }
   };
 
