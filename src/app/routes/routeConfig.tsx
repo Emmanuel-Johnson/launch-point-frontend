@@ -37,6 +37,8 @@ import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
 import StudentListPage from "../../features/admin/pages/StudentListPage";
 import StudentDetailPage from "../../features/admin/pages/StudentDetailPage";
 
+import InstructorListPage from "../../features/admin/pages/InstructorListPage";
+
 import SubscriptionPlanListPage from "../../features/admin/pages/SubscriptionPlanListPage";
 import SubscriptionPlanDetailPage from "../../features/admin/pages/SubscriptionPlanDetailPage";
 
@@ -56,6 +58,7 @@ import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
 import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
 import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
 import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
+import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPage";
 
 export const routeConfig: RouteObject[] = [
   // =========================
@@ -244,7 +247,14 @@ export const routeConfig: RouteObject[] = [
             path: "students/:studentId",
             element: <StudentDetailPage />,
           },
-          // Applications — list views share the Instructor/Course toggle
+          {
+            path: "instructors",
+            element: <InstructorListPage />,
+          },
+          {
+            path: "instructors/:instructorId",
+            element: <InstructorDetailPage />,
+          },
           {
             path: "applications",
             element: <ApplicationLayout />,

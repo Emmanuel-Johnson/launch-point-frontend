@@ -1102,3 +1102,55 @@ html {
   background: #8b5cf6 !important;
   opacity: 1 !important;
 }
+
+/* Student error toast — red */
+.student-toast.Toastify__toast--error {
+  background: #050505 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__progress-bar {
+  background: #ef4444 !important;
+}
+
+/* Instructor error toast — red */
+.instructor-toast.Toastify__toast--error {
+  background: #050505 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+
+  --toastify-color-progress: #ef4444 !important;
+  --toastify-color-progress-error: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--error .Toastify__toast-icon {
+  color: #ef4444 !important;
+}
+
+.instructor-toast.Toastify__toast--error .Toastify__progress-bar {
+  background: #ef4444 !important;
+}
+
+
+/* Student and Instructor Error Toast — Match Admin Close Button */
+
+.student-toast.Toastify__toast--error .Toastify__close-button,
+.instructor-toast.Toastify__toast--error .Toastify__close-button {
+  color: #9ca3af !important;
+  opacity: 0.7 !important;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease !important;
+}
+
+.student-toast.Toastify__toast--error .Toastify__close-button:hover,
+.instructor-toast.Toastify__toast--error .Toastify__close-button:hover {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
