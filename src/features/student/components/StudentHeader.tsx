@@ -21,6 +21,9 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { clearCredentials } from "../../auth/slices/authSlice";
 import { persistor } from "../../../app/store/store";
+import { updateUser } from "../../auth/slices/authSlice";
+
+import { switchToInstructor } from "../api/StudentSwitchRole";
 
 interface StudentHeaderProps {
   isSidebarCollapsed: boolean;
@@ -139,6 +142,36 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   };
 
   const profileImage = resolveImage(user?.profile_image);
+
+  const handleSwitchToInstructor = async () => {
+    setIsProfileOpen(false);
+
+    if (!canSwitchToInstructor) {
+      navigate("/instructor");
+      return;
+    }
+
+    try {
+      const response = await switchToInstructor();
+
+      dispatch(
+        updateUser({
+          full_name: response.user.full_name,
+          profile_image: response.user.profile_image,
+          role: response.user.role,
+        }),
+      );
+
+      toast.success(response.message, {
+        containerId: "instructor",
+      });
+
+      navigate("/instructor/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Failed to switch to instructor:", error);
+      toast.error("Unable to switch to the instructor dashboard.");
+    }
+  };
 
   return (
     <>
@@ -371,22 +404,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                 <div className="p-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsProfileOpen(false);
-
-                      if (canSwitchToInstructor) {
-                        toast.success(
-                          "Switched to your Instructor Dashboard!",
-                          {
-                            containerId: "instructor",
-                          },
-                        );
-
-                        navigate("/instructor/dashboard");
-                      } else {
-                        navigate("/instructor");
-                      }
-                    }}
+                    onClick={handleSwitchToInstructor}
                     className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#7C5CFF]/[0.06]"
                   >
                     {/* Shine */}
