@@ -13,12 +13,12 @@ import {
   Mail,
   MapPin,
   User,
-  X,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getAdminInstructorDetail,
+  updateAdminInstructorStatus,
   type AdminInstructorDetail,
 } from "../api/adminInstructorApi";
 
@@ -164,10 +164,9 @@ const InstructorDetailPage = () => {
   const [instructor, setInstructor] = useState<Instructor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  // The detail API does not currently return is_active. Keep the existing
-  // status control as a UI-only toggle until a backend status API is available.
   const [isActive, setIsActive] = useState(true);
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusActionError, setStatusActionError] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -188,6 +187,7 @@ const InstructorDetailPage = () => {
 
         if (isMounted) {
           setInstructor(data);
+          setIsActive(data.is_active);
         }
       } catch (requestError) {
         console.error("Failed to load instructor details:", requestError);
@@ -214,9 +214,34 @@ const InstructorDetailPage = () => {
       : `http://127.0.0.1:8000${instructor.profile_image}`
     : null;
 
-  const handleToggleStatus = () => {
-    setIsActive((currentStatus) => !currentStatus);
-    setIsStatusModalOpen(false);
+  const handleToggleStatus = async () => {
+    if (!instructor || isUpdatingStatus) return;
+
+    const nextStatus = !isActive;
+
+    try {
+      setIsUpdatingStatus(true);
+      setStatusActionError("");
+
+      const response = await updateAdminInstructorStatus(
+        instructor.id,
+        nextStatus,
+      );
+
+      setIsActive(response.is_active);
+      setInstructor((currentInstructor) =>
+        currentInstructor
+          ? { ...currentInstructor, is_active: response.is_active }
+          : currentInstructor,
+      );
+    } catch (requestError) {
+      console.error("Failed to update instructor status:", requestError);
+      setStatusActionError(
+        "Unable to update instructor status. Please try again.",
+      );
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   if (isLoading) {
@@ -341,11 +366,12 @@ const InstructorDetailPage = () => {
               </div>
 
               {/* Activate / Deactivate action */}
-              <div className="flex shrink-0">
+              <div className="flex shrink-0 flex-col items-start gap-2">
                 <button
                   type="button"
-                  onClick={() => setIsStatusModalOpen(true)}
-                  className={`group/toggle relative inline-flex h-11 w-full min-w-[190px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 sm:w-auto ${
+                  onClick={() => void handleToggleStatus()}
+                  disabled={isUpdatingStatus}
+                  className={`group/toggle relative inline-flex h-11 w-full min-w-[190px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
                     isActive
                       ? "border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
                       : "border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
@@ -356,7 +382,12 @@ const InstructorDetailPage = () => {
                       isActive ? "via-red-400/12" : "via-[#34D399]/12"
                     }`}
                   />
-                  {isActive ? (
+                  {isUpdatingStatus ? (
+                    <>
+                      <span className="relative z-10 h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
+                      <span className="relative z-10">Updating...</span>
+                    </>
+                  ) : isActive ? (
                     <>
                       <Ban className="relative z-10 h-4 w-4 shrink-0" />
                       <span className="relative z-10">Deactivate Account</span>
@@ -368,6 +399,14 @@ const InstructorDetailPage = () => {
                     </>
                   )}
                 </button>
+                {statusActionError && (
+                  <p
+                    className="max-w-[240px] text-xs text-red-400"
+                    role="alert"
+                  >
+                    {statusActionError}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -628,82 +667,6 @@ const InstructorDetailPage = () => {
           </div>
         </section>
       </div>
-
-      {/* Activate / deactivate confirmation modal */}
-      {isStatusModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setIsStatusModalOpen(false);
-            }
-          }}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="instructor-status-title"
-            className="w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#0B0B0B] p-6 shadow-2xl"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div
-                className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 ring-inset ${
-                  isActive
-                    ? "bg-red-400/10 text-red-400 ring-red-400/20"
-                    : "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
-                }`}
-              >
-                {isActive ? <Ban size={20} /> : <CheckCircle2 size={20} />}
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsStatusModalOpen(false)}
-                aria-label="Close confirmation dialog"
-                className="rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <h2
-              id="instructor-status-title"
-              className="mt-5 text-lg font-semibold text-white"
-            >
-              {isActive ? "Deactivate Instructor?" : "Activate Instructor?"}
-            </h2>
-
-            <p className="mt-2 text-sm leading-6 text-white/55">
-              {isActive
-                ? `Are you sure you want to deactivate ${instructor.full_name}'s account?`
-                : `Are you sure you want to activate ${instructor.full_name}'s account?`}
-            </p>
-
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setIsStatusModalOpen(false)}
-                className="rounded-xl border border-white/[0.1] px-4 py-2.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/[0.04] hover:text-white"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="button"
-                onClick={handleToggleStatus}
-                className={`inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "border-red-400/25 bg-red-400/10 text-red-400 hover:bg-red-400/15"
-                    : "border-[#34D399]/25 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/15"
-                }`}
-              >
-                {isActive ? <Ban size={16} /> : <CheckCircle2 size={16} />}
-                {isActive ? "Deactivate Account" : "Activate Account"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
