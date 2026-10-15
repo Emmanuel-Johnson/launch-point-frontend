@@ -4,8 +4,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./shared/toast.css";
 import useFavicon from "./shared/hooks/useFavicon";
+import { useAppSelector } from "./app/store/hooks";
+import { useTokenExpiry } from "./features/auth/hooks/useTokenExpiry";
 
 function App() {
+  const user = useAppSelector((state) => state.auth.user);
+
+  useTokenExpiry(Boolean(user));
   useFavicon();
 
   return (

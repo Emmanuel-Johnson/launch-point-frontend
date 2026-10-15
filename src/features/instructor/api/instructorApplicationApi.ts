@@ -106,6 +106,22 @@ export const getInstructorApplication = async (
   return response.data;
 };
 
-export const markInstructorDashboardAsOpened = async (): Promise<void> => {
-  await api.post("/instructors/dashboard/opened/");
-};
+export interface MarkInstructorDashboardOpenedResponse {
+  message: string;
+  user: {
+    id: number;
+    email: string;
+    full_name: string;
+    profile_image: string | null;
+    role: "student" | "instructor" | "admin";
+  };
+}
+
+export const markInstructorDashboardAsOpened =
+  async (): Promise<MarkInstructorDashboardOpenedResponse> => {
+    const response = await api.post<MarkInstructorDashboardOpenedResponse>(
+      "/instructors/dashboard/opened/",
+    );
+
+    return response.data;
+  };

@@ -1,4 +1,4 @@
-import adminApi from "../../../shared/api/adminAxios";
+import adminApi from "../../../shared/api/axios";
 
 /** Instructor record returned by GET /api/admins/instructors/. */
 export interface AdminInstructor {

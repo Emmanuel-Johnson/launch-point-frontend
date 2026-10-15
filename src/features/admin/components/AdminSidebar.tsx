@@ -19,6 +19,9 @@ import {
 
 import { logoutAdmin } from "../api/adminApi";
 import AdminLogoutConfirmModal from "./LogoutConfirmModal";
+import { useAppDispatch } from "../../../app/store/hooks";
+import { clearCredentials } from "../../auth/slices/authSlice";
+import { persistor } from "../../../app/store/store";
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -40,6 +43,7 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -145,7 +149,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   // =========================================================
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("admin_refresh");
+    const refreshToken = localStorage.getItem("refresh");
 
     setIsLoggingOut(true);
 
@@ -156,8 +160,17 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
     } catch (error) {
       console.error("Admin logout failed:", error);
     } finally {
-      localStorage.removeItem("admin_access");
-      localStorage.removeItem("admin_refresh");
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+
+      // Clear the logged-in user from Redux.
+      dispatch(clearCredentials());
+
+      // Persist the cleared authentication state.
+      await persistor.flush();
+
+      setShowLogoutConfirm(false);
+      setIsLoggingOut(false);
 
       navigate("/admin/login", { replace: true });
     }

@@ -4,52 +4,35 @@ import PublicLayout from "../../features/marketing/layout/PublicLayout";
 import LandingPage from "../../features/marketing/pages/LandingPage";
 import AboutPage from "../../features/marketing/pages/AboutPage";
 import ContactPage from "../../features/marketing/pages/ContactPage";
-
-import AuthLayout from "../../features/auth/layout/AuthLayout";
 import LoginPage from "../../features/auth/pages/LoginPage";
 import SignupPage from "../../features/auth/pages/SignupPage";
 import ForgotPasswordPage from "../../features/auth/pages/ForgotPasswordPage";
 import VerifyEmailPage from "../../features/auth/pages/VerifyEmailPage";
 import VerifyResetCodePage from "../../features/auth/pages/VerifyResetCodePage";
 import ResetPasswordPage from "../../features/auth/pages/ResetPasswordPage";
-
 import PrivacyPolicyPage from "../../features/marketing/pages/PrivacyPolicyPage";
 import TermsPage from "../../features/marketing/pages/TermsPage";
 
-// Student
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 
-// Admin
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
 
-import ProtectedRoute from "../../shared/guards/ProtectedRoute";
-import PublicRoute from "../../shared/guards/PublicRoute";
-
 import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
-
-import AdminProtectedRoute from "../../shared/guards/AdminProtectedRoute";
-import AdminPublicRoute from "../../shared/guards/AdminPublicRoute";
 import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
-
 import StudentListPage from "../../features/admin/pages/StudentListPage";
 import StudentDetailPage from "../../features/admin/pages/StudentDetailPage";
-
 import InstructorListPage from "../../features/admin/pages/InstructorListPage";
-
 import SubscriptionPlanListPage from "../../features/admin/pages/SubscriptionPlanListPage";
 import SubscriptionPlanDetailPage from "../../features/admin/pages/SubscriptionPlanDetailPage";
 
-// Instructor
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
-
 import StudentProfilePage from "../../features/student/pages/StudentProfilePage";
 import CategoryListPage from "../../features/admin/pages/CategoryListPage";
 import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
-
 import InstructorPublicLayout from "../../features/instructor/layout/InstructorPublicLayout";
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
 import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
@@ -60,10 +43,10 @@ import InstructorApplicationAdminDetailPage from "../../features/admin/pages/Ins
 import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
 import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPage";
 
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
+
 export const routeConfig: RouteObject[] = [
-  // =========================
-  // Public / Marketing routes
-  // =========================
   {
     element: <PublicLayout />,
     children: [
@@ -81,48 +64,35 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
-
-  // =========================
-  // Authentication routes
-  // =========================
   {
-    element: <AuthLayout />,
+    element: <PublicRoute />,
     children: [
       {
-        element: <PublicRoute />,
-        children: [
-          {
-            path: "/login",
-            element: <LoginPage />,
-          },
-          {
-            path: "/signup",
-            element: <SignupPage />,
-          },
-          {
-            path: "/forgot-password",
-            element: <ForgotPasswordPage />,
-          },
-          {
-            path: "/verify-email",
-            element: <VerifyEmailPage />,
-          },
-          {
-            path: "/verify-reset-code",
-            element: <VerifyResetCodePage />,
-          },
-          {
-            path: "/reset-password",
-            element: <ResetPasswordPage />,
-          },
-        ],
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/verify-email",
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: "/verify-reset-code",
+        element: <VerifyResetCodePage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
     ],
   },
-
-  // =========================
-  // Legal routes
-  // =========================
   {
     path: "/privacy-policy",
     element: <PrivacyPolicyPage />,
@@ -132,11 +102,8 @@ export const routeConfig: RouteObject[] = [
     element: <TermsPage />,
   },
 
-  // =========================
-  // Student dashboard
-  // =========================
   {
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute allowedRoles={["student"]} />,
     children: [
       {
         path: "/student",
@@ -162,57 +129,54 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
-
-  // Instructor
   {
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute allowedRoles={["student", "instructor"]} />,
     children: [
       {
-        path: "/instructor",
+        path: "/instructor-landing",
+        element: <InstructorPublicLayout />,
         children: [
-          // Public instructor pages
           {
-            element: <InstructorPublicLayout />,
-            children: [
-              {
-                index: true,
-                element: <InstructorLandingPage />,
-              },
-              {
-                path: "applications",
-                element: <InstructorApplicationListPage />,
-              },
-              {
-                path: "applications/:applicationId",
-                element: <InstructorApplicationDetailsPage />,
-              },
-            ],
+            index: true,
+            element: <InstructorLandingPage />,
           },
-
-          // Instructor dashboard pages
           {
-            element: <InstructorLayout />,
-            children: [
-              {
-                path: "dashboard",
-                element: <InstructorDashboardPage />,
-              },
-              {
-                path: "profile",
-                element: <InstructorProfilePage />,
-              },
-            ],
+            path: "applications",
+            element: <InstructorApplicationListPage />,
+          },
+          {
+            path: "applications/:applicationId",
+            element: <InstructorApplicationDetailsPage />,
           },
         ],
       },
     ],
   },
-
-  // =========================
-  // Admin authentication
-  // =========================
   {
-    element: <AdminPublicRoute />,
+    element: <ProtectedRoute allowedRoles={["instructor"]} />,
+    children: [
+      {
+        path: "/instructor",
+        element: <InstructorLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: "dashboard",
+            element: <InstructorDashboardPage />,
+          },
+          {
+            path: "profile",
+            element: <InstructorProfilePage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <PublicRoute />,
     children: [
       {
         path: "/admin/login",
@@ -220,12 +184,8 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
-
-  // =========================
-  // Admin dashboard
-  // =========================
   {
-    element: <AdminProtectedRoute />,
+    element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
       {
         path: "/admin",
@@ -273,12 +233,12 @@ export const routeConfig: RouteObject[] = [
               },
             ],
           },
-          // Application detail — standalone, no toggle
+
           {
             path: "applications/instructors/:applicationId",
             element: <InstructorApplicationAdminDetailPage />,
           },
-          // Categories
+
           {
             path: "categories",
             element: <CategoryListPage />,

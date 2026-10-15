@@ -1,4 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { persistor, store } from "../../app/store/store";
+import { clearCredentials as clearAuthState } from "../../features/auth/slices/authSlice";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api",
@@ -43,6 +45,22 @@ const processQueue = (error: unknown, token: string | null = null) => {
   });
 
   failedQueue = [];
+};
+
+// ============================================================================
+// CLEAR AUTHENTICATION CREDENTIALS
+// ============================================================================
+
+const clearAllCredentials = async () => {
+  // Remove JWT tokens
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+
+  // Clear Redux authentication state
+  store.dispatch(clearAuthState());
+
+  // Clear persisted Redux state
+  await persistor.purge();
 };
 
 // ============================================================================
@@ -124,8 +142,7 @@ api.interceptors.response.use(
     if (!refreshToken) {
       isRefreshing = false;
 
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
+      await clearAllCredentials();
 
       window.location.href = "/login";
 
@@ -133,13 +150,6 @@ api.interceptors.response.use(
     }
 
     try {
-      // ----------------------------------------------------------------------
-      // Use normal axios here, NOT api.
-      //
-      // This prevents the refresh request from triggering
-      // this response interceptor.
-      // ----------------------------------------------------------------------
-
       const response = await axios.post(
         "http://localhost:8000/api/auth/token/refresh/",
         {
@@ -147,53 +157,33 @@ api.interceptors.response.use(
         },
       );
 
-      // ----------------------------------------------------------------------
-      // Refresh-token rotation returns both tokens
-      // ----------------------------------------------------------------------
-
+      // Get the new access token
       const newAccessToken = response.data.access;
 
-      const newRefreshToken = response.data.refresh;
+      if (!newAccessToken) {
+        throw new Error("Refresh response did not contain an access token");
+      }
 
-      // ----------------------------------------------------------------------
-      // Save both new tokens
-      // ----------------------------------------------------------------------
-
+      // Save only the new access token
       localStorage.setItem("access", newAccessToken);
 
-      localStorage.setItem("refresh", newRefreshToken);
+      // Keep the existing refresh token unchanged
 
-      // ----------------------------------------------------------------------
-      // Resolve all requests waiting for the refresh
-      // ----------------------------------------------------------------------
-
+      // Resolve all queued requests
       processQueue(null, newAccessToken);
 
-      // ----------------------------------------------------------------------
       // Retry the original request
-      // ----------------------------------------------------------------------
-
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
       return api(originalRequest);
     } catch (refreshError) {
-      // ----------------------------------------------------------------------
       // Reject all waiting requests
-      // ----------------------------------------------------------------------
-
       processQueue(refreshError);
 
-      // ----------------------------------------------------------------------
-      // Clear authentication
-      // ----------------------------------------------------------------------
+      // Clear all authentication credentials
+      await clearAllCredentials();
 
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
-      // ----------------------------------------------------------------------
-      // Send user to login
-      // ----------------------------------------------------------------------
-
+      // Redirect to login
       window.location.href = "/login";
 
       return Promise.reject(refreshError);

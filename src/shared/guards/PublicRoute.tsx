@@ -1,13 +1,25 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useAppSelector } from "../../app/store/hooks";
 
-const PublicRoute = () => {
-  const accessToken = localStorage.getItem("access");
+export default function PublicRoute() {
+  const { user, isAuthenticated } = useAppSelector(
+    (state) => state.auth
+  );
 
-  if (accessToken) {
-    return <Navigate to="/student/dashboard" replace />;
+  if (isAuthenticated && user) {
+    const dashboardRoutes = {
+      student: "/student/dashboard",
+      instructor: "/instructor/dashboard",
+      admin: "/admin/dashboard",
+    } as const;
+
+    return (
+      <Navigate
+        to={dashboardRoutes[user.role]}
+        replace
+      />
+    );
   }
 
   return <Outlet />;
-};
-
-export default PublicRoute;
+}

@@ -1,7 +1,9 @@
 import { Bell, ChevronDown, LogOut, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../app/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { clearCredentials } from "../../auth/slices/authSlice";
+import { persistor } from "../../../app/store/store";
 import { logoutAdmin } from "../api/adminApi";
 import AdminLogoutConfirmModal from "./LogoutConfirmModal";
 
@@ -23,7 +25,10 @@ interface AdminHeaderProps {
 
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const navigate = useNavigate();
-  const admin = useAppSelector((state) => state.admin.admin);
+  const dispatch = useAppDispatch();
+  const admin = useAppSelector((state) =>
+    state.auth.user?.role === "admin" ? state.auth.user : null,
+  );
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -50,21 +55,32 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   }, []);
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("admin_refresh");
+    const refreshToken = localStorage.getItem("refresh");
 
     setIsLoggingOut(true);
 
     try {
+      // Revoke the admin refresh token on the backend.
       if (refreshToken) {
         await logoutAdmin(refreshToken);
       }
     } catch (error) {
+      // Continue local logout even if the API request fails.
       console.error("Admin logout failed:", error);
     } finally {
-      localStorage.removeItem("admin_access");
-      localStorage.removeItem("admin_refresh");
+      // Remove admin authentication tokens.
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
 
+      // Clear the authenticated user from Redux.
+      dispatch(clearCredentials());
+
+      // Wait for Redux Persist to save the cleared auth state.
+      await persistor.flush();
+
+      // Close the modal and redirect to admin login.
       setShowLogoutConfirm(false);
+      setIsLoggingOut(false);
 
       navigate("/admin/login", { replace: true });
     }

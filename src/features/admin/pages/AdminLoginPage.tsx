@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { adminLogin } from "../api/adminApi";
 
 import { useAppDispatch } from "../../../app/store/hooks";
-import { setAdminCredentials } from "../slices/adminSlice";
+import { setCredentials } from "../../auth/slices/authSlice";
 
 // =========================================================
 // Validation schema
@@ -64,15 +64,32 @@ const AdminLoginPage = () => {
         password: data.password,
       });
 
-      // ---------------------------------------------------
-      // Store admin tokens separately from student tokens
-      // ---------------------------------------------------
+      localStorage.setItem("access", response.tokens.access);
+      localStorage.setItem("refresh", response.tokens.refresh);
 
-      localStorage.setItem("admin_access", response.tokens.access);
+      dispatch(
+        setCredentials({
+          id: response.user.id,
+          full_name: response.user.full_name,
+          email: response.user.email,
+          role: "admin",
+          profile_image: null,
+        }),
+      );
 
-      localStorage.setItem("admin_refresh", response.tokens.refresh);
+      console.log("Redux auth state:", {
+        user: response.user,
+        reduxUser: {
+          id: response.user.id,
+          full_name: response.user.full_name,
+          email: response.user.email,
+          role: "admin",
+          profile_image: null,
+        },
+      });
 
-      dispatch(setAdminCredentials(response.user));
+      console.log("Stored access token:", localStorage.getItem("access"));
+      console.log("Stored refresh token:", localStorage.getItem("refresh"));
 
       toast.success("Login successful!", {
         containerId: "admin",

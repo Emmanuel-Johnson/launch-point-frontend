@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { updateUser } from "../../auth/slices/authSlice";
+import { switchToStudent } from "../api/InstructorSwitchRole";
 
 interface InstructorHeaderProps {
   isSidebarCollapsed: boolean;
@@ -32,6 +35,8 @@ interface InstructorHeaderProps {
 
 const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -55,14 +60,28 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
     };
   }, []);
 
-  const handleSwitchToStudent = () => {
+  const handleSwitchToStudent = async () => {
     setIsProfileOpen(false);
 
-    toast.success(
-      "Switched to your Student Dashboard. Keep learning and growing!",
-    );
+    try {
+      const response = await switchToStudent();
 
-    navigate("/student/dashboard");
+      // Update the authenticated user's Redux state.
+      dispatch(
+        updateUser({
+          full_name: response.user.full_name,
+          profile_image: response.user.profile_image,
+          role: response.user.role,
+        }),
+      );
+
+      toast.success(response.message);
+
+      navigate("/student/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Failed to switch to student:", error);
+      toast.error("Unable to switch to the student dashboard.");
+    }
   };
 
   const handleLogout = async () => {
@@ -159,17 +178,35 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Avatar */}
-              <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/20 text-sm font-semibold text-[#3B82F6] ring-1 ring-[#3B82F6]/20 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#3B82F6]/25 group-hover:text-[#60A5FA] group-hover:ring-[#3B82F6]/40 group-hover:shadow-[0_0_18px_rgba(59,130,246,0.18)]">
-                EJ
+              <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#3B82F6]/20 text-sm font-semibold text-[#3B82F6] ring-1 ring-[#3B82F6]/20">
+                {user?.profile_image ? (
+                  <img
+                    src={user.profile_image}
+                    alt={user.full_name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  user?.full_name
+                    ?.split(" ")
+                    .filter(Boolean)
+                    .map((part) => part[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase() || "U"
+                )}
               </div>
 
               {/* User Info */}
               <div className="relative z-10 hidden text-left sm:block">
                 <p className="text-sm font-medium text-white transition-colors duration-200 group-hover:text-[#60A5FA]">
-                  Emmanuel Johnson
+                  {user?.full_name || "User"}
                 </p>
 
-                <p className="text-xs text-white/50">Instructor</p>
+                <p className="text-xs text-white/50">
+                  {user?.role
+                    ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                    : "Instructor"}
+                </p>
               </div>
 
               {/* Chevron */}
@@ -194,25 +231,42 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               {/* =====================================================
                 USER INFO
             ====================================================== */}
+
               <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
                 <div className="flex items-center gap-3.5">
-                  {/* Avatar */}
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_18px_rgba(59,130,246,0.3)]">
-                    EJ
+                  {/* Profile Avatar */}
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#3B82F6] to-[#1D4ED8] text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-all duration-300 hover:scale-105">
+                    {user?.profile_image ? (
+                      <img
+                        src={user.profile_image}
+                        alt={user.full_name || "Instructor"}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      user?.full_name
+                        ?.split(" ")
+                        .filter(Boolean)
+                        .map((part) => part[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase() || "U"
+                    )}
                   </div>
 
                   {/* User Details */}
                   <div className="min-w-0 flex-1">
+                    {/* Full Name */}
                     <p className="truncate text-[15px] font-semibold text-white">
-                      Emmanuel Johnson
+                      {user?.full_name || "Instructor"}
                     </p>
 
-                    <div className="mt-1 flex items-center gap-1.5">
-                      {/* Online status — semantic green, intentionally not blue */}
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+                    {/* Email */}
+
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
 
                       <span className="text-xs font-medium text-white/55">
-                        Instructor
+                        {user?.email || "No email available"}
                       </span>
                     </div>
                   </div>
@@ -260,10 +314,8 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                   />
                 </button>
               </div>
-
               {/* Divider */}
               <div className="border-t border-white/[0.08]" />
-
               {/* =====================================================
                 SWITCH TO STUDENT
             ====================================================== */}
@@ -302,10 +354,8 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
                   />
                 </button>
               </div>
-
               {/* Divider */}
               <div className="border-t border-white/[0.08]" />
-
               {/* =====================================================
                 LOGOUT
             ====================================================== */}

@@ -17,6 +17,9 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
+import { useAppDispatch } from "../../../app/store/hooks";
+import { clearCredentials } from "../../auth/slices/authSlice";
+import { persistor } from "../../../app/store/store";
 
 interface StudentSidebarProps {
   isCollapsed: boolean;
@@ -75,6 +78,7 @@ const navSections: NavSection[] = [
 
 const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -89,12 +93,27 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
         await logoutUser(refreshToken);
       }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Student logout failed:", error);
     } finally {
+      // Remove authentication tokens.
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
-      navigate("/login", { replace: true });
+      // Clear authentication state in Redux.
+      dispatch(clearCredentials());
+
+      // Persist the cleared Redux state.
+      try {
+        await persistor.flush();
+      } catch (error) {
+        console.error("Failed to persist logout state:", error);
+      } finally {
+        setShowLogoutConfirm(false);
+        setIsLoggingOut(false);
+
+        // Redirect to login.
+        navigate("/login", { replace: true });
+      }
     }
   };
 

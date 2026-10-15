@@ -64,7 +64,9 @@ interface OverviewCard {
 }
 
 const DashboardPage = () => {
-  const admin = useAppSelector((state) => state.admin.admin);
+  const admin = useAppSelector((state) =>
+    state.auth.user?.role === "admin" ? state.auth.user : null,
+  );
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",

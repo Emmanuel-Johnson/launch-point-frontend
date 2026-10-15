@@ -1,4 +1,4 @@
-import adminApi from "../../../shared/api/adminAxios";
+import adminApi from "../../../shared/api/axios";
 
 export interface AdminSubscriptionPlan {
   id: number;
