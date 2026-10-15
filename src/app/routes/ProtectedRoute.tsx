@@ -1,44 +1,37 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
-import type { UserRole } from "../../features/auth/slices/authSlice";
 
 interface ProtectedRouteProps {
-  allowedRoles: UserRole[];
+  allowedRoles: ("student" | "instructor" | "admin")[];
 }
 
-export default function ProtectedRoute({
-  allowedRoles,
-}: ProtectedRouteProps) {
-  const { user, isAuthenticated } = useAppSelector(
-    (state) => state.auth
-  );
+const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
+  const { user } = useAppSelector((state) => state.auth);
 
-  const location = useLocation();
-
-  if (!isAuthenticated || !user) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-        state={{ from: location }}
-      />
-    );
+  // User is not authenticated
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
+  // User does not have the required role
   if (!allowedRoles.includes(user.role)) {
-    const dashboardRoutes: Record<UserRole, string> = {
-      student: "/student/dashboard",
-      instructor: "/instructor/dashboard",
-      admin: "/admin/dashboard",
-    };
+    if (user.role === "student") {
+      return <Navigate to="/student/dashboard" replace />;
+    }
 
-    return (
-      <Navigate
-        to={dashboardRoutes[user.role]}
-        replace
-      />
-    );
+    if (user.role === "instructor") {
+      return <Navigate to="/instructor/dashboard" replace />;
+    }
+
+    if (user.role === "admin") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+
+    return <Navigate to="/" replace />;
   }
 
+  // User is authenticated and has permission
   return <Outlet />;
-}
+};
+
+export default ProtectedRoute;
