@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import { toast } from "react-toastify";
-import { useAppSelector } from "../../../app/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { updateUser } from "../../auth/slices/authSlice";
+import { switchToStudent } from "../api/InstructorSwitchRole";
 
 interface InstructorHeaderProps {
   isSidebarCollapsed: boolean;
@@ -33,6 +35,7 @@ interface InstructorHeaderProps {
 
 const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -57,14 +60,28 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
     };
   }, []);
 
-  const handleSwitchToStudent = () => {
+  const handleSwitchToStudent = async () => {
     setIsProfileOpen(false);
 
-    toast.success(
-      "Switched to your Student Dashboard. Keep learning and growing!",
-    );
+    try {
+      const response = await switchToStudent();
 
-    navigate("/student/dashboard");
+      // Update the authenticated user's Redux state.
+      dispatch(
+        updateUser({
+          full_name: response.user.full_name,
+          profile_image: response.user.profile_image,
+          role: response.user.role,
+        }),
+      );
+
+      toast.success(response.message);
+
+      navigate("/student/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Failed to switch to student:", error);
+      toast.error("Unable to switch to the student dashboard.");
+    }
   };
 
   const handleLogout = async () => {
