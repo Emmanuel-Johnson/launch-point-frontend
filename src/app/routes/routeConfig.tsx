@@ -62,39 +62,31 @@ export const routeConfig: RouteObject[] = [
     ],
   },
 
-  // {
-  //   element: <PublicRoute />,
-  //   children: [
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/signup",
-        element: <SignupPage />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: "/verify-email",
-        element: <VerifyEmailPage />,
-      },
-      {
-        path: "/verify-reset-code",
-        element: <VerifyResetCodePage />,
-      },
-      {
-        path: "/reset-password",
-        element: <ResetPasswordPage />,
-      },
-  //   ],
-  // },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignupPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmailPage />,
+  },
+  {
+    path: "/verify-reset-code",
+    element: <VerifyResetCodePage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
+  },
 
-  // =========================
-  // Legal routes
-  // =========================
   {
     path: "/privacy-policy",
     element: <PrivacyPolicyPage />,
@@ -104,36 +96,29 @@ export const routeConfig: RouteObject[] = [
     element: <TermsPage />,
   },
 
-  // =========================
-  // Student dashboard
-  // =========================
-  // {
-  //   element: <ProtectedRoute allowedRoles={["student"]} />,
-  //   children: [
+  {
+    path: "/student",
+    element: <StudentLayout />,
+    children: [
       {
-        path: "/student",
-        element: <StudentLayout />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="dashboard" replace />,
-          },
-          {
-            path: "dashboard",
-            element: <StudentDashboardPage />,
-          },
-          {
-            path: "profile",
-            element: <StudentProfilePage />,
-          },
-          {
-            path: "subscriptions",
-            element: <StudentSubscriptionPage />,
-          },
-        ],
+        index: true,
+        element: <Navigate to="dashboard" replace />,
       },
-  //   ],
-  // },
+      {
+        path: "dashboard",
+        element: <StudentDashboardPage />,
+      },
+      {
+        path: "profile",
+        element: <StudentProfilePage />,
+      },
+      {
+        path: "subscriptions",
+        element: <StudentSubscriptionPage />,
+      },
+    ],
+  },
+
   {
     path: "/instructor",
     element: <InstructorPublicLayout />,
@@ -152,122 +137,102 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
-  // Instructor
-  // {
-  //   element: <ProtectedRoute allowedRoles={["student", "instructor"]} />,
-  //   children: [
+
+  {
+    path: "/instructor",
+    element: <InstructorLayout />,
+    children: [
       {
-        path: "/instructor",
-        element: <InstructorLayout />,
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <InstructorDashboardPage />,
+      },
+      {
+        path: "profile",
+        element: <InstructorProfilePage />,
+      },
+    ],
+  },
+
+  {
+    path: "/admin/login",
+    element: <AdminLoginPage />,
+  },
+
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <AdminDashboardPage />,
+      },
+      {
+        path: "students",
+        element: <StudentListPage />,
+      },
+      {
+        path: "students/:studentId",
+        element: <StudentDetailPage />,
+      },
+      {
+        path: "instructors",
+        element: <InstructorListPage />,
+      },
+      {
+        path: "instructors/:instructorId",
+        element: <InstructorDetailPage />,
+      },
+      {
+        path: "applications",
+        element: <ApplicationLayout />,
         children: [
           {
             index: true,
-            element: <Navigate to="dashboard" replace />,
-          },
-          {
-            path: "dashboard",
-            element: <InstructorDashboardPage />,
-          },
-          {
-            path: "profile",
-            element: <InstructorProfilePage />,
-          },
-        ],
-      },
-  //   ],
-  // },
-
-  // =========================
-  // Admin authentication
-  // =========================
-  // {
-  //   element: <PublicRoute />,
-  //   children: [
-      {
-        path: "/admin/login",
-        element: <AdminLoginPage />,
-      },
-  //   ],
-  // },
-
-  // =========================
-  // Admin dashboard
-  // =========================
-  // {
-  //   element: <ProtectedRoute allowedRoles={["admin"]} />,
-  //   children: [
-      {
-        path: "/admin",
-        element: <AdminLayout />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="dashboard" replace />,
-          },
-          {
-            path: "dashboard",
-            element: <AdminDashboardPage />,
-          },
-          {
-            path: "students",
-            element: <StudentListPage />,
-          },
-          {
-            path: "students/:studentId",
-            element: <StudentDetailPage />,
+            element: <Navigate to="instructors" replace />,
           },
           {
             path: "instructors",
-            element: <InstructorListPage />,
+            element: <InstructorApplicationAdminListPage />,
           },
           {
-            path: "instructors/:instructorId",
-            element: <InstructorDetailPage />,
-          },
-          {
-            path: "applications",
-            element: <ApplicationLayout />,
-            children: [
-              {
-                index: true,
-                element: <Navigate to="instructors" replace />,
-              },
-              {
-                path: "instructors",
-                element: <InstructorApplicationAdminListPage />,
-              },
-              {
-                path: "courses",
-                element: <div></div>,
-              },
-            ],
-          },
-          // Application detail — standalone, no toggle
-          {
-            path: "applications/instructors/:applicationId",
-            element: <InstructorApplicationAdminDetailPage />,
-          },
-          // Categories
-          {
-            path: "categories",
-            element: <CategoryListPage />,
-          },
-          {
-            path: "categories/:categoryId",
-            element: <CategoryDetailPage />,
-          },
-          {
-            path: "subscriptions",
-            element: <SubscriptionPlanListPage />,
-          },
-          {
-            path: "subscriptions/:planId",
-            element: <SubscriptionPlanDetailPage />,
+            path: "courses",
+            element: <div></div>,
           },
         ],
       },
-  //   ],
-  // },
+
+      {
+        path: "applications/instructors/:applicationId",
+        element: <InstructorApplicationAdminDetailPage />,
+      },
+
+      {
+        path: "categories",
+        element: <CategoryListPage />,
+      },
+      {
+        path: "categories/:categoryId",
+        element: <CategoryDetailPage />,
+      },
+      {
+        path: "subscriptions",
+        element: <SubscriptionPlanListPage />,
+      },
+      {
+        path: "subscriptions/:planId",
+        element: <SubscriptionPlanDetailPage />,
+      },
+    ],
+  },
+
   {
     path: "*",
     element: <NotFoundPage />,
