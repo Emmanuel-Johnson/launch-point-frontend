@@ -20,7 +20,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getAdminInstructorDetail,
   type AdminInstructorDetail,
-} from "../api/instructorApi";
+} from "../api/adminInstructorApi";
 
 type Instructor = AdminInstructorDetail;
 
