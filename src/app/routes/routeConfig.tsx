@@ -44,6 +44,7 @@ import InstructorProfilePage from "../../features/instructor/pages/InstructorPro
 import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPage";
 
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -63,32 +64,35 @@ export const routeConfig: RouteObject[] = [
       },
     ],
   },
-
   {
-    path: "/login",
-    element: <LoginPage />,
+    element: <PublicRoute />,
+    children: [
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/verify-email",
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: "/verify-reset-code",
+        element: <VerifyResetCodePage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
+      },
+    ],
   },
-  {
-    path: "/signup",
-    element: <SignupPage />,
-  },
-  {
-    path: "/forgot-password",
-    element: <ForgotPasswordPage />,
-  },
-  {
-    path: "/verify-email",
-    element: <VerifyEmailPage />,
-  },
-  {
-    path: "/verify-reset-code",
-    element: <VerifyResetCodePage />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPasswordPage />,
-  },
-
   {
     path: "/privacy-policy",
     element: <PrivacyPolicyPage />,
@@ -172,8 +176,13 @@ export const routeConfig: RouteObject[] = [
     ],
   },
   {
-    path: "/admin/login",
-    element: <AdminLoginPage />,
+    element: <PublicRoute />,
+    children: [
+      {
+        path: "/admin/login",
+        element: <AdminLoginPage />,
+      },
+    ],
   },
   {
     element: <ProtectedRoute allowedRoles={["admin"]} />,
