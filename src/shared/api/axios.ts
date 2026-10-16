@@ -85,14 +85,18 @@ api.interceptors.response.use(
       };
 
       if (responseData?.code === "instructor_access_denied") {
+        // Clear access and refresh tokens
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+
         // Clear Redux authentication state
         store.dispatch(clearAuthState());
 
         // Clear persisted Redux state
         await persistor.purge();
 
-        // Redirect to the home page
-        // window.location.replace("/login");
+        // Redirect to the home page if needed
+        // window.location.replace("/");
       }
 
       return Promise.reject(error);
