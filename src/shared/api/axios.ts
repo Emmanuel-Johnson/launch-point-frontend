@@ -77,6 +77,27 @@ api.interceptors.response.use(
         })
       | undefined;
 
+    // Redirect when instructor access is denied
+    if (error.response?.status === 403) {
+      const responseData = error.response.data as {
+        code?: string;
+        message?: string;
+      };
+
+      if (responseData?.code === "instructor_access_denied") {
+        // Clear Redux authentication state
+        store.dispatch(clearAuthState());
+
+        // Clear persisted Redux state
+        await persistor.purge();
+
+        // Redirect to the home page
+        // window.location.replace("/login");
+      }
+
+      return Promise.reject(error);
+    }
+
     // ------------------------------------------------------------------------
     // Only handle 401 responses
     // ------------------------------------------------------------------------
