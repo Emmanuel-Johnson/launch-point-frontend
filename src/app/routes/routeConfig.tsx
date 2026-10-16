@@ -16,6 +16,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
+import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
@@ -124,6 +125,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "subscriptions",
             element: <StudentSubscriptionPage />,
+          },
+          {
+            path: "settings",
+            element: <StudentSettingsPage />,
           },
         ],
       },
