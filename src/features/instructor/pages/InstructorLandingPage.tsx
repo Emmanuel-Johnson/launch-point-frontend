@@ -19,7 +19,7 @@ import type { InstructorPublicContext } from "../layout/InstructorPublicLayout";
 
 const BrandLogo = () => (
   <Link
-    to="/instructor"
+    to="/instructor-landing"
     className="group flex items-center gap-3 transition-all duration-500 hover:scale-105"
   >
     <div className="flex h-9 w-9 items-center justify-center rounded-lg">
@@ -364,7 +364,7 @@ const InstructorLandingPage = () => {
                       {latestApplication?.status === "pending" ||
                       latestApplication?.status === "rejected" ? (
                         <Link
-                          to="/instructor/applications"
+                          to="/instructor-landing/applications"
                           className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 shadow-lg shadow-blue-950/30 transition-all duration-300 hover:scale-[1.04] hover:bg-zinc-100"
                         >
                           View Application Status
@@ -417,7 +417,7 @@ const InstructorLandingPage = () => {
                       {latestApplication?.status === "pending" ||
                       latestApplication?.status === "rejected" ? (
                         <Link
-                          to="/instructor/applications"
+                          to="/instructor-landing/applications"
                           className="block text-sm transition-all duration-300 hover:translate-x-1 hover:text-white"
                         >
                           View Status

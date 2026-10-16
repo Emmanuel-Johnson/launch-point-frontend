@@ -11,9 +11,10 @@ export interface AdminInstructor {
   years_of_experience: string | null;
   categories: string[];
   became_instructor_at?: string | null;
+  is_active: boolean;
 }
 
-/** Fetch all approved instructors for the admin instructor list page. */
+/** Fetch all instructors for the admin instructor list page. */
 export const getAdminInstructors = async (): Promise<AdminInstructor[]> => {
   const response = await adminApi.get<AdminInstructor[]>(
     "/admins/instructors/",
@@ -38,6 +39,25 @@ export const getAdminInstructorDetail = async (
 ): Promise<AdminInstructorDetail> => {
   const response = await adminApi.get<AdminInstructorDetail>(
     `/admins/instructors/${instructorId}/`,
+  );
+  return response.data;
+};
+
+/** Response returned by the instructor status update endpoint. */
+export interface AdminInstructorStatusResponse {
+  id: number;
+  is_active: boolean;
+  message?: string;
+}
+
+/** Activate or deactivate an instructor. */
+export const updateAdminInstructorStatus = async (
+  instructorId: number,
+  isActive: boolean,
+): Promise<AdminInstructorStatusResponse> => {
+  const response = await adminApi.patch<AdminInstructorStatusResponse>(
+    `/admins/instructors/${instructorId}/status/`,
+    { is_active: isActive },
   );
   return response.data;
 };

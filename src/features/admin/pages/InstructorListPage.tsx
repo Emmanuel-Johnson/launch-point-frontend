@@ -13,8 +13,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getAdminInstructors,
+  updateAdminInstructorStatus,
   type AdminInstructor,
-} from "../api/instructorApi";
+} from "../api/adminInstructorApi";
+import { toast } from "react-toastify";
+import InstructorStatusConfirmModal from "../components/InstructorStatusConfirmModal";
 
 type Instructor = AdminInstructor;
 
@@ -30,11 +33,16 @@ const InstructorListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // The list endpoint currently does not return an is_active field. Preserve
-  // the existing UI toggle behavior without assuming a backend status value.
   const [instructorStatuses, setInstructorStatuses] = useState<
     Record<number, boolean>
   >({});
+  const [updatingInstructorIds, setUpdatingInstructorIds] = useState<number[]>(
+    [],
+  );
+  const [statusActionError, setStatusActionError] = useState("");
+  const [statusModalInstructor, setStatusModalInstructor] =
+    useState<Instructor | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   const instructorsListRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
@@ -52,15 +60,11 @@ const InstructorListPage = () => {
         if (isMounted) {
           setInstructors(data);
 
-          setInstructorStatuses((previous) => {
-            const nextStatuses: Record<number, boolean> = {};
-
-            data.forEach((instructor) => {
-              nextStatuses[instructor.id] = previous[instructor.id] ?? true;
-            });
-
-            return nextStatuses;
-          });
+          setInstructorStatuses(
+            Object.fromEntries(
+              data.map((instructor) => [instructor.id, instructor.is_active]),
+            ),
+          );
         }
       } catch (requestError) {
         console.error("Failed to load admin instructors:", requestError);
@@ -170,17 +174,66 @@ const InstructorListPage = () => {
     navigate(`/admin/instructors/${id}`);
   };
 
-  const toggleInstructorStatus = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    instructorId: number,
-  ) => {
-    // Prevent the parent row/card from opening the instructor detail.
-    event.stopPropagation();
+  const toggleInstructorStatus = async () => {
+    if (!statusModalInstructor || isUpdatingStatus) {
+      return;
+    }
 
-    setInstructorStatuses((previous) => ({
-      ...previous,
-      [instructorId]: !previous[instructorId],
-    }));
+    const instructorId = statusModalInstructor.id;
+    const currentStatus = instructorStatuses[instructorId];
+
+    if (currentStatus === undefined) {
+      return;
+    }
+
+    const nextStatus = !currentStatus;
+
+    setStatusActionError("");
+    setIsUpdatingStatus(true);
+    setUpdatingInstructorIds((previous) =>
+      previous.includes(instructorId) ? previous : [...previous, instructorId],
+    );
+
+    try {
+      const response = await updateAdminInstructorStatus(
+        instructorId,
+        nextStatus,
+      );
+
+      setInstructorStatuses((previous) => ({
+        ...previous,
+        [instructorId]: response.is_active,
+      }));
+
+      setInstructors((previous) =>
+        previous.map((instructor) =>
+          instructor.id === instructorId
+            ? { ...instructor, is_active: response.is_active }
+            : instructor,
+        ),
+      );
+
+      toast.success(
+        `Instructor ${response.is_active ? "activated" : "deactivated"} successfully.`,
+        {
+          containerId: "admin",
+        },
+      );
+      setStatusModalInstructor(null);
+    } catch (requestError) {
+      console.error("Failed to update instructor status:", requestError);
+      setStatusActionError(
+        "Unable to update instructor status. Please try again.",
+      );
+      toast.error("Failed to update instructor status.", {
+        containerId: "admin",
+      });
+    } finally {
+      setIsUpdatingStatus(false);
+      setUpdatingInstructorIds((previous) =>
+        previous.filter((id) => id !== instructorId),
+      );
+    }
   };
 
   // Status counts update automatically when status state changes.
@@ -361,10 +414,19 @@ const InstructorListPage = () => {
             </div>
           )}
 
+          {statusActionError && (
+            <div
+              className="mx-5 mt-3 rounded-lg border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-400"
+              role="alert"
+            >
+              {statusActionError}
+            </div>
+          )}
+
           {!isLoading && !error && (
             <>
               {/* Desktop Table */}
-              <div className="hidden overflow-x-auto md:block">
+              <div className="overflow-x-auto">
                 {/* table-fixed + explicit column widths keep every column in the
                 exact same position across pages, regardless of cell content. */}
                 <table className="w-full table-fixed">
@@ -482,9 +544,13 @@ const InstructorListPage = () => {
                           <td className="px-6 py-4 text-right">
                             <StatusToggleButton
                               isActive={isActive}
-                              onClick={(event) =>
-                                toggleInstructorStatus(event, instructor.id)
-                              }
+                              isUpdating={updatingInstructorIds.includes(
+                                instructor.id,
+                              )}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setStatusModalInstructor(instructor);
+                              }}
                             />
                           </td>
                         </tr>
@@ -513,85 +579,6 @@ const InstructorListPage = () => {
                     )}
                   </tbody>
                 </table>
-              </div>
-
-              {/* Mobile Cards */}
-              <div className="space-y-3 p-4 md:hidden">
-                {paginatedInstructors.map((instructor) => {
-                  const isActive = instructorStatuses[instructor.id];
-
-                  return (
-                    <div
-                      key={instructor.id}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-[#34D399]/30"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => openInstructor(instructor.id)}
-                        className="flex w-full items-center gap-3 text-left"
-                      >
-                        <InstructorAvatar instructor={instructor} />
-
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-white">
-                            {instructor.full_name}
-                          </p>
-
-                          <p className="truncate text-xs text-white/40">
-                            {instructor.email}
-                          </p>
-                        </div>
-
-                        <ChevronRight className="h-4 w-4 shrink-0 text-white/40" />
-                      </button>
-
-                      <div className="mt-4 space-y-2 text-xs text-white/50">
-                        <p>
-                          {instructor.occupation || "Occupation not provided"}
-                        </p>
-
-                        <p>{instructor.location || "Location not provided"}</p>
-
-                        <p>
-                          Experience:{" "}
-                          {instructor.years_of_experience || "Not specified"}
-                        </p>
-                      </div>
-
-                      {/* Mobile status and action */}
-                      <div className="mt-4 flex items-center justify-between gap-3">
-                        <StatusBadge isActive={isActive} />
-
-                        <StatusToggleButton
-                          isActive={isActive}
-                          onClick={(event) =>
-                            toggleInstructorStatus(event, instructor.id)
-                          }
-                        />
-                      </div>
-
-                      {/* Categories */}
-                      {instructor.categories.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {instructor.categories.slice(0, 3).map((category) => (
-                            <span
-                              key={category}
-                              className="rounded-full border border-[#34D399]/20 px-2 py-1 text-[10px] text-[#34D399]"
-                            >
-                              {category}
-                            </span>
-                          ))}
-
-                          {instructor.categories.length > 3 && (
-                            <span className="px-1 py-1 text-[10px] text-white/40">
-                              +{instructor.categories.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
               </div>
 
               {/* Pagination */}
@@ -686,6 +673,22 @@ const InstructorListPage = () => {
           )}
         </section>
       </div>
+      <InstructorStatusConfirmModal
+        isOpen={statusModalInstructor !== null}
+        isLoading={isUpdatingStatus}
+        instructorName={statusModalInstructor?.full_name ?? ""}
+        isActive={
+          statusModalInstructor
+            ? (instructorStatuses[statusModalInstructor.id] ?? false)
+            : false
+        }
+        onCancel={() => {
+          if (!isUpdatingStatus) {
+            setStatusModalInstructor(null);
+          }
+        }}
+        onConfirm={toggleInstructorStatus}
+      />
     </div>
   );
 };
@@ -753,20 +756,26 @@ const StatusBadge = ({ isActive }: StatusBadgeProps) => (
 
 interface StatusToggleButtonProps {
   isActive: boolean;
+  isUpdating: boolean;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const StatusToggleButton = ({ isActive, onClick }: StatusToggleButtonProps) => (
+const StatusToggleButton = ({
+  isActive,
+  isUpdating,
+  onClick,
+}: StatusToggleButtonProps) => (
   <button
     type="button"
     onClick={onClick}
-    className={`inline-flex h-9 w-28 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-700 ease-out hover:scale-[1.03] ${
+    disabled={isUpdating}
+    className={`inline-flex h-9 w-28 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
       isActive
         ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
         : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
     }`}
   >
-    {isActive ? "Deactivate" : "Activate"}
+    {isUpdating ? "Updating..." : isActive ? "Deactivate" : "Activate"}
   </button>
 );
 

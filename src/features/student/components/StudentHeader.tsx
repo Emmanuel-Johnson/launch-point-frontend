@@ -24,6 +24,7 @@ import { persistor } from "../../../app/store/store";
 import { updateUser } from "../../auth/slices/authSlice";
 
 import { switchToInstructor } from "../api/StudentSwitchRole";
+import axios from "axios";
 
 interface StudentHeaderProps {
   isSidebarCollapsed: boolean;
@@ -147,7 +148,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
     setIsProfileOpen(false);
 
     if (!canSwitchToInstructor) {
-      navigate("/instructor");
+      navigate("/instructor-landing");
       return;
     }
 
@@ -169,7 +170,21 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
       navigate("/instructor/dashboard", { replace: true });
     } catch (error) {
       console.error("Failed to switch to instructor:", error);
-      toast.error("Unable to switch to the instructor dashboard.");
+
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.message ||
+          error.response?.data?.detail ||
+          "Unable to switch to the instructor dashboard.";
+
+        toast.error(message, {
+          containerId: "instructor",
+        });
+      } else {
+        toast.error("Unable to switch to the instructor dashboard.", {
+          containerId: "instructor",
+        });
+      }
     }
   };
 
