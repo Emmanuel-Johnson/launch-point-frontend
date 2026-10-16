@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
+import { changePassword } from "../../student/api/StudentSettingsApi";
+import axios from "axios";
 
 type SettingsSection = "security" | "notifications";
 
@@ -26,6 +28,43 @@ const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
 const GRAIN_URL =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+
+const getErrorMessage = (error: unknown): string => {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as Record<string, unknown> | undefined;
+
+    if (data) {
+      for (const key of [
+        "current_password",
+        "new_password",
+        "confirm_new_password",
+        "detail",
+      ]) {
+        const value = data[key];
+
+        if (typeof value === "string") {
+          return value;
+        }
+
+        if (Array.isArray(value) && value.length > 0) {
+          return String(value[0]);
+        }
+      }
+
+      const firstValue = Object.values(data)[0];
+
+      if (typeof firstValue === "string") {
+        return firstValue;
+      }
+
+      if (Array.isArray(firstValue) && firstValue.length > 0) {
+        return String(firstValue[0]);
+      }
+    }
+  }
+
+  return "Something went wrong. Please try again.";
+};
 
 /* ---------------------------------------------------------- section header */
 
@@ -173,9 +212,27 @@ const SettingsPage = () => {
     setIsSavingPassword(true);
 
     try {
-      // TODO: Call your Django change-password API here.
-      // Do not show success until the API confirms the change.
-      console.log("Connect this form to the change-password API.");
+      const response = await changePassword({
+        current_password: passwords.currentPassword,
+        new_password: passwords.newPassword,
+        confirm_new_password: passwords.confirmPassword,
+      });
+
+      window.alert(response.message);
+
+      setPasswords({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      setShowPasswords({
+        currentPassword: false,
+        newPassword: false,
+        confirmPassword: false,
+      });
+    } catch (error: unknown) {
+      window.alert(getErrorMessage(error));
     } finally {
       setIsSavingPassword(false);
     }
