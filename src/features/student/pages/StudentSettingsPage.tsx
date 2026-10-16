@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { changePassword } from "../../student/api/StudentSettingsApi";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type SettingsSection = "security" | "notifications";
 
@@ -301,7 +302,7 @@ const SettingsPage = () => {
         confirm_new_password: passwords.confirmPassword,
       });
 
-      window.alert(response.message);
+      toast.success(response.message || "Password updated successfully.");
 
       setPasswords({
         currentPassword: "",
@@ -316,7 +317,7 @@ const SettingsPage = () => {
         confirmPassword: false,
       });
     } catch (error: unknown) {
-      window.alert(getErrorMessage(error));
+      toast.error(getErrorMessage(error));
     } finally {
       setIsSavingPassword(false);
     }
