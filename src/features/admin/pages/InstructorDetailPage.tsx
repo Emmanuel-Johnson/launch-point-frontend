@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   getAdminInstructorDetail,
   updateAdminInstructorStatus,
@@ -236,12 +237,19 @@ const InstructorDetailPage = () => {
           ? { ...currentInstructor, is_active: response.is_active }
           : currentInstructor,
       );
+      toast.success(
+        `Instructor ${response.is_active ? "activated" : "deactivated"} successfully.`,
+        { containerId: "admin" },
+      );
       setIsStatusModalOpen(false);
     } catch (requestError) {
       console.error("Failed to update instructor status:", requestError);
       setStatusActionError(
         "Unable to update instructor status. Please try again.",
       );
+      toast.error("Unable to update instructor status. Please try again.", {
+        containerId: "admin",
+      });
       setIsStatusModalOpen(false);
     } finally {
       setIsUpdatingStatus(false);
