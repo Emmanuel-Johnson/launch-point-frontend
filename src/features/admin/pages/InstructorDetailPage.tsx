@@ -21,6 +21,7 @@ import {
   updateAdminInstructorStatus,
   type AdminInstructorDetail,
 } from "../api/adminInstructorApi";
+import InstructorStatusConfirmModal from "../components/InstructorStatusConfirmModal";
 
 type Instructor = AdminInstructorDetail;
 
@@ -166,6 +167,7 @@ const InstructorDetailPage = () => {
   const [error, setError] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusActionError, setStatusActionError] = useState("");
 
   useEffect(() => {
@@ -234,11 +236,13 @@ const InstructorDetailPage = () => {
           ? { ...currentInstructor, is_active: response.is_active }
           : currentInstructor,
       );
+      setIsStatusModalOpen(false);
     } catch (requestError) {
       console.error("Failed to update instructor status:", requestError);
       setStatusActionError(
         "Unable to update instructor status. Please try again.",
       );
+      setIsStatusModalOpen(false);
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -369,7 +373,10 @@ const InstructorDetailPage = () => {
               <div className="flex shrink-0 flex-col items-start gap-2">
                 <button
                   type="button"
-                  onClick={() => void handleToggleStatus()}
+                  onClick={() => {
+                    setStatusActionError("");
+                    setIsStatusModalOpen(true);
+                  }}
                   disabled={isUpdatingStatus}
                   className={`group/toggle relative inline-flex h-11 w-full min-w-[190px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
                     isActive
@@ -667,6 +674,15 @@ const InstructorDetailPage = () => {
           </div>
         </section>
       </div>
+
+      <InstructorStatusConfirmModal
+        isOpen={isStatusModalOpen}
+        isLoading={isUpdatingStatus}
+        instructorName={instructor.full_name}
+        isActive={isActive}
+        onCancel={() => setIsStatusModalOpen(false)}
+        onConfirm={() => void handleToggleStatus()}
+      />
     </div>
   );
 };

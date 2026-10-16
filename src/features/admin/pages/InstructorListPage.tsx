@@ -16,6 +16,8 @@ import {
   updateAdminInstructorStatus,
   type AdminInstructor,
 } from "../api/adminInstructorApi";
+import { toast } from "react-toastify";
+import InstructorStatusConfirmModal from "../components/InstructorStatusConfirmModal";
 
 type Instructor = AdminInstructor;
 
@@ -38,6 +40,9 @@ const InstructorListPage = () => {
     [],
   );
   const [statusActionError, setStatusActionError] = useState("");
+  const [statusModalInstructor, setStatusModalInstructor] =
+    useState<Instructor | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   const instructorsListRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
@@ -169,17 +174,12 @@ const InstructorListPage = () => {
     navigate(`/admin/instructors/${id}`);
   };
 
-  const toggleInstructorStatus = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    instructorId: number,
-  ) => {
-    // Prevent the parent row from opening the instructor detail.
-    event.stopPropagation();
-
-    if (updatingInstructorIds.includes(instructorId)) {
+  const toggleInstructorStatus = async () => {
+    if (!statusModalInstructor || isUpdatingStatus) {
       return;
     }
 
+    const instructorId = statusModalInstructor.id;
     const currentStatus = instructorStatuses[instructorId];
 
     if (currentStatus === undefined) {
@@ -189,7 +189,10 @@ const InstructorListPage = () => {
     const nextStatus = !currentStatus;
 
     setStatusActionError("");
-    setUpdatingInstructorIds((previous) => [...previous, instructorId]);
+    setIsUpdatingStatus(true);
+    setUpdatingInstructorIds((previous) =>
+      previous.includes(instructorId) ? previous : [...previous, instructorId],
+    );
 
     try {
       const response = await updateAdminInstructorStatus(
@@ -209,12 +212,24 @@ const InstructorListPage = () => {
             : instructor,
         ),
       );
+
+      toast.success(
+        `Instructor ${response.is_active ? "activated" : "deactivated"} successfully.`,
+        {
+          containerId: "admin",
+        },
+      );
+      setStatusModalInstructor(null);
     } catch (requestError) {
       console.error("Failed to update instructor status:", requestError);
       setStatusActionError(
         "Unable to update instructor status. Please try again.",
       );
+      toast.error("Failed to update instructor status.", {
+        containerId: "admin",
+      });
     } finally {
+      setIsUpdatingStatus(false);
       setUpdatingInstructorIds((previous) =>
         previous.filter((id) => id !== instructorId),
       );
@@ -532,9 +547,10 @@ const InstructorListPage = () => {
                               isUpdating={updatingInstructorIds.includes(
                                 instructor.id,
                               )}
-                              onClick={(event) =>
-                                toggleInstructorStatus(event, instructor.id)
-                              }
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setStatusModalInstructor(instructor);
+                              }}
                             />
                           </td>
                         </tr>
@@ -657,6 +673,22 @@ const InstructorListPage = () => {
           )}
         </section>
       </div>
+      <InstructorStatusConfirmModal
+        isOpen={statusModalInstructor !== null}
+        isLoading={isUpdatingStatus}
+        instructorName={statusModalInstructor?.full_name ?? ""}
+        isActive={
+          statusModalInstructor
+            ? (instructorStatuses[statusModalInstructor.id] ?? false)
+            : false
+        }
+        onCancel={() => {
+          if (!isUpdatingStatus) {
+            setStatusModalInstructor(null);
+          }
+        }}
+        onConfirm={toggleInstructorStatus}
+      />
     </div>
   );
 };
