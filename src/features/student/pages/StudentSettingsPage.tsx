@@ -15,6 +15,12 @@ import axios from "axios";
 
 type SettingsSection = "security" | "notifications";
 
+type PasswordValidationErrors = {
+  currentPassword?: string;
+  newPassword?: string;
+  confirmPassword?: string;
+};
+
 type NotificationSettings = {
   emailUpdates: boolean;
   courseAnnouncements: boolean;
@@ -28,6 +34,45 @@ const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
 const GRAIN_URL =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+
+const validateCurrentPassword = (password: string): string | undefined => {
+  if (!password) return "Current password is required";
+  return undefined;
+};
+
+const validateNewPassword = (password: string): string | undefined => {
+  if (!password) return "Password is required";
+  if (password.length < 8) return "Password must be at least 8 characters";
+  if (password.length > 128) return "Password is too long";
+  if (password !== password.trim()) {
+    return "Password cannot start or end with spaces";
+  }
+  if (!/[A-Z]/.test(password)) {
+    return "Must contain at least one uppercase letter";
+  }
+  if (!/[a-z]/.test(password)) {
+    return "Must contain at least one lowercase letter";
+  }
+  if (!/[0-9]/.test(password)) {
+    return "Must contain at least one number";
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    return "Must contain at least one special character";
+  }
+  return undefined;
+};
+
+const validateConfirmPassword = (
+  confirmPassword: string,
+  newPassword: string,
+): string | undefined => {
+  if (!confirmPassword) return "Confirm password is required";
+  if (confirmPassword !== confirmPassword.trim()) {
+    return "Password cannot start or end with spaces";
+  }
+  if (confirmPassword !== newPassword) return "Passwords do not match";
+  return undefined;
+};
 
 const getErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
@@ -117,6 +162,9 @@ const SettingsPage = () => {
     confirmPassword: "",
   });
 
+  const [passwordErrors, setPasswordErrors] =
+    useState<PasswordValidationErrors>({});
+
   const [notifications, setNotifications] = useState<NotificationSettings>({
     emailUpdates: true,
     courseAnnouncements: true,
@@ -183,10 +231,36 @@ const SettingsPage = () => {
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
-    setPasswords((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setPasswords((previous) => {
+      const updatedPasswords = {
+        ...previous,
+        [name]: value,
+      };
+
+      if (name === "currentPassword") {
+        setPasswordErrors((previousErrors) => ({
+          ...previousErrors,
+          currentPassword: value ? validateCurrentPassword(value) : undefined,
+        }));
+      } else if (name === "newPassword") {
+        setPasswordErrors((previousErrors) => ({
+          ...previousErrors,
+          newPassword: value ? validateNewPassword(value) : undefined,
+          confirmPassword: updatedPasswords.confirmPassword
+            ? validateConfirmPassword(updatedPasswords.confirmPassword, value)
+            : undefined,
+        }));
+      } else if (name === "confirmPassword") {
+        setPasswordErrors((previousErrors) => ({
+          ...previousErrors,
+          confirmPassword: value
+            ? validateConfirmPassword(value, updatedPasswords.newPassword)
+            : undefined,
+        }));
+      }
+
+      return updatedPasswords;
+    });
   };
 
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
@@ -199,13 +273,22 @@ const SettingsPage = () => {
   const handlePasswordSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (passwords.newPassword !== passwords.confirmPassword) {
-      window.alert("New passwords do not match.");
-      return;
-    }
+    const currentPasswordError = validateCurrentPassword(
+      passwords.currentPassword,
+    );
+    const newPasswordError = validateNewPassword(passwords.newPassword);
+    const confirmPasswordError = validateConfirmPassword(
+      passwords.confirmPassword,
+      passwords.newPassword,
+    );
 
-    if (passwords.newPassword.length < 8) {
-      window.alert("Your new password must contain at least 8 characters.");
+    setPasswordErrors({
+      currentPassword: currentPasswordError,
+      newPassword: newPasswordError,
+      confirmPassword: confirmPasswordError,
+    });
+
+    if (currentPasswordError || newPasswordError || confirmPasswordError) {
       return;
     }
 
@@ -225,6 +308,7 @@ const SettingsPage = () => {
         newPassword: "",
         confirmPassword: "",
       });
+      setPasswordErrors({});
 
       setShowPasswords({
         currentPassword: false,
@@ -442,6 +526,7 @@ const SettingsPage = () => {
 
                         <form
                           onSubmit={handlePasswordSubmit}
+                          noValidate
                           className="space-y-5"
                         >
                           {(
@@ -494,7 +579,16 @@ const SettingsPage = () => {
                                       ? undefined
                                       : 8
                                   }
-                                  className={`${inputClass} pr-12`}
+                                  className={`${inputClass} pr-12 ${
+                                    (field.name === "currentPassword" &&
+                                      passwordErrors.currentPassword) ||
+                                    (field.name === "newPassword" &&
+                                      passwordErrors.newPassword) ||
+                                    (field.name === "confirmPassword" &&
+                                      passwordErrors.confirmPassword)
+                                      ? "border-red-400/70 focus:border-red-400/70 focus:ring-red-400/10"
+                                      : ""
+                                  }`}
                                 />
 
                                 <button
@@ -516,6 +610,36 @@ const SettingsPage = () => {
                                   )}
                                 </button>
                               </div>
+
+                              {field.name === "currentPassword" &&
+                                passwordErrors.currentPassword && (
+                                  <p
+                                    className="mt-1.5 text-xs text-red-400"
+                                    role="alert"
+                                  >
+                                    {passwordErrors.currentPassword}
+                                  </p>
+                                )}
+
+                              {field.name === "newPassword" &&
+                                passwordErrors.newPassword && (
+                                  <p
+                                    className="mt-1.5 text-xs text-red-400"
+                                    role="alert"
+                                  >
+                                    {passwordErrors.newPassword}
+                                  </p>
+                                )}
+
+                              {field.name === "confirmPassword" &&
+                                passwordErrors.confirmPassword && (
+                                  <p
+                                    className="mt-1.5 text-xs text-red-400"
+                                    role="alert"
+                                  >
+                                    {passwordErrors.confirmPassword}
+                                  </p>
+                                )}
                             </div>
                           ))}
 
