@@ -7,6 +7,8 @@ import { signup, googleLogin } from "../api/authApi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
+import { setCredentials } from "../slices/authSlice";
+import { useAppDispatch } from "../../../app/store/hooks";
 
 // Validation schema
 const signupSchema = z
@@ -66,6 +68,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -149,14 +152,20 @@ const SignupPage = () => {
         id_token: idToken,
       });
 
-      console.log("Google authentication successful:", result);
-
       localStorage.setItem("access", result.tokens.access);
       localStorage.setItem("refresh", result.tokens.refresh);
 
-      toast.success("Google authentication successful!");
-
-      navigate("/student/dashboard", { replace: true });
+      if (result.user.role === "instructor") {
+        dispatch(setCredentials(result.user));
+        navigate("/instructor/dashboard", { replace: true });
+        toast.success("Welcome to Launch Point! Let’s get started.", {
+          containerId: "instructor",
+        });
+      } else {
+        dispatch(setCredentials(result.user));
+        navigate("/student/dashboard", { replace: true });
+        toast.success("Welcome to Launch Point! Let's get started.");
+      }
     } catch (error) {
       console.error("Google authentication failed:", error);
 
