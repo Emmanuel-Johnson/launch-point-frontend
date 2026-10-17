@@ -47,6 +47,7 @@ import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPag
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
+import CourseListPage from "../../features/admin/pages/CourseListPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -248,7 +249,10 @@ export const routeConfig: RouteObject[] = [
             path: "applications/instructors/:applicationId",
             element: <InstructorApplicationAdminDetailPage />,
           },
-
+          {
+            path: "courses",
+            element: <CourseListPage />,
+          },
           {
             path: "categories",
             element: <CategoryListPage />,
