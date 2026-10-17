@@ -14,8 +14,9 @@ import { logoutUser } from "../../auth/api/authApi";
 import LogoutConfirmModal from "./LogoutConfirmModal";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { updateUser } from "../../auth/slices/authSlice";
+import { clearCredentials, updateUser } from "../../auth/slices/authSlice";
 import { switchToStudent } from "../api/InstructorSwitchRole";
+import { persistor } from "../../../app/store/store";
 
 interface InstructorHeaderProps {
   isSidebarCollapsed: boolean;
@@ -60,7 +61,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
+  
   const handleSwitchToStudent = async () => {
     setIsProfileOpen(false);
 
@@ -100,10 +101,18 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
-      setShowLogoutConfirm(false);
-      setIsProfileOpen(false);
+      dispatch(clearCredentials());
 
-      navigate("/login", { replace: true });
+      try {
+        await persistor.flush();
+      } catch (error) {
+        console.error("Failed to persist logout state:", error);
+      } finally {
+        setShowLogoutConfirm(false);
+        setIsProfileOpen(false);
+
+        navigate("/login", { replace: true });
+      }
     }
   };
 
