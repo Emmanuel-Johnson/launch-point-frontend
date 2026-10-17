@@ -5,6 +5,7 @@ import {
   GraduationCap,
   LogOut,
   Search,
+  Settings,
   User,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -356,6 +357,52 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
               </div>
               {/* Divider */}
               <div className="border-t border-white/[0.08]" />
+
+              {/* =====================================================
+                SETTINGS
+            ====================================================== */}
+              <div className="p-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    navigate("/instructor/settings");
+                  }}
+                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/[0.05]"
+                >
+                  {/* Shine */}
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+                  {/* Icon */}
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#3B82F6]/10 group-hover:text-[#3B82F6] group-hover:shadow-[0_0_16px_rgba(59,130,246,0.1)]">
+                    <Settings
+                      className="h-5 w-5 transition-transform duration-300 group-hover:rotate-45"
+                      strokeWidth={1.8}
+                    />
+                  </div>
+
+                  {/* Text */}
+                  <div className="relative z-10 min-w-0 flex-1">
+                    <p className="text-sm font-medium text-white/90 transition-colors duration-200 group-hover:text-white">
+                      Settings
+                    </p>
+
+                    <p className="mt-0.5 text-xs text-white/50 transition-colors duration-200 group-hover:text-white/70">
+                      Manage security and notifications
+                    </p>
+                  </div>
+
+                  {/* Arrow */}
+                  <ChevronRight
+                    className="relative z-10 h-4 w-4 shrink-0 text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#60A5FA]"
+                    strokeWidth={2}
+                  />
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-white/[0.08]" />
+
               {/* =====================================================
                 LOGOUT
             ====================================================== */}
