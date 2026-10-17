@@ -4,15 +4,17 @@ import {
   BookOpen,
   Eye,
   EyeOff,
-  LockKeyhole,
   Mail,
   Save,
+  LockKeyhole,
+  LoaderCircle,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 import { changePassword } from "../../student/api/StudentSettingsApi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ConfirmPasswordModal from "../../student/components/ConfirmPasswordModal";
 
 type SettingsSection = "security" | "notifications";
 
@@ -41,8 +43,14 @@ const validateCurrentPassword = (password: string): string | undefined => {
   return undefined;
 };
 
-const validateNewPassword = (password: string): string | undefined => {
+const validateNewPassword = (
+  password: string,
+  currentPassword: string,
+): string | undefined => {
   if (!password) return "Password is required";
+  if (password === currentPassword) {
+    return "New password must be different from your current password";
+  }
   if (password.length < 8) return "Password must be at least 8 characters";
   if (password.length > 128) return "Password is too long";
   if (password !== password.trim()) {
@@ -174,6 +182,7 @@ const SettingsPage = () => {
   });
 
   const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
 
   const sections: {
@@ -242,11 +251,16 @@ const SettingsPage = () => {
         setPasswordErrors((previousErrors) => ({
           ...previousErrors,
           currentPassword: value ? validateCurrentPassword(value) : undefined,
+          newPassword: updatedPasswords.newPassword
+            ? validateNewPassword(updatedPasswords.newPassword, value)
+            : undefined,
         }));
       } else if (name === "newPassword") {
         setPasswordErrors((previousErrors) => ({
           ...previousErrors,
-          newPassword: value ? validateNewPassword(value) : undefined,
+          newPassword: value
+            ? validateNewPassword(value, updatedPasswords.currentPassword)
+            : undefined,
           confirmPassword: updatedPasswords.confirmPassword
             ? validateConfirmPassword(updatedPasswords.confirmPassword, value)
             : undefined,
@@ -271,13 +285,16 @@ const SettingsPage = () => {
     }));
   };
 
-  const handlePasswordSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handlePasswordSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const currentPasswordError = validateCurrentPassword(
       passwords.currentPassword,
     );
-    const newPasswordError = validateNewPassword(passwords.newPassword);
+    const newPasswordError = validateNewPassword(
+      passwords.newPassword,
+      passwords.currentPassword,
+    );
     const confirmPasswordError = validateConfirmPassword(
       passwords.confirmPassword,
       passwords.newPassword,
@@ -289,9 +306,16 @@ const SettingsPage = () => {
       confirmPassword: confirmPasswordError,
     });
 
+    // Open the confirmation modal only when every field is valid.
     if (currentPasswordError || newPasswordError || confirmPasswordError) {
       return;
     }
+
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmPasswordChange = async () => {
+    if (isSavingPassword) return;
 
     setIsSavingPassword(true);
 
@@ -310,14 +334,15 @@ const SettingsPage = () => {
         confirmPassword: "",
       });
       setPasswordErrors({});
-
       setShowPasswords({
         currentPassword: false,
         newPassword: false,
         confirmPassword: false,
       });
+      setIsConfirmModalOpen(false);
     } catch (error: unknown) {
       toast.error(getErrorMessage(error));
+      setIsConfirmModalOpen(false);
     } finally {
       setIsSavingPassword(false);
     }
@@ -602,7 +627,7 @@ const SettingsPage = () => {
                                       ? `Hide ${field.label.toLowerCase()}`
                                       : `Show ${field.label.toLowerCase()}`
                                   }
-                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/35 transition-colors hover:text-[#9D82FF]"
+                                  className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-white/35 transition-colors hover:text-[#9D82FF]"
                                 >
                                   {showPasswords[field.name] ? (
                                     <EyeOff size={18} />
@@ -653,13 +678,28 @@ const SettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="group flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#8E72FF] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#7C5CFF]/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/25 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-xl
+    bg-[#7C5CFF] px-6 py-3 text-sm font-semibold text-white
+    shadow-md shadow-[#7C5CFF]/20
+    transition-all duration-200
+    hover:bg-[#6B4DE6] hover:shadow-lg hover:shadow-[#7C5CFF]/25
+    active:scale-[0.98]
+    disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                              <Save size={16} />
-
-                              {isSavingPassword
-                                ? "Updating..."
-                                : "Update password"}
+                              {isSavingPassword ? (
+                                <>
+                                  <LoaderCircle
+                                    size={16}
+                                    className="animate-spin"
+                                  />
+                                  Updating password...
+                                </>
+                              ) : (
+                                <>
+                                  <LockKeyhole size={16} />
+                                  Save new password
+                                </>
+                              )}
                             </button>
                           </div>
                         </form>
@@ -772,6 +812,13 @@ const SettingsPage = () => {
           </main>
         </section>
       </div>
+
+      <ConfirmPasswordModal
+        isOpen={isConfirmModalOpen}
+        isLoading={isSavingPassword}
+        onCancel={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmPasswordChange}
+      />
     </div>
   );
 };
