@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   BookOpen,
@@ -15,6 +16,9 @@ import { changePassword } from "../../student/api/StudentSettingsApi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ConfirmPasswordModal from "../../student/components/ConfirmPasswordModal";
+import { clearCredentials } from "../../auth/slices/authSlice";
+import { persistor } from "../../../app/store/store";
+import { useAppDispatch } from "../../../app/store/hooks";
 
 type SettingsSection = "security" | "notifications";
 
@@ -156,6 +160,9 @@ const SectionHeader = ({
 /* ============================================================ MAIN COMPONENT */
 
 const SettingsPage = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [activeSection, setActiveSection] =
     useState<SettingsSection>("security");
 
@@ -326,8 +333,7 @@ const SettingsPage = () => {
         confirm_new_password: passwords.confirmPassword,
       });
 
-      toast.success(response.message || "Password updated successfully.");
-
+      // Clear password form state after the API confirms the password change.
       setPasswords({
         currentPassword: "",
         newPassword: "",
@@ -340,6 +346,20 @@ const SettingsPage = () => {
         confirmPassword: false,
       });
       setIsConfirmModalOpen(false);
+
+      // Log the user out locally: remove both JWTs and clear persisted Redux auth.
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      dispatch(clearCredentials());
+      await persistor.purge();
+
+      toast.success(
+        response.message ||
+          "Password updated successfully. Please sign in with your new password.",
+      );
+
+      // Replace history so Back does not return to the protected settings page.
+      navigate("/login", { replace: true });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error));
       setIsConfirmModalOpen(false);

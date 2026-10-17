@@ -59,7 +59,7 @@ const LoginPage = () => {
 
       dispatch(setCredentials(result.user));
 
-      toast.success("Login successful!");
+      toast.success("Welcome to Launch Point! Let's get started.");
 
       navigate("/student/dashboard", { replace: true });
     } catch (error) {

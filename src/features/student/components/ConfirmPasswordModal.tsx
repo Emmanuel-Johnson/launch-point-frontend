@@ -110,8 +110,9 @@ const ConfirmPasswordModal = ({
               id="confirm-password-description"
               className="text-sm leading-6 text-white/60"
             >
-              Are you sure you want to update your password? You will need to
-              use the new password the next time you sign in.
+              Are you sure you want to update your password? After the change,
+              you will be logged out and need to sign in again using your new
+              password.
             </p>
           </div>
 
