@@ -59,9 +59,15 @@ const LoginPage = () => {
 
       dispatch(setCredentials(result.user));
 
-      toast.success("Login successful!");
+      toast.success("Welcome to Launch Point! Let's get started.");
 
-      navigate("/student/dashboard", { replace: true });
+      switch (result.user.role) {
+        case "instructor":
+          navigate("/instructor/dashboard", { replace: true });
+          break;
+        default:
+          navigate("/student/dashboard", { replace: true });
+      }
     } catch (error) {
       console.error("Login failed:", error);
 

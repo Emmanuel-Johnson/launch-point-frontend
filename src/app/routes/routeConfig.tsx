@@ -16,6 +16,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
+import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
 import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
@@ -45,6 +46,7 @@ import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPag
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -125,6 +127,10 @@ export const routeConfig: RouteObject[] = [
             path: "subscriptions",
             element: <StudentSubscriptionPage />,
           },
+          {
+            path: "settings",
+            element: <StudentSettingsPage />,
+          },
         ],
       },
     ],
@@ -170,6 +176,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "profile",
             element: <InstructorProfilePage />,
+          },
+          {
+            path: "settings",
+            element: <InstructorSettingsPage />,
           },
         ],
       },
