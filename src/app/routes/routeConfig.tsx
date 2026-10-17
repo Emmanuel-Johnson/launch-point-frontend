@@ -49,6 +49,7 @@ import PublicRoute from "./PublicRoute";
 import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
 import CourseListPage from "../../features/admin/pages/CourseListPage";
 import LevelManagementPage from "../../features/admin/pages/LevelManagementPage";
+import SkillManagementPage from "../../features/admin/pages/SkillManagementPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -255,8 +256,12 @@ export const routeConfig: RouteObject[] = [
             element: <CourseListPage />,
           },
           {
-            path: "course-levels",
+            path: "courses/course-levels",
             element: <LevelManagementPage />,
+          },
+          {
+            path: "courses/skills",
+            element: <SkillManagementPage />,
           },
           {
             path: "categories",

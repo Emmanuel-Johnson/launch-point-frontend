@@ -290,7 +290,7 @@ const CourseListPage = () => {
                 {/* Level Management */}
                 <button
                   type="button"
-                  onClick={() => navigate("/admin/course-levels")}
+                  onClick={() => navigate("/admin/courses/course-levels")}
                   className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -306,7 +306,7 @@ const CourseListPage = () => {
                 {/* Skill Management */}
                 <button
                   type="button"
-                  onClick={() => navigate("/admin/skills")}
+                  onClick={() => navigate("/admin/courses/skills")}
                   className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 text-sm font-medium text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.06] hover:text-[#34D399] hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.25)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
