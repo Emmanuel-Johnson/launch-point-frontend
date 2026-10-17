@@ -2,6 +2,7 @@ import {
   Ban,
   BookOpen,
   CheckCircle2,
+  Crown,
   ChevronLeft,
   ChevronRight,
   GraduationCap,
@@ -286,22 +287,36 @@ const CourseListPage = () => {
 
               {/* Management shortcuts */}
               <div className="flex flex-col gap-3 sm:flex-row">
+                {/* Level Management */}
                 <button
                   type="button"
                   onClick={() => navigate("/admin/course-levels")}
-                  className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
+                  className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
-                  <SlidersHorizontal className="h-4 w-4" strokeWidth={2} />
-                  Level Management
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+                  <SlidersHorizontal
+                    className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
+                    strokeWidth={2}
+                  />
+
+                  <span className="relative z-10">Level Management</span>
                 </button>
 
+                {/* Skill Management */}
                 <button
                   type="button"
                   onClick={() => navigate("/admin/skills")}
-                  className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 text-sm font-medium text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.06] hover:text-[#34D399]"
+                  className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 text-sm font-medium text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.06] hover:text-[#34D399] hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.25)]"
                 >
-                  <Tags className="h-4 w-4" strokeWidth={2} />
-                  Skill Management
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+                  <Tags
+                    className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:scale-110"
+                    strokeWidth={2}
+                  />
+
+                  <span className="relative z-10">Skill Management</span>
                 </button>
               </div>
             </div>
@@ -511,14 +526,14 @@ const CourseListPage = () => {
                     Access
                   </th>
 
-                  <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  <th className="w-[14%] px-4 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Status
                   </th>
 
                   {/* "Action" label aligned to the right, above the action
                   control (toggle) that sits below it. */}
-                  <th className="w-[16%] px-6 py-4">
-                    <div className="flex justify-end">
+                  <th className="w-[12%] px-4 py-4">
+                    <div className="flex justify-start">
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
                         Action
                       </span>
@@ -594,13 +609,13 @@ const CourseListPage = () => {
                     </td>
 
                     {/* Status */}
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <StatusPill isActive={course.status === "active"} />
                     </td>
 
                     {/* Action */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-4 py-4">
+                      <div className="flex items-center justify-start gap-2">
                         <button
                           type="button"
                           onClick={(event) => {
@@ -738,12 +753,13 @@ const AccessPill = ({ accessType }: { accessType: CourseAccess }) => {
 
   return (
     <span
-      className={`inline-flex h-7 items-center justify-center rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
+      className={`inline-flex h-7 w-20 items-center justify-center gap-1 rounded-full border text-[11px] font-medium ${
         isPremium
-          ? "bg-amber-400/10 text-amber-300 ring-amber-300/20"
-          : "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
+          ? "border-[#E8C67A]/25 bg-[#E8C67A]/10 text-[#E8C67A]"
+          : "border-slate-400/20 bg-slate-400/10 text-slate-300"
       }`}
     >
+      {isPremium && <Crown size={12} />}
       {isPremium ? "Premium" : "Free"}
     </span>
   );

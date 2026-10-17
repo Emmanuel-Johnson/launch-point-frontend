@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   Ban,
   BookOpen,
   CheckCircle2,
@@ -12,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type LevelStatus = "active" | "inactive";
 
@@ -233,6 +235,7 @@ const LevelFormModal = ({
 };
 
 const LevelManagementPage = () => {
+  const navigate = useNavigate();
   const [levels, setLevels] = useState<CourseLevel[]>(INITIAL_LEVELS);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -355,7 +358,18 @@ const LevelManagementPage = () => {
 
   return (
     <>
-      <div className="min-h-full w-full bg-black text-white">
+      <div className="space-y-6">
+        <button
+          type="button"
+          onClick={() => navigate("/admin/courses")}
+          className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
+          style={{ animationDelay: "80ms" }}
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          Back
+        </button>
+      </div>
+      <div className="mt-6 min-h-full w-full bg-black text-white">
         <div className="space-y-6">
           {/* Header */}
           <section
