@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   GraduationCap,
+  Hash,
   Pencil,
   Plus,
   Search,
@@ -23,9 +24,11 @@ interface CourseLevel {
   description: string;
   courses: number;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
-const LEVELS_PER_PAGE = 5;
+const LEVELS_PER_PAGE = 6;
 
 const INITIAL_LEVELS: CourseLevel[] = [
   {
@@ -35,6 +38,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
       "For learners who are new to a subject and need foundational knowledge.",
     courses: 12,
     is_active: true,
+    created_at: "Oct 10, 2026",
+    updated_at: "Oct 16, 2026",
   },
   {
     id: 2,
@@ -43,6 +48,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
       "For learners with basic knowledge who want to develop practical skills.",
     courses: 18,
     is_active: true,
+    created_at: "Oct 11, 2026",
+    updated_at: "Oct 17, 2026",
   },
   {
     id: 3,
@@ -50,6 +57,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
     description: "For experienced learners looking to master complex concepts.",
     courses: 9,
     is_active: true,
+    created_at: "Oct 12, 2026",
+    updated_at: "Oct 17, 2026",
   },
   {
     id: 4,
@@ -58,6 +67,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
       "For highly experienced learners exploring specialized techniques.",
     courses: 4,
     is_active: false,
+    created_at: "Oct 13, 2026",
+    updated_at: "Oct 14, 2026",
   },
   {
     id: 5,
@@ -66,6 +77,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
       "Courses suitable for learners with different experience levels.",
     courses: 7,
     is_active: true,
+    created_at: "Oct 14, 2026",
+    updated_at: "Oct 16, 2026",
   },
   {
     id: 6,
@@ -74,6 +87,8 @@ const INITIAL_LEVELS: CourseLevel[] = [
       "For career-focused learners applying advanced skills in real projects.",
     courses: 6,
     is_active: true,
+    created_at: "Oct 15, 2026",
+    updated_at: "Oct 18, 2026",
   },
 ];
 
@@ -317,7 +332,17 @@ const LevelManagementPage = () => {
     if (editingLevel) {
       setLevels((current) =>
         current.map((level) =>
-          level.id === editingLevel.id ? { ...level, ...data } : level,
+          level.id === editingLevel.id
+            ? {
+                ...level,
+                ...data,
+                updated_at: new Date().toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                }),
+              }
+            : level,
         ),
       );
     } else {
@@ -326,6 +351,16 @@ const LevelManagementPage = () => {
         ...data,
         courses: 0,
         is_active: true,
+        created_at: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
+        updated_at: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
       };
 
       setLevels((current) => [newLevel, ...current]);
@@ -356,6 +391,12 @@ const LevelManagementPage = () => {
     );
   };
 
+  const statusFilters: { key: StatusFilter; label: string }[] = [
+    { key: "all", label: "All" },
+    { key: "active", label: "Active" },
+    { key: "inactive", label: "Inactive" },
+  ];
+
   return (
     <>
       <div className="space-y-6">
@@ -369,30 +410,26 @@ const LevelManagementPage = () => {
           Back
         </button>
       </div>
+
       <div className="mt-6 min-h-full w-full bg-black text-white">
         <div className="space-y-6">
-          {/* Header */}
+          {/* Header + inline stat strip */}
           <section
             className="animate-page-item"
             style={{ animationDelay: "80ms" }}
           >
-            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
+            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
               />
-
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
-              />
-
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
               />
 
-              <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              {/* Title row */}
+              <div className="relative flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex cursor-default items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] ring-1 ring-inset ring-[#34D399]/25">
                     <GraduationCap className="h-5 w-5" strokeWidth={1.8} />
@@ -402,7 +439,6 @@ const LevelManagementPage = () => {
                     <h1 className="text-2xl font-semibold tracking-tight">
                       Level Management
                     </h1>
-
                     <p className="mt-1 text-sm text-white/50">
                       Manage learning levels for courses across Launch Point
                       LMS.
@@ -416,251 +452,190 @@ const LevelManagementPage = () => {
                   className="group relative inline-flex h-11 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-
                   <Plus
                     className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
                     strokeWidth={2}
                   />
-
                   <span className="relative z-10">Add Level</span>
                 </button>
               </div>
+
+              {/* Inline stat strip */}
+              <div className="relative grid grid-cols-2 divide-white/[0.06] border-t border-white/[0.06] sm:grid-cols-4 sm:divide-x">
+                <StatCell
+                  label="Total Levels"
+                  value={totalCount}
+                  icon={<GraduationCap className="h-4 w-4" />}
+                  accent="neutral"
+                />
+                <StatCell
+                  label="Active"
+                  value={activeCount}
+                  icon={<CheckCircle2 className="h-4 w-4" />}
+                  accent="green"
+                />
+                <StatCell
+                  label="Inactive"
+                  value={inactiveCount}
+                  icon={<Ban className="h-4 w-4" />}
+                  accent="red"
+                />
+                <StatCell
+                  label="Showing"
+                  value={filteredLevels.length}
+                  icon={<Search className="h-4 w-4" />}
+                  accent="neutral"
+                />
+              </div>
             </div>
           </section>
 
-          {/* Statistics */}
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard
-              label="Total Levels"
-              value={totalCount}
-              icon={<GraduationCap className="h-5 w-5" />}
-              accent="neutral"
-            />
-
-            <StatCard
-              label="Active"
-              value={activeCount}
-              icon={<CheckCircle2 className="h-5 w-5" />}
-              accent="green"
-            />
-
-            <StatCard
-              label="Inactive"
-              value={inactiveCount}
-              icon={<Ban className="h-5 w-5" />}
-              accent="red"
-            />
-
-            <StatCard
-              label="Showing"
-              value={filteredLevels.length}
-              icon={<Search className="h-5 w-5" />}
-              accent="neutral"
-            />
-          </section>
-
-          {/* Level Table */}
+          {/* Sticky toolbar */}
           <section
             ref={listRef}
-            className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
-            style={{ animationDelay: "300ms" }}
+            className="animate-page-item sticky top-4 z-20 scroll-mt-4"
+            style={{ animationDelay: "200ms" }}
           >
-            {/* Table Header */}
-            <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
-              <div className="cursor-default">
-                <h2 className="text-lg font-semibold tracking-tight">
-                  All Levels
-                </h2>
-
-                <p className="mt-1 text-xs text-white/45">
-                  View and manage course difficulty levels.
-                </p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#0B0B0B]/90 p-3 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl md:flex-row md:items-center md:justify-between">
+              {/* Segmented status filter */}
+              <div className="flex h-10 shrink-0 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
+                {statusFilters.map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => handleFilter(filter.key)}
+                    className={`h-8 w-20 rounded-lg text-xs font-medium transition-all ${
+                      statusFilter === filter.key
+                        ? filter.key === "active"
+                          ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                          : filter.key === "inactive"
+                            ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
+                            : "bg-white/[0.08] text-white"
+                        : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
               </div>
 
-              <div className="flex w-full min-w-0 flex-col gap-3 md:ml-6 md:flex-1 md:flex-row md:justify-end">
-                {/* Status Filter */}
-                <div className="flex h-10 shrink-0 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
-                  {(["all", "active", "inactive"] as const).map((filter) => (
-                    <button
-                      key={filter}
-                      type="button"
-                      onClick={() => handleFilter(filter)}
-                      className={`h-8 w-20 rounded-lg text-xs font-medium capitalize transition-all ${
-                        statusFilter === filter
-                          ? filter === "active"
-                            ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                            : filter === "inactive"
-                              ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
-                              : "bg-white/[0.08] text-white"
-                          : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
-                      }`}
-                    >
-                      {filter}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Search */}
-                <div className="relative min-w-0 flex-1 md:max-w-sm">
-                  <Search
-                    className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35"
-                    strokeWidth={1.8}
-                  />
-
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(event) => handleSearch(event.target.value)}
-                    placeholder="Search levels..."
-                    className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
-                  />
-                </div>
+              {/* Search */}
+              <div className="relative min-w-0 flex-1 md:max-w-sm">
+                <Search
+                  className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35"
+                  strokeWidth={1.8}
+                />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(event) => handleSearch(event.target.value)}
+                  placeholder="Search levels..."
+                  className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
+                />
               </div>
             </div>
+          </section>
 
-            {/* Desktop Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[850px] table-fixed">
-                <thead>
-                  <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
-                    <th className="w-[23%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Level
-                    </th>
+          {/* Level card grid */}
+          {filteredLevels.length > 0 ? (
+            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {paginatedLevels.map((level, index) => (
+                <article
+                  key={level.id}
+                  className="animate-page-item group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:shadow-[0_14px_40px_-12px_rgba(52,211,153,0.25)]"
+                  style={{ animationDelay: `${260 + index * 60}ms` }}
+                >
+                  {/* Top accent line on hover */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
 
-                    <th className="w-[35%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Description
-                    </th>
-
-                    <th className="w-[14%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Courses
-                    </th>
-
-                    <th className="w-[13%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Status
-                    </th>
-
-                    <th className="w-[15%] px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-white/35">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {paginatedLevels.map((level) => (
-                    <tr
-                      key={level.id}
-                      className="group border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04]"
-                    >
-                      {/* Level */}
-                      <td className="relative px-6 py-4">
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-[#34D399] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                        />
-
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
-                            <GraduationCap
-                              className="h-5 w-5"
-                              strokeWidth={1.8}
-                            />
-                          </div>
-
-                          <div className="min-w-0">
-                            <p
-                              className="truncate text-sm font-medium text-white"
-                              title={level.name}
-                            >
-                              {level.name}
-                            </p>
-
-                            <p className="mt-0.5 text-xs tabular-nums text-white/35">
-                              ID: {level.id}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Description */}
-                      <td className="px-6 py-4">
-                        <p
-                          className="line-clamp-2 text-sm leading-5 text-white/60"
-                          title={level.description}
+                  {/* Card header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
+                        <GraduationCap className="h-5 w-5" strokeWidth={1.8} />
+                      </div>
+                      <div className="min-w-0">
+                        <h3
+                          className="truncate text-sm font-semibold text-white"
+                          title={level.name}
                         >
-                          {level.description || "No description provided"}
+                          {level.name}
+                        </h3>
+                        <p className="mt-0.5 flex items-center gap-1 text-xs tabular-nums text-white/35">
+                          <Hash className="h-3 w-3" />
+                          {level.id}
                         </p>
-                      </td>
+                      </div>
+                    </div>
 
-                      {/* Courses */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
-                          <BookOpen className="h-4 w-4 shrink-0 text-white/30" />
-                          <span>{level.courses}</span>
-                        </div>
-                      </td>
+                    <StatusPill isActive={level.is_active} />
+                  </div>
 
-                      {/* Status */}
-                      <td className="px-6 py-4">
-                        <StatusPill isActive={level.is_active} />
-                      </td>
+                  {/* Description */}
+                  <p
+                    className="mt-4 line-clamp-2 min-h-[2.5rem] text-sm leading-5 text-white/60"
+                    title={level.description}
+                  >
+                    {level.description || "No description provided"}
+                  </p>
 
-                      {/* Actions */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => openEditModal(level)}
-                            aria-label={`Edit ${level.name}`}
-                            title="Edit level"
-                            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
-                          >
-                            <Pencil className="h-4 w-4" strokeWidth={1.8} />
-                          </button>
+                  {/* Footer: courses + actions */}
+                  <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4">
+                    <div className="flex items-center gap-2 text-sm tabular-nums text-white/55">
+                      <BookOpen className="h-4 w-4 shrink-0 text-white/30" />
+                      <span>
+                        {level.courses}{" "}
+                        <span className="text-white/35">
+                          {level.courses === 1 ? "course" : "courses"}
+                        </span>
+                      </span>
+                    </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleToggleStatus(level.id)}
-                            className={`inline-flex h-9 w-[76px] shrink-0 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
-                              level.is_active
-                                ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
-                                : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
-                            }`}
-                          >
-                            {level.is_active ? "Disable" : "Enable"}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {/* Keep table height consistent when the last page has fewer rows */}
-                  {totalPages > 1 &&
-                    Array.from({
-                      length: Math.max(
-                        LEVELS_PER_PAGE - paginatedLevels.length,
-                        0,
-                      ),
-                    }).map((_, index) => (
-                      <tr
-                        key={`placeholder-${index}`}
-                        aria-hidden="true"
-                        className="border-b border-white/[0.03]"
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openEditModal(level)}
+                        aria-label={`Edit ${level.name}`}
+                        title="Edit level"
+                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                       >
-                        <td className="px-6 py-4">
-                          <div className="h-11" />
-                        </td>
-                        <td className="px-6 py-4" />
-                        <td className="px-6 py-4" />
-                        <td className="px-6 py-4" />
-                        <td className="px-6 py-4" />
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                        <Pencil className="h-4 w-4" strokeWidth={1.8} />
+                      </button>
 
-            {/* Empty State */}
-            {filteredLevels.length === 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleToggleStatus(level.id)}
+                        className={`inline-flex h-9 w-[150px] shrink-0 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
+                          level.is_active
+                            ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
+                            : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
+                        }`}
+                      >
+                        {level.is_active ? "Disable" : "Enable"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/[0.05] pt-2 text-[10px] leading-4 text-white/35">
+                    <span>
+                      Created{" "}
+                      <span className="text-white/55">{level.created_at}</span>
+                    </span>
+                    <span className="text-white/20">·</span>
+                    <span>
+                      Updated{" "}
+                      <span className="text-white/55">{level.updated_at}</span>
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </section>
+          ) : (
+            /* Empty state */
+            <section className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
               <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
                   <SlidersHorizontal className="h-6 w-6" />
@@ -691,71 +666,74 @@ const LevelManagementPage = () => {
                   </button>
                 )}
               </div>
-            )}
+            </section>
+          )}
 
-            {/* Pagination */}
-            {filteredLevels.length > 0 && totalPages > 1 && (
-              <div className="flex flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-white/40">
-                  Showing{" "}
-                  <span className="font-medium tabular-nums text-white/70">
-                    {startItem}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-medium tabular-nums text-white/70">
-                    {endItem}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium tabular-nums text-white/70">
-                    {filteredLevels.length}
-                  </span>{" "}
-                  levels
-                </p>
+          {/* Pagination */}
+          {filteredLevels.length > 0 && totalPages > 1 && (
+            <section
+              className="animate-page-item flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+              style={{ animationDelay: "320ms" }}
+            >
+              <p className="text-xs text-white/40">
+                Showing{" "}
+                <span className="font-medium tabular-nums text-white/70">
+                  {startItem}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium tabular-nums text-white/70">
+                  {endItem}
+                </span>{" "}
+                of{" "}
+                <span className="font-medium tabular-nums text-white/70">
+                  {filteredLevels.length}
+                </span>{" "}
+                levels
+              </p>
 
-                <div className="flex items-center justify-center gap-1">
+              <div className="flex items-center justify-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(Math.max(safePage - 1, 1))}
+                  disabled={safePage === 1}
+                  aria-label="Previous page"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1,
+                ).map((page) => (
                   <button
+                    key={page}
                     type="button"
-                    onClick={() => handlePageChange(Math.max(safePage - 1, 1))}
-                    disabled={safePage === 1}
-                    aria-label="Previous page"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
+                    onClick={() => handlePageChange(page)}
+                    className={`flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
+                      safePage === page
+                        ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
+                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
+                    }`}
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    {page}
                   </button>
+                ))}
 
-                  {Array.from(
-                    { length: totalPages },
-                    (_, index) => index + 1,
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      type="button"
-                      onClick={() => handlePageChange(page)}
-                      className={`flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
-                        safePage === page
-                          ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                          : "text-white/45 hover:bg-white/[0.04] hover:text-white"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handlePageChange(Math.min(safePage + 1, totalPages))
-                    }
-                    disabled={safePage === totalPages}
-                    aria-label="Next page"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePageChange(Math.min(safePage + 1, totalPages))
+                  }
+                  disabled={safePage === totalPages}
+                  aria-label="Next page"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
-            )}
-          </section>
+            </section>
+          )}
         </div>
       </div>
 
@@ -774,7 +752,7 @@ const LevelManagementPage = () => {
   );
 };
 
-const StatCard = ({
+const StatCell = ({
   label,
   value,
   icon,
@@ -786,50 +764,27 @@ const StatCard = ({
   accent?: "neutral" | "green" | "red";
 }) => {
   const styles = {
-    neutral: {
-      border: "border-white/[0.08]",
-      text: "text-white",
-      icon: "bg-white/[0.04] text-white/60",
-    },
-    green: {
-      border: "border-[#34D399]/25",
-      text: "text-[#34D399]",
-      icon: "bg-[#34D399]/10 text-[#34D399]",
-    },
-    red: {
-      border: "border-red-400/20",
-      text: "text-red-400",
-      icon: "bg-red-400/10 text-red-400",
-    },
+    neutral: { text: "text-white", icon: "bg-white/[0.04] text-white/60" },
+    green: { text: "text-[#34D399]", icon: "bg-[#34D399]/10 text-[#34D399]" },
+    red: { text: "text-red-400", icon: "bg-red-400/10 text-red-400" },
   }[accent];
 
   return (
-    <div
-      className={`animate-page-item group relative overflow-hidden rounded-2xl border ${styles.border} bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]`}
-    >
+    <div className="flex items-center gap-3 p-5">
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
-      />
-
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-white/45">
-            {label}
-          </p>
-
-          <p
-            className={`mt-3 text-3xl font-semibold tabular-nums ${styles.text}`}
-          >
-            {value}
-          </p>
-        </div>
-
-        <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl ${styles.icon}`}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${styles.icon}`}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-white/45">
+          {label}
+        </p>
+        <p
+          className={`mt-1 text-2xl font-semibold tabular-nums ${styles.text}`}
         >
-          {icon}
-        </div>
+          {value}
+        </p>
       </div>
     </div>
   );
@@ -837,7 +792,7 @@ const StatCard = ({
 
 const StatusPill = ({ isActive }: { isActive: boolean }) => (
   <span
-    className={`inline-flex h-7 w-20 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
+    className={`inline-flex h-7 w-20 shrink-0 items-center justify-center gap-1.5 rounded-full text-[11px] font-medium ring-1 ring-inset ${
       isActive
         ? "bg-[#34D399]/10 text-[#34D399] ring-[#34D399]/20"
         : "bg-red-400/10 text-red-400 ring-red-400/20"
