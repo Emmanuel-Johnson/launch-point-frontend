@@ -13,84 +13,67 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { AdminCourseLevel } from "../api/adminCourseLevelApi";
+import {
+  createAdminCourseLevel,
+  getAdminCourseLevels,
+  updateAdminCourseLevel,
+  updateAdminCourseLevelStatus,
+} from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
 
 type LevelStatus = "active" | "inactive";
 
-interface CourseLevel {
-  id: number;
-  name: string;
-  description: string;
+type CourseLevel = AdminCourseLevel & {
+  // Course count is not currently returned by the course-level API.
   courses: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
+};
 
 const LEVELS_PER_PAGE = 6;
 
-const INITIAL_LEVELS: CourseLevel[] = [
-  {
-    id: 1,
-    name: "Beginner",
-    description:
-      "For learners who are new to a subject and need foundational knowledge.",
-    courses: 12,
-    is_active: true,
-    created_at: "Oct 10, 2026",
-    updated_at: "Oct 16, 2026",
-  },
-  {
-    id: 2,
-    name: "Intermediate",
-    description:
-      "For learners with basic knowledge who want to develop practical skills.",
-    courses: 18,
-    is_active: true,
-    created_at: "Oct 11, 2026",
-    updated_at: "Oct 17, 2026",
-  },
-  {
-    id: 3,
-    name: "Advanced",
-    description: "For experienced learners looking to master complex concepts.",
-    courses: 9,
-    is_active: true,
-    created_at: "Oct 12, 2026",
-    updated_at: "Oct 17, 2026",
-  },
-  {
-    id: 4,
-    name: "Expert",
-    description:
-      "For highly experienced learners exploring specialized techniques.",
-    courses: 4,
-    is_active: false,
-    created_at: "Oct 13, 2026",
-    updated_at: "Oct 14, 2026",
-  },
-  {
-    id: 5,
-    name: "All Levels",
-    description:
-      "Courses suitable for learners with different experience levels.",
-    courses: 7,
-    is_active: true,
-    created_at: "Oct 14, 2026",
-    updated_at: "Oct 16, 2026",
-  },
-  {
-    id: 6,
-    name: "Professional",
-    description:
-      "For career-focused learners applying advanced skills in real projects.",
-    courses: 6,
-    is_active: true,
-    created_at: "Oct 15, 2026",
-    updated_at: "Oct 18, 2026",
-  },
-];
+const formatDate = (value: string) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
+const mapApiLevel = (
+  level: AdminCourseLevel,
+  existing?: CourseLevel,
+): CourseLevel => ({
+  ...level,
+  courses: existing?.courses ?? 0,
+  created_at: formatDate(level.created_at),
+  updated_at: formatDate(level.updated_at),
+});
+
+const getErrorMessage = (error: unknown): string => {
+  if (typeof error === "object" && error !== null && "response" in error) {
+    const response = (
+      error as {
+        response?: {
+          data?: { message?: string; detail?: string; errors?: unknown };
+        };
+      }
+    ).response;
+    const data = response?.data;
+    if (data?.message) return data.message;
+    if (data?.detail) return data.detail;
+    if (data?.errors) {
+      return typeof data.errors === "string"
+        ? data.errors
+        : JSON.stringify(data.errors);
+    }
+  }
+  if (error instanceof Error) return error.message;
+  return "Something went wrong. Please try again.";
+};
 
 type StatusFilter = "all" | LevelStatus;
 
@@ -98,7 +81,7 @@ interface LevelFormModalProps {
   isOpen: boolean;
   editingLevel: CourseLevel | null;
   onClose: () => void;
-  onSave: (data: Pick<CourseLevel, "name" | "description">) => void;
+  onSave: (data: Pick<CourseLevel, "name" | "description">) => Promise<void>;
 }
 
 const LevelFormModal = ({
@@ -126,7 +109,7 @@ const LevelFormModal = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!name.trim()) {
@@ -134,11 +117,15 @@ const LevelFormModal = ({
       return;
     }
 
-    onSave({
-      name: name.trim(),
-      description: description.trim(),
-    });
-    resetAndClose();
+    try {
+      await onSave({
+        name: name.trim(),
+        description: description.trim(),
+      });
+      resetAndClose();
+    } catch (saveError) {
+      setError(getErrorMessage(saveError));
+    }
   };
 
   return (
@@ -251,13 +238,39 @@ const LevelFormModal = ({
 
 const LevelManagementPage = () => {
   const navigate = useNavigate();
-  const [levels, setLevels] = useState<CourseLevel[]>(INITIAL_LEVELS);
+  const [levels, setLevels] = useState<CourseLevel[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [pageError, setPageError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<CourseLevel | null>(null);
   const listRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadLevels = async () => {
+      setIsLoading(true);
+      setPageError("");
+      try {
+        const data = await getAdminCourseLevels();
+        if (isMounted) {
+          setLevels(data.map((level) => mapApiLevel(level)));
+        }
+      } catch (error) {
+        if (isMounted) setPageError(getErrorMessage(error));
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    void loadLevels();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredLevels = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -328,54 +341,36 @@ const LevelManagementPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveLevel = (data: Pick<CourseLevel, "name" | "description">) => {
-    if (editingLevel) {
-      setLevels((current) =>
-        current.map((level) =>
-          level.id === editingLevel.id
-            ? {
-                ...level,
-                ...data,
-                updated_at: new Date().toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                }),
-              }
-            : level,
-        ),
-      );
-    } else {
-      const newLevel: CourseLevel = {
-        id: Math.max(0, ...levels.map((level) => level.id)) + 1,
-        ...data,
-        courses: 0,
-        is_active: true,
-        created_at: new Date().toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }),
-        updated_at: new Date().toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }),
-      };
-
-      setLevels((current) => [newLevel, ...current]);
-      setCurrentPage(1);
-      setSearchQuery("");
-      setStatusFilter("all");
+  const handleSaveLevel = async (
+    data: Pick<CourseLevel, "name" | "description">,
+  ) => {
+    setPageError("");
+    try {
+      if (editingLevel) {
+        const updated = await updateAdminCourseLevel(editingLevel.id, data);
+        setLevels((current) =>
+          current.map((level) =>
+            level.id === editingLevel.id ? mapApiLevel(updated, level) : level,
+          ),
+        );
+      } else {
+        const created = await createAdminCourseLevel(data);
+        setLevels((current) => [mapApiLevel(created), ...current]);
+        setCurrentPage(1);
+        setSearchQuery("");
+        setStatusFilter("all");
+      }
+    } catch (error) {
+      setPageError(getErrorMessage(error));
+      throw error;
     }
   };
 
-  const handleToggleStatus = (id: number) => {
+  const handleToggleStatus = async (id: number) => {
     const level = levels.find((item) => item.id === id);
     if (!level) return;
 
     const action = level.is_active ? "disable" : "enable";
-
     if (
       !window.confirm(
         `Are you sure you want to ${action} the "${level.name}" level?`,
@@ -384,11 +379,17 @@ const LevelManagementPage = () => {
       return;
     }
 
-    setLevels((current) =>
-      current.map((item) =>
-        item.id === id ? { ...item, is_active: !item.is_active } : item,
-      ),
-    );
+    setPageError("");
+    try {
+      const response = await updateAdminCourseLevelStatus(id, !level.is_active);
+      setLevels((current) =>
+        current.map((item) =>
+          item.id === id ? mapApiLevel(response.data, item) : item,
+        ),
+      );
+    } catch (error) {
+      setPageError(getErrorMessage(error));
+    }
   };
 
   const statusFilters: { key: StatusFilter; label: string }[] = [
@@ -413,6 +414,19 @@ const LevelManagementPage = () => {
 
       <div className="mt-6 min-h-full w-full bg-black text-white">
         <div className="space-y-6">
+          {pageError && (
+            <div
+              role="alert"
+              className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-300"
+            >
+              {pageError}
+            </div>
+          )}
+          {isLoading && (
+            <div className="rounded-xl border border-white/[0.08] bg-[#0B0B0B] px-4 py-8 text-center text-sm text-white/50">
+              Loading course levels...
+            </div>
+          )}
           {/* Header + inline stat strip */}
           <section
             className="animate-page-item"
@@ -536,7 +550,7 @@ const LevelManagementPage = () => {
           </section>
 
           {/* Level card grid */}
-          {filteredLevels.length > 0 ? (
+          {!isLoading && filteredLevels.length > 0 ? (
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {paginatedLevels.map((level, index) => (
                 <article
@@ -632,7 +646,7 @@ const LevelManagementPage = () => {
                 </article>
               ))}
             </section>
-          ) : (
+          ) : !isLoading ? (
             /* Empty state */
             <section className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
               <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
@@ -666,7 +680,7 @@ const LevelManagementPage = () => {
                 )}
               </div>
             </section>
-          )}
+          ) : null}
 
           {/* Pagination */}
           {filteredLevels.length > 0 && totalPages > 1 && (
