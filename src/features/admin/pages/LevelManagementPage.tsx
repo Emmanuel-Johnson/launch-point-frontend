@@ -11,7 +11,6 @@ import {
   Plus,
   Search,
   SlidersHorizontal,
-  X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AdminCourseLevel } from "../api/adminCourseLevelApi";
@@ -22,6 +21,9 @@ import {
   updateAdminCourseLevelStatus,
 } from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import LevelFormModal from "../components/LevelFormModal";
+import LevelStatusConfirmModal from "../components/LevelStatusConfirmModal";
 
 type LevelStatus = "active" | "inactive";
 
@@ -53,199 +55,20 @@ const mapApiLevel = (
   updated_at: formatDate(level.updated_at),
 });
 
-const getErrorMessage = (error: unknown): string => {
-  if (typeof error === "object" && error !== null && "response" in error) {
-    const response = (
-      error as {
-        response?: {
-          data?: { message?: string; detail?: string; errors?: unknown };
-        };
-      }
-    ).response;
-    const data = response?.data;
-    if (data?.message) return data.message;
-    if (data?.detail) return data.detail;
-    if (data?.errors) {
-      return typeof data.errors === "string"
-        ? data.errors
-        : JSON.stringify(data.errors);
-    }
-  }
-  if (error instanceof Error) return error.message;
-  return "Something went wrong. Please try again.";
-};
-
 type StatusFilter = "all" | LevelStatus;
-
-interface LevelFormModalProps {
-  isOpen: boolean;
-  editingLevel: CourseLevel | null;
-  onClose: () => void;
-  onSave: (data: Pick<CourseLevel, "name" | "description">) => Promise<void>;
-}
-
-const LevelFormModal = ({
-  isOpen,
-  editingLevel,
-  onClose,
-  onSave,
-}: LevelFormModalProps) => {
-  const [name, setName] = useState(editingLevel?.name ?? "");
-  const [description, setDescription] = useState(
-    editingLevel?.description ?? "",
-  );
-  const [error, setError] = useState("");
-
-  // Reset the form whenever a different level is opened.
-  const [formKey, setFormKey] = useState(0);
-
-  const resetAndClose = () => {
-    setName("");
-    setDescription("");
-    setError("");
-    setFormKey((current) => current + 1);
-    onClose();
-  };
-
-  if (!isOpen) return null;
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!name.trim()) {
-      setError("Please enter a level name.");
-      return;
-    }
-
-    try {
-      await onSave({
-        name: name.trim(),
-        description: description.trim(),
-      });
-      resetAndClose();
-    } catch (saveError) {
-      setError(getErrorMessage(saveError));
-    }
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) resetAndClose();
-      }}
-    >
-      <div
-        key={`${editingLevel?.id ?? "new"}-${formKey}`}
-        className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0B0B0B] shadow-2xl"
-      >
-        <div className="flex items-center justify-between border-b border-white/[0.08] p-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399]">
-              <GraduationCap className="h-5 w-5" />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                {editingLevel ? "Edit Level" : "Add Level"}
-              </h2>
-              <p className="mt-1 text-xs text-white/45">
-                Define a learning level for your courses.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={resetAndClose}
-            aria-label="Close modal"
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-white/45 transition hover:bg-white/[0.06] hover:text-white"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5 p-5">
-          <div>
-            <label
-              htmlFor="level-name"
-              className="mb-2 block text-xs font-medium text-white/65"
-            >
-              Level Name <span className="text-red-400">*</span>
-            </label>
-
-            <input
-              id="level-name"
-              autoFocus
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-                setError("");
-              }}
-              placeholder="e.g. Beginner"
-              maxLength={50}
-              className="h-11 w-full rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#34D399]/40 focus:ring-2 focus:ring-[#34D399]/10"
-            />
-
-            {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
-          </div>
-
-          <div>
-            <label
-              htmlFor="level-description"
-              className="mb-2 block text-xs font-medium text-white/65"
-            >
-              Description
-            </label>
-
-            <textarea
-              id="level-description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              placeholder="Describe who this learning level is for..."
-              rows={4}
-              maxLength={300}
-              className="w-full resize-none rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#34D399]/40 focus:ring-2 focus:ring-[#34D399]/10"
-            />
-
-            <p className="mt-1 text-right text-[11px] text-white/30">
-              {description.length}/300
-            </p>
-          </div>
-
-          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-5 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              onClick={resetAndClose}
-              className="h-10 rounded-xl border border-white/[0.10] px-5 text-sm font-medium text-white/65 transition hover:bg-white/[0.05] hover:text-white"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15"
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              {editingLevel ? "Save Changes" : "Add Level"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 const LevelManagementPage = () => {
   const navigate = useNavigate();
   const [levels, setLevels] = useState<CourseLevel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageError, setPageError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<CourseLevel | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<CourseLevel | null>(null);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const listRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -253,14 +76,17 @@ const LevelManagementPage = () => {
 
     const loadLevels = async () => {
       setIsLoading(true);
-      setPageError("");
       try {
         const data = await getAdminCourseLevels();
         if (isMounted) {
           setLevels(data.map((level) => mapApiLevel(level)));
         }
-      } catch (error) {
-        if (isMounted) setPageError(getErrorMessage(error));
+      } catch {
+        if (isMounted) {
+          toast.error("Unable to load course levels. Please try again.", {
+            containerId: "admin",
+          });
+        }
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -344,52 +170,66 @@ const LevelManagementPage = () => {
   const handleSaveLevel = async (
     data: Pick<CourseLevel, "name" | "description">,
   ) => {
-    setPageError("");
-    try {
-      if (editingLevel) {
-        const updated = await updateAdminCourseLevel(editingLevel.id, data);
-        setLevels((current) =>
-          current.map((level) =>
-            level.id === editingLevel.id ? mapApiLevel(updated, level) : level,
-          ),
-        );
-      } else {
-        const created = await createAdminCourseLevel(data);
-        setLevels((current) => [mapApiLevel(created), ...current]);
-        setCurrentPage(1);
-        setSearchQuery("");
-        setStatusFilter("all");
-      }
-    } catch (error) {
-      setPageError(getErrorMessage(error));
-      throw error;
+    if (editingLevel) {
+      const updated = await updateAdminCourseLevel(editingLevel.id, data);
+      setLevels((current) =>
+        current.map((level) =>
+          level.id === editingLevel.id ? mapApiLevel(updated, level) : level,
+        ),
+      );
+    } else {
+      const created = await createAdminCourseLevel(data);
+      setLevels((current) => [mapApiLevel(created), ...current]);
+      setCurrentPage(1);
+      setSearchQuery("");
+      setStatusFilter("all");
     }
   };
 
-  const handleToggleStatus = async (id: number) => {
+  const handleToggleStatus = (id: number) => {
     const level = levels.find((item) => item.id === id);
     if (!level) return;
+    setSelectedLevel(level);
+    setIsStatusModalOpen(true);
+  };
 
-    const action = level.is_active ? "disable" : "enable";
-    if (
-      !window.confirm(
-        `Are you sure you want to ${action} the "${level.name}" level?`,
-      )
-    ) {
-      return;
-    }
+  const handleConfirmStatusChange = async () => {
+    if (!selectedLevel) return;
 
-    setPageError("");
+    setIsStatusUpdating(true);
     try {
-      const response = await updateAdminCourseLevelStatus(id, !level.is_active);
+      const response = await updateAdminCourseLevelStatus(
+        selectedLevel.id,
+        !selectedLevel.is_active,
+      );
       setLevels((current) =>
         current.map((item) =>
-          item.id === id ? mapApiLevel(response.data, item) : item,
+          item.id === selectedLevel.id
+            ? mapApiLevel(response.data, item)
+            : item,
         ),
       );
-    } catch (error) {
-      setPageError(getErrorMessage(error));
+      toast.success(
+        response.message || "Course level status updated successfully.",
+        {
+          containerId: "admin",
+        },
+      );
+      setIsStatusModalOpen(false);
+      setSelectedLevel(null);
+    } catch {
+      toast.error("Unable to update course level status. Please try again.", {
+        containerId: "admin",
+      });
+    } finally {
+      setIsStatusUpdating(false);
     }
+  };
+
+  const handleCancelStatusChange = () => {
+    if (isStatusUpdating) return;
+    setIsStatusModalOpen(false);
+    setSelectedLevel(null);
   };
 
   const statusFilters: { key: StatusFilter; label: string }[] = [
@@ -414,14 +254,6 @@ const LevelManagementPage = () => {
 
       <div className="mt-6 min-h-full w-full bg-black text-white">
         <div className="space-y-6">
-          {pageError && (
-            <div
-              role="alert"
-              className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-300"
-            >
-              {pageError}
-            </div>
-          )}
           {isLoading && (
             <div className="rounded-xl border border-white/[0.08] bg-[#0B0B0B] px-4 py-8 text-center text-sm text-white/50">
               Loading course levels...
@@ -750,9 +582,7 @@ const LevelManagementPage = () => {
         </div>
       </div>
 
-      {/* UI-only Add / Edit Modal */}
       <LevelFormModal
-        key={`${editingLevel?.id ?? "new"}-${isModalOpen}`}
         isOpen={isModalOpen}
         editingLevel={editingLevel}
         onClose={() => {
@@ -760,6 +590,15 @@ const LevelManagementPage = () => {
           setEditingLevel(null);
         }}
         onSave={handleSaveLevel}
+      />
+
+      <LevelStatusConfirmModal
+        isOpen={isStatusModalOpen}
+        isLoading={isStatusUpdating}
+        levelName={selectedLevel?.name ?? ""}
+        isActive={selectedLevel?.is_active ?? false}
+        onCancel={handleCancelStatusChange}
+        onConfirm={handleConfirmStatusChange}
       />
     </>
   );
