@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CheckCircle2, GraduationCap, X } from "lucide-react";
+import { toast } from "react-toastify";
 import type { AdminCourseLevel } from "../api/adminCourseLevelApi";
 
 type CourseLevel = AdminCourseLevel & { courses: number };
@@ -18,7 +19,7 @@ const levelFormSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, "Please enter a level name.")
+    .min(3, "Level name must be at least 3 characters.")
     .max(50, "Level name cannot exceed 50 characters.")
     .refine(
       (value) => containsLetterOrNumber.test(value),
@@ -30,8 +31,10 @@ const levelFormSchema = z.object({
     .trim()
     .max(300, "Description cannot exceed 300 characters.")
     .refine(
-      (value) => value.length === 0 || containsLetterOrNumber.test(value),
-      "Description must contain at least one letter or number.",
+      (value) =>
+        value.length === 0 ||
+        (value.length >= 3 && containsLetterOrNumber.test(value)),
+      "Description must be empty or contain at least 3 characters, including a letter or number.",
     ),
 });
 
@@ -89,13 +92,16 @@ const LevelFormContent = ({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setError,
     clearErrors,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<LevelFormValues>({
     resolver: zodResolver(levelFormSchema),
-    mode: "onBlur",
+    // Validate only after submit, not when the user first focuses and leaves a field.
+    // This prevents an error flashing when the user closes the untouched modal.
+    mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
       name: editingLevel?.name ?? "",
@@ -103,7 +109,27 @@ const LevelFormContent = ({
     },
   });
 
-  const descriptionValue = watch("description") ?? "";
+  // Subscribe to individual fields using useWatch.
+  const descriptionValue =
+    useWatch({
+      control,
+      name: "description",
+    }) ?? "";
+
+  const nameValue =
+    useWatch({
+      control,
+      name: "name",
+    }) ?? "";
+
+  const handleClose = useCallback(() => {
+    clearErrors();
+    reset({
+      name: editingLevel?.name ?? "",
+      description: editingLevel?.description ?? "",
+    });
+    onClose();
+  }, [clearErrors, reset, editingLevel, onClose]);
 
   // =======================================================
   // Body Scroll Lock and Escape Key
@@ -116,7 +142,7 @@ const LevelFormContent = ({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isSubmitting) {
-        onClose();
+        handleClose();
       }
     };
 
@@ -126,7 +152,7 @@ const LevelFormContent = ({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isSubmitting, onClose]);
+  }, [isSubmitting, handleClose]);
 
   // =======================================================
   // Form Submission
@@ -142,18 +168,50 @@ const LevelFormContent = ({
       });
 
       onClose();
-    } catch {
-      // Avoid exposing raw Django/DRF error responses.
-      setError("root.server", {
-        type: "server",
-        message: "Unable to save the course level. Please try again.",
-      });
+    } catch (error: unknown) {
+      // Django REST Framework field validation errors commonly look like:
+      // { "name": ["A course level with this name already exists."] }
+      const apiError = error as {
+        response?: {
+          data?: {
+            name?: unknown;
+            detail?: unknown;
+            message?: unknown;
+          };
+        };
+      };
+
+      const responseData = apiError.response?.data;
+      const nameError = responseData?.name;
+
+      const nameMessage =
+        Array.isArray(nameError) && typeof nameError[0] === "string"
+          ? nameError[0]
+          : typeof nameError === "string"
+            ? nameError
+            : null;
+
+      if (nameMessage) {
+        setError("name", {
+          type: "server",
+          message: nameMessage,
+        });
+        return;
+      }
+
+      const serverMessage =
+        typeof responseData?.detail === "string"
+          ? responseData.detail
+          : typeof responseData?.message === "string"
+            ? responseData.message
+            : "Unable to save the course level. Please try again.";
+
+      toast.error(serverMessage, { containerId: "admin" });
     }
   };
 
   const nameError = errors.name?.message;
   const descriptionError = errors.description?.message;
-  const serverError = errors.root?.server?.message;
 
   // =======================================================
   // Render
@@ -167,7 +225,7 @@ const LevelFormContent = ({
       className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSubmitting) {
-          onClose();
+          handleClose();
         }
       }}
     >
@@ -202,7 +260,7 @@ const LevelFormContent = ({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isSubmitting}
             aria-label="Close modal"
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
@@ -285,7 +343,7 @@ const LevelFormContent = ({
                   </p>
                 ) : (
                   <span className="text-[11px] text-white/30">
-                    You can leave this field empty.
+                    Optional. Leave empty or enter 3–300 characters.
                   </span>
                 )}
 
@@ -294,23 +352,13 @@ const LevelFormContent = ({
                 </p>
               </div>
             </div>
-
-            {/* Generic Save Error */}
-            {serverError && (
-              <p
-                role="alert"
-                className="rounded-xl border border-red-400/15 bg-red-500/[0.05] px-4 py-3 text-xs text-red-400"
-              >
-                {serverError}
-              </p>
-            )}
           </div>
 
           {/* Modal Footer */}
           <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] px-6 py-4 sm:flex-row sm:justify-end">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isSubmitting}
               className="h-10 cursor-pointer rounded-xl border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
@@ -324,7 +372,7 @@ const LevelFormContent = ({
                 (Boolean(editingLevel) &&
                   descriptionValue.trim() ===
                     (editingLevel?.description ?? "").trim() &&
-                  watch("name").trim() === editingLevel?.name)
+                  nameValue.trim() === editingLevel?.name)
               }
               className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15 disabled:cursor-not-allowed disabled:opacity-40"
             >

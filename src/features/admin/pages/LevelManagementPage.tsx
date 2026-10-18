@@ -177,9 +177,15 @@ const LevelManagementPage = () => {
           level.id === editingLevel.id ? mapApiLevel(updated, level) : level,
         ),
       );
+      toast.success("Course level updated successfully.", {
+        containerId: "admin",
+      });
     } else {
       const created = await createAdminCourseLevel(data);
       setLevels((current) => [mapApiLevel(created), ...current]);
+      toast.success("Course level created successfully.", {
+        containerId: "admin",
+      });
       setCurrentPage(1);
       setSearchQuery("");
       setStatusFilter("all");
