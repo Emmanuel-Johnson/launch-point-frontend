@@ -47,6 +47,10 @@ import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPag
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
+import CourseListPage from "../../features/admin/pages/CourseListPage";
+import LevelManagementPage from "../../features/admin/pages/LevelManagementPage";
+import SkillManagementPage from "../../features/admin/pages/SkillManagementPage";
+import CourseApplicationAdminListPage from "../../features/admin/pages/CourseApplicationAdminListPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -239,7 +243,7 @@ export const routeConfig: RouteObject[] = [
               },
               {
                 path: "courses",
-                element: <div></div>,
+                element: <CourseApplicationAdminListPage />,
               },
             ],
           },
@@ -248,7 +252,18 @@ export const routeConfig: RouteObject[] = [
             path: "applications/instructors/:applicationId",
             element: <InstructorApplicationAdminDetailPage />,
           },
-
+          {
+            path: "courses",
+            element: <CourseListPage />,
+          },
+          {
+            path: "courses/course-levels",
+            element: <LevelManagementPage />,
+          },
+          {
+            path: "courses/skills",
+            element: <SkillManagementPage />,
+          },
           {
             path: "categories",
             element: <CategoryListPage />,

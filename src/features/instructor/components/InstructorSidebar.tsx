@@ -8,7 +8,7 @@ import {
   IndianRupee,
   LayoutDashboard,
   LineChart,
-  LogOut,
+  Settings,
   MessageCircle,
   UserRound,
   Users,
@@ -362,39 +362,59 @@ const InstructorSidebar = ({
 
         \====================================================== */}
 
+        {/* SETTINGS */}
         <div className="shrink-0 border-t border-white/[0.08] p-3">
-          <button
-            type="button"
-            onClick={() => setShowLogoutConfirm(true)}
-            disabled={isLoggingOut}
-            title={isCollapsed ? "Logout" : undefined}
-            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-white/55 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
-              isCollapsed ? "justify-center px-3" : "gap-3 px-3"
-            }`}
+          <NavLink
+            to="/instructor/settings"
+            title={isCollapsed ? "Settings" : undefined}
+            className={({ isActive }) =>
+              `group relative flex items-center overflow-hidden rounded-xl py-3 text-sm font-medium transition-all duration-300 ${
+                isCollapsed ? "justify-center px-3" : "gap-3 px-3"
+              } ${
+                isActive
+                  ? "bg-[#3B82F6]/10 text-white ring-1 ring-inset ring-[#3B82F6]/20"
+                  : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+              }`
+            }
           >
-            {/* Logout Shine */}
+            {({ isActive }) => (
+              <>
+                {/* Shine Effect */}
+                {!isActive && (
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                )}
 
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                {/* Active Indicator */}
+                <span
+                  className={`absolute left-0 rounded-full bg-[#3B82F6] transition-all duration-300 ${
+                    isActive ? "h-6 w-0.5 opacity-100" : "h-0 w-0 opacity-0"
+                  }`}
+                />
 
-            {/* Icon */}
+                {/* Icon */}
+                <span
+                  className={`relative z-10 shrink-0 transition-all duration-300 ${
+                    isActive
+                      ? "scale-105 text-[#3B82F6]"
+                      : "text-white/45 group-hover:scale-110 group-hover:text-white/80"
+                  }`}
+                >
+                  <Settings className="h-5 w-5" strokeWidth={1.8} />
+                </span>
 
-            <LogOut
-              className="relative z-10 h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
-              strokeWidth={1.8}
-            />
-
-            {/* Label */}
-
-            <span
-              className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ${
-                isCollapsed
-                  ? "max-w-0 translate-x-2 opacity-0"
-                  : "max-w-[100px] translate-x-0 opacity-100"
-              }`}
-            >
-              Logout
-            </span>
-          </button>
+                {/* Label */}
+                <span
+                  className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ${
+                    isCollapsed
+                      ? "max-w-0 translate-x-2 opacity-0"
+                      : "max-w-[180px] translate-x-0 opacity-100"
+                  }`}
+                >
+                  Settings
+                </span>
+              </>
+            )}
+          </NavLink>
         </div>
       </aside>
 

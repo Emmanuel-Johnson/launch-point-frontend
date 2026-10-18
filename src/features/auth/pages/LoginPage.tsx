@@ -108,13 +108,17 @@ const LoginPage = () => {
       localStorage.setItem("access", response.tokens.access);
       localStorage.setItem("refresh", response.tokens.refresh);
 
-      dispatch(setCredentials(response.user));
-
-      toast.success("Welcome to Launch Point! Let’s get started.", {
-        containerId: "instructor",
-      });
-
-      navigate("/student/dashboard", { replace: true });
+      if (response.user.role === "instructor") {
+        dispatch(setCredentials(response.user));
+        navigate("/instructor/dashboard", { replace: true });
+        toast.success("Welcome to Launch Point! Let’s get started.", {
+          containerId: "instructor",
+        });
+      } else {
+        dispatch(setCredentials(response.user));
+        navigate("/student/dashboard", { replace: true });
+        toast.success("Welcome to Launch Point! Let's get started.");
+      }
     } catch (error) {
       console.error("Google authentication failed:", error);
 
