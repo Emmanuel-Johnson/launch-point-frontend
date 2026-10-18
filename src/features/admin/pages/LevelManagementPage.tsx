@@ -341,10 +341,10 @@ const LevelManagementPage = () => {
             </div>
           </section>
 
-          {/* Sticky toolbar */}
+          {/* Normal scrolling toolbar */}
           <section
             ref={listRef}
-            className="animate-page-item sticky top-4 z-20 scroll-mt-4"
+            className="animate-page-item scroll-mt-4"
             style={{ animationDelay: "200ms" }}
           >
             <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#0B0B0B]/90 p-3 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl md:flex-row md:items-center md:justify-between">
