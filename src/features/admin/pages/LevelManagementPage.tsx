@@ -440,8 +440,7 @@ const LevelManagementPage = () => {
                       Level Management
                     </h1>
                     <p className="mt-1 text-sm text-white/50">
-                      Manage learning levels for courses across Launch Point
-                      LMS.
+                      Manage learning levels for courses across Launch Point.
                     </p>
                   </div>
                 </div>
@@ -449,7 +448,7 @@ const LevelManagementPage = () => {
                 <button
                   type="button"
                   onClick={openAddModal}
-                  className="group relative inline-flex h-11 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
+                  className="cursor-pointer group relative inline-flex h-11 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                   <Plus
@@ -600,7 +599,7 @@ const LevelManagementPage = () => {
                         onClick={() => openEditModal(level)}
                         aria-label={`Edit ${level.name}`}
                         title="Edit level"
-                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                        className="cursor-pointer inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                       >
                         <Pencil className="h-4 w-4" strokeWidth={1.8} />
                       </button>
@@ -608,7 +607,7 @@ const LevelManagementPage = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(level.id)}
-                        className={`inline-flex h-9 w-[150px] shrink-0 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
+                        className={`cursor-pointer inline-flex h-9 w-[150px] shrink-0 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
                           level.is_active
                             ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
                             : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
