@@ -54,23 +54,6 @@ import CourseApplicationAdminListPage from "../../features/admin/pages/CourseApp
 
 export const routeConfig: RouteObject[] = [
   {
-    element: <PublicLayout />,
-    children: [
-      {
-        path: "/",
-        element: <LandingPage />,
-      },
-      {
-        path: "/about",
-        element: <AboutPage />,
-      },
-      {
-        path: "/contact",
-        element: <ContactPage />,
-      },
-    ],
-  },
-  {
     element: <PublicRoute />,
     children: [
       {
@@ -96,6 +79,23 @@ export const routeConfig: RouteObject[] = [
       {
         path: "/reset-password",
         element: <ResetPasswordPage />,
+      },
+      {
+        element: <PublicLayout />,
+        children: [
+          {
+            path: "/",
+            element: <LandingPage />,
+          },
+          {
+            path: "/about",
+            element: <AboutPage />,
+          },
+          {
+            path: "/contact",
+            element: <ContactPage />,
+          },
+        ],
       },
     ],
   },
