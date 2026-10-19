@@ -261,7 +261,8 @@ const SkillManagementPage = () => {
         <button
           type="button"
           onClick={() => navigate("/admin/courses")}
-          className="group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
+          className="animate-page-item group inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-white/45 transition-colors hover:text-white"
+          style={{ animationDelay: "80ms" }}
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           Back
@@ -271,16 +272,23 @@ const SkillManagementPage = () => {
       <div className="mt-6 min-h-full w-full bg-black text-white">
         <div className="space-y-6">
           {/* Header and statistics */}
-          <section>
+          <section
+            className="animate-page-item"
+            style={{ animationDelay: "80ms" }}
+          >
             <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
               />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
+              />
 
               <div className="relative flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/25">
+                <div className="flex cursor-default items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] ring-1 ring-inset ring-[#34D399]/25">
                     <Code2 className="h-5 w-5" />
                   </div>
 
@@ -297,10 +305,11 @@ const SkillManagementPage = () => {
                 <button
                   type="button"
                   onClick={openAddModal}
-                  className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15"
+                  className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
-                  <Plus className="h-4 w-4" />
-                  Add Skill
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <Plus className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+                  <span className="relative z-10">Add Skill</span>
                 </button>
               </div>
 
@@ -332,8 +341,12 @@ const SkillManagementPage = () => {
           </section>
 
           {/* Search and filters */}
-          <section ref={listRef} className="scroll-mt-4">
-            <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#0B0B0B]/90 p-3 md:flex-row md:items-center md:justify-between">
+          <section
+            ref={listRef}
+            className="animate-page-item scroll-mt-4"
+            style={{ animationDelay: "200ms" }}
+          >
+            <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#0B0B0B]/90 p-3 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl md:flex-row md:items-center md:justify-between">
               <div className="flex h-10 shrink-0 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
                 {statusFilters.map((filter) => (
                   <button
@@ -343,9 +356,9 @@ const SkillManagementPage = () => {
                     className={`h-8 w-20 rounded-lg text-xs font-medium transition ${
                       statusFilter === filter.key
                         ? filter.key === "active"
-                          ? "bg-[#34D399]/10 text-[#34D399]"
+                          ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
                           : filter.key === "inactive"
-                            ? "bg-red-400/10 text-red-400"
+                            ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
                             : "bg-white/[0.08] text-white"
                         : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
                     }`}
@@ -380,11 +393,16 @@ const SkillManagementPage = () => {
             </section>
           ) : filteredSkills.length > 0 ? (
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {paginatedSkills.map((skill) => (
+              {paginatedSkills.map((skill, index) => (
                 <article
                   key={skill.id}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition hover:border-[#34D399]/30 hover:shadow-[0_14px_40px_-12px_rgba(52,211,153,0.18)]"
+                  className="animate-page-item group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:shadow-[0_14px_40px_-12px_rgba(52,211,153,0.25)]"
+                  style={{ animationDelay: `${260 + index * 60}ms` }}
                 >
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
@@ -432,7 +450,7 @@ const SkillManagementPage = () => {
                         onClick={() => openEditModal(skill)}
                         aria-label={`Edit ${skill.name}`}
                         title="Edit skill"
-                        className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] text-white/50 transition hover:border-[#34D399]/30 hover:text-[#34D399]"
+                        className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
@@ -440,7 +458,7 @@ const SkillManagementPage = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(skill)}
-                        className={`inline-flex h-9 w-[125px] cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition ${
+                        className={`inline-flex h-9 w-[125px] shrink-0 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
                           skill.is_active
                             ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
                             : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"
@@ -469,7 +487,7 @@ const SkillManagementPage = () => {
               ))}
             </section>
           ) : (
-            <section className="rounded-2xl border border-white/[0.08] bg-[#0B0B0B]">
+            <section className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
               <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
                   <SlidersHorizontal className="h-6 w-6" />
@@ -493,7 +511,7 @@ const SkillManagementPage = () => {
                   <button
                     type="button"
                     onClick={openAddModal}
-                    className="mt-5 inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-xs font-medium text-[#34D399] hover:bg-[#34D399]/15"
+                    className="mt-5 inline-flex h-9 items-center gap-2 rounded-lg border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-xs font-medium text-[#34D399] transition hover:bg-[#34D399]/15"
                   >
                     <Plus className="h-4 w-4" />
                     Add First Skill
@@ -505,7 +523,10 @@ const SkillManagementPage = () => {
 
           {/* Pagination */}
           {!isLoading && filteredSkills.length > 0 && totalPages > 1 && (
-            <section className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-[#0B0B0B] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <section
+              className="animate-page-item flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+              style={{ animationDelay: "320ms" }}
+            >
               <p className="text-xs text-white/40">
                 Showing{" "}
                 <span className="font-medium text-white/70">{startItem}</span>{" "}
@@ -523,7 +544,7 @@ const SkillManagementPage = () => {
                   onClick={() => handlePageChange(Math.max(safePage - 1, 1))}
                   disabled={safePage === 1}
                   aria-label="Previous page"
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] text-white/50 hover:border-[#34D399]/30 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
@@ -536,9 +557,9 @@ const SkillManagementPage = () => {
                     key={page}
                     type="button"
                     onClick={() => handlePageChange(page)}
-                    className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs ${
+                    className={`flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
                       safePage === page
-                        ? "bg-[#34D399]/10 text-[#34D399]"
+                        ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
                         : "text-white/45 hover:bg-white/[0.04] hover:text-white"
                     }`}
                   >
