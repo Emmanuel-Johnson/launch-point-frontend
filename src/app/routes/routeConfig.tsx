@@ -51,8 +51,31 @@ import CourseListPage from "../../features/admin/pages/CourseListPage";
 import LevelManagementPage from "../../features/admin/pages/LevelManagementPage";
 import SkillManagementPage from "../../features/admin/pages/SkillManagementPage";
 import CourseApplicationAdminListPage from "../../features/admin/pages/CourseApplicationAdminListPage";
+import NonAdminRoute from "./NonAdminRoute";
 
 export const routeConfig: RouteObject[] = [
+  {
+    element: <NonAdminRoute />,
+    children: [
+      {
+        element: <PublicLayout />,
+        children: [
+          {
+            path: "/",
+            element: <LandingPage />,
+          },
+          {
+            path: "/about",
+            element: <AboutPage />,
+          },
+          {
+            path: "/contact",
+            element: <ContactPage />,
+          },
+        ],
+      },
+    ],
+  },
   {
     element: <PublicRoute />,
     children: [
@@ -79,23 +102,6 @@ export const routeConfig: RouteObject[] = [
       {
         path: "/reset-password",
         element: <ResetPasswordPage />,
-      },
-      {
-        element: <PublicLayout />,
-        children: [
-          {
-            path: "/",
-            element: <LandingPage />,
-          },
-          {
-            path: "/about",
-            element: <AboutPage />,
-          },
-          {
-            path: "/contact",
-            element: <ContactPage />,
-          },
-        ],
       },
     ],
   },
