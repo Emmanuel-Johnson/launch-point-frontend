@@ -7,7 +7,8 @@ interface LevelStatusConfirmModalProps {
   levelName: string;
   isActive: boolean;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
+  isLoading?: boolean;
 }
 
 const LevelStatusConfirmModal = ({
@@ -16,6 +17,7 @@ const LevelStatusConfirmModal = ({
   isActive,
   onCancel,
   onConfirm,
+  isLoading = false,
 }: LevelStatusConfirmModalProps) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -24,7 +26,7 @@ const LevelStatusConfirmModal = ({
     document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onCancel();
+      if (event.key === "Escape" && !isLoading) onCancel();
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -33,7 +35,7 @@ const LevelStatusConfirmModal = ({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onCancel]);
+  }, [isOpen, onCancel, isLoading]);
 
   if (!isOpen) return null;
 
@@ -48,7 +50,7 @@ const LevelStatusConfirmModal = ({
       aria-describedby="level-status-description"
       className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/75 px-4 backdrop-blur-sm"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onCancel();
+        if (event.target === event.currentTarget && !isLoading) onCancel();
       }}
     >
       <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.75)]">
@@ -121,7 +123,8 @@ const LevelStatusConfirmModal = ({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 text-sm font-medium text-white/55 transition hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white"
+              disabled={isLoading}
+              className="flex-1 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 text-sm font-medium text-white/55 transition hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white"
             >
               Cancel
             </button>
@@ -129,14 +132,15 @@ const LevelStatusConfirmModal = ({
             <button
               type="button"
               onClick={onConfirm}
-              className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+              disabled={isLoading}
+              className={`flex flex-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
                 isActive
                   ? "bg-red-500 text-white hover:bg-red-400"
                   : "bg-[#34D399] text-black hover:bg-[#6EE7B7]"
               }`}
             >
               <ActionIcon className="h-4 w-4" strokeWidth={2} />
-              {action}
+              {isLoading ? "Updating..." : action}
             </button>
           </div>
         </div>

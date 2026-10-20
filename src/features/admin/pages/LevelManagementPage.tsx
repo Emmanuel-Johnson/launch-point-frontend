@@ -17,6 +17,7 @@ import {
   createAdminCourseLevel,
   getAdminCourseLevels,
   updateAdminCourseLevel,
+  updateAdminCourseLevelStatus,
   type AdminCourseLevel,
   type CreateAdminCourseLevelData,
   type UpdateAdminCourseLevelData,
@@ -25,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import LevelFormModal from "../components/LevelFormModal";
+import LevelStatusConfirmModal from "../components/LevelStatusConfirmModal";
 
 type StatusFilter = "all" | "active" | "inactive";
 
@@ -46,6 +48,8 @@ const LevelManagementPage = () => {
   );
   const [isUpdatingLevel, setIsUpdatingLevel] = useState(false);
   const [updateLevelError, setUpdateLevelError] = useState<string | null>(null);
+  const [statusLevel, setStatusLevel] = useState<AdminCourseLevel | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   // =========================================================
   // Fetch Course Levels
@@ -283,6 +287,60 @@ const LevelManagementPage = () => {
   };
 
   // =========================================================
+  // Enable / Disable Course Level Status
+  // =========================================================
+
+  const handleConfirmStatusChange = async () => {
+    if (!statusLevel || isUpdatingStatus) return;
+
+    const levelToUpdate = statusLevel;
+    const nextIsActive = !levelToUpdate.is_active;
+
+    try {
+      setIsUpdatingStatus(true);
+
+      const response = await updateAdminCourseLevelStatus(
+        levelToUpdate.id,
+        nextIsActive,
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(
+          response.message || "Failed to update course level status.",
+        );
+      }
+
+      setLevels((currentLevels) =>
+        currentLevels.map((level) =>
+          level.id === levelToUpdate.id ? response.data : level,
+        ),
+      );
+
+      setStatusLevel(null);
+      toast.success(
+        `Course level ${nextIsActive ? "enabled" : "disabled"} successfully.`,
+        { containerId: "admin" },
+      );
+    } catch (error: unknown) {
+      let message = "Failed to update course level status. Please try again.";
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as
+          | { message?: string; errors?: Record<string, string[]> | null }
+          | undefined;
+
+        message = responseData?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
+      toast.error(message, { containerId: "admin" });
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
+  // =========================================================
   // Render
   // =========================================================
 
@@ -511,6 +569,7 @@ const LevelManagementPage = () => {
                     </button>
                     <button
                       type="button"
+                      onClick={() => setStatusLevel(level)}
                       className={`cursor-pointer inline-flex h-9 w-[125px] shrink-0 items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${
                         level.is_active
                           ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10"
@@ -649,6 +708,16 @@ const LevelManagementPage = () => {
         onSave={editingLevel ? handleUpdateLevel : handleCreateLevel}
         isSaving={isCreatingLevel || isUpdatingLevel}
         externalError={editingLevel ? updateLevelError : createLevelError}
+      />
+      <LevelStatusConfirmModal
+        isOpen={Boolean(statusLevel)}
+        levelName={statusLevel?.name ?? ""}
+        isActive={statusLevel?.is_active ?? false}
+        isLoading={isUpdatingStatus}
+        onCancel={() => {
+          if (!isUpdatingStatus) setStatusLevel(null);
+        }}
+        onConfirm={handleConfirmStatusChange}
       />
     </>
   );
