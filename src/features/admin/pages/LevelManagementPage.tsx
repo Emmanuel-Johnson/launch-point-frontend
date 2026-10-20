@@ -20,6 +20,8 @@ import {
   type CreateAdminCourseLevelData,
 } from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 import LevelFormModal from "../components/LevelFormModal";
 
 type StatusFilter = "all" | "active" | "inactive";
@@ -144,7 +146,10 @@ const LevelManagementPage = () => {
       const response = await createAdminCourseLevel(data);
 
       if (!response.success || !response.data) {
-        throw new Error(response.message || "Failed to create course level.");
+        const fieldError = response.errors?.name?.[0];
+        throw new Error(
+          fieldError || response.message || "Failed to create course level.",
+        );
       }
 
       setLevels((currentLevels) => [response.data, ...currentLevels]);
@@ -152,13 +157,43 @@ const LevelManagementPage = () => {
       setSearchQuery("");
       setStatusFilter("all");
       setIsLevelModalOpen(false);
+      setCreateLevelError(null);
+
+      toast.success("Course level created successfully.", {
+        containerId: "admin",
+      });
     } catch (error: unknown) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to create course level.";
+      let message = "Failed to create course level. Please try again.";
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as
+          | {
+              message?: string;
+              errors?: Record<string, string[]> | null;
+            }
+          | undefined;
+
+        // Prefer the field-specific duplicate-name validation message.
+        message =
+          responseData?.errors?.name?.[0] ||
+          responseData?.message ||
+          error.message ||
+          message;
+
+        // Some APIs return a generic envelope message alongside field errors.
+        if (
+          responseData?.message === "Validation failed." &&
+          !responseData.errors?.name?.[0]
+        ) {
+          message =
+            "Unable to create this course level. Please check the form.";
+        }
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
 
       setCreateLevelError(message);
+      toast.error(message, { containerId: "admin" });
       throw error;
     } finally {
       setIsCreatingLevel(false);

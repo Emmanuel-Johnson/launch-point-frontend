@@ -110,9 +110,8 @@ const LevelFormContent = ({
   onClose,
   onSave,
   isSaving = false,
-  externalError = null,
 }: LevelFormContentProps) => {
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -253,15 +252,6 @@ const LevelFormContent = ({
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="space-y-5 px-6 py-6">
-            {(submitError || externalError) && (
-              <div
-                role="alert"
-                className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-300"
-              >
-                {submitError || externalError}
-              </div>
-            )}
-
             {/* Level Name */}
             <div>
               <label
@@ -277,7 +267,9 @@ const LevelFormContent = ({
                 placeholder="e.g. Beginner"
                 maxLength={50}
                 autoComplete="off"
-                {...register("name")}
+                {...register("name", {
+                  onChange: () => setSubmitError(null),
+                })}
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? "level-name-error" : undefined}
                 className={`h-11 w-full rounded-xl border ${
@@ -310,7 +302,9 @@ const LevelFormContent = ({
                 placeholder="Describe who this learning level is for..."
                 rows={4}
                 maxLength={300}
-                {...register("description")}
+                {...register("description", {
+                  onChange: () => setSubmitError(null),
+                })}
                 aria-invalid={Boolean(errors.description)}
                 aria-describedby={
                   errors.description
