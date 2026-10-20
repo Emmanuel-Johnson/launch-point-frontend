@@ -18,6 +18,7 @@ import {
   type AdminCourseLevel,
 } from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
+import LevelFormModal from "../components/LevelFormModal";
 
 type StatusFilter = "all" | "active" | "inactive";
 
@@ -31,6 +32,7 @@ const LevelManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
 
   // =========================================================
   // Fetch Course Levels
@@ -174,6 +176,7 @@ const LevelManagementPage = () => {
 
             <button
               type="button"
+              onClick={() => setIsLevelModalOpen(true)}
               className="cursor-pointer group relative inline-flex h-11 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -469,6 +472,14 @@ const LevelManagementPage = () => {
             </section>
           )}
       </div>
+      <LevelFormModal
+        isOpen={isLevelModalOpen}
+        editingLevel={null}
+        onClose={() => setIsLevelModalOpen(false)}
+        onSave={(data) => {
+          console.log("Course level form submitted:", data);
+        }}
+      />
     </>
   );
 };
