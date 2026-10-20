@@ -14,8 +14,10 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
+  createAdminCourseLevel,
   getAdminCourseLevels,
   type AdminCourseLevel,
+  type CreateAdminCourseLevelData,
 } from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
 import LevelFormModal from "../components/LevelFormModal";
@@ -33,6 +35,8 @@ const LevelManagementPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
+  const [isCreatingLevel, setIsCreatingLevel] = useState(false);
+  const [createLevelError, setCreateLevelError] = useState<string | null>(null);
 
   // =========================================================
   // Fetch Course Levels
@@ -126,6 +130,39 @@ const LevelManagementPage = () => {
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);
+  };
+
+  // =========================================================
+  // Create Course Level
+  // =========================================================
+
+  const handleCreateLevel = async (data: CreateAdminCourseLevelData) => {
+    try {
+      setIsCreatingLevel(true);
+      setCreateLevelError(null);
+
+      const response = await createAdminCourseLevel(data);
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to create course level.");
+      }
+
+      setLevels((currentLevels) => [response.data, ...currentLevels]);
+      setCurrentPage(1);
+      setSearchQuery("");
+      setStatusFilter("all");
+      setIsLevelModalOpen(false);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to create course level.";
+
+      setCreateLevelError(message);
+      throw error;
+    } finally {
+      setIsCreatingLevel(false);
+    }
   };
 
   // =========================================================
@@ -475,10 +512,15 @@ const LevelManagementPage = () => {
       <LevelFormModal
         isOpen={isLevelModalOpen}
         editingLevel={null}
-        onClose={() => setIsLevelModalOpen(false)}
-        onSave={(data) => {
-          console.log("Course level form submitted:", data);
+        onClose={() => {
+          if (!isCreatingLevel) {
+            setIsLevelModalOpen(false);
+            setCreateLevelError(null);
+          }
         }}
+        onSave={handleCreateLevel}
+        isSaving={isCreatingLevel}
+        externalError={createLevelError}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -31,7 +31,9 @@ interface LevelFormModalProps {
   onClose: () => void;
   onSave: (
     data: Pick<CourseLevel, "name" | "description" | "is_active">,
-  ) => void;
+  ) => void | Promise<void>;
+  isSaving?: boolean;
+  externalError?: string | null;
 }
 
 interface LevelFormContentProps {
@@ -39,7 +41,9 @@ interface LevelFormContentProps {
   onClose: () => void;
   onSave: (
     data: Pick<CourseLevel, "name" | "description" | "is_active">,
-  ) => void;
+  ) => void | Promise<void>;
+  isSaving?: boolean;
+  externalError?: string | null;
 }
 
 // -----------------------------------------------------------------------------
@@ -80,6 +84,8 @@ const LevelFormModal = ({
   editingLevel,
   onClose,
   onSave,
+  isSaving = false,
+  externalError = null,
 }: LevelFormModalProps) => {
   if (!isOpen) return null;
 
@@ -89,6 +95,8 @@ const LevelFormModal = ({
       editingLevel={editingLevel}
       onClose={onClose}
       onSave={onSave}
+      isSaving={isSaving}
+      externalError={externalError}
     />
   );
 };
@@ -101,7 +109,11 @@ const LevelFormContent = ({
   editingLevel,
   onClose,
   onSave,
+  isSaving = false,
+  externalError = null,
 }: LevelFormContentProps) => {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -147,7 +159,7 @@ const LevelFormContent = ({
     document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !isSaving) {
         onClose();
       }
     };
@@ -158,20 +170,29 @@ const LevelFormContent = ({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]);
+  }, [onClose, isSaving]);
 
   // ---------------------------------------------------------------------------
   // Submit
   // ---------------------------------------------------------------------------
 
-  const onSubmit: SubmitHandler<LevelFormValues> = (data) => {
-    onSave({
-      name: data.name.trim(),
-      description: data.description.trim(),
-      is_active: data.is_active,
-    });
+  const onSubmit: SubmitHandler<LevelFormValues> = async (data) => {
+    setSubmitError(null);
 
-    onClose();
+    try {
+      await onSave({
+        name: data.name.trim(),
+        description: data.description.trim(),
+        is_active: data.is_active,
+      });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unable to save the course level. Please try again.";
+
+      setSubmitError(message);
+    }
   };
 
   // ---------------------------------------------------------------------------
@@ -185,7 +206,7 @@ const LevelFormContent = ({
       aria-labelledby="level-form-title"
       className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
+        if (event.target === event.currentTarget && !isSaving) {
           onClose();
         }
       }}
@@ -232,6 +253,15 @@ const LevelFormContent = ({
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="space-y-5 px-6 py-6">
+            {(submitError || externalError) && (
+              <div
+                role="alert"
+                className="rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-sm text-red-300"
+              >
+                {submitError || externalError}
+              </div>
+            )}
+
             {/* Level Name */}
             <div>
               <label
@@ -397,17 +427,23 @@ const LevelFormContent = ({
             <button
               type="button"
               onClick={onClose}
-              className="h-10 cursor-pointer rounded-xl border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+              disabled={isSaving}
+              className="h-10 cursor-pointer rounded-xl disabled:cursor-not-allowed disabled:opacity-50 border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15"
+              disabled={isSaving}
+              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <CheckCircle2 className="h-4 w-4" />
-              {editingLevel ? "Save Changes" : "Create Level"}
+              {isSaving
+                ? "Creating..."
+                : editingLevel
+                  ? "Save Changes"
+                  : "Create Level"}
             </button>
           </div>
         </form>
