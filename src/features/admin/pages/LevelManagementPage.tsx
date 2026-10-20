@@ -16,8 +16,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   createAdminCourseLevel,
   getAdminCourseLevels,
+  updateAdminCourseLevel,
   type AdminCourseLevel,
   type CreateAdminCourseLevelData,
+  type UpdateAdminCourseLevelData,
 } from "../api/adminCourseLevelApi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -39,6 +41,11 @@ const LevelManagementPage = () => {
   const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
   const [isCreatingLevel, setIsCreatingLevel] = useState(false);
   const [createLevelError, setCreateLevelError] = useState<string | null>(null);
+  const [editingLevel, setEditingLevel] = useState<AdminCourseLevel | null>(
+    null,
+  );
+  const [isUpdatingLevel, setIsUpdatingLevel] = useState(false);
+  const [updateLevelError, setUpdateLevelError] = useState<string | null>(null);
 
   // =========================================================
   // Fetch Course Levels
@@ -201,6 +208,81 @@ const LevelManagementPage = () => {
   };
 
   // =========================================================
+  // Update Course Level
+  // =========================================================
+
+  const handleUpdateLevel = async (data: UpdateAdminCourseLevelData) => {
+    if (!editingLevel) return;
+
+    try {
+      setIsUpdatingLevel(true);
+      setUpdateLevelError(null);
+
+      // Only name and description are sent. Status is managed separately.
+      const response = await updateAdminCourseLevel(editingLevel.id, {
+        name: data.name,
+        description: data.description,
+      });
+
+      if (!response.success || !response.data) {
+        const fieldError =
+          response.errors?.name?.[0] || response.errors?.description?.[0];
+        throw new Error(
+          fieldError || response.message || "Failed to update course level.",
+        );
+      }
+
+      setLevels((currentLevels) =>
+        currentLevels.map((level) =>
+          level.id === editingLevel.id ? response.data : level,
+        ),
+      );
+      setEditingLevel(null);
+      setIsLevelModalOpen(false);
+      setUpdateLevelError(null);
+
+      toast.success("Course level updated successfully.", {
+        containerId: "admin",
+      });
+    } catch (error: unknown) {
+      let message = "Failed to update course level. Please try again.";
+
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as
+          | {
+              message?: string;
+              errors?: Record<string, string[]> | null;
+            }
+          | undefined;
+
+        message =
+          responseData?.errors?.name?.[0] ||
+          responseData?.errors?.description?.[0] ||
+          responseData?.message ||
+          error.message ||
+          message;
+
+        if (
+          responseData?.message === "Validation failed." &&
+          !responseData.errors?.name?.[0] &&
+          !responseData.errors?.description?.[0]
+        ) {
+          message =
+            "Unable to update this course level. Please check the form.";
+        }
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
+      setUpdateLevelError(message);
+      toast.error(message, { containerId: "admin" });
+      throw error;
+    } finally {
+      setIsUpdatingLevel(false);
+    }
+  };
+
+  // =========================================================
   // Render
   // =========================================================
 
@@ -248,7 +330,11 @@ const LevelManagementPage = () => {
 
             <button
               type="button"
-              onClick={() => setIsLevelModalOpen(true)}
+              onClick={() => {
+                setEditingLevel(null);
+                setCreateLevelError(null);
+                setIsLevelModalOpen(true);
+              }}
               className="cursor-pointer group relative inline-flex h-11 shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -414,6 +500,11 @@ const LevelManagementPage = () => {
                       type="button"
                       aria-label={`Edit ${level.name}`}
                       title="Edit level"
+                      onClick={() => {
+                        setEditingLevel(level);
+                        setUpdateLevelError(null);
+                        setIsLevelModalOpen(true);
+                      }}
                       className="cursor-pointer inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                     >
                       <Pencil className="h-4 w-4" strokeWidth={1.8} />
@@ -546,16 +637,18 @@ const LevelManagementPage = () => {
       </div>
       <LevelFormModal
         isOpen={isLevelModalOpen}
-        editingLevel={null}
+        editingLevel={editingLevel}
         onClose={() => {
-          if (!isCreatingLevel) {
+          if (!isCreatingLevel && !isUpdatingLevel) {
             setIsLevelModalOpen(false);
+            setEditingLevel(null);
             setCreateLevelError(null);
+            setUpdateLevelError(null);
           }
         }}
-        onSave={handleCreateLevel}
-        isSaving={isCreatingLevel}
-        externalError={createLevelError}
+        onSave={editingLevel ? handleUpdateLevel : handleCreateLevel}
+        isSaving={isCreatingLevel || isUpdatingLevel}
+        externalError={editingLevel ? updateLevelError : createLevelError}
       />
     </>
   );

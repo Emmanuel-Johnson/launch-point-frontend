@@ -14,7 +14,7 @@ type CourseLevel = {
   name: string;
   description: string;
   is_active: boolean;
-  courses: number;
+  courses?: number;
   created_at: string;
   updated_at: string;
 };
@@ -179,11 +179,20 @@ const LevelFormContent = ({
     setSubmitError(null);
 
     try {
-      await onSave({
-        name: data.name.trim(),
-        description: data.description.trim(),
-        is_active: data.is_active,
-      });
+      if (editingLevel) {
+        // The update flow intentionally excludes is_active/status.
+        await onSave({
+          name: data.name.trim(),
+          description: data.description.trim(),
+          is_active: data.is_active,
+        });
+      } else {
+        await onSave({
+          name: data.name.trim(),
+          description: data.description.trim(),
+          is_active: data.is_active,
+        });
+      }
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -342,78 +351,80 @@ const LevelFormContent = ({
               </div>
             </div>
 
-            {/* Status */}
-            <fieldset>
-              <legend className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/45">
-                Status
-              </legend>
+            {/* Status is only editable while creating a level. Updates do not include status. */}
+            {!editingLevel && (
+              <fieldset>
+                <legend className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/45">
+                  Status
+                </legend>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {/* Active */}
-                <label
-                  className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
-                    isActive
-                      ? "border-[#34D399]/40 bg-[#34D399]/[0.08]"
-                      : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="level-status"
-                    value="active"
-                    checked={isActive}
-                    onChange={() =>
-                      setValue("is_active", true, {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      })
-                    }
-                    className="h-4 w-4 accent-[#34D399]"
-                  />
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {/* Active */}
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
+                      isActive
+                        ? "border-[#34D399]/40 bg-[#34D399]/[0.08]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="level-status"
+                      value="active"
+                      checked={isActive}
+                      onChange={() =>
+                        setValue("is_active", true, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                      className="h-4 w-4 accent-[#34D399]"
+                    />
 
-                  <span className="min-w-0">
-                    <span className="block text-sm font-medium text-white">
-                      Active
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-white">
+                        Active
+                      </span>
+                      <span className="mt-0.5 block text-xs text-white/40">
+                        Available for course setup
+                      </span>
                     </span>
-                    <span className="mt-0.5 block text-xs text-white/40">
-                      Available for course setup
-                    </span>
-                  </span>
-                </label>
+                  </label>
 
-                {/* Inactive */}
-                <label
-                  className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
-                    !isActive
-                      ? "border-red-400/40 bg-red-500/[0.06]"
-                      : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="level-status"
-                    value="inactive"
-                    checked={!isActive}
-                    onChange={() =>
-                      setValue("is_active", false, {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      })
-                    }
-                    className="h-4 w-4 accent-red-400"
-                  />
+                  {/* Inactive */}
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
+                      !isActive
+                        ? "border-red-400/40 bg-red-500/[0.06]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="level-status"
+                      value="inactive"
+                      checked={!isActive}
+                      onChange={() =>
+                        setValue("is_active", false, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                      className="h-4 w-4 accent-red-400"
+                    />
 
-                  <span className="min-w-0">
-                    <span className="block text-sm font-medium text-white">
-                      Inactive
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-white">
+                        Inactive
+                      </span>
+                      <span className="mt-0.5 block text-xs text-white/40">
+                        Not available for new courses
+                      </span>
                     </span>
-                    <span className="mt-0.5 block text-xs text-white/40">
-                      Not available for new courses
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </fieldset>
+                  </label>
+                </div>
+              </fieldset>
+            )}
           </div>
 
           {/* Footer */}
@@ -434,7 +445,9 @@ const LevelFormContent = ({
             >
               <CheckCircle2 className="h-4 w-4" />
               {isSaving
-                ? "Creating..."
+                ? editingLevel
+                  ? "Saving..."
+                  : "Creating..."
                 : editingLevel
                   ? "Save Changes"
                   : "Create Level"}
