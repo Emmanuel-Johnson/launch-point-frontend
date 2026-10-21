@@ -49,7 +49,7 @@ import PublicRoute from "./PublicRoute";
 import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
 import CourseListPage from "../../features/admin/pages/CourseListPage";
 import LevelManagementPage from "../../features/admin/pages/LevelManagementPage";
-import SkillManagementPage from "../../features/admin/pages/skills/SkillManagementPage";
+import SkillManagementPage from "../../features/admin/pages/SkillManagementPage";
 import CourseApplicationAdminListPage from "../../features/admin/pages/CourseApplicationAdminListPage";
 import NonAdminRoute from "./NonAdminRoute";
 
