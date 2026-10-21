@@ -29,6 +29,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import LevelFormModal from "../components/LevelFormModal";
 import LevelStatusConfirmModal from "../components/LevelStatusConfirmModal";
+import LevelDeleteConfirmModal from "../components/LevelDeleteConfirmModal";
 
 type StatusFilter = "all" | "active" | "inactive";
 
@@ -53,6 +54,9 @@ const LevelManagementPage = () => {
   const [statusLevel, setStatusLevel] = useState<AdminCourseLevel | null>(null);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [deletingLevelId, setDeletingLevelId] = useState<number | null>(null);
+  const [deletingLevel, setDeletingLevel] = useState<AdminCourseLevel | null>(
+    null,
+  );
 
   // =========================================================
   // Fetch Course Levels
@@ -347,26 +351,30 @@ const LevelManagementPage = () => {
   // Delete Course Level (soft delete)
   // =========================================================
 
-  const handleDeleteLevel = async (level: AdminCourseLevel) => {
-    if (deletingLevelId !== null) return;
+  const handleDeleteLevel = async () => {
+    if (!deletingLevel || deletingLevelId !== null) return;
 
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${level.name}"? This action will soft-delete the course level.`,
-    );
-
-    if (!confirmed) return;
+    const levelToDelete = deletingLevel;
 
     try {
-      setDeletingLevelId(level.id);
+      setDeletingLevelId(levelToDelete.id);
 
       // The backend handles this as a soft delete.
-      await deleteAdminCourseLevel(level.id);
+      const response = await deleteAdminCourseLevel(levelToDelete.id);
+
+      if (!response.success) {
+        throw new Error(response.message || "Failed to delete course level.");
+      }
 
       setLevels((currentLevels) =>
-        currentLevels.filter((currentLevel) => currentLevel.id !== level.id),
+        currentLevels.filter(
+          (currentLevel) => currentLevel.id !== levelToDelete.id,
+        ),
       );
 
-      toast.success("Course level deleted successfully.", {
+      setDeletingLevel(null);
+
+      toast.success(response.message || "Course level deleted successfully.", {
         containerId: "admin",
       });
     } catch (error: unknown) {
@@ -634,7 +642,7 @@ const LevelManagementPage = () => {
                       type="button"
                       aria-label={`Delete ${level.name}`}
                       title="Delete level"
-                      onClick={() => void handleDeleteLevel(level)}
+                      onClick={() => setDeletingLevel(level)}
                       disabled={deletingLevelId !== null}
                       className="cursor-pointer inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-red-400/20 bg-red-400/5 text-red-400 transition-all duration-300 hover:scale-[1.03] hover:bg-red-400/10 disabled:cursor-not-allowed disabled:opacity-40"
                     >
@@ -784,6 +792,15 @@ const LevelManagementPage = () => {
           if (!isUpdatingStatus) setStatusLevel(null);
         }}
         onConfirm={handleConfirmStatusChange}
+      />
+      <LevelDeleteConfirmModal
+        isOpen={Boolean(deletingLevel)}
+        levelName={deletingLevel?.name ?? ""}
+        isLoading={deletingLevelId !== null}
+        onCancel={() => {
+          if (deletingLevelId === null) setDeletingLevel(null);
+        }}
+        onConfirm={() => void handleDeleteLevel()}
       />
     </>
   );
