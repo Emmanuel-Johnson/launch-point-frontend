@@ -13,21 +13,18 @@ export interface AdminCourseLevel {
   updated_at: string;
 }
 
-interface CourseLevelApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data: AdminCourseLevel;
-}
-
-interface CourseLevelsApiResponse {
-  success: boolean;
-  message: string;
-  data: AdminCourseLevel[];
+  data: T;
+  errors: Record<string, string[]> | null;
+  meta: Record<string, unknown> | null;
 }
 
 export interface CreateAdminCourseLevelData {
   name: string;
   description: string;
+  is_active: boolean;
 }
 
 export interface UpdateAdminCourseLevelData {
@@ -35,38 +32,19 @@ export interface UpdateAdminCourseLevelData {
   description?: string;
 }
 
-export interface UpdateAdminCourseLevelStatusResponse {
-  success: boolean;
-  message: string;
-  data: AdminCourseLevel;
-}
-
 // =========================================================
 // Get All Course Levels
 // GET /admins/courses/levels/
 // =========================================================
 
-export const getAdminCourseLevels = async (): Promise<AdminCourseLevel[]> => {
-  const response = await adminApi.get<CourseLevelsApiResponse>(
+export const getAdminCourseLevels = async (): Promise<
+  ApiResponse<AdminCourseLevel[]>
+> => {
+  const response = await adminApi.get<ApiResponse<AdminCourseLevel[]>>(
     "/admins/courses/levels/",
   );
 
-  return response.data.data;
-};
-
-// =========================================================
-// Get Course Level Detail
-// GET /admins/courses/levels/{levelId}/
-// =========================================================
-
-export const getAdminCourseLevel = async (
-  levelId: number,
-): Promise<AdminCourseLevel> => {
-  const response = await adminApi.get<CourseLevelApiResponse>(
-    `/admins/courses/levels/${levelId}/`,
-  );
-
-  return response.data.data;
+  return response.data;
 };
 
 // =========================================================
@@ -76,13 +54,13 @@ export const getAdminCourseLevel = async (
 
 export const createAdminCourseLevel = async (
   data: CreateAdminCourseLevelData,
-): Promise<AdminCourseLevel> => {
-  const response = await adminApi.post<CourseLevelApiResponse>(
+): Promise<ApiResponse<AdminCourseLevel>> => {
+  const response = await adminApi.post<ApiResponse<AdminCourseLevel>>(
     "/admins/courses/levels/",
     data,
   );
 
-  return response.data.data;
+  return response.data;
 };
 
 // =========================================================
@@ -93,13 +71,13 @@ export const createAdminCourseLevel = async (
 export const updateAdminCourseLevel = async (
   levelId: number,
   data: UpdateAdminCourseLevelData,
-): Promise<AdminCourseLevel> => {
-  const response = await adminApi.patch<CourseLevelApiResponse>(
+): Promise<ApiResponse<AdminCourseLevel>> => {
+  const response = await adminApi.patch<ApiResponse<AdminCourseLevel>>(
     `/admins/courses/levels/${levelId}/`,
     data,
   );
 
-  return response.data.data;
+  return response.data;
 };
 
 // =========================================================
@@ -110,17 +88,28 @@ export const updateAdminCourseLevel = async (
 export const updateAdminCourseLevelStatus = async (
   levelId: number,
   isActive: boolean,
-): Promise<UpdateAdminCourseLevelStatusResponse> => {
-  const response = await adminApi.patch<CourseLevelApiResponse>(
+): Promise<ApiResponse<AdminCourseLevel>> => {
+  const response = await adminApi.patch<ApiResponse<AdminCourseLevel>>(
     `/admins/courses/levels/${levelId}/status/`,
     {
       is_active: isActive,
     },
   );
 
-  return {
-    success: response.data.success,
-    message: response.data.message,
-    data: response.data.data,
-  };
+  return response.data;
+};
+
+// =========================================================
+// Soft Delete Course Level
+// DELETE /admins/courses/levels/{id}/delete/
+// =========================================================
+
+export const deleteAdminCourseLevel = async (
+  id: number,
+): Promise<ApiResponse<null>> => {
+  const response = await adminApi.delete<ApiResponse<null>>(
+    `/admins/courses/levels/${id}/delete/`,
+  );
+
+  return response.data;
 };

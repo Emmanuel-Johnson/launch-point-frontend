@@ -1,28 +1,63 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, GraduationCap, X } from "lucide-react";
-import { toast } from "react-toastify";
-import type { AdminCourseLevel } from "../api/adminCourseLevelApi";
 
-type CourseLevel = AdminCourseLevel & { courses: number };
+// -----------------------------------------------------------------------------
+// Types
+// -----------------------------------------------------------------------------
 
-// =========================================================
+type CourseLevel = {
+  id: number;
+  name: string;
+  description: string;
+  is_active: boolean;
+  courses?: number;
+  created_at: string;
+  updated_at: string;
+};
+
+type LevelFormValues = {
+  name: string;
+  description: string;
+  is_active: boolean;
+};
+
+interface LevelFormModalProps {
+  isOpen: boolean;
+  editingLevel: CourseLevel | null;
+  onClose: () => void;
+  onSave: (
+    data: Pick<CourseLevel, "name" | "description" | "is_active">,
+  ) => void | Promise<void>;
+  isSaving?: boolean;
+  externalError?: string | null;
+}
+
+interface LevelFormContentProps {
+  editingLevel: CourseLevel | null;
+  onClose: () => void;
+  onSave: (
+    data: Pick<CourseLevel, "name" | "description" | "is_active">,
+  ) => void | Promise<void>;
+  isSaving?: boolean;
+  externalError?: string | null;
+}
+
+// -----------------------------------------------------------------------------
 // Zod Validation Schema
-// =========================================================
-
-const containsLetterOrNumber = /[\p{L}\p{N}]/u;
+// -----------------------------------------------------------------------------
 
 const levelFormSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(3, "Level name must be at least 3 characters.")
+    .min(3, "Level name must contain at least 3 characters.")
     .max(50, "Level name cannot exceed 50 characters.")
     .refine(
-      (value) => containsLetterOrNumber.test(value),
+      (value) => /[\p{L}\p{N}]/u.test(value),
       "Level name must contain at least one letter or number.",
     ),
 
@@ -33,107 +68,89 @@ const levelFormSchema = z.object({
     .refine(
       (value) =>
         value.length === 0 ||
-        (value.length >= 3 && containsLetterOrNumber.test(value)),
-      "Description must be empty or contain at least 3 characters, including a letter or number.",
+        (value.length >= 3 && /[\p{L}\p{N}]/u.test(value)),
+      "Description must be empty or contain at least 3 characters and a letter or number.",
     ),
+
+  is_active: z.boolean(),
 });
 
-type LevelFormValues = z.infer<typeof levelFormSchema>;
-
-// =========================================================
-// Component Props
-// =========================================================
-
-interface LevelFormModalProps {
-  isOpen: boolean;
-  editingLevel: CourseLevel | null;
-  onClose: () => void;
-  onSave: (data: Pick<CourseLevel, "name" | "description">) => Promise<void>;
-}
-
-// =========================================================
-// Main Modal
-// =========================================================
+// -----------------------------------------------------------------------------
+// Main Modal Component
+// -----------------------------------------------------------------------------
 
 const LevelFormModal = ({
   isOpen,
   editingLevel,
   onClose,
   onSave,
+  isSaving = false,
+  externalError = null,
 }: LevelFormModalProps) => {
   if (!isOpen) return null;
 
-  return createPortal(
+  return (
     <LevelFormContent
       key={editingLevel ? editingLevel.id : "new-level"}
       editingLevel={editingLevel}
       onClose={onClose}
       onSave={onSave}
-    />,
-    document.body,
+      isSaving={isSaving}
+      externalError={externalError}
+    />
   );
 };
 
-// =========================================================
+// -----------------------------------------------------------------------------
 // Form Content
-// =========================================================
-
-interface LevelFormContentProps {
-  editingLevel: CourseLevel | null;
-  onClose: () => void;
-  onSave: (data: Pick<CourseLevel, "name" | "description">) => Promise<void>;
-}
+// -----------------------------------------------------------------------------
 
 const LevelFormContent = ({
   editingLevel,
   onClose,
   onSave,
+  isSaving = false,
 }: LevelFormContentProps) => {
+  const [, setSubmitError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     control,
-    setError,
-    clearErrors,
-    reset,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors },
   } = useForm<LevelFormValues>({
     resolver: zodResolver(levelFormSchema),
-    // Validate only after submit, not when the user first focuses and leaves a field.
-    // This prevents an error flashing when the user closes the untouched modal.
-    mode: "onTouched",
-    reValidateMode: "onChange",
+
     defaultValues: {
       name: editingLevel?.name ?? "",
       description: editingLevel?.description ?? "",
+      is_active: editingLevel?.is_active ?? true,
     },
+
+    // Validate while the user types.
+    mode: "onChange",
+    reValidateMode: "onChange",
+
+    // Prevent automatic focus on invalid fields during submission.
+    shouldFocusError: false,
   });
 
-  // Subscribe to individual fields using useWatch.
-  const descriptionValue =
-    useWatch({
-      control,
-      name: "description",
-    }) ?? "";
+  // Subscribe only to the fields needed by the UI.
+  // This avoids calling watch() and the React Compiler warning.
+  const isActive = useWatch({
+    control,
+    name: "is_active",
+  });
 
-  const nameValue =
-    useWatch({
-      control,
-      name: "name",
-    }) ?? "";
+  const description = useWatch({
+    control,
+    name: "description",
+  });
 
-  const handleClose = useCallback(() => {
-    clearErrors();
-    reset({
-      name: editingLevel?.name ?? "",
-      description: editingLevel?.description ?? "",
-    });
-    onClose();
-  }, [clearErrors, reset, editingLevel, onClose]);
-
-  // =======================================================
-  // Body Scroll Lock and Escape Key
-  // =======================================================
+  // ---------------------------------------------------------------------------
+  // Modal behavior
+  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -141,8 +158,8 @@ const LevelFormContent = ({
     document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isSubmitting) {
-        handleClose();
+      if (event.key === "Escape" && !isSaving) {
+        onClose();
       }
     };
 
@@ -152,80 +169,53 @@ const LevelFormContent = ({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isSubmitting, handleClose]);
+  }, [onClose, isSaving]);
 
-  // =======================================================
-  // Form Submission
-  // =======================================================
+  // ---------------------------------------------------------------------------
+  // Submit
+  // ---------------------------------------------------------------------------
 
-  const onSubmit: SubmitHandler<LevelFormValues> = async (values) => {
-    clearErrors("root");
+  const onSubmit: SubmitHandler<LevelFormValues> = async (data) => {
+    setSubmitError(null);
 
     try {
-      await onSave({
-        name: values.name,
-        description: values.description,
-      });
-
-      onClose();
-    } catch (error: unknown) {
-      // Django REST Framework field validation errors commonly look like:
-      // { "name": ["A course level with this name already exists."] }
-      const apiError = error as {
-        response?: {
-          data?: {
-            name?: unknown;
-            detail?: unknown;
-            message?: unknown;
-          };
-        };
-      };
-
-      const responseData = apiError.response?.data;
-      const nameError = responseData?.name;
-
-      const nameMessage =
-        Array.isArray(nameError) && typeof nameError[0] === "string"
-          ? nameError[0]
-          : typeof nameError === "string"
-            ? nameError
-            : null;
-
-      if (nameMessage) {
-        setError("name", {
-          type: "server",
-          message: nameMessage,
+      if (editingLevel) {
+        // The update flow intentionally excludes is_active/status.
+        await onSave({
+          name: data.name.trim(),
+          description: data.description.trim(),
+          is_active: data.is_active,
         });
-        return;
+      } else {
+        await onSave({
+          name: data.name.trim(),
+          description: data.description.trim(),
+          is_active: data.is_active,
+        });
       }
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unable to save the course level. Please try again.";
 
-      const serverMessage =
-        typeof responseData?.detail === "string"
-          ? responseData.detail
-          : typeof responseData?.message === "string"
-            ? responseData.message
-            : "Unable to save the course level. Please try again.";
-
-      toast.error(serverMessage, { containerId: "admin" });
+      setSubmitError(message);
     }
   };
 
-  const nameError = errors.name?.message;
-  const descriptionError = errors.description?.message;
+  // ---------------------------------------------------------------------------
+  // UI
+  // ---------------------------------------------------------------------------
 
-  // =======================================================
-  // Render
-  // =======================================================
-
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="level-form-title"
       className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !isSubmitting) {
-          handleClose();
+        if (event.target === event.currentTarget && !isSaving) {
+          onClose();
         }
       }}
     >
@@ -235,7 +225,7 @@ const LevelFormContent = ({
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
         />
 
-        {/* Modal Header */}
+        {/* Header */}
         <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
@@ -260,16 +250,15 @@ const LevelFormContent = ({
 
           <button
             type="button"
-            onClick={handleClose}
-            disabled={isSubmitting}
+            onClick={onClose}
             aria-label="Close modal"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/[0.06] hover:text-white"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
         </div>
 
-        {/* Modal Form */}
+        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="space-y-5 px-6 py-6">
             {/* Level Name */}
@@ -283,31 +272,32 @@ const LevelFormContent = ({
 
               <input
                 id="level-name"
-                autoFocus
                 type="text"
                 placeholder="e.g. Beginner"
                 maxLength={50}
-                disabled={isSubmitting}
-                aria-invalid={Boolean(nameError)}
-                aria-describedby={nameError ? "level-name-error" : undefined}
-                {...register("name")}
+                autoComplete="off"
+                {...register("name", {
+                  onChange: () => setSubmitError(null),
+                })}
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "level-name-error" : undefined}
                 className={`h-11 w-full rounded-xl border ${
-                  nameError ? "border-red-400/60" : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
+                  errors.name ? "border-red-400/60" : "border-white/[0.08]"
+                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
               />
 
-              {nameError && (
+              {errors.name && (
                 <p
                   id="level-name-error"
                   role="alert"
                   className="mt-1.5 text-xs text-red-400"
                 >
-                  {nameError}
+                  {errors.name.message}
                 </p>
               )}
             </div>
 
-            {/* Optional Description */}
+            {/* Description */}
             <div>
               <label
                 htmlFor="level-description"
@@ -321,69 +311,143 @@ const LevelFormContent = ({
                 placeholder="Describe who this learning level is for..."
                 rows={4}
                 maxLength={300}
-                disabled={isSubmitting}
-                aria-invalid={Boolean(descriptionError)}
+                {...register("description", {
+                  onChange: () => setSubmitError(null),
+                })}
+                aria-invalid={Boolean(errors.description)}
                 aria-describedby={
-                  descriptionError ? "level-description-error" : undefined
+                  errors.description
+                    ? "level-description-error"
+                    : "level-description-hint"
                 }
-                {...register("description")}
                 className={`w-full resize-none rounded-xl border ${
-                  descriptionError ? "border-red-400/60" : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
+                  errors.description
+                    ? "border-red-400/60"
+                    : "border-white/[0.08]"
+                } bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
               />
 
               <div className="mt-1.5 flex items-start justify-between gap-3">
-                {descriptionError ? (
+                {errors.description ? (
                   <p
                     id="level-description-error"
                     role="alert"
                     className="text-xs text-red-400"
                   >
-                    {descriptionError}
+                    {errors.description.message}
                   </p>
                 ) : (
-                  <span className="text-[11px] text-white/30">
+                  <span
+                    id="level-description-hint"
+                    className="text-[11px] text-white/30"
+                  >
                     Optional. Leave empty or enter 3–300 characters.
                   </span>
                 )}
 
                 <p className="shrink-0 text-[11px] text-white/30">
-                  {descriptionValue.length}/300 characters
+                  {description.length}/300 characters
                 </p>
               </div>
             </div>
+
+            {/* Status is only editable while creating a level. Updates do not include status. */}
+            {!editingLevel && (
+              <fieldset>
+                <legend className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/45">
+                  Status
+                </legend>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {/* Active */}
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
+                      isActive
+                        ? "border-[#34D399]/40 bg-[#34D399]/[0.08]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="level-status"
+                      value="active"
+                      checked={isActive}
+                      onChange={() =>
+                        setValue("is_active", true, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                      className="h-4 w-4 accent-[#34D399]"
+                    />
+
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-white">
+                        Active
+                      </span>
+                      <span className="mt-0.5 block text-xs text-white/40">
+                        Available for course setup
+                      </span>
+                    </span>
+                  </label>
+
+                  {/* Inactive */}
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
+                      !isActive
+                        ? "border-red-400/40 bg-red-500/[0.06]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="level-status"
+                      value="inactive"
+                      checked={!isActive}
+                      onChange={() =>
+                        setValue("is_active", false, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                      className="h-4 w-4 accent-red-400"
+                    />
+
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-white">
+                        Inactive
+                      </span>
+                      <span className="mt-0.5 block text-xs text-white/40">
+                        Not available for new courses
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+            )}
           </div>
 
-          {/* Modal Footer */}
+          {/* Footer */}
           <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] px-6 py-4 sm:flex-row sm:justify-end">
             <button
               type="button"
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="h-10 cursor-pointer rounded-xl border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={onClose}
+              disabled={isSaving}
+              className="h-10 cursor-pointer rounded-xl disabled:cursor-not-allowed disabled:opacity-50 border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              disabled={
-                isSubmitting ||
-                (Boolean(editingLevel) &&
-                  descriptionValue.trim() ===
-                    (editingLevel?.description ?? "").trim() &&
-                  nameValue.trim() === editingLevel?.name)
-              }
-              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={isSaving}
+              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-5 text-sm font-medium text-[#34D399] transition hover:bg-[#34D399]/15 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSubmitting ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#34D399]/30 border-t-[#34D399]" />
-              ) : (
-                <CheckCircle2 className="h-4 w-4" />
-              )}
-
-              {isSubmitting
-                ? "Saving..."
+              <CheckCircle2 className="h-4 w-4" />
+              {isSaving
+                ? editingLevel
+                  ? "Saving..."
+                  : "Creating..."
                 : editingLevel
                   ? "Save Changes"
                   : "Create Level"}
@@ -391,7 +455,8 @@ const LevelFormContent = ({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
