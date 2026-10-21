@@ -1,4 +1,4 @@
-import adminApi from "../../../shared/api/axios";
+import adminApi from "../../../../shared/api/axios";
 
 // =========================================================
 // Admin Course Skill Types

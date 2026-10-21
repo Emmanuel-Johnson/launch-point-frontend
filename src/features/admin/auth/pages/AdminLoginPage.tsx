@@ -7,8 +7,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { adminLogin } from "../api/adminApi";
 
-import { useAppDispatch } from "../../../app/store/hooks";
-import { setCredentials } from "../../auth/slices/authSlice";
+import { useAppDispatch } from "../../../../app/store/hooks";
+import { setCredentials } from "../../../auth/slices/authSlice";
 
 // =========================================================
 // Validation schema

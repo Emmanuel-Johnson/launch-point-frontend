@@ -18,39 +18,39 @@ import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
-import AdminLoginPage from "../../features/admin/pages/AdminLoginPage";
+import AdminLoginPage from "../../features/admin/auth/pages/AdminLoginPage";
 import AdminLayout from "../../features/admin/layout/AdminLayout";
 
 import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
-import AdminDashboardPage from "../../features/admin/pages/DashboardPage";
-import StudentListPage from "../../features/admin/pages/StudentListPage";
-import StudentDetailPage from "../../features/admin/pages/StudentDetailPage";
-import InstructorListPage from "../../features/admin/pages/InstructorListPage";
-import SubscriptionPlanListPage from "../../features/admin/pages/SubscriptionPlanListPage";
-import SubscriptionPlanDetailPage from "../../features/admin/pages/SubscriptionPlanDetailPage";
+import AdminDashboardPage from "../../features/admin/dashboard/pages/DashboardPage";
+import StudentListPage from "../../features/admin/students/pages/StudentListPage";
+import StudentDetailPage from "../../features/admin/students/pages/StudentDetailPage";
+import InstructorListPage from "../../features/admin/applications/instructors/pages/InstructorListPage";
+import SubscriptionPlanListPage from "../../features/admin/subscriptions/pages/SubscriptionPlanListPage";
+import SubscriptionPlanDetailPage from "../../features/admin/subscriptions/pages/SubscriptionPlanDetailPage";
 
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
 import StudentProfilePage from "../../features/student/pages/StudentProfilePage";
-import CategoryListPage from "../../features/admin/pages/CategoryListPage";
-import CategoryDetailPage from "../../features/admin/pages/CategoryDetailPage";
+import CategoryListPage from "../../features/admin/categories/pages/CategoryListPage";
+import CategoryDetailPage from "../../features/admin/categories/pages/CategoryDetailPage";
 import InstructorPublicLayout from "../../features/instructor/layout/InstructorPublicLayout";
 import InstructorLandingPage from "../../features/instructor/pages/InstructorLandingPage";
 import InstructorApplicationListPage from "../../features/instructor/pages/InstructorApplicationListPage";
 import InstructorApplicationDetailsPage from "../../features/instructor/pages/InstructorApplicationDetailsPage";
 import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
-import InstructorApplicationAdminListPage from "../../features/admin/pages/InstructorApplicationAdminListPage";
-import InstructorApplicationAdminDetailPage from "../../features/admin/pages/InstructorApplicationAdminDetailPage";
+import InstructorApplicationAdminListPage from "../../features/admin/applications/instructors/pages/InstructorApplicationAdminListPage";
+import InstructorApplicationAdminDetailPage from "../../features/admin/applications/instructors/pages/InstructorApplicationAdminDetailPage";
 import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
-import InstructorDetailPage from "../../features/admin/pages/InstructorDetailPage";
+import InstructorDetailPage from "../../features/admin/applications/instructors/pages/InstructorDetailPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import InstructorSettingsPage from "../../features/instructor/pages/InstructorSettingsPage";
-import CourseListPage from "../../features/admin/pages/CourseListPage";
-import LevelManagementPage from "../../features/admin/pages/LevelManagementPage";
-import SkillManagementPage from "../../features/admin/pages/SkillManagementPage";
-import CourseApplicationAdminListPage from "../../features/admin/pages/CourseApplicationAdminListPage";
+import CourseListPage from "../../features/admin/courses/pages/CourseListPage";
+import LevelManagementPage from "../../features/admin/courses/pages/LevelManagementPage";
+import SkillManagementPage from "../../features/admin/skills/pages/SkillManagementPage";
+import CourseApplicationAdminListPage from "../../features/admin/applications/courses/pages/CourseApplicationAdminListPage";
 import NonAdminRoute from "./NonAdminRoute";
 
 export const routeConfig: RouteObject[] = [

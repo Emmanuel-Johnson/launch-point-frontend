@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { clearCredentials } from "../../auth/slices/authSlice";
 import { persistor } from "../../../app/store/store";
-import { logoutAdmin } from "../api/adminApi";
+import { logoutAdmin } from "../auth/api/adminApi";
 import AdminLogoutConfirmModal from "./LogoutConfirmModal";
 
 interface AdminHeaderProps {

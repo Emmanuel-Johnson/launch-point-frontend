@@ -10,7 +10,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { useAppSelector } from "../../../app/store/hooks";
+import { useAppSelector } from "../../../../app/store/hooks";
 
 /*
   GREEN & BLACK THEME — palette

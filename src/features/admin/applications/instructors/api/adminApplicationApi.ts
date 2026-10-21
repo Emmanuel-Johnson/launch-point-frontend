@@ -1,4 +1,4 @@
-import api from "../../../shared/api/axios";
+import api from "../../../../../shared/api/axios";
 
 export type ApplicationStatus = "pending" | "approved" | "rejected";
 
