@@ -53,27 +53,72 @@ const LevelDeleteConfirmModal = ({
       }}
     >
       <style>{`
-        @keyframes ldc-fade { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes ldc-rise {
-          0% { opacity: 0; transform: translateY(16px) scale(0.97) }
-          100% { opacity: 1; transform: translateY(0) scale(1) }
+        @keyframes ldc-fade {
+          from { opacity: 0 }
+          to { opacity: 1 }
         }
+
+        @keyframes ldc-rise {
+          0% {
+            opacity: 0;
+            transform: translateY(16px) scale(0.97);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
         @keyframes ldc-rail {
           0%, 100% { opacity: 0.7 }
           50% { opacity: 1 }
         }
+
         .ldc-overlay {
-          background:
-            radial-gradient(130% 90% at 50% 0%, rgba(239,68,68,0.10), transparent 55%),
-            rgba(2, 2, 3, 0.80);
+          background: rgba(2, 2, 3, 0.80);
           backdrop-filter: blur(12px) saturate(120%);
           -webkit-backdrop-filter: blur(12px) saturate(120%);
           animation: ldc-fade 0.2s ease-out both;
         }
-        .ldc-panel { animation: ldc-rise 0.32s cubic-bezier(0.22,1,0.36,1) both; }
-        .ldc-rail { animation: ldc-rail 2.8s ease-in-out infinite; }
+
+        .ldc-panel {
+          animation: ldc-rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .ldc-rail {
+          animation: ldc-rail 2.8s ease-in-out infinite;
+        }
+
+        /* Smooth, slower button interactions */
+        .ldc-button {
+          transition:
+            background-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+            color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 550ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 400ms ease;
+        }
+
+        .ldc-delete-icon {
+          transition:
+            transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .ldc-button:focus-visible {
+          outline: 2px solid rgba(248, 113, 113, 0.9);
+          outline-offset: 4px;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .ldc-overlay, .ldc-panel, .ldc-rail { animation: none; }
+          .ldc-overlay,
+          .ldc-panel,
+          .ldc-rail,
+          .ldc-button,
+          .ldc-delete-icon {
+            animation: none;
+            transition: none;
+          }
         }
       `}</style>
 
@@ -83,6 +128,7 @@ const LevelDeleteConfirmModal = ({
           aria-hidden
           className="ldc-rail absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-red-400 via-red-500 to-red-600 shadow-[0_0_20px_rgba(239,68,68,0.6)]"
         />
+
         {/* Soft corner glow */}
         <div
           aria-hidden
@@ -99,6 +145,7 @@ const LevelDeleteConfirmModal = ({
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-white/30">
               Course Level Management
             </p>
+
             <h3
               id="delete-level-title"
               className="mt-1 text-[19px] font-semibold tracking-tight text-white"
@@ -116,9 +163,11 @@ const LevelDeleteConfirmModal = ({
               aria-hidden
               className="absolute inset-y-0 left-0 w-0.5 bg-red-500/60"
             />
+
             <p className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-white/30">
               Level to Delete
             </p>
+
             <p className="mt-1 truncate text-[15px] font-medium text-white">
               {levelName}
             </p>
@@ -130,6 +179,7 @@ const LevelDeleteConfirmModal = ({
               className="mt-px h-[18px] w-[18px] shrink-0 text-red-400"
               strokeWidth={1.9}
             />
+
             <p
               id="delete-level-description"
               className="text-[12.5px] leading-5 text-white/50"
@@ -145,7 +195,7 @@ const LevelDeleteConfirmModal = ({
               type="button"
               onClick={onCancel}
               disabled={isLoading}
-              className="flex-1 cursor-pointer rounded-xl border border-white/[0.09] bg-white/[0.02] px-4 py-2.5 text-sm font-medium text-white/60 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="ldc-button flex-1 cursor-pointer rounded-xl border border-white/[0.09] bg-white/[0.02] px-4 py-2.5 text-sm font-medium text-white/60 hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>
@@ -154,7 +204,7 @@ const LevelDeleteConfirmModal = ({
               type="button"
               onClick={onConfirm}
               disabled={isLoading}
-              className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/40 bg-gradient-to-b from-red-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_26px_-8px_rgba(239,68,68,0.6),inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:from-red-400 hover:to-red-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+              className="ldc-button group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/40 bg-gradient-to-b from-red-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_26px_-8px_rgba(239,68,68,0.6),inset_0_1px_0_rgba(255,255,255,0.18)] hover:border-red-300/60 hover:from-red-400 hover:to-red-500 hover:shadow-[0_10px_32px_-8px_rgba(239,68,68,0.7),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
             >
               {isLoading ? (
                 <>
@@ -164,7 +214,7 @@ const LevelDeleteConfirmModal = ({
               ) : (
                 <>
                   <Trash2
-                    className="h-4 w-4 transition-transform group-hover:-rotate-6"
+                    className="ldc-delete-icon h-4 w-4 group-hover:-rotate-6"
                     strokeWidth={2}
                   />
                   Delete Level
