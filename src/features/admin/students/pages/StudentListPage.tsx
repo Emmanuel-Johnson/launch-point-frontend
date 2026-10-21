@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAdminStudents, updateStudentStatus } from "../api/adminApi";
+import { getAdminStudents, updateStudentStatus } from "../../auth/api/adminApi";
 import { toast } from "react-toastify";
 import StudentStatusConfirmModal from "../components/StudentStatusConfirmModal";
 

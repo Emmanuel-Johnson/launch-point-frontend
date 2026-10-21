@@ -17,7 +17,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { logoutAdmin } from "../api/adminApi";
+import { logoutAdmin } from "../auth/api/adminApi";
 import AdminLogoutConfirmModal from "./LogoutConfirmModal";
 import { useAppDispatch } from "../../../app/store/hooks";
 import { clearCredentials } from "../../auth/slices/authSlice";

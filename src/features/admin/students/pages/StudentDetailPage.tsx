@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAdminStudent, updateStudentStatus } from "../api/adminApi";
+import { getAdminStudent, updateStudentStatus } from "../../auth/api/adminApi";
 import { toast } from "react-toastify";
 import StudentStatusConfirmModal from "../components/StudentStatusConfirmModal";
 
