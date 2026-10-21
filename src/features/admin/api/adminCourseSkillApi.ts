@@ -13,21 +13,18 @@ export interface AdminCourseSkill {
   updated_at: string;
 }
 
-interface CourseSkillApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data: AdminCourseSkill;
-}
-
-interface CourseSkillsApiResponse {
-  success: boolean;
-  message: string;
-  data: AdminCourseSkill[];
+  data: T;
+  errors: Record<string, string[]> | null;
+  meta: Record<string, unknown> | null;
 }
 
 export interface CreateAdminCourseSkillData {
   name: string;
   description: string;
+  is_active: boolean;
 }
 
 export interface UpdateAdminCourseSkillData {
@@ -35,29 +32,20 @@ export interface UpdateAdminCourseSkillData {
   description?: string;
 }
 
-export interface UpdateAdminCourseSkillStatusResponse {
-  success: boolean;
-  message: string;
-  data: AdminCourseSkill;
-}
-
 // =========================================================
 // Get All Course Skills
 // GET /admins/courses/skills/
 // =========================================================
 
-export const getAdminCourseSkills = async (): Promise<AdminCourseSkill[]> => {
-  const response = await adminApi.get<CourseSkillsApiResponse>(
+export const getAdminCourseSkills = async (): Promise<
+  ApiResponse<AdminCourseSkill[]>
+> => {
+  const response = await adminApi.get<ApiResponse<AdminCourseSkill[]>>(
     "/admins/courses/skills/",
   );
 
-  return response.data.data;
+  return response.data;
 };
-
-// =========================================================
-// Get Course Skill Detail
-// Note: Your current backend does not define a GET detail endpoint.
-// =========================================================
 
 // =========================================================
 // Create Course Skill
@@ -66,13 +54,13 @@ export const getAdminCourseSkills = async (): Promise<AdminCourseSkill[]> => {
 
 export const createAdminCourseSkill = async (
   data: CreateAdminCourseSkillData,
-): Promise<AdminCourseSkill> => {
-  const response = await adminApi.post<CourseSkillApiResponse>(
+): Promise<ApiResponse<AdminCourseSkill>> => {
+  const response = await adminApi.post<ApiResponse<AdminCourseSkill>>(
     "/admins/courses/skills/",
     data,
   );
 
-  return response.data.data;
+  return response.data;
 };
 
 // =========================================================
@@ -83,13 +71,13 @@ export const createAdminCourseSkill = async (
 export const updateAdminCourseSkill = async (
   skillId: number,
   data: UpdateAdminCourseSkillData,
-): Promise<AdminCourseSkill> => {
-  const response = await adminApi.patch<CourseSkillApiResponse>(
+): Promise<ApiResponse<AdminCourseSkill>> => {
+  const response = await adminApi.patch<ApiResponse<AdminCourseSkill>>(
     `/admins/courses/skills/${skillId}/`,
     data,
   );
 
-  return response.data.data;
+  return response.data;
 };
 
 // =========================================================
@@ -100,17 +88,28 @@ export const updateAdminCourseSkill = async (
 export const updateAdminCourseSkillStatus = async (
   skillId: number,
   isActive: boolean,
-): Promise<UpdateAdminCourseSkillStatusResponse> => {
-  const response = await adminApi.patch<CourseSkillApiResponse>(
+): Promise<ApiResponse<AdminCourseSkill>> => {
+  const response = await adminApi.patch<ApiResponse<AdminCourseSkill>>(
     `/admins/courses/skills/${skillId}/status/`,
     {
       is_active: isActive,
     },
   );
 
-  return {
-    success: response.data.success,
-    message: response.data.message,
-    data: response.data.data,
-  };
+  return response.data;
+};
+
+// =========================================================
+// Soft Delete Course Skill
+// DELETE /admins/courses/skills/{skillId}/delete/
+// =========================================================
+
+export const deleteAdminCourseSkill = async (
+  skillId: number,
+): Promise<ApiResponse<null>> => {
+  const response = await adminApi.delete<ApiResponse<null>>(
+    `/admins/courses/skills/${skillId}/delete/`,
+  );
+
+  return response.data;
 };
