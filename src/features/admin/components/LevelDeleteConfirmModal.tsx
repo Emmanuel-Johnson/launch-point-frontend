@@ -121,7 +121,7 @@ const LevelDeleteConfirmModal = ({
         }
       `}</style>
 
-      <div className="ldc-panel relative w-full max-w-md overflow-hidden rounded-lg border border-white/[0.08] bg-[#09090A] px-7 py-8 text-center shadow-[0_40px_110px_-28px_rgba(0,0,0,0.95)]">
+      <div className="ldc-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-[#09090A] px-7 py-8 text-center shadow-[0_40px_110px_-28px_rgba(0,0,0,0.95)]">
         {/* Soft top glow */}
         <div
           aria-hidden
@@ -129,7 +129,7 @@ const LevelDeleteConfirmModal = ({
         />
 
         {/* Centered icon badge */}
-        <div className="ldc-badge relative mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-red-400/15 to-red-600/5 text-red-400 ring-1 ring-inset ring-red-400/25">
+        <div className="ldc-badge relative mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-red-400/15 to-red-600/5 text-red-400 ring-1 ring-inset ring-red-400/25">
           <Trash2 className="h-7 w-7" strokeWidth={1.8} />
         </div>
 
@@ -150,7 +150,7 @@ const LevelDeleteConfirmModal = ({
         </p>
 
         {/* Level name pill */}
-        <div className="relative mx-auto mt-5 inline-flex max-w-full items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.03] px-4 py-2">
+        <div className="relative mx-auto mt-5 inline-flex max-w-full items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2">
           <AlertTriangle
             className="h-3.5 w-3.5 shrink-0 text-red-400"
             strokeWidth={2}
@@ -166,7 +166,7 @@ const LevelDeleteConfirmModal = ({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="ldc-button group flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-red-400/40 bg-gradient-to-b from-red-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_26px_-8px_rgba(239,68,68,0.6),inset_0_1px_0_rgba(255,255,255,0.18)] hover:border-red-300/60 hover:from-red-400 hover:to-red-500 hover:shadow-[0_10px_32px_-8px_rgba(239,68,68,0.7),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+            className="ldc-button group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/40 bg-gradient-to-b from-red-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_26px_-8px_rgba(239,68,68,0.6),inset_0_1px_0_rgba(255,255,255,0.18)] hover:border-red-300/60 hover:from-red-400 hover:to-red-500 hover:shadow-[0_10px_32px_-8px_rgba(239,68,68,0.7),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
           >
             {isLoading ? (
               <>
@@ -185,7 +185,7 @@ const LevelDeleteConfirmModal = ({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="ldc-button w-full cursor-pointer rounded-md border border-white/[0.09] bg-white/[0.02] px-4 py-2.5 text-sm font-medium text-white/60 hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            className="ldc-button w-full cursor-pointer rounded-xl border border-white/[0.09] bg-white/[0.02] px-4 py-2.5 text-sm font-medium text-white/60 hover:border-white/20 hover:bg-white/[0.06] hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
