@@ -98,3 +98,18 @@ export const updateAdminCourseLevelStatus = async (
 
   return response.data;
 };
+
+// =========================================================
+// Soft Delete Course Level
+// DELETE /admins/courses/levels/{id}/delete/
+// =========================================================
+
+export const deleteAdminCourseLevel = async (
+  id: number,
+): Promise<ApiResponse<null>> => {
+  const response = await adminApi.delete<ApiResponse<null>>(
+    `/admins/courses/levels/${id}/delete/`,
+  );
+
+  return response.data;
+};
