@@ -57,7 +57,11 @@ const navSections: NavSection[] = [
   {
     title: "Explore",
     items: [
-      { name: "Explore Courses", path: "/courses", icon: Compass },
+      {
+        name: "Explore Courses",
+        path: "/student/explore-courses",
+        icon: Compass,
+      },
       { name: "Community", path: "/student/community", icon: Users },
     ],
   },

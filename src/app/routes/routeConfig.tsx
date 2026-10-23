@@ -15,7 +15,13 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
+import MyLearningPage from "../../features/student/pages/MyLearningPage";
+import CertificatePage from "../../features/student/pages/CertificatePage";
+import WishlistPage from "../../features/student/pages/WishlistPage";
+import ExploreCoursesPage from "../../features/student/pages/ExploreCoursesPage";
+import CourseDetailsPage from "../../features/student/pages/CourseDetailsPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
+import CertificateDetailsPage from "../../features/student/pages/CertificateDetailsPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
 import AdminLoginPage from "../../features/admin/auth/pages/AdminLoginPage";
@@ -28,6 +34,7 @@ import StudentDetailPage from "../../features/admin/students/pages/StudentDetail
 import InstructorListPage from "../../features/admin/applications/instructors/pages/InstructorListPage";
 import SubscriptionPlanListPage from "../../features/admin/subscriptions/pages/SubscriptionPlanListPage";
 import SubscriptionPlanDetailPage from "../../features/admin/subscriptions/pages/SubscriptionPlanDetailPage";
+import NotificationsPage from "../../features/student/pages/NotificationsPage";
 
 import InstructorLayout from "../../features/instructor/layout/InstructorLayout";
 import InstructorDashboardPage from "../../features/instructor/pages/DashboardPage";
@@ -52,6 +59,8 @@ import LevelManagementPage from "../../features/admin/courses/pages/LevelManagem
 import SkillManagementPage from "../../features/admin/skills/pages/SkillManagementPage";
 import CourseApplicationAdminListPage from "../../features/admin/applications/courses/pages/CourseApplicationAdminListPage";
 import NonAdminRoute from "./NonAdminRoute";
+import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
+import CommunityPage from "../../features/student/pages/CommunityPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -130,6 +139,34 @@ export const routeConfig: RouteObject[] = [
             element: <StudentDashboardPage />,
           },
           {
+            path: "learning",
+            element: <MyLearningPage />,
+          },
+          {
+            path: "certificates",
+            element: <CertificatePage />,
+          },
+          {
+            path: "certificates/:certificateId",
+            element: <CertificateDetailsPage />,
+          },
+          {
+            path: "explore-courses",
+            element: <ExploreCoursesPage />,
+          },
+          {
+            path: "explore-courses/:courseId",
+            element: <CourseDetailsPage />,
+          },
+          {
+            path: "learning/:courseId",
+            element: <CourseLearningPage />,
+          },
+          {
+            path: "wishlist",
+            element: <WishlistPage />,
+          },
+          {
             path: "profile",
             element: <StudentProfilePage />,
           },
@@ -140,6 +177,14 @@ export const routeConfig: RouteObject[] = [
           {
             path: "settings",
             element: <StudentSettingsPage />,
+          },
+          {
+            path: "notifications",
+            element: <NotificationsPage />,
+          },
+          {
+            path: "community",
+            element: <CommunityPage />,
           },
         ],
       },
