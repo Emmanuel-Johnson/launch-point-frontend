@@ -60,6 +60,7 @@ import SkillManagementPage from "../../features/admin/skills/pages/SkillManageme
 import CourseApplicationAdminListPage from "../../features/admin/applications/courses/pages/CourseApplicationAdminListPage";
 import NonAdminRoute from "./NonAdminRoute";
 import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
+import CommunityPage from "../../features/student/pages/CommunityPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -180,6 +181,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "notifications",
             element: <NotificationsPage />,
+          },
+          {
+            path: "community",
+            element: <CommunityPage />,
           },
         ],
       },
