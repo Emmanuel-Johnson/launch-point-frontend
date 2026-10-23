@@ -20,6 +20,7 @@ import CertificatePage from "../../features/student/pages/CertificatePage";
 import WishlistPage from "../../features/student/pages/WishlistPage";
 import ExploreCoursesPage from "../../features/student/pages/ExploreCoursesPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
+import CertificateDetailsPage from "../../features/student/pages/CertificateDetailsPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
 import AdminLoginPage from "../../features/admin/auth/pages/AdminLoginPage";
@@ -140,6 +141,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "certificates",
             element: <CertificatePage />,
+          },
+          {
+            path: "certificates/:certificateId",
+            element: <CertificateDetailsPage />,
           },
           {
             path: "explore-courses",

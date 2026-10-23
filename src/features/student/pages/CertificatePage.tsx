@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import {
   Award,
   Search,
@@ -10,68 +11,16 @@ import {
   GraduationCap,
   LockKeyhole,
 } from "lucide-react";
-
-type CertificateStatus = "earned" | "in-progress";
-
-interface Certificate {
-  id: number;
-  title: string;
-  instructor: string;
-  category: string;
-  issuedAt: string | null;
-  status: CertificateStatus;
-  progress: number;
-  certificateNumber?: string;
-}
-
-const certificates: Certificate[] = [
-  {
-    id: 1,
-    title: "Python Programming Fundamentals",
-    instructor: "Alex Morgan",
-    category: "Programming",
-    issuedAt: "2026-09-18",
-    status: "earned",
-    progress: 100,
-    certificateNumber: "LP-PY-2026-001",
-  },
-  {
-    id: 2,
-    title: "Full Stack Web Development",
-    instructor: "Sarah Williams",
-    category: "Web Development",
-    issuedAt: "2026-10-05",
-    status: "earned",
-    progress: 100,
-    certificateNumber: "LP-FS-2026-002",
-  },
-  {
-    id: 3,
-    title: "Advanced React Development",
-    instructor: "David Miller",
-    category: "Frontend",
-    issuedAt: null,
-    status: "in-progress",
-    progress: 68,
-  },
-  {
-    id: 4,
-    title: "Database Design with PostgreSQL",
-    instructor: "Emma Wilson",
-    category: "Database",
-    issuedAt: null,
-    status: "in-progress",
-    progress: 42,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { certificates } from "./certificateData";
+import type { Certificate } from "./certificateData";
 
 type FilterType = "all" | "earned" | "in-progress";
 
 export default function CertificatePage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
-  const [selectedCertificate, setSelectedCertificate] =
-    useState<Certificate | null>(null);
 
   const earnedCount = certificates.filter(
     (certificate) => certificate.status === "earned",
@@ -90,8 +39,7 @@ export default function CertificatePage() {
         certificate.category.toLowerCase().includes(normalizedSearch) ||
         certificate.instructor.toLowerCase().includes(normalizedSearch);
 
-      const matchesFilter =
-        filter === "all" || certificate.status === filter;
+      const matchesFilter = filter === "all" || certificate.status === filter;
 
       return matchesSearch && matchesFilter;
     });
@@ -100,10 +48,13 @@ export default function CertificatePage() {
   const handleDownload = (certificate: Certificate) => {
     if (certificate.status !== "earned") return;
 
-    // Replace this with your certificate download API.
-    console.info(
-      `Download certificate: ${certificate.certificateNumber}`,
-    );
+    // TODO: Replace with your certificate download API.
+    console.info(`Download certificate: ${certificate.certificateNumber}`);
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setFilter("all");
   };
 
   return (
@@ -122,13 +73,13 @@ export default function CertificatePage() {
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-              Celebrate your achievements and track the certificates
-              you earn throughout your learning journey.
+              Celebrate your achievements and track the certificates you earn
+              throughout your learning journey.
             </p>
           </div>
 
-          <div className="flex w-fit items-center gap-2 rounded-xl border border-violet-500/20 bg-violet-500/10 px-4 py-3">
-            <ShieldCheck className="text-violet-400" size={21} />
+          <div className="flex w-fit items-center gap-3 rounded-xl border border-violet-500/20 bg-violet-500/10 px-4 py-3">
+            <ShieldCheck className="text-violet-400" size={22} />
             <div>
               <p className="text-xs text-gray-400">Certificates earned</p>
               <p className="text-lg font-semibold">{earnedCount}</p>
@@ -176,6 +127,7 @@ export default function CertificatePage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search certificates..."
+              aria-label="Search certificates"
               className="w-full rounded-xl border border-white/10 bg-[#0A0A10] py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/10"
             />
           </div>
@@ -192,6 +144,7 @@ export default function CertificatePage() {
                 key={option.value}
                 type="button"
                 onClick={() => setFilter(option.value)}
+                aria-pressed={filter === option.value}
                 className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                   filter === option.value
                     ? "bg-violet-600 text-white"
@@ -205,7 +158,7 @@ export default function CertificatePage() {
         </div>
 
         {/* Certificate list */}
-        <div>
+        <section>
           <div className="mb-5 flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold">Your achievements</h2>
             <span className="text-sm text-gray-500">
@@ -219,172 +172,42 @@ export default function CertificatePage() {
                 <CertificateCard
                   key={certificate.id}
                   certificate={certificate}
-                  onView={() => setSelectedCertificate(certificate)}
+                  onView={() =>
+                    navigate(`/student/certificates/${certificate.id}`)
+                  }
                   onDownload={() => handleDownload(certificate)}
                 />
               ))}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 bg-[#101016] px-6 py-16 text-center">
-              <Award
-                size={38}
-                className="mx-auto mb-4 text-gray-600"
-              />
+              <Award size={38} className="mx-auto mb-4 text-gray-600" />
+
               <h3 className="font-semibold text-gray-200">
                 No certificates found
               </h3>
+
               <p className="mt-2 text-sm text-gray-500">
                 Try another search or choose a different filter.
               </p>
+
               <button
                 type="button"
-                onClick={() => {
-                  setSearch("");
-                  setFilter("all");
-                }}
+                onClick={clearFilters}
                 className="mt-5 text-sm font-medium text-violet-400 hover:text-violet-300"
               >
                 Clear filters
               </button>
             </div>
           )}
-        </div>
-
-        {/* Preview modal */}
-        {selectedCertificate && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm"
-            onClick={() => setSelectedCertificate(null)}
-          >
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="certificate-modal-title"
-              className="my-auto w-full max-w-xl rounded-2xl border border-white/10 bg-[#111119] p-6 shadow-2xl sm:p-8"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm text-violet-400">
-                    Certificate details
-                  </p>
-                  <h2
-                    id="certificate-modal-title"
-                    className="mt-2 text-xl font-bold"
-                  >
-                    {selectedCertificate.title}
-                  </h2>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCertificate(null)}
-                  aria-label="Close certificate details"
-                  className="rounded-lg px-3 py-1 text-xl text-gray-400 hover:bg-white/10 hover:text-white"
-                >
-                  ×
-                </button>
-              </div>
-
-              {selectedCertificate.status === "earned" ? (
-                <div className="rounded-xl border border-violet-500/30 bg-gradient-to-br from-violet-950/60 via-[#171326] to-[#0C0C12] p-6 text-center sm:p-8">
-                  <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-full border border-violet-400/40 bg-violet-500/10">
-                    <Award size={34} className="text-violet-300" />
-                  </div>
-
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-violet-300">
-                    Launch Point LMS
-                  </p>
-                  <h3 className="mt-4 text-lg font-bold">
-                    Certificate of Completion
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-gray-300">
-                    This course has been marked as completed in this
-                    sample certificate record.
-                  </p>
-
-                  <div className="mt-6 border-t border-white/10 pt-4 text-sm">
-                    <p className="text-gray-500">Course instructor</p>
-                    <p className="mt-1 font-medium">
-                      {selectedCertificate.instructor}
-                    </p>
-                    <p className="mt-4 text-gray-500">
-                      Certificate number
-                    </p>
-                    <p className="mt-1 font-mono text-xs text-violet-300">
-                      {selectedCertificate.certificateNumber}
-                    </p>
-                    <p className="mt-4 text-gray-500">Issued on</p>
-                    <p className="mt-1">
-                      {selectedCertificate.issuedAt
-                        ? new Date(
-                            `${selectedCertificate.issuedAt}T00:00:00`,
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
-                        : "Not issued"}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center">
-                  <LockKeyhole
-                    size={34}
-                    className="mx-auto mb-4 text-gray-500"
-                  />
-                  <h3 className="font-semibold">
-                    Certificate not available yet
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-400">
-                    Complete this course to become eligible for a
-                    certificate.
-                  </p>
-                  <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div
-                      className="h-full rounded-full bg-violet-500"
-                      style={{
-                        width: `${selectedCertificate.progress}%`,
-                      }}
-                    />
-                  </div>
-                  <p className="mt-2 text-sm text-gray-400">
-                    {selectedCertificate.progress}% completed
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <button
-                  type="button"
-                  onClick={() => setSelectedCertificate(null)}
-                  className="rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-gray-300 hover:bg-white/[0.05]"
-                >
-                  Close
-                </button>
-
-                {selectedCertificate.status === "earned" && (
-                  <button
-                    type="button"
-                    onClick={() => handleDownload(selectedCertificate)}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
-                  >
-                    <Download size={17} />
-                    Download certificate
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        </section>
       </div>
     </div>
   );
 }
 
 interface StatCardProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: number;
   description: string;
@@ -403,9 +226,7 @@ function StatCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-gray-400">{label}</p>
-          <p className="mt-3 text-3xl font-bold tracking-tight">
-            {value}
-          </p>
+          <p className="mt-3 text-3xl font-bold tracking-tight">{value}</p>
         </div>
 
         <div className={`rounded-xl p-3 ${iconClass}`}>{icon}</div>
@@ -438,15 +259,9 @@ function CertificateCard({
         <div className="relative flex min-h-36 items-center gap-5 sm:min-h-40">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-violet-400/30 bg-violet-500/10 sm:size-20">
             {isEarned ? (
-              <Award
-                size={38}
-                className="text-violet-300 sm:size-11"
-              />
+              <Award size={38} className="text-violet-300 sm:size-11" />
             ) : (
-              <LockKeyhole
-                size={34}
-                className="text-gray-500 sm:size-10"
-              />
+              <LockKeyhole size={34} className="text-gray-500 sm:size-10" />
             )}
           </div>
 
@@ -496,13 +311,14 @@ function CertificateCard({
           {isEarned && certificate.issuedAt && (
             <span className="inline-flex items-center gap-1.5">
               <CalendarDays size={14} />
-              {new Date(
-                `${certificate.issuedAt}T00:00:00`,
-              ).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+              {new Date(`${certificate.issuedAt}T00:00:00`).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                },
+              )}
             </span>
           )}
         </div>
