@@ -15,6 +15,7 @@ import TermsPage from "../../features/marketing/pages/TermsPage";
 
 import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
+import MyLearningPage from "../../features/student/pages/MyLearningPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
 
@@ -128,6 +129,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "dashboard",
             element: <StudentDashboardPage />,
+          },
+          {
+            path: "learning",
+            element: <MyLearningPage />,
           },
           {
             path: "profile",
