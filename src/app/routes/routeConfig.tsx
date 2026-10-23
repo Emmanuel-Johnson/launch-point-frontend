@@ -17,6 +17,7 @@ import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import MyLearningPage from "../../features/student/pages/MyLearningPage";
 import CertificatePage from "../../features/student/pages/CertificatePage";
+import WishlistPage from "../../features/student/pages/WishlistPage";
 import ExploreCoursesPage from "../../features/student/pages/ExploreCoursesPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
@@ -143,6 +144,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "explore-courses",
             element: <ExploreCoursesPage />,
+          },
+          {
+            path: "wishlist",
+            element: <WishlistPage />,
           },
           {
             path: "profile",
