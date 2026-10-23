@@ -14,7 +14,7 @@ import {
   LockKeyhole,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { certificates } from "./certificateData";
+import { certificates } from "../data/certificateData";
 
 function formatDate(date: string | null): string {
   if (!date) return "Not issued";

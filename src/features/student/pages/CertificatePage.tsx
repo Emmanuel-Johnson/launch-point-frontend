@@ -12,8 +12,8 @@ import {
   LockKeyhole,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { certificates } from "./certificateData";
-import type { Certificate } from "./certificateData";
+import { certificates } from "../data/certificateData";
+import type { Certificate } from "../data/certificateData";
 
 type FilterType = "all" | "earned" | "in-progress";
 

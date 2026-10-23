@@ -1,146 +1,17 @@
 import { useMemo, useState } from "react";
 import {
-  Search,
-  SlidersHorizontal,
+  ArrowRight,
   BookOpen,
   Clock3,
+  GraduationCap,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
   Star,
   Users,
-  ArrowRight,
-  X,
-  PlayCircle,
-  GraduationCap,
-  Sparkles,
-  CheckCircle2,
 } from "lucide-react";
-
-type CourseLevel = "Beginner" | "Intermediate" | "Advanced";
-type CourseAccess = "Free" | "Premium";
-
-interface Course {
-  id: number;
-  title: string;
-  description: string;
-  instructor: string;
-  category: string;
-  level: CourseLevel;
-  access: CourseAccess;
-  duration: string;
-  lessons: number;
-  rating: number;
-  students: number;
-  thumbnail: string;
-  skills: string[];
-  featured?: boolean;
-}
-
-const courses: Course[] = [
-  {
-    id: 1,
-    title: "Python Programming Masterclass",
-    description:
-      "Build a strong foundation in Python, from core syntax to object-oriented programming.",
-    instructor: "Alex Morgan",
-    category: "Programming",
-    level: "Beginner",
-    access: "Free",
-    duration: "8h 30m",
-    lessons: 42,
-    rating: 4.8,
-    students: 1240,
-    thumbnail:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80",
-    skills: ["Python", "OOP", "Problem Solving"],
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Full Stack Web Development",
-    description:
-      "Learn how to build modern web applications with frontend and backend technologies.",
-    instructor: "Sarah Williams",
-    category: "Web Development",
-    level: "Intermediate",
-    access: "Premium",
-    duration: "24h 15m",
-    lessons: 96,
-    rating: 4.9,
-    students: 2840,
-    thumbnail:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
-    skills: ["HTML & CSS", "React", "Backend"],
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "React and TypeScript",
-    description:
-      "Create maintainable frontend applications using React, TypeScript, and reusable components.",
-    instructor: "David Miller",
-    category: "Frontend",
-    level: "Intermediate",
-    access: "Premium",
-    duration: "12h 40m",
-    lessons: 58,
-    rating: 4.7,
-    students: 1860,
-    thumbnail:
-      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=900&q=80",
-    skills: ["React", "TypeScript", "Hooks"],
-  },
-  {
-    id: 4,
-    title: "SQL and Database Fundamentals",
-    description:
-      "Understand relational databases, write SQL queries, and work with structured data.",
-    instructor: "Emma Wilson",
-    category: "Database",
-    level: "Beginner",
-    access: "Free",
-    duration: "6h 20m",
-    lessons: 35,
-    rating: 4.6,
-    students: 970,
-    thumbnail:
-      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=900&q=80",
-    skills: ["SQL", "PostgreSQL", "Database Design"],
-  },
-  {
-    id: 5,
-    title: "Advanced Django REST Framework",
-    description:
-      "Design secure REST APIs with serializers, permissions, authentication, and testing.",
-    instructor: "Michael Chen",
-    category: "Backend",
-    level: "Advanced",
-    access: "Premium",
-    duration: "15h 10m",
-    lessons: 64,
-    rating: 4.9,
-    students: 1520,
-    thumbnail:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80",
-    skills: ["Django", "REST API", "Authentication"],
-  },
-  {
-    id: 6,
-    title: "Data Structures and Algorithms",
-    description:
-      "Improve your problem-solving skills with essential data structures and algorithm patterns.",
-    instructor: "James Anderson",
-    category: "Computer Science",
-    level: "Intermediate",
-    access: "Free",
-    duration: "18h 45m",
-    lessons: 82,
-    rating: 4.8,
-    students: 3210,
-    thumbnail:
-      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=900&q=80",
-    skills: ["DSA", "Algorithms", "Complexity"],
-    featured: true,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { courses, type Course, type CourseAccess } from "../data/courses";
 
 type SortOption = "popular" | "rating" | "newest";
 
@@ -155,13 +26,14 @@ const categories = [
 ];
 
 export default function ExploreCoursesPage() {
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [level, setLevel] = useState("All levels");
   const [access, setAccess] = useState("All courses");
   const [sort, setSort] = useState<SortOption>("popular");
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const filteredCourses = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -199,10 +71,14 @@ export default function ExploreCoursesPage() {
     setSort("popular");
   };
 
+  const handleViewCourse = (course: Course) => {
+    navigate(`/student/explore-courses/${course.id}`);
+  };
+
   return (
     <div className="min-h-screen bg-[#08080D] px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
-        {/* Heading */}
+        {/* Page heading */}
         <section>
           <div className="mb-3 flex items-center gap-2 text-sm text-violet-400">
             <GraduationCap size={18} />
@@ -254,11 +130,11 @@ export default function ExploreCoursesPage() {
 
               <button
                 type="button"
-                onClick={() => {
+                onClick={() =>
                   document
                     .getElementById("course-catalog")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
               >
                 Browse courses
@@ -278,7 +154,7 @@ export default function ExploreCoursesPage() {
           </div>
         </section>
 
-        {/* Catalog */}
+        {/* Course catalog */}
         <section id="course-catalog" className="scroll-mt-6 space-y-6">
           <div>
             <h2 className="text-xl font-semibold">Course catalog</h2>
@@ -299,6 +175,7 @@ export default function ExploreCoursesPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search courses, skills, or instructors..."
+                aria-label="Search courses"
                 className="w-full rounded-xl border border-white/10 bg-[#101016] py-3.5 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-violet-500/60"
               />
             </div>
@@ -392,6 +269,7 @@ export default function ExploreCoursesPage() {
                 key={item}
                 type="button"
                 onClick={() => setCategory(item)}
+                aria-pressed={category === item}
                 className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                   category === item
                     ? "bg-violet-600 text-white"
@@ -414,14 +292,14 @@ export default function ExploreCoursesPage() {
             </p>
           </div>
 
-          {/* Course grid */}
+          {/* Course cards */}
           {filteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {filteredCourses.map((course) => (
                 <CourseCard
                   key={course.id}
                   course={course}
-                  onView={() => setSelectedCourse(course)}
+                  onView={() => handleViewCourse(course)}
                 />
               ))}
             </div>
@@ -442,118 +320,6 @@ export default function ExploreCoursesPage() {
             </div>
           )}
         </section>
-
-        {/* Course details modal */}
-        {selectedCourse && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm"
-            onClick={() => setSelectedCourse(null)}
-          >
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="course-modal-title"
-              className="my-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#111119] shadow-2xl"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="relative">
-                <img
-                  src={selectedCourse.thumbnail}
-                  alt={selectedCourse.title}
-                  className="h-52 w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111119] to-transparent" />
-                <button
-                  type="button"
-                  onClick={() => setSelectedCourse(null)}
-                  aria-label="Close course details"
-                  className="absolute right-4 top-4 rounded-full bg-black/60 p-2 text-white hover:bg-black"
-                >
-                  <X size={19} />
-                </button>
-              </div>
-
-              <div className="space-y-5 p-6 sm:p-8">
-                <div className="flex flex-wrap items-center gap-2">
-                  <AccessBadge access={selectedCourse.access} />
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-gray-400">
-                    {selectedCourse.level}
-                  </span>
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-gray-400">
-                    {selectedCourse.category}
-                  </span>
-                </div>
-
-                <div>
-                  <h2 id="course-modal-title" className="text-2xl font-bold">
-                    {selectedCourse.title}
-                  </h2>
-                  <p className="mt-3 text-sm leading-6 text-gray-400">
-                    {selectedCourse.description}
-                  </p>
-                  <p className="mt-3 text-sm text-gray-300">
-                    Instructor: {selectedCourse.instructor}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 border-y border-white/[0.07] py-5">
-                  <DetailStat
-                    icon={<PlayCircle size={17} />}
-                    value={`${selectedCourse.lessons} lessons`}
-                  />
-                  <DetailStat
-                    icon={<Clock3 size={17} />}
-                    value={selectedCourse.duration}
-                  />
-                  <DetailStat
-                    icon={<Star size={17} />}
-                    value={`${selectedCourse.rating} rating`}
-                  />
-                </div>
-
-                <div>
-                  <h3 className="mb-3 text-sm font-semibold">
-                    What you'll learn
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedCourse.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="inline-flex items-center gap-2 rounded-lg border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs text-gray-300"
-                      >
-                        <CheckCircle2 size={14} className="text-violet-400" />
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCourse(null)}
-                    className="rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-gray-300 hover:bg-white/[0.05]"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Connect this action to your enrollment API.
-                      console.info(`Enroll in course ${selectedCourse.id}`);
-                    }}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
-                  >
-                    {selectedCourse.access === "Premium"
-                      ? "View Premium course"
-                      : "Start learning"}
-                    <ArrowRight size={17} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -624,12 +390,16 @@ function CourseCard({
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-white/[0.07] pb-4 text-xs text-gray-400">
           <span className="inline-flex items-center gap-1.5">
             <Star size={14} className="fill-amber-400 text-amber-400" />
-            <span className="font-semibold text-white">{course.rating}</span>
+            <span className="font-semibold text-white">
+              {course.rating.toFixed(1)}
+            </span>
           </span>
+
           <span className="inline-flex items-center gap-1.5">
             <Users size={14} />
             {course.students.toLocaleString()}
           </span>
+
           <span className="inline-flex items-center gap-1.5">
             <Clock3 size={14} />
             {course.duration}
@@ -652,14 +422,5 @@ function CourseCard({
         </div>
       </div>
     </article>
-  );
-}
-
-function DetailStat({ icon, value }: { icon: React.ReactNode; value: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2 text-center">
-      <span className="text-violet-400">{icon}</span>
-      <span className="text-xs text-gray-300">{value}</span>
-    </div>
   );
 }
