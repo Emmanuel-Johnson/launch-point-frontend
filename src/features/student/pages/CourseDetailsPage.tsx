@@ -1,3 +1,5 @@
+import { useState } from "react";
+import type { ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,6 +21,8 @@ export default function CourseDetailsPage() {
 
   const course = courses.find((item) => item.id === Number(courseId));
 
+  const [openModules, setOpenModules] = useState<number[]>([0]);
+
   if (!course) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#08080D] px-4 text-white">
@@ -30,8 +34,8 @@ export default function CourseDetailsPage() {
           <h1 className="mt-6 text-2xl font-bold">Course not found</h1>
 
           <p className="mt-3 text-sm leading-6 text-gray-400">
-            The course you're looking for doesn't exist or may have been
-            removed.
+            The course you&apos;re looking for doesn&apos;t exist or may have
+            been removed.
           </p>
 
           <button
@@ -46,6 +50,25 @@ export default function CourseDetailsPage() {
       </div>
     );
   }
+
+  const curriculum = course.curriculum ?? [
+    {
+      title: "Course topics",
+      lessons: course.skills,
+    },
+  ];
+
+  const toggleModule = (index: number) => {
+    setOpenModules((previous) =>
+      previous.includes(index)
+        ? previous.filter((item) => item !== index)
+        : [...previous, index],
+    );
+  };
+
+  const handleStartLearning = () => {
+    navigate(`/student/learning/${course.id}`);
+  };
 
   return (
     <div className="min-h-screen bg-[#08080D] px-4 py-6 text-white sm:px-6 lg:px-8">
@@ -98,7 +121,7 @@ export default function CourseDetailsPage() {
             </div>
           </div>
 
-          {/* Course information */}
+          {/* Course statistics */}
           <div className="grid grid-cols-2 gap-4 border-t border-white/[0.07] p-5 sm:grid-cols-4 sm:p-8">
             <CourseStat
               icon={<Clock3 size={18} />}
@@ -144,9 +167,11 @@ export default function CourseDetailsPage() {
 
                 <div>
                   <p className="text-xs text-gray-500">Course instructor</p>
+
                   <p className="mt-1 font-semibold text-white">
                     {course.instructor}
                   </p>
+
                   <p className="mt-1 text-xs text-gray-400">
                     {course.instructorRole ?? "Course Instructor"}
                   </p>
@@ -165,6 +190,7 @@ export default function CourseDetailsPage() {
                       size={18}
                       className="mt-0.5 shrink-0 text-violet-400"
                     />
+
                     <p className="text-sm leading-6 text-gray-300">{outcome}</p>
                   </div>
                 ))}
@@ -215,6 +241,7 @@ export default function CourseDetailsPage() {
               <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
                   <SectionHeading>Course curriculum</SectionHeading>
+
                   <p className="mt-2 text-sm text-gray-500">
                     Explore the modules included in this course.
                   </p>
@@ -226,62 +253,68 @@ export default function CourseDetailsPage() {
               </div>
 
               <div className="mt-5 space-y-3">
-                {(
-                  course.curriculum ?? [
-                    {
-                      title: "Course topics",
-                      lessons: course.skills,
-                    },
-                  ]
-                ).map((module, index) => (
-                  <details
-                    key={module.title}
-                    open={index === 0}
-                    className="group overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.02]"
-                  >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-sm font-semibold text-violet-300">
-                          {String(index + 1).padStart(2, "0")}
+                {curriculum.map((module, index) => {
+                  const isOpen = openModules.includes(index);
+
+                  return (
+                    <div
+                      key={module.title}
+                      className="overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.02]"
+                    >
+                      <button
+                        type="button"
+                        aria-expanded={isOpen}
+                        onClick={() => toggleModule(index)}
+                        className="flex w-full items-center justify-between gap-4 p-4 text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-sm font-semibold text-violet-300">
+                            {String(index + 1).padStart(2, "0")}
+                          </div>
+
+                          <div>
+                            <h3 className="text-sm font-medium text-white">
+                              {module.title}
+                            </h3>
+
+                            <p className="mt-1 text-xs text-gray-500">
+                              {module.lessons.length} topics
+                            </p>
+                          </div>
                         </div>
 
-                        <div>
-                          <h3 className="text-sm font-medium text-white">
-                            {module.title}
-                          </h3>
-                          <p className="mt-1 text-xs text-gray-500">
-                            {module.lessons.length} topics
-                          </p>
+                        <ArrowRight
+                          size={16}
+                          className={`shrink-0 text-gray-500 transition-transform ${
+                            isOpen ? "rotate-90" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {isOpen && (
+                        <div className="space-y-1 border-t border-white/[0.07] p-3">
+                          {module.lessons.map((lesson, lessonIndex) => (
+                            <div
+                              key={lesson}
+                              className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-gray-400 transition hover:bg-white/[0.03]"
+                            >
+                              <PlayCircle
+                                size={16}
+                                className="shrink-0 text-violet-400"
+                              />
+
+                              <span className="flex-1">{lesson}</span>
+
+                              <span className="text-xs text-gray-600">
+                                {lessonIndex + 1}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-
-                      <ArrowRight
-                        size={16}
-                        className="shrink-0 text-gray-500 transition group-open:rotate-90"
-                      />
-                    </summary>
-
-                    <div className="space-y-1 border-t border-white/[0.07] p-3">
-                      {module.lessons.map((lesson, lessonIndex) => (
-                        <div
-                          key={lesson}
-                          className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-gray-400 transition hover:bg-white/[0.03]"
-                        >
-                          <PlayCircle
-                            size={16}
-                            className="shrink-0 text-violet-400"
-                          />
-
-                          <span className="flex-1">{lesson}</span>
-
-                          <span className="text-xs text-gray-600">
-                            {lessonIndex + 1}
-                          </span>
-                        </div>
-                      ))}
+                      )}
                     </div>
-                  </details>
-                ))}
+                  );
+                })}
               </div>
             </section>
           </div>
@@ -291,6 +324,7 @@ export default function CourseDetailsPage() {
             <div className="rounded-2xl border border-violet-500/20 bg-[#101016] p-5 sm:p-6">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-sm text-gray-400">Course access</span>
+
                 <AccessBadge access={course.access} />
               </div>
 
@@ -308,31 +342,30 @@ export default function CourseDetailsPage() {
 
               <div className="mt-5 space-y-4 border-t border-white/[0.07] pt-5">
                 <FeatureLine>{course.lessons} course lessons</FeatureLine>
+
                 <FeatureLine>{course.duration} of learning content</FeatureLine>
+
                 <FeatureLine>
                   {course.skills.length} key skills covered
                 </FeatureLine>
+
                 <FeatureLine>{course.level} level</FeatureLine>
               </div>
 
               <button
                 type="button"
-                onClick={() =>
-                  navigate("/student/learning", {
-                    state: { courseId: course.id },
-                  })
-                }
+                onClick={handleStartLearning}
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-violet-500"
               >
                 {course.access === "Free"
                   ? "Start learning"
                   : "Continue to learning"}
+
                 <ArrowRight size={17} />
               </button>
 
               <p className="mt-3 text-center text-xs leading-5 text-gray-500">
-                Enrollment and Premium access checks should be verified by your
-                backend.
+                Enrollment and Premium access must be verified by your backend.
               </p>
 
               <Link
@@ -369,7 +402,7 @@ function CourseStat({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string;
 }) {
@@ -381,6 +414,7 @@ function CourseStat({
 
       <div className="min-w-0">
         <p className="text-xs text-gray-500">{label}</p>
+
         <p className="mt-1 truncate text-sm font-semibold text-white">
           {value}
         </p>
@@ -389,11 +423,11 @@ function CourseStat({
   );
 }
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
+function SectionHeading({ children }: { children: ReactNode }) {
   return <h2 className="text-lg font-semibold text-white">{children}</h2>;
 }
 
-function FeatureLine({ children }: { children: React.ReactNode }) {
+function FeatureLine({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-3 text-sm text-gray-300">
       <CheckCircle2 size={16} className="shrink-0 text-violet-400" />

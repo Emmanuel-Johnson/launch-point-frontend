@@ -58,6 +58,7 @@ import LevelManagementPage from "../../features/admin/courses/pages/LevelManagem
 import SkillManagementPage from "../../features/admin/skills/pages/SkillManagementPage";
 import CourseApplicationAdminListPage from "../../features/admin/applications/courses/pages/CourseApplicationAdminListPage";
 import NonAdminRoute from "./NonAdminRoute";
+import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -154,6 +155,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "explore-courses/:courseId",
             element: <CourseDetailsPage />,
+          },
+          {
+            path: "learning/:courseId",
+            element: <CourseLearningPage />,
           },
           {
             path: "wishlist",
