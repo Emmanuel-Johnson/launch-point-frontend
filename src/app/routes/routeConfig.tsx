@@ -17,7 +17,6 @@ import StudentLayout from "../../features/student/layout/StudentLayout";
 import StudentDashboardPage from "../../features/student/pages/DashboardPage";
 import MyLearningPage from "../../features/student/pages/MyLearningPage";
 import CertificatePage from "../../features/student/pages/CertificatePage";
-import WishlistPage from "../../features/student/pages/WishlistPage";
 import ExploreCoursesPage from "../../features/student/pages/ExploreCoursesPage";
 import CourseDetailsPage from "../../features/student/pages/CourseDetailsPage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
@@ -61,6 +60,7 @@ import CourseApplicationAdminListPage from "../../features/admin/applications/co
 import NonAdminRoute from "./NonAdminRoute";
 import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
 import CommunityPage from "../../features/student/pages/CommunityPage";
+import SavedPage from "../../features/student/pages/SavedPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -163,8 +163,8 @@ export const routeConfig: RouteObject[] = [
             element: <CourseLearningPage />,
           },
           {
-            path: "wishlist",
-            element: <WishlistPage />,
+            path: "saved",
+            element: <SavedPage />,
           },
           {
             path: "profile",

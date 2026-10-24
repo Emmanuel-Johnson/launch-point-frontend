@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Compass,
   CreditCard,
-  Heart,
+  Bookmark,
   LayoutDashboard,
   Settings,
   User,
@@ -68,7 +68,7 @@ const navSections: NavSection[] = [
   {
     title: "Account",
     items: [
-      { name: "Wishlist", path: "/student/wishlist", icon: Heart },
+      { name: "Saved", path: "/student/saved", icon: Bookmark },
       {
         name: "Subscriptions",
         path: "/student/subscriptions",
