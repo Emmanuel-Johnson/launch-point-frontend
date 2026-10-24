@@ -1,17 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDownUp,
   ArrowRight,
   BarChart3,
   BookOpen,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
   Code2,
-  Database,
-  Filter,
   Heart,
   Palette,
   Search,
@@ -57,7 +54,10 @@ const categories: {
   { name: "Development", icon: Code2 },
   { name: "Design", icon: Palette },
   { name: "Business", icon: BarChart3 },
-  { name: "Data Science", icon: Database },
+  { name: "Business", icon: BarChart3 },
+  { name: "All Courses", icon: Sparkles },
+  { name: "Development", icon: Code2 },
+  { name: "Business", icon: BarChart3 },
 ];
 
 const courses: Course[] = [
@@ -575,12 +575,54 @@ const ExploreCoursesPage = () => {
   const [planFilter, setPlanFilter] = useState<"All" | "Premium" | "Free">(
     "All",
   );
-  const [showFilters, setShowFilters] = useState(false);
+
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [categoriesOverflow, setCategoriesOverflow] = useState(false);
+  const categoryWrapperRef = useRef<HTMLDivElement | null>(null);
+  const categoryListRef = useRef<HTMLDivElement | null>(null);
   const coursesPerPage = 12;
+
+  // Show category arrows only when the category content is wider than
+  // the full available row. Measure against the wrapper, not the scroll
+  // container, so showing the arrows cannot cause the overflow state to flip.
+  useEffect(() => {
+    const categoryWrapper = categoryWrapperRef.current;
+    const categoryList = categoryListRef.current;
+
+    if (!categoryWrapper || !categoryList) return;
+
+    const updateCategoryOverflow = () => {
+      const hasOverflow =
+        categoryList.scrollWidth > categoryWrapper.clientWidth + 1;
+
+      setCategoriesOverflow((current) =>
+        current === hasOverflow ? current : hasOverflow,
+      );
+
+      if (!hasOverflow) {
+        categoryList.scrollLeft = 0;
+      }
+    };
+
+    updateCategoryOverflow();
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(updateCategoryOverflow)
+        : null;
+
+    resizeObserver?.observe(categoryWrapper);
+    resizeObserver?.observe(categoryList);
+    window.addEventListener("resize", updateCategoryOverflow);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateCategoryOverflow);
+    };
+  }, [activeCategory]);
 
   const filteredCourses = useMemo(() => {
     let result = courses.filter((course) => {
@@ -617,7 +659,12 @@ const ExploreCoursesPage = () => {
   }, [activeCategory, searchQuery, sortBy, planFilter, showPremiumOnly]);
 
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
-  const startIndex = (currentPage - 1) * coursesPerPage;
+
+  // Derive a valid page from the current results instead of synchronizing
+  // pagination state in an effect. This avoids cascading renders.
+  const safeCurrentPage =
+    totalPages === 0 ? 1 : Math.min(Math.max(currentPage, 1), totalPages);
+  const startIndex = (safeCurrentPage - 1) * coursesPerPage;
   const paginatedCourses = filteredCourses.slice(
     startIndex,
     startIndex + coursesPerPage,
@@ -647,10 +694,15 @@ const ExploreCoursesPage = () => {
 
   // Keep every pagination control using the same page-change and scroll behavior.
   const goToPage = (page: number) => {
+    // Do not attempt to navigate when the current filters return no courses.
+    if (totalPages === 0) return;
+
     const nextPage = Math.min(Math.max(page, 1), totalPages);
+    if (nextPage === safeCurrentPage) return;
+
     setCurrentPage(nextPage);
 
-    // Wait for the page update to be scheduled before scrolling to the catalog.
+    // Scroll after the page change has been scheduled.
     requestAnimationFrame(() => {
       document.getElementById("course-catalog")?.scrollIntoView({
         behavior: "smooth",
@@ -725,7 +777,7 @@ const ExploreCoursesPage = () => {
                     block: "start",
                   })
                 }
-                className="group/button inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                className="cursor-pointer group/button inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
               >
                 Explore courses
                 <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
@@ -774,69 +826,14 @@ const ExploreCoursesPage = () => {
         </div>
       </section>
 
-      {/* Category filters */}
+      {/* Course discovery controls */}
       <section id="course-catalog" className="scroll-mt-6 space-y-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold">Browse categories</h2>
-            <p className="mt-1 text-sm text-white/45">
-              Find the skills you want to master.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setShowFilters((value) => !value)}
-            className={`flex h-10 items-center gap-2 rounded-xl border px-3 text-sm transition ${
-              showFilters
-                ? "border-[#7C5CFF]/40 bg-[#7C5CFF]/10 text-[#C4B5FD]"
-                : "border-white/10 bg-[#0B0B0D] text-white/65 hover:border-white/20 hover:text-white"
-            }`}
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            Filters
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${
-                showFilters ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-        </div>
-
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {categories.map(({ name, icon: Icon }) => {
-            const isActive = activeCategory === name;
-
-            return (
-              <button
-                key={name}
-                type="button"
-                onClick={() => {
-                  setActiveCategory(name);
-                  setCurrentPage(1);
-                }}
-                className={`inline-flex shrink-0 items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? "border-[#8B5CF6]/60 bg-gradient-to-r from-[#7C3AED]/30 to-[#5B21B6]/20 text-white shadow-[0_4px_20px_rgba(124,92,255,0.12)]"
-                    : "border-white/[0.08] bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/[0.03] hover:text-white/90"
-                }`}
-              >
-                <Icon
-                  className={`h-4 w-4 ${isActive ? "text-[#A78BFA]" : ""}`}
-                />
-                {name}
-                {isActive && (
-                  <Check className="ml-1 h-3.5 w-3.5 text-[#A78BFA]" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search and sorting */}
+        {/* Search, sort and filter */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          {/* Search */}
           <div className="group relative min-w-0 flex-1">
-            <Search className="absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/35 transition-colors group-focus-within:text-[#A78BFA]" />
+            <Search className="cursor-pointer absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/35 transition-colors group-focus-within:text-violet-300" />
+
             <input
               type="search"
               value={searchQuery}
@@ -846,14 +843,18 @@ const ExploreCoursesPage = () => {
               }}
               placeholder="Search courses, skills, or instructors..."
               aria-label="Search courses"
-              className="h-12 w-full rounded-xl border border-white/[0.08] bg-[#0A0A0C] pl-11 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 hover:border-white/15 focus:border-[#8B5CF6]/50 focus:bg-[#0D0B13] focus:ring-4 focus:ring-[#7C5CFF]/[0.07]"
+              className="h-16 w-full rounded-2xl border border-white/[0.08] bg-[#0B0B0F] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
             />
           </div>
 
-          <div className="flex gap-3">
-            <label className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0A0A0C] px-3 sm:min-w-[155px]">
+          {/* Sort and filter */}
+          <div className="grid grid-cols-2 gap-2 lg:flex lg:shrink-0">
+            {/* Sort by */}
+            <label className="cursor-pointer flex h-16 min-w-0 items-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 transition hover:border-violet-400/30 focus-within:border-violet-400/40 lg:w-44">
               <ArrowDownUp className="h-4 w-4 shrink-0 text-white/40" />
-              <span className="shrink-0 text-xs text-white/40">Sort:</span>
+
+              <span className="shrink-0 text-xs text-white/40">Sort by:</span>
+
               <select
                 value={sortBy}
                 onChange={(event) => {
@@ -861,107 +862,154 @@ const ExploreCoursesPage = () => {
                   setCurrentPage(1);
                 }}
                 aria-label="Sort courses"
-                className="min-w-0 flex-1 cursor-pointer bg-transparent text-sm text-white outline-none"
+                className="min-w-0 flex-1 cursor-pointer appearance-none rounded-lg border-0 bg-transparent py-2 text-xs font-medium text-white/80 outline-none focus:ring-0"
               >
-                <option className="bg-[#111111]" value="Latest">
+                <option value="Latest" className="bg-[#111111] text-white">
                   Latest
                 </option>
-                <option className="bg-[#111111]" value="Top Rated">
+                <option value="Top Rated" className="bg-[#111111] text-white">
                   Top Rated
                 </option>
-                <option className="bg-[#111111]" value="A–Z">
+                <option value="A–Z" className="bg-[#111111] text-white">
                   A–Z
                 </option>
-                <option className="bg-[#111111]" value="Shortest">
+                <option value="Shortest" className="bg-[#111111] text-white">
                   Shortest
                 </option>
               </select>
             </label>
 
+            {/* Filter - UI only */}
             <button
               type="button"
-              onClick={() => setShowFilters((value) => !value)}
-              aria-label="Toggle course filters"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-[#0A0A0C] text-white/60 transition hover:border-[#8B5CF6]/40 hover:text-white lg:hidden"
+              aria-label="Filter courses"
+              className="cursor-pointer flex h-16 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 text-xs font-medium text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40 lg:w-44"
             >
-              <Filter className="h-4 w-4" />
+              <SlidersHorizontal className="h-4 w-4" />
+              Filter
             </button>
           </div>
         </div>
 
-        {/* Expandable filters */}
-        {showFilters && (
-          <div className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-[#0B0B0D] p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="mb-3 text-sm font-medium text-white/80">
-                Learning plan
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {(["All", "Premium", "Free"] as const).map((plan) => (
-                  <button
-                    key={plan}
-                    type="button"
-                    onClick={() => {
-                      setPlanFilter(plan);
-                      setShowPremiumOnly(false);
-                      setCurrentPage(1);
-                    }}
-                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition ${
-                      planFilter === plan && !showPremiumOnly
-                        ? "border-violet-500/40 bg-violet-500/15 text-violet-200"
-                        : "border-white/10 text-white/50 hover:border-white/20 hover:text-white"
-                    }`}
-                  >
-                    {plan === "Premium" ? "♛ Premium" : plan}
-                  </button>
-                ))}
-              </div>
-            </div>
+        {/* Hide the category strip scrollbar in every browser while keeping scrolling enabled. */}
+        <style>{`#course-category-list::-webkit-scrollbar { display: none; width: 0; height: 0; }`}</style>
 
+        {/* Show navigation arrows only when categories need horizontal scrolling. */}
+        <div
+          ref={categoryWrapperRef}
+          className="flex min-w-0 items-stretch gap-2"
+        >
+          {categoriesOverflow && (
             <button
               type="button"
-              onClick={clearFilters}
-              className="self-start text-sm text-[#A78BFA] transition hover:text-white sm:self-center"
+              aria-label="Scroll categories left"
+              onClick={() => {
+                categoryListRef.current?.scrollBy({
+                  left: -220,
+                  behavior: "smooth",
+                });
+              }}
+              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
             >
-              Reset all filters
+              <ChevronLeft className="h-4 w-4" />
             </button>
+          )}
+
+          {/* Category list */}
+          <div
+            id="course-category-list"
+            ref={categoryListRef}
+            className="flex min-w-0 flex-1 items-stretch gap-2 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {categories.map(({ name, icon: Icon }) => {
+              const isActive = activeCategory === name;
+
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => {
+                    setActiveCategory(name);
+                    setCurrentPage(1);
+                  }}
+                  className={`cursor-pointer inline-flex shrink-0 items-center gap-2 self-stretch rounded-xl border px-4 py-3 text-xs font-medium transition-all ${
+                    isActive
+                      ? "border-violet-400/40 bg-violet-500/15 text-violet-200"
+                      : "border-white/[0.07] bg-[#0B0B0F] text-white/50 hover:border-white/15 hover:text-white/85"
+                  }`}
+                >
+                  <Icon
+                    className={`h-4 w-4 ${
+                      isActive ? "text-violet-300" : "text-white/40"
+                    }`}
+                  />
+
+                  {name}
+
+                  {isActive && (
+                    <Check className="h-3.5 w-3.5 text-violet-300" />
+                  )}
+                </button>
+              );
+            })}
           </div>
-        )}
+
+          {categoriesOverflow && (
+            <button
+              type="button"
+              aria-label="Scroll categories right"
+              onClick={() => {
+                categoryListRef.current?.scrollBy({
+                  left: 220,
+                  behavior: "smooth",
+                });
+              }}
+              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </section>
 
       {/* Course grid */}
       <section className="space-y-5">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">
+            <h2 className="text-xl font-medium tracking-tight text-white sm:text-2xl">
               {showPremiumOnly
                 ? "Premium learning"
                 : activeCategory === "All Courses"
                   ? "Discover your next skill"
                   : activeCategory}
             </h2>
-            <p className="mt-1.5 text-sm text-white/45">
+
+            <p className="mt-1.5 text-sm font-normal leading-relaxed text-white/45">
               Handpicked courses to help you grow.
             </p>
           </div>
 
-          <span className="rounded-lg border border-white/[0.08] bg-[#0A0A0C] px-3 py-2 text-xs text-white/50">
-            Showing{" "}
-            <span className="font-semibold text-white">
+          <div className="flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.025] px-2 py-1.5">
+            <span className="text-[10px] text-white/40">Showing</span>
+            <span className="text-xs font-medium tabular-nums text-white">
               {firstCourseNumber}–{lastCourseNumber}
-            </span>{" "}
-            of {filteredCourses.length} courses
-          </span>
+            </span>
+            <span className="text-white/20">/</span>
+            <span className="text-xs tabular-nums text-white/50">
+              {filteredCourses.length}
+            </span>
+          </div>
         </div>
 
         {filteredCourses.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {paginatedCourses.map((course) => {
+            {paginatedCourses.map((course, courseIndex) => {
               const isWishlisted = wishlist.includes(course.id);
 
               return (
                 <article
-                  key={course.id}
+                  key={`${course.id}-${startIndex + courseIndex}`}
                   className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0C] transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5CF6]/40 hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
                 >
                   {/* Course image */}
@@ -1136,8 +1184,8 @@ const ExploreCoursesPage = () => {
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage <= 1}
+                onClick={() => goToPage(safeCurrentPage - 1)}
+                disabled={safeCurrentPage <= 1}
                 aria-label="Previous page"
                 className="cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0A0A0C] text-white/70 transition hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
               >
@@ -1151,9 +1199,9 @@ const ExploreCoursesPage = () => {
                     type="button"
                     onClick={() => goToPage(page)}
                     aria-label={`Go to page ${page}`}
-                    aria-current={currentPage === page ? "page" : undefined}
+                    aria-current={safeCurrentPage === page ? "page" : undefined}
                     className={`cursor-pointer inline-flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-medium transition ${
-                      currentPage === page
+                      safeCurrentPage === page
                         ? "border-violet-400/50 bg-violet-500/20 text-violet-200 shadow-[0_4px_16px_rgba(124,92,255,0.12)]"
                         : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
                     }`}
@@ -1165,8 +1213,8 @@ const ExploreCoursesPage = () => {
 
               <button
                 type="button"
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage >= totalPages}
+                onClick={() => goToPage(safeCurrentPage + 1)}
+                disabled={safeCurrentPage >= totalPages}
                 aria-label="Next page"
                 className="cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0A0A0C] text-white/70 transition hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
               >
