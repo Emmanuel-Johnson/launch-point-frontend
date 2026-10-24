@@ -6,6 +6,8 @@ import {
   BookOpen,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   Code2,
   Database,
@@ -185,6 +187,384 @@ const courses: Course[] = [
     accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
     skills: ["Strategy", "Research", "Planning"],
   },
+  {
+    id: 1,
+    title: "Full Stack Web Development",
+    description:
+      "Build modern web applications with Python, Django, React, and PostgreSQL.",
+    category: "Development",
+    instructor: "Sarah Mitchell",
+    instructorRole: "Senior Full Stack Developer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "1.2k",
+    lessons: 48,
+    duration: "32 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-violet-500/25 via-purple-500/10 to-transparent",
+    skills: ["React", "Django", "PostgreSQL"],
+  },
+  {
+    id: 2,
+    title: "UI/UX Design Masterclass",
+    description:
+      "Master design systems, wireframes, and beautiful user experiences with Figma.",
+    category: "Design",
+    instructor: "Alex Carter",
+    instructorRole: "Product Designer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "856",
+    lessons: 32,
+    duration: "18 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
+    skills: ["Figma", "Prototyping", "Design"],
+  },
+  {
+    id: 3,
+    title: "Python Programming",
+    description:
+      "Go from fundamentals to practical Python projects with hands-on exercises.",
+    category: "Development",
+    instructor: "James Wilson",
+    instructorRole: "Software Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "2.1k",
+    lessons: 40,
+    duration: "24 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-sky-500/25 via-blue-500/10 to-transparent",
+    skills: ["Python", "OOP", "Projects"],
+  },
+  {
+    id: 4,
+    title: "Data Analytics with SQL",
+    description:
+      "Transform raw data into meaningful insights using SQL and analytics.",
+    category: "Data Science",
+    instructor: "Priya Sharma",
+    instructorRole: "Data Analyst",
+    instructorImage:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "980",
+    lessons: 36,
+    duration: "21 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
+    skills: ["SQL", "Analytics", "Reports"],
+  },
+  {
+    id: 5,
+    title: "Modern JavaScript Essentials",
+    description:
+      "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
+    category: "Development",
+    instructor: "Daniel Brooks",
+    instructorRole: "Frontend Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "743",
+    lessons: 28,
+    duration: "16 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-amber-500/20 via-orange-500/10 to-transparent",
+    skills: ["JavaScript", "ES2026", "Async"],
+  },
+  {
+    id: 6,
+    title: "Product & Business Strategy",
+    description:
+      "Understand product thinking, market research, and building successful products.",
+    category: "Business",
+    instructor: "Olivia Bennett",
+    instructorRole: "Product Strategist",
+    instructorImage:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "512",
+    lessons: 24,
+    duration: "14 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
+    skills: ["Strategy", "Research", "Planning"],
+  },
+  {
+    id: 1,
+    title: "Full Stack Web Development",
+    description:
+      "Build modern web applications with Python, Django, React, and PostgreSQL.",
+    category: "Development",
+    instructor: "Sarah Mitchell",
+    instructorRole: "Senior Full Stack Developer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "1.2k",
+    lessons: 48,
+    duration: "32 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-violet-500/25 via-purple-500/10 to-transparent",
+    skills: ["React", "Django", "PostgreSQL"],
+  },
+  {
+    id: 2,
+    title: "UI/UX Design Masterclass",
+    description:
+      "Master design systems, wireframes, and beautiful user experiences with Figma.",
+    category: "Design",
+    instructor: "Alex Carter",
+    instructorRole: "Product Designer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "856",
+    lessons: 32,
+    duration: "18 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
+    skills: ["Figma", "Prototyping", "Design"],
+  },
+  {
+    id: 3,
+    title: "Python Programming",
+    description:
+      "Go from fundamentals to practical Python projects with hands-on exercises.",
+    category: "Development",
+    instructor: "James Wilson",
+    instructorRole: "Software Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "2.1k",
+    lessons: 40,
+    duration: "24 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-sky-500/25 via-blue-500/10 to-transparent",
+    skills: ["Python", "OOP", "Projects"],
+  },
+  {
+    id: 4,
+    title: "Data Analytics with SQL",
+    description:
+      "Transform raw data into meaningful insights using SQL and analytics.",
+    category: "Data Science",
+    instructor: "Priya Sharma",
+    instructorRole: "Data Analyst",
+    instructorImage:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "980",
+    lessons: 36,
+    duration: "21 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
+    skills: ["SQL", "Analytics", "Reports"],
+  },
+  {
+    id: 5,
+    title: "Modern JavaScript Essentials",
+    description:
+      "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
+    category: "Development",
+    instructor: "Daniel Brooks",
+    instructorRole: "Frontend Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "743",
+    lessons: 28,
+    duration: "16 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-amber-500/20 via-orange-500/10 to-transparent",
+    skills: ["JavaScript", "ES2026", "Async"],
+  },
+  {
+    id: 6,
+    title: "Product & Business Strategy",
+    description:
+      "Understand product thinking, market research, and building successful products.",
+    category: "Business",
+    instructor: "Olivia Bennett",
+    instructorRole: "Product Strategist",
+    instructorImage:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "512",
+    lessons: 24,
+    duration: "14 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
+    skills: ["Strategy", "Research", "Planning"],
+  },
+  {
+    id: 1,
+    title: "Full Stack Web Development",
+    description:
+      "Build modern web applications with Python, Django, React, and PostgreSQL.",
+    category: "Development",
+    instructor: "Sarah Mitchell",
+    instructorRole: "Senior Full Stack Developer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "1.2k",
+    lessons: 48,
+    duration: "32 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-violet-500/25 via-purple-500/10 to-transparent",
+    skills: ["React", "Django", "PostgreSQL"],
+  },
+  {
+    id: 2,
+    title: "UI/UX Design Masterclass",
+    description:
+      "Master design systems, wireframes, and beautiful user experiences with Figma.",
+    category: "Design",
+    instructor: "Alex Carter",
+    instructorRole: "Product Designer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "856",
+    lessons: 32,
+    duration: "18 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
+    skills: ["Figma", "Prototyping", "Design"],
+  },
+  {
+    id: 3,
+    title: "Python Programming",
+    description:
+      "Go from fundamentals to practical Python projects with hands-on exercises.",
+    category: "Development",
+    instructor: "James Wilson",
+    instructorRole: "Software Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=900&h=520&fit=crop",
+    rating: 4.8,
+    reviews: "2.1k",
+    lessons: 40,
+    duration: "24 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-sky-500/25 via-blue-500/10 to-transparent",
+    skills: ["Python", "OOP", "Projects"],
+  },
+  {
+    id: 4,
+    title: "Data Analytics with SQL",
+    description:
+      "Transform raw data into meaningful insights using SQL and analytics.",
+    category: "Data Science",
+    instructor: "Priya Sharma",
+    instructorRole: "Data Analyst",
+    instructorImage:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=520&fit=crop",
+    rating: 4.9,
+    reviews: "980",
+    lessons: 36,
+    duration: "21 hours",
+    level: "Intermediate",
+    plan: "Premium",
+    accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
+    skills: ["SQL", "Analytics", "Reports"],
+  },
+  {
+    id: 5,
+    title: "Modern JavaScript Essentials",
+    description:
+      "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
+    category: "Development",
+    instructor: "Daniel Brooks",
+    instructorRole: "Frontend Engineer",
+    instructorImage:
+      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "743",
+    lessons: 28,
+    duration: "16 hours",
+    level: "Beginner",
+    plan: "Free",
+    accent: "from-amber-500/20 via-orange-500/10 to-transparent",
+    skills: ["JavaScript", "ES2026", "Async"],
+  },
+  {
+    id: 6,
+    title: "Product & Business Strategy",
+    description:
+      "Understand product thinking, market research, and building successful products.",
+    category: "Business",
+    instructor: "Olivia Bennett",
+    instructorRole: "Product Strategist",
+    instructorImage:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=520&fit=crop",
+    rating: 4.7,
+    reviews: "512",
+    lessons: 24,
+    duration: "14 hours",
+    level: "Beginner",
+    plan: "Premium",
+    accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
+    skills: ["Strategy", "Research", "Planning"],
+  },
 ];
 
 const ExploreCoursesPage = () => {
@@ -199,6 +579,8 @@ const ExploreCoursesPage = () => {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 12;
 
   const filteredCourses = useMemo(() => {
     let result = courses.filter((course) => {
@@ -234,6 +616,18 @@ const ExploreCoursesPage = () => {
     return result;
   }, [activeCategory, searchQuery, sortBy, planFilter, showPremiumOnly]);
 
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+  const startIndex = (currentPage - 1) * coursesPerPage;
+  const paginatedCourses = filteredCourses.slice(
+    startIndex,
+    startIndex + coursesPerPage,
+  );
+  const firstCourseNumber = filteredCourses.length === 0 ? 0 : startIndex + 1;
+  const lastCourseNumber = Math.min(
+    startIndex + coursesPerPage,
+    filteredCourses.length,
+  );
+
   const toggleWishlist = (courseId: number) => {
     setWishlist((current) =>
       current.includes(courseId)
@@ -243,11 +637,26 @@ const ExploreCoursesPage = () => {
   };
 
   const clearFilters = () => {
+    setCurrentPage(1);
     setActiveCategory("All Courses");
     setSearchQuery("");
     setSortBy("Latest");
     setPlanFilter("All");
     setShowPremiumOnly(false);
+  };
+
+  // Keep every pagination control using the same page-change and scroll behavior.
+  const goToPage = (page: number) => {
+    const nextPage = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(nextPage);
+
+    // Wait for the page update to be scheduled before scrolling to the catalog.
+    requestAnimationFrame(() => {
+      document.getElementById("course-catalog")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   };
 
   return (
@@ -396,7 +805,10 @@ const ExploreCoursesPage = () => {
               <button
                 key={name}
                 type="button"
-                onClick={() => setActiveCategory(name)}
+                onClick={() => {
+                  setActiveCategory(name);
+                  setCurrentPage(1);
+                }}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200 ${
                   isActive
                     ? "border-[#8B5CF6]/60 bg-gradient-to-r from-[#7C3AED]/30 to-[#5B21B6]/20 text-white shadow-[0_4px_20px_rgba(124,92,255,0.12)]"
@@ -422,7 +834,10 @@ const ExploreCoursesPage = () => {
             <input
               type="search"
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setCurrentPage(1);
+              }}
               placeholder="Search courses, skills, or instructors..."
               aria-label="Search courses"
               className="h-12 w-full rounded-xl border border-white/[0.08] bg-[#0A0A0C] pl-11 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 hover:border-white/15 focus:border-[#8B5CF6]/50 focus:bg-[#0D0B13] focus:ring-4 focus:ring-[#7C5CFF]/[0.07]"
@@ -435,7 +850,10 @@ const ExploreCoursesPage = () => {
               <span className="shrink-0 text-xs text-white/40">Sort:</span>
               <select
                 value={sortBy}
-                onChange={(event) => setSortBy(event.target.value)}
+                onChange={(event) => {
+                  setSortBy(event.target.value);
+                  setCurrentPage(1);
+                }}
                 aria-label="Sort courses"
                 className="min-w-0 flex-1 cursor-pointer bg-transparent text-sm text-white outline-none"
               >
@@ -480,6 +898,7 @@ const ExploreCoursesPage = () => {
                     onClick={() => {
                       setPlanFilter(plan);
                       setShowPremiumOnly(false);
+                      setCurrentPage(1);
                     }}
                     className={`rounded-lg border px-3 py-2 text-xs font-medium transition ${
                       planFilter === plan && !showPremiumOnly
@@ -523,15 +942,15 @@ const ExploreCoursesPage = () => {
           <span className="rounded-lg border border-white/[0.08] bg-[#0A0A0C] px-3 py-2 text-xs text-white/50">
             Showing{" "}
             <span className="font-semibold text-white">
-              {filteredCourses.length}
+              {firstCourseNumber}–{lastCourseNumber}
             </span>{" "}
-            courses
+            of {filteredCourses.length} courses
           </span>
         </div>
 
         {filteredCourses.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {filteredCourses.map((course) => {
+            {paginatedCourses.map((course) => {
               const isWishlisted = wishlist.includes(course.id);
 
               return (
@@ -689,6 +1108,66 @@ const ExploreCoursesPage = () => {
               Clear filters
             </button>
           </div>
+        )}
+
+        {totalPages > 1 && (
+          <nav
+            aria-label="Course pagination"
+            className="flex flex-col gap-4 border-t border-white/[0.07] pt-5 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p className="text-xs text-white/45">
+              Showing{" "}
+              <span className="font-medium text-white/80">
+                {firstCourseNumber}–{lastCourseNumber}
+              </span>{" "}
+              of{" "}
+              <span className="font-medium text-white/80">
+                {filteredCourses.length}
+              </span>{" "}
+              courses
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage <= 1}
+                aria-label="Previous page"
+                className="cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0A0A0C] text-white/70 transition hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => goToPage(page)}
+                    aria-label={`Go to page ${page}`}
+                    aria-current={currentPage === page ? "page" : undefined}
+                    className={`cursor-pointer inline-flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-medium transition ${
+                      currentPage === page
+                        ? "border-violet-400/50 bg-violet-500/20 text-violet-200 shadow-[0_4px_16px_rgba(124,92,255,0.12)]"
+                        : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+
+              <button
+                type="button"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                aria-label="Next page"
+                className="cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0A0A0C] text-white/70 transition hover:border-violet-400/40 hover:bg-violet-500/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </nav>
         )}
       </section>
 
