@@ -14,7 +14,7 @@ import {
   Code2,
   Database,
   Flame,
-  Heart,
+  Bookmark,
   Palette,
   Search,
   SlidersHorizontal,
@@ -34,6 +34,7 @@ type Category =
 
 type Course = {
   id: number;
+  uploadedAt: string;
   title: string;
   description: string;
   category: Exclude<Category, "All Courses">;
@@ -71,6 +72,31 @@ const parseReviewCount = (reviews: string) => {
   const value = reviews.toLowerCase().trim();
   if (value.endsWith("k")) return (Number.parseFloat(value) || 0) * 1000;
   return Number.parseFloat(value) || 0;
+};
+
+const formatRelativeUploadDate = (uploadedAt: string) => {
+  const uploadedTime = new Date(uploadedAt).getTime();
+  const elapsedSeconds = Math.max(
+    0,
+    Math.floor((Date.now() - uploadedTime) / 1000),
+  );
+
+  const units = [
+    { label: "year", seconds: 365 * 24 * 60 * 60 },
+    { label: "month", seconds: 30 * 24 * 60 * 60 },
+    { label: "week", seconds: 7 * 24 * 60 * 60 },
+    { label: "day", seconds: 24 * 60 * 60 },
+    { label: "hour", seconds: 60 * 60 },
+    { label: "minute", seconds: 60 },
+  ];
+
+  for (const unit of units) {
+    const amount = Math.floor(elapsedSeconds / unit.seconds);
+    if (amount >= 1)
+      return `${amount} ${unit.label}${amount === 1 ? "" : "s"} ago`;
+  }
+
+  return "Just now";
 };
 
 const categories: {
@@ -218,6 +244,7 @@ function FilterSelect<T extends string>({
 const courses: Course[] = [
   {
     id: 1,
+    uploadedAt: "2026-10-23T12:00:00Z",
     title: "Full Stack Web Development",
     description:
       "Build modern web applications with Python, Django, React, and PostgreSQL.",
@@ -240,6 +267,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    uploadedAt: "2026-07-25T12:00:00Z",
     title: "UI/UX Design Masterclass",
     description:
       "Master design systems, wireframes, and beautiful user experiences with Figma.",
@@ -262,6 +290,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    uploadedAt: "2025-10-25T12:00:00Z",
     title: "Python Programming",
     description:
       "Go from fundamentals to practical Python projects with hands-on exercises.",
@@ -284,6 +313,7 @@ const courses: Course[] = [
   },
   {
     id: 4,
+    uploadedAt: "2023-10-25T12:00:00Z",
     title: "Data Analytics with SQL",
     description:
       "Transform raw data into meaningful insights using SQL and analytics.",
@@ -306,6 +336,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    uploadedAt: "2026-10-11T12:00:00Z",
     title: "Modern JavaScript Essentials",
     description:
       "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
@@ -328,6 +359,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    uploadedAt: "2026-04-25T12:00:00Z",
     title: "Product & Business Strategy",
     description:
       "Understand product thinking, market research, and building successful products.",
@@ -350,6 +382,7 @@ const courses: Course[] = [
   },
   {
     id: 1,
+    uploadedAt: "2026-10-23T12:00:00Z",
     title: "Full Stack Web Development",
     description:
       "Build modern web applications with Python, Django, React, and PostgreSQL.",
@@ -372,6 +405,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    uploadedAt: "2026-07-25T12:00:00Z",
     title: "UI/UX Design Masterclass",
     description:
       "Master design systems, wireframes, and beautiful user experiences with Figma.",
@@ -394,6 +428,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    uploadedAt: "2025-10-25T12:00:00Z",
     title: "Python Programming",
     description:
       "Go from fundamentals to practical Python projects with hands-on exercises.",
@@ -416,6 +451,7 @@ const courses: Course[] = [
   },
   {
     id: 4,
+    uploadedAt: "2023-10-25T12:00:00Z",
     title: "Data Analytics with SQL",
     description:
       "Transform raw data into meaningful insights using SQL and analytics.",
@@ -438,6 +474,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    uploadedAt: "2026-10-11T12:00:00Z",
     title: "Modern JavaScript Essentials",
     description:
       "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
@@ -460,6 +497,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    uploadedAt: "2026-04-25T12:00:00Z",
     title: "Product & Business Strategy",
     description:
       "Understand product thinking, market research, and building successful products.",
@@ -482,6 +520,7 @@ const courses: Course[] = [
   },
   {
     id: 1,
+    uploadedAt: "2026-10-23T12:00:00Z",
     title: "Full Stack Web Development",
     description:
       "Build modern web applications with Python, Django, React, and PostgreSQL.",
@@ -504,6 +543,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    uploadedAt: "2026-07-25T12:00:00Z",
     title: "UI/UX Design Masterclass",
     description:
       "Master design systems, wireframes, and beautiful user experiences with Figma.",
@@ -526,6 +566,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    uploadedAt: "2025-10-25T12:00:00Z",
     title: "Python Programming",
     description:
       "Go from fundamentals to practical Python projects with hands-on exercises.",
@@ -548,6 +589,7 @@ const courses: Course[] = [
   },
   {
     id: 4,
+    uploadedAt: "2023-10-25T12:00:00Z",
     title: "Data Analytics with SQL",
     description:
       "Transform raw data into meaningful insights using SQL and analytics.",
@@ -570,6 +612,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    uploadedAt: "2026-10-11T12:00:00Z",
     title: "Modern JavaScript Essentials",
     description:
       "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
@@ -592,6 +635,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    uploadedAt: "2026-04-25T12:00:00Z",
     title: "Product & Business Strategy",
     description:
       "Understand product thinking, market research, and building successful products.",
@@ -614,6 +658,7 @@ const courses: Course[] = [
   },
   {
     id: 1,
+    uploadedAt: "2026-10-23T12:00:00Z",
     title: "Full Stack Web Development",
     description:
       "Build modern web applications with Python, Django, React, and PostgreSQL.",
@@ -636,6 +681,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
+    uploadedAt: "2026-07-25T12:00:00Z",
     title: "UI/UX Design Masterclass",
     description:
       "Master design systems, wireframes, and beautiful user experiences with Figma.",
@@ -658,6 +704,7 @@ const courses: Course[] = [
   },
   {
     id: 3,
+    uploadedAt: "2025-10-25T12:00:00Z",
     title: "Python Programming",
     description:
       "Go from fundamentals to practical Python projects with hands-on exercises.",
@@ -680,6 +727,7 @@ const courses: Course[] = [
   },
   {
     id: 4,
+    uploadedAt: "2023-10-25T12:00:00Z",
     title: "Data Analytics with SQL",
     description:
       "Transform raw data into meaningful insights using SQL and analytics.",
@@ -702,6 +750,7 @@ const courses: Course[] = [
   },
   {
     id: 5,
+    uploadedAt: "2026-10-11T12:00:00Z",
     title: "Modern JavaScript Essentials",
     description:
       "Learn modern JavaScript, asynchronous programming, and clean coding practices.",
@@ -724,6 +773,7 @@ const courses: Course[] = [
   },
   {
     id: 6,
+    uploadedAt: "2026-04-25T12:00:00Z",
     title: "Product & Business Strategy",
     description:
       "Understand product thinking, market research, and building successful products.",
@@ -772,7 +822,7 @@ const ExploreCoursesPage = () => {
     "plan" | "level" | "category" | "rating" | "duration" | null
   >(null);
 
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [saved, setSaved] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -926,8 +976,8 @@ const ExploreCoursesPage = () => {
     filteredCourses.length,
   );
 
-  const toggleWishlist = (courseId: number) => {
-    setWishlist((current) =>
+  const toggleSaved = (courseId: number) => {
+    setSaved((current) =>
       current.includes(courseId)
         ? current.filter((id) => id !== courseId)
         : [...current, courseId],
@@ -1559,25 +1609,25 @@ const ExploreCoursesPage = () => {
         {filteredCourses.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {paginatedCourses.map((course, courseIndex) => {
-              const isWishlisted = wishlist.includes(course.id);
+              const isSaved = saved.includes(course.id);
 
               return (
                 <article
                   key={`${course.id}-${startIndex + courseIndex}`}
-                  className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0C] transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5CF6]/40 hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
+                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0C] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:-translate-y-1.5 hover:border-[#8B5CF6]/45 hover:shadow-[0_24px_60px_-12px_rgba(124,92,255,0.25),0_18px_45px_rgba(0,0,0,0.45)]"
                 >
                   {/* Course image */}
-                  <div className="relative h-48 overflow-hidden bg-[#14101D]">
-                    <div
-                      className={`absolute inset-0 z-10 bg-gradient-to-br ${course.accent} pointer-events-none`}
-                    />
+                  <div className="relative -mb-px h-48 overflow-hidden bg-[#14101D]">
                     <img
                       src={course.image}
                       alt={course.title}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="block h-full w-full object-cover"
                     />
-                    <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
+                    <div
+                      className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br ${course.accent} opacity-80 transition-opacity duration-500 group-hover:opacity-100`}
+                    />
+                    <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
 
                     <div className="absolute left-3 top-3 z-20">
                       {course.plan === "Premium" ? (
@@ -1595,22 +1645,22 @@ const ExploreCoursesPage = () => {
 
                     <button
                       type="button"
-                      onClick={() => toggleWishlist(course.id)}
+                      onClick={() => toggleSaved(course.id)}
                       aria-label={
-                        isWishlisted
-                          ? `Remove ${course.title} from wishlist`
-                          : `Add ${course.title} to wishlist`
+                        isSaved
+                          ? `Remove ${course.title} from saved`
+                          : `Add ${course.title} to saved`
                       }
-                      aria-pressed={isWishlisted}
-                      className={`absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-md transition-all ${
-                        isWishlisted
+                      aria-pressed={isSaved}
+                      className={`absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ${
+                        isSaved
                           ? "border-violet-400/50 bg-violet-500/25 text-violet-200"
                           : "border-white/15 bg-black/35 text-white/80 hover:border-violet-400/50 hover:bg-violet-500/20 hover:text-violet-200"
                       }`}
                     >
-                      <Heart
+                      <Bookmark
                         className="h-[17px] w-[17px]"
-                        fill={isWishlisted ? "currentColor" : "none"}
+                        fill={isSaved ? "currentColor" : "none"}
                       />
                     </button>
 
@@ -1636,6 +1686,10 @@ const ExploreCoursesPage = () => {
                       </span>
                     </div>
 
+                    <p className="mb-2 text-[11px] text-white/35">
+                      {formatRelativeUploadDate(course.uploadedAt)}
+                    </p>
+
                     <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 text-white transition-colors group-hover:text-violet-200">
                       {course.title}
                     </h3>
@@ -1648,7 +1702,7 @@ const ExploreCoursesPage = () => {
                       {course.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-md border border-white/[0.07] bg-white/[0.025] px-2 py-1 text-[10px] text-white/55"
+                          className="rounded-md border border-white/[0.07] bg-white/[0.025] px-2 py-1 text-[10px] text-white/55 transition-colors group-hover:border-violet-400/20 group-hover:bg-violet-500/[0.06] group-hover:text-white/70"
                         >
                           {skill}
                         </span>
@@ -1687,7 +1741,7 @@ const ExploreCoursesPage = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedCourse(course)}
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
                       >
                         View course
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1711,7 +1765,7 @@ const ExploreCoursesPage = () => {
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-5 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-violet-500"
+              className="mt-5 cursor-pointer rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-violet-500"
             >
               Clear filters
             </button>
@@ -1926,7 +1980,7 @@ const ExploreCoursesPage = () => {
               <button
                 type="button"
                 onClick={() => setSelectedCourse(null)}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
+                className="mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
               >
                 Close preview
                 <ArrowRight className="h-4 w-4" />
