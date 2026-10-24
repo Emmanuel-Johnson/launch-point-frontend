@@ -664,21 +664,27 @@ const ExploreCoursesPage = () => {
       {/* Page heading */}
       <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
         <div>
-          <div className="mb-3 flex items-center gap-2 text-xs font-medium text-[#A78BFA]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#8B5CF6]" />
-            YOUR NEXT CHAPTER STARTS HERE
+          <div className="mb-4 flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.2em] text-[#A78BFA]">
+            <span className="h-1 w-1 rounded-full bg-[#8B5CF6] shadow-[0_0_6px_1px_rgba(139,92,246,0.7)]" />
+            Your next chapter starts here
           </div>
 
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
             Explore{" "}
             <span className="bg-gradient-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-white/50 sm:text-base">
-            Discover new skills, learn from industry experts, and build the
-            future you want.
+          <p className="mt-4 max-w-xl text-sm leading-7 text-white/50 sm:text-[15px]">
+            Discover new skills, learn from industry experts, and build the{" "}
+            <span
+              className="italic text-white/70"
+              style={{ fontFamily: '"Fraunces", serif' }}
+            >
+              future you want
+            </span>
+            .
           </p>
         </div>
       </section>
