@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ArrowDownAZ,
   ArrowDownUp,
   ArrowRight,
+  ArrowUpAZ,
   BarChart3,
   BookOpen,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
   Code2,
   Database,
+  Flame,
   Heart,
   Palette,
   Search,
@@ -45,6 +49,27 @@ type Course = {
   plan: "Premium" | "Free";
   accent: string;
   skills: string[];
+};
+
+type CourseSortOption =
+  | "Latest"
+  | "Popularity"
+  | "Average ratings"
+  | "aA – zZ"
+  | "zZ – aA";
+
+const sortOptions: { label: CourseSortOption; description: string }[] = [
+  { label: "Latest", description: "Newest courses first" },
+  { label: "Popularity", description: "Most enrolled first" },
+  { label: "Average ratings", description: "Highest rated first" },
+  { label: "aA – zZ", description: "Alphabetical order" },
+  { label: "zZ – aA", description: "Reverse alphabetical order" },
+];
+
+const parseReviewCount = (reviews: string) => {
+  const value = reviews.toLowerCase().trim();
+  if (value.endsWith("k")) return (Number.parseFloat(value) || 0) * 1000;
+  return Number.parseFloat(value) || 0;
 };
 
 const categories: {
@@ -569,7 +594,8 @@ const ExploreCoursesPage = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<Category>("All Courses");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("Latest");
+  const [sortBy, setSortBy] = useState<CourseSortOption>("Latest");
+  const [sortOpen, setSortOpen] = useState(false);
   const [planFilter, setPlanFilter] = useState<"All" | "Premium" | "Free">(
     "All",
   );
@@ -643,14 +669,26 @@ const ExploreCoursesPage = () => {
       return matchesCategory && matchesSearch && matchesPlan && matchesPremium;
     });
 
-    if (sortBy === "Top Rated") {
-      result = [...result].sort((a, b) => b.rating - a.rating);
-    } else if (sortBy === "A–Z") {
-      result = [...result].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "Shortest") {
-      result = [...result].sort(
-        (a, b) => Number.parseInt(a.duration) - Number.parseInt(b.duration),
-      );
+    switch (sortBy) {
+      case "Latest":
+        // The static course list has no createdAt field, so newest means
+        // the courses placed latest in the source list appear first.
+        result = [...result].reverse();
+        break;
+      case "Popularity":
+        result = [...result].sort(
+          (a, b) => parseReviewCount(b.reviews) - parseReviewCount(a.reviews),
+        );
+        break;
+      case "Average ratings":
+        result = [...result].sort((a, b) => b.rating - a.rating);
+        break;
+      case "aA – zZ":
+        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "zZ – aA":
+        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
+        break;
     }
 
     return result;
@@ -686,6 +724,7 @@ const ExploreCoursesPage = () => {
     setActiveCategory("All Courses");
     setSearchQuery("");
     setSortBy("Latest");
+    setSortOpen(false);
     setPlanFilter("All");
     setShowPremiumOnly(false);
   };
@@ -752,10 +791,13 @@ const ExploreCoursesPage = () => {
               YOUR LEARNING JOURNEY STARTS HERE
             </div>
 
-            <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-[42px]">
+            <h2 className="max-w-xl text-2xl font-normal italic leading-[1.25] tracking-[-0.035em] sm:text-3xl lg:text-[34px]">
               One new skill can
               <br />
-              <span className="bg-gradient-to-r from-white via-[#DDD6FE] to-[#A78BFA] bg-clip-text text-transparent">
+              <span
+                className="font-medium bg-gradient-to-r from-white via-[#DDD6FE] to-[#A78BFA] bg-clip-text text-transparent"
+                style={{ fontFamily: '"Fraunces", serif' }}
+              >
                 open new possibilities.
               </span>
             </h2>
@@ -847,41 +889,139 @@ const ExploreCoursesPage = () => {
 
           {/* Sort and filter */}
           <div className="grid grid-cols-2 gap-2 lg:flex lg:shrink-0">
-            {/* Sort by */}
-            <label className="cursor-pointer flex h-16 min-w-0 items-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 transition hover:border-violet-400/30 focus-within:border-violet-400/40 lg:w-44">
-              <ArrowDownUp className="h-4 w-4 shrink-0 text-white/40" />
-
-              <span className="shrink-0 text-xs text-white/40">Sort by:</span>
-
-              <select
-                value={sortBy}
-                onChange={(event) => {
-                  setSortBy(event.target.value);
-                  setCurrentPage(1);
-                }}
+            {/* Custom sort dropdown */}
+            <div className="relative min-w-0 lg:w-52">
+              <button
+                type="button"
+                onClick={() => setSortOpen((open) => !open)}
                 aria-label="Sort courses"
-                className="min-w-0 flex-1 cursor-pointer appearance-none rounded-lg border-0 bg-transparent py-2 text-xs font-medium text-white/80 outline-none focus:ring-0"
+                aria-expanded={sortOpen}
+                aria-haspopup="listbox"
+                className={`flex h-16 w-full cursor-pointer items-center gap-3 rounded-2xl border bg-[#0B0B0F] px-4 text-left transition-all duration-200 ${
+                  sortOpen
+                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-lg shadow-violet-950/10"
+                    : "border-white/[0.08] hover:border-violet-400/30"
+                }`}
               >
-                <option value="Latest" className="bg-[#111111] text-white">
-                  Latest
-                </option>
-                <option value="Top Rated" className="bg-[#111111] text-white">
-                  Top Rated
-                </option>
-                <option value="A–Z" className="bg-[#111111] text-white">
-                  A–Z
-                </option>
-                <option value="Shortest" className="bg-[#111111] text-white">
-                  Shortest
-                </option>
-              </select>
-            </label>
+                <ArrowDownUp className="h-4 w-4 shrink-0 text-violet-300" />
 
-            {/* Filter - UI only */}
+                <div className="min-w-0 flex-1">
+                  <span className="block text-[10px] text-white/40">
+                    Sort courses by
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs font-medium text-white/85">
+                    {sortBy}
+                  </span>
+                </div>
+
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${
+                    sortOpen ? "rotate-180 text-violet-300" : ""
+                  }`}
+                />
+              </button>
+
+              {sortOpen && (
+                <>
+                  {/* Close the dropdown when clicking outside */}
+                  <button
+                    type="button"
+                    aria-label="Close sort menu"
+                    onClick={() => setSortOpen(false)}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+
+                  <div
+                    role="listbox"
+                    aria-label="Sort courses by"
+                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(290px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-violet-400/20 bg-[#111016] p-2 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04] animate-in fade-in slide-in-from-top-2 duration-150"
+                  >
+                    <div className="px-3 pb-2 pt-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300/80">
+                        Advanced sorting
+                      </p>
+                      <p className="mt-1 text-xs text-white/35">
+                        Find the right course for you
+                      </p>
+                    </div>
+
+                    <div className="mb-1 h-px bg-white/[0.06]" />
+
+                    {sortOptions.map((option) => {
+                      const isActive = sortBy === option.label;
+
+                      return (
+                        <button
+                          key={option.label}
+                          type="button"
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => {
+                            setSortBy(option.label);
+                            setCurrentPage(1);
+                            setSortOpen(false);
+                          }}
+                          className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                            isActive
+                              ? "bg-violet-500/15 text-violet-200"
+                              : "text-white/70 hover:bg-white/[0.04] hover:text-white"
+                          }`}
+                        >
+                          <span
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
+                              isActive
+                                ? "border-violet-400/20 bg-violet-500/15 text-violet-300"
+                                : "border-white/[0.06] bg-white/[0.025] text-white/40"
+                            }`}
+                          >
+                            {option.label === "Latest" && (
+                              <Sparkles className="h-4 w-4" />
+                            )}
+                            {option.label === "Popularity" && (
+                              <Flame className="h-4 w-4" />
+                            )}
+                            {option.label === "Average ratings" && (
+                              <Star className="h-4 w-4" />
+                            )}
+                            {option.label === "aA – zZ" && (
+                              <ArrowDownAZ className="h-4 w-4" />
+                            )}
+                            {option.label === "zZ – aA" && (
+                              <ArrowUpAZ className="h-4 w-4" />
+                            )}
+                          </span>
+
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-xs font-medium">
+                              {option.label}
+                            </span>
+                            <span
+                              className={`mt-0.5 block text-[10px] ${
+                                isActive
+                                  ? "text-violet-200/55"
+                                  : "text-white/35"
+                              }`}
+                            >
+                              {option.description}
+                            </span>
+                          </span>
+
+                          {isActive && (
+                            <Check className="h-4 w-4 shrink-0 text-violet-300" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Filter button */}
             <button
               type="button"
               aria-label="Filter courses"
-              className="cursor-pointer flex h-16 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 text-xs font-medium text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40 lg:w-44"
+              className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 text-xs font-medium text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40 lg:w-44"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filter
@@ -1223,7 +1363,7 @@ const ExploreCoursesPage = () => {
         )}
       </section>
 
-      <section className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-r from-[#120C22] via-[#100D19] to-[#0D0D12] p-6 sm:p-8">
+      {/* <section className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-r from-[#120C22] via-[#100D19] to-[#0D0D12] p-6 sm:p-8">
         <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-violet-600/10 blur-[70px]" />
 
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -1259,7 +1399,7 @@ const ExploreCoursesPage = () => {
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* Course preview modal — UI only */}
       {selectedCourse && (
