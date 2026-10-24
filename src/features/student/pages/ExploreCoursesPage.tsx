@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Clock3,
   Code2,
+  Database,
   Heart,
   Palette,
   Search,
@@ -54,10 +55,7 @@ const categories: {
   { name: "Development", icon: Code2 },
   { name: "Design", icon: Palette },
   { name: "Business", icon: BarChart3 },
-  { name: "Business", icon: BarChart3 },
-  { name: "All Courses", icon: Sparkles },
-  { name: "Development", icon: Code2 },
-  { name: "Business", icon: BarChart3 },
+  { name: "Data Science", icon: Database },
 ];
 
 const courses: Course[] = [
