@@ -47,6 +47,7 @@ type Course = {
   duration: string;
   level: "Beginner" | "Intermediate" | "Advanced";
   plan: "Premium" | "Free";
+  language: "English" | "Malayalam";
   accent: string;
   skills: string[];
 };
@@ -83,6 +84,137 @@ const categories: {
   { name: "Data Science", icon: Database },
 ];
 
+// Options for the custom, app-styled filter dropdowns below. Values match the
+// exact union types used by the filter state, so behavior is unchanged.
+type PlanFilter = "All" | "Premium" | "Free";
+type LevelFilter = "All" | "Beginner" | "Intermediate" | "Advanced";
+type RatingFilter = "All" | "1to2" | "2to3" | "3to4" | "4to4.5" | "4.5to5";
+type DurationFilter = "All" | "under2" | "2to5" | "5to10" | "10plus";
+
+const planFilterOptions: { value: PlanFilter; label: string }[] = [
+  { value: "All", label: "All plans" },
+  { value: "Premium", label: "Premium" },
+  { value: "Free", label: "Free" },
+];
+
+const levelFilterOptions: { value: LevelFilter; label: string }[] = [
+  { value: "All", label: "All levels" },
+  { value: "Beginner", label: "Beginner" },
+  { value: "Intermediate", label: "Intermediate" },
+  { value: "Advanced", label: "Advanced" },
+];
+
+const categoryFilterOptions: { value: Category; label: string }[] = [
+  { value: "All Courses", label: "All categories" },
+  { value: "Development", label: "Development" },
+  { value: "Design", label: "Design" },
+  { value: "Business", label: "Business" },
+  { value: "Data Science", label: "Data Science" },
+];
+
+const ratingFilterOptions: { value: RatingFilter; label: string }[] = [
+  { value: "All", label: "Any rating" },
+  { value: "1to2", label: "1.0 – 2.0 stars" },
+  { value: "2to3", label: "2.0 – 3.0 stars" },
+  { value: "3to4", label: "3.0 – 4.0 stars" },
+  { value: "4to4.5", label: "4.0 – 4.5 stars" },
+  { value: "4.5to5", label: "4.5 – 5.0 stars" },
+];
+
+const durationFilterOptions: { value: DurationFilter; label: string }[] = [
+  { value: "All", label: "Any duration" },
+  { value: "under2", label: "Under 2 hours" },
+  { value: "2to5", label: "2–5 hours" },
+  { value: "5to10", label: "5–10 hours" },
+  { value: "10plus", label: "10+ hours" },
+];
+
+// Custom select built to match the app's UI (same violet/dark tokens as the
+// sort dropdown). Options expand inline so they are never clipped by the
+// filter panel's own vertical scroll container.
+type FilterSelectProps<T extends string> = {
+  label: string;
+  value: T;
+  options: { value: T; label: string }[];
+  isOpen: boolean;
+  onToggle: () => void;
+  onChange: (value: T) => void;
+};
+
+function FilterSelect<T extends string>({
+  label,
+  value,
+  options,
+  isOpen,
+  onToggle,
+  onChange,
+}: FilterSelectProps<T>) {
+  const selected = options.find((option) => option.value === value);
+
+  return (
+    <div className="group mb-2 rounded-xl border border-transparent px-3 py-2 transition-colors hover:border-white/[0.06] hover:bg-white/[0.025]">
+      <div className="flex items-center justify-between gap-4">
+        <span className="w-[40%] shrink-0 text-xs font-medium text-white/65">
+          {label}
+        </span>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          className={`flex h-10 w-[56%] max-w-[205px] cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 text-xs font-medium text-white shadow-inner shadow-black/20 outline-none transition duration-200 ${
+            isOpen
+              ? "border-violet-400/60 bg-[#13101A] ring-2 ring-violet-500/15"
+              : "border-white/[0.10] bg-[#0B0B0F] hover:border-violet-300/25 hover:bg-[#13101A]"
+          }`}
+        >
+          <span className="truncate text-left">
+            {selected ? selected.label : label}
+          </span>
+          <ChevronDown
+            className={`h-3.5 w-3.5 shrink-0 text-white/40 transition-transform duration-200 ${
+              isOpen ? "rotate-180 text-violet-300" : ""
+            }`}
+          />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="mt-2 grid gap-1 overflow-hidden rounded-xl border border-violet-400/20 bg-[#0B0A10] p-1.5 shadow-inner shadow-black/40 ring-1 ring-white/[0.04] animate-in fade-in slide-in-from-top-2 duration-150"
+        >
+          {options.map((option) => {
+            const isActive = option.value === value;
+
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={isActive}
+                onClick={() => onChange(option.value)}
+                className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors ${
+                  isActive
+                    ? "bg-violet-500/15 font-medium text-violet-200"
+                    : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+                }`}
+              >
+                <span className="truncate">{option.label}</span>
+                {isActive && (
+                  <Check className="h-3.5 w-3.5 shrink-0 text-violet-300" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const courses: Course[] = [
   {
     id: 1,
@@ -102,6 +234,7 @@ const courses: Course[] = [
     duration: "32 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-violet-500/25 via-purple-500/10 to-transparent",
     skills: ["React", "Django", "PostgreSQL"],
   },
@@ -123,6 +256,7 @@ const courses: Course[] = [
     duration: "18 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
     skills: ["Figma", "Prototyping", "Design"],
   },
@@ -144,6 +278,7 @@ const courses: Course[] = [
     duration: "24 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-sky-500/25 via-blue-500/10 to-transparent",
     skills: ["Python", "OOP", "Projects"],
   },
@@ -165,6 +300,7 @@ const courses: Course[] = [
     duration: "21 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
     skills: ["SQL", "Analytics", "Reports"],
   },
@@ -186,6 +322,7 @@ const courses: Course[] = [
     duration: "16 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-amber-500/20 via-orange-500/10 to-transparent",
     skills: ["JavaScript", "ES2026", "Async"],
   },
@@ -207,6 +344,7 @@ const courses: Course[] = [
     duration: "14 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
     skills: ["Strategy", "Research", "Planning"],
   },
@@ -228,6 +366,7 @@ const courses: Course[] = [
     duration: "32 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-violet-500/25 via-purple-500/10 to-transparent",
     skills: ["React", "Django", "PostgreSQL"],
   },
@@ -249,6 +388,7 @@ const courses: Course[] = [
     duration: "18 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
     skills: ["Figma", "Prototyping", "Design"],
   },
@@ -270,6 +410,7 @@ const courses: Course[] = [
     duration: "24 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-sky-500/25 via-blue-500/10 to-transparent",
     skills: ["Python", "OOP", "Projects"],
   },
@@ -291,6 +432,7 @@ const courses: Course[] = [
     duration: "21 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
     skills: ["SQL", "Analytics", "Reports"],
   },
@@ -312,6 +454,7 @@ const courses: Course[] = [
     duration: "16 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-amber-500/20 via-orange-500/10 to-transparent",
     skills: ["JavaScript", "ES2026", "Async"],
   },
@@ -333,6 +476,7 @@ const courses: Course[] = [
     duration: "14 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
     skills: ["Strategy", "Research", "Planning"],
   },
@@ -354,6 +498,7 @@ const courses: Course[] = [
     duration: "32 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-violet-500/25 via-purple-500/10 to-transparent",
     skills: ["React", "Django", "PostgreSQL"],
   },
@@ -375,6 +520,7 @@ const courses: Course[] = [
     duration: "18 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
     skills: ["Figma", "Prototyping", "Design"],
   },
@@ -396,6 +542,7 @@ const courses: Course[] = [
     duration: "24 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-sky-500/25 via-blue-500/10 to-transparent",
     skills: ["Python", "OOP", "Projects"],
   },
@@ -417,6 +564,7 @@ const courses: Course[] = [
     duration: "21 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
     skills: ["SQL", "Analytics", "Reports"],
   },
@@ -438,6 +586,7 @@ const courses: Course[] = [
     duration: "16 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-amber-500/20 via-orange-500/10 to-transparent",
     skills: ["JavaScript", "ES2026", "Async"],
   },
@@ -459,6 +608,7 @@ const courses: Course[] = [
     duration: "14 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
     skills: ["Strategy", "Research", "Planning"],
   },
@@ -480,6 +630,7 @@ const courses: Course[] = [
     duration: "32 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-violet-500/25 via-purple-500/10 to-transparent",
     skills: ["React", "Django", "PostgreSQL"],
   },
@@ -501,6 +652,7 @@ const courses: Course[] = [
     duration: "18 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-fuchsia-500/25 via-violet-500/10 to-transparent",
     skills: ["Figma", "Prototyping", "Design"],
   },
@@ -522,6 +674,7 @@ const courses: Course[] = [
     duration: "24 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-sky-500/25 via-blue-500/10 to-transparent",
     skills: ["Python", "OOP", "Projects"],
   },
@@ -543,6 +696,7 @@ const courses: Course[] = [
     duration: "21 hours",
     level: "Intermediate",
     plan: "Premium",
+    language: "English",
     accent: "from-indigo-500/25 via-violet-500/10 to-transparent",
     skills: ["SQL", "Analytics", "Reports"],
   },
@@ -564,6 +718,7 @@ const courses: Course[] = [
     duration: "16 hours",
     level: "Beginner",
     plan: "Free",
+    language: "English",
     accent: "from-amber-500/20 via-orange-500/10 to-transparent",
     skills: ["JavaScript", "ES2026", "Async"],
   },
@@ -585,6 +740,7 @@ const courses: Course[] = [
     duration: "14 hours",
     level: "Beginner",
     plan: "Premium",
+    language: "English",
     accent: "from-emerald-500/20 via-teal-500/10 to-transparent",
     skills: ["Strategy", "Research", "Planning"],
   },
@@ -596,9 +752,25 @@ const ExploreCoursesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<CourseSortOption>("Latest");
   const [sortOpen, setSortOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [planFilter, setPlanFilter] = useState<"All" | "Premium" | "Free">(
     "All",
   );
+  const [levelFilter, setLevelFilter] = useState<
+    "All" | "Beginner" | "Intermediate" | "Advanced"
+  >("All");
+  const [categoryFilter, setCategoryFilter] = useState<Category>("All Courses");
+  const [ratingFilter, setRatingFilter] = useState<
+    "All" | "1to2" | "2to3" | "3to4" | "4to4.5" | "4.5to5"
+  >("All");
+  const [durationFilter, setDurationFilter] = useState<
+    "All" | "under2" | "2to5" | "5to10" | "10plus"
+  >("All");
+
+  // Tracks which custom filter dropdown is expanded (one at a time).
+  const [openFilterKey, setOpenFilterKey] = useState<
+    "plan" | "level" | "category" | "rating" | "duration" | null
+  >(null);
 
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -663,10 +835,43 @@ const ExploreCoursesPage = () => {
         course.skills.some((skill) => skill.toLowerCase().includes(query));
 
       const matchesPlan = planFilter === "All" || course.plan === planFilter;
-
       const matchesPremium = !showPremiumOnly || course.plan === "Premium";
-
-      return matchesCategory && matchesSearch && matchesPlan && matchesPremium;
+      const matchesLevel =
+        levelFilter === "All" || course.level === levelFilter;
+      const matchesFilterCategory =
+        categoryFilter === "All Courses" || course.category === categoryFilter;
+      const matchesRating =
+        ratingFilter === "All" ||
+        (ratingFilter === "1to2" && course.rating >= 1 && course.rating < 2) ||
+        (ratingFilter === "2to3" && course.rating >= 2 && course.rating < 3) ||
+        (ratingFilter === "3to4" && course.rating >= 3 && course.rating < 4) ||
+        (ratingFilter === "4to4.5" &&
+          course.rating >= 4 &&
+          course.rating < 4.5) ||
+        (ratingFilter === "4.5to5" &&
+          course.rating >= 4.5 &&
+          course.rating <= 5);
+      const durationHours = Number.parseFloat(course.duration);
+      const matchesDuration =
+        durationFilter === "All" ||
+        (durationFilter === "under2" && durationHours < 2) ||
+        (durationFilter === "2to5" &&
+          durationHours >= 2 &&
+          durationHours < 5) ||
+        (durationFilter === "5to10" &&
+          durationHours >= 5 &&
+          durationHours < 10) ||
+        (durationFilter === "10plus" && durationHours >= 10);
+      return (
+        matchesCategory &&
+        matchesSearch &&
+        matchesPlan &&
+        matchesPremium &&
+        matchesLevel &&
+        matchesFilterCategory &&
+        matchesRating &&
+        matchesDuration
+      );
     });
 
     switch (sortBy) {
@@ -692,7 +897,17 @@ const ExploreCoursesPage = () => {
     }
 
     return result;
-  }, [activeCategory, searchQuery, sortBy, planFilter, showPremiumOnly]);
+  }, [
+    activeCategory,
+    searchQuery,
+    sortBy,
+    planFilter,
+    showPremiumOnly,
+    levelFilter,
+    categoryFilter,
+    ratingFilter,
+    durationFilter,
+  ]);
 
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
@@ -725,8 +940,14 @@ const ExploreCoursesPage = () => {
     setSearchQuery("");
     setSortBy("Latest");
     setSortOpen(false);
+    setFilterOpen(false);
     setPlanFilter("All");
+    setLevelFilter("All");
+    setCategoryFilter("All Courses");
+    setRatingFilter("All");
+    setDurationFilter("All");
     setShowPremiumOnly(false);
+    setOpenFilterKey(null);
   };
 
   // Keep every pagination control using the same page-change and scroll behavior.
@@ -893,7 +1114,10 @@ const ExploreCoursesPage = () => {
             <div className="relative min-w-0 lg:w-52">
               <button
                 type="button"
-                onClick={() => setSortOpen((open) => !open)}
+                onClick={() => {
+                  setSortOpen((open) => !open);
+                  setFilterOpen(false);
+                }}
                 aria-label="Sort courses"
                 aria-expanded={sortOpen}
                 aria-haspopup="listbox"
@@ -1017,15 +1241,207 @@ const ExploreCoursesPage = () => {
               )}
             </div>
 
-            {/* Filter button */}
-            <button
-              type="button"
-              aria-label="Filter courses"
-              className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 text-xs font-medium text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/40 lg:w-44"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Filter
-            </button>
+            {/* Custom filter dropdown */}
+            <div className="relative min-w-0 lg:w-44">
+              <button
+                type="button"
+                aria-label="Filter courses"
+                aria-expanded={filterOpen}
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setFilterOpen((open) => !open);
+                  setSortOpen(false);
+                  setOpenFilterKey(null);
+                }}
+                className={`flex h-16 w-full cursor-pointer items-center gap-3 rounded-2xl border bg-[#0B0B0F] px-4 text-left transition-all duration-200 ${
+                  filterOpen
+                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-lg shadow-violet-950/10"
+                    : "border-white/[0.08] hover:border-violet-400/30"
+                }`}
+              >
+                <SlidersHorizontal className="h-4 w-4 shrink-0 text-violet-300" />
+                <div className="min-w-0 flex-1">
+                  <span className="block text-[10px] text-white/40">
+                    Filter courses
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs font-medium text-white/85">
+                    {[
+                      planFilter !== "All",
+                      levelFilter !== "All",
+                      categoryFilter !== "All Courses",
+                      ratingFilter !== "All",
+                      durationFilter !== "All",
+                    ].filter(Boolean).length > 0
+                      ? `${
+                          [
+                            planFilter !== "All",
+                            levelFilter !== "All",
+                            categoryFilter !== "All Courses",
+                            ratingFilter !== "All",
+                            durationFilter !== "All",
+                          ].filter(Boolean).length
+                        } selected`
+                      : "All filters"}
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${
+                    filterOpen ? "rotate-180 text-violet-300" : ""
+                  }`}
+                />
+              </button>
+
+              {filterOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Close filter menu"
+                    onClick={() => {
+                      setFilterOpen(false);
+                      setOpenFilterKey(null);
+                    }}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+                  <div
+                    role="dialog"
+                    aria-label="Filter courses by plan, level, category, rating, and duration"
+                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(400px,calc(100vw-2rem))] max-h-[min(75vh,680px)] overflow-y-auto rounded-3xl border border-violet-400/20 bg-[#100E16] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.05] animate-in fade-in slide-in-from-top-2 duration-150"
+                  >
+                    <div className="relative mb-4 overflow-hidden rounded-2xl border border-violet-300/10 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.025] to-transparent px-4 py-4">
+                      <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-violet-500/15 blur-2xl" />
+                      <div className="relative flex items-start gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-300/15 bg-violet-500/10 text-violet-200 shadow-inner shadow-violet-300/5">
+                          <SlidersHorizontal className="h-4 w-4" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold tracking-tight text-white">
+                              Refine your search
+                            </p>
+                            <span className="rounded-full border border-violet-300/15 bg-violet-400/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-200">
+                              Filters
+                            </span>
+                          </div>
+                          <p className="mt-1 text-[11px] leading-5 text-white/45">
+                            Narrow results by plan, level, category, rating, and
+                            duration.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <FilterSelect
+                      label="Plan"
+                      value={planFilter}
+                      options={planFilterOptions}
+                      isOpen={openFilterKey === "plan"}
+                      onToggle={() =>
+                        setOpenFilterKey((key) =>
+                          key === "plan" ? null : "plan",
+                        )
+                      }
+                      onChange={(value) => {
+                        setPlanFilter(value);
+                        setCurrentPage(1);
+                        setOpenFilterKey(null);
+                      }}
+                    />
+
+                    <FilterSelect
+                      label="Level"
+                      value={levelFilter}
+                      options={levelFilterOptions}
+                      isOpen={openFilterKey === "level"}
+                      onToggle={() =>
+                        setOpenFilterKey((key) =>
+                          key === "level" ? null : "level",
+                        )
+                      }
+                      onChange={(value) => {
+                        setLevelFilter(value);
+                        setCurrentPage(1);
+                        setOpenFilterKey(null);
+                      }}
+                    />
+
+                    <FilterSelect
+                      label="Category"
+                      value={categoryFilter}
+                      options={categoryFilterOptions}
+                      isOpen={openFilterKey === "category"}
+                      onToggle={() =>
+                        setOpenFilterKey((key) =>
+                          key === "category" ? null : "category",
+                        )
+                      }
+                      onChange={(value) => {
+                        setCategoryFilter(value);
+                        setCurrentPage(1);
+                        setOpenFilterKey(null);
+                      }}
+                    />
+
+                    <FilterSelect
+                      label="Rating"
+                      value={ratingFilter}
+                      options={ratingFilterOptions}
+                      isOpen={openFilterKey === "rating"}
+                      onToggle={() =>
+                        setOpenFilterKey((key) =>
+                          key === "rating" ? null : "rating",
+                        )
+                      }
+                      onChange={(value) => {
+                        setRatingFilter(value);
+                        setCurrentPage(1);
+                        setOpenFilterKey(null);
+                      }}
+                    />
+
+                    <FilterSelect
+                      label="Duration"
+                      value={durationFilter}
+                      options={durationFilterOptions}
+                      isOpen={openFilterKey === "duration"}
+                      onToggle={() =>
+                        setOpenFilterKey((key) =>
+                          key === "duration" ? null : "duration",
+                        )
+                      }
+                      onChange={(value) => {
+                        setDurationFilter(value);
+                        setCurrentPage(1);
+                        setOpenFilterKey(null);
+                      }}
+                    />
+
+                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
+                      <p className="text-xs text-white/40">
+                        {filteredCourses.length} matching course
+                        {filteredCourses.length === 1 ? "" : "s"}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPlanFilter("All");
+                            setLevelFilter("All");
+                            setCategoryFilter("All Courses");
+                            setRatingFilter("All");
+                            setDurationFilter("All");
+                            setCurrentPage(1);
+                            setOpenFilterKey(null);
+                          }}
+                          className="cursor-pointer inline-flex min-w-[140px] items-center justify-center rounded-xl border border-violet-400/25 bg-violet-500/[0.08] px-6 py-2.5 text-xs font-semibold text-violet-200 transition hover:border-violet-400/45 hover:bg-violet-500/[0.14] focus:outline-none focus:ring-2 focus:ring-violet-400/30"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
