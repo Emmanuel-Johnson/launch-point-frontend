@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, Crown, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Crown } from "lucide-react";
 
 import { getStudentSubscriptionPlans } from "../api/studentSubscriptionApi";
 import type { SubscriptionPlan } from "../api/studentSubscriptionApi";
@@ -8,20 +8,20 @@ import type { SubscriptionPlan } from "../api/studentSubscriptionApi";
   ============================================================================
   STUDENT · SUBSCRIPTION PLANS
   ============================================================================
-  VIOLET & BLACK THEME (matches the Student header + sidebar chrome)
+  VIOLET & BLACK THEME
   ----------------------------------------------------------------------------
-  Page canvas   #000000  true black
-  Chrome tone   #0A0A0A   near-black — same surface as header/sidebar rail
-  Premium card  #0C0A16   violet-tinted near-black
-  Primary       #7C5CFF   Launch Point electric indigo-violet
-  Deep violet   #4D32C8   gradient end
-  Hover violet  #9D82FF   lighter step for hover/focus states (from header)
-  Light violet  #A78BFA   accents
+  Page canvas   #000000
+  Card surface  #0A0A0A
+  Premium card  #0C0A16
+  Primary       #7C5CFF
+  Deep violet   #4D32C8
+  Hover violet  #9D82FF
+  Light violet  #A78BFA
   ============================================================================*/
 
 /* --------------------------------------------------------------- UI-only */
-/*  Swap for API value when wiring:
-    - CURRENT_PLAN_ID → the student's active subscription plan id            */
+/* Swap for API value when wiring:
+   CURRENT_PLAN_ID → the student's active subscription plan id */
 const CURRENT_PLAN_ID = 1;
 
 /* ---------------------------------------------------------------- helpers */
@@ -45,16 +45,6 @@ const INTERVAL_WORD: Record<string, string> = {
   yearly: "year",
 };
 
-const monthlyEquivalent = (plan: SubscriptionPlan) => {
-  const amount = Number(plan.price);
-
-  if (plan.billing_interval !== "yearly" || Number.isNaN(amount)) {
-    return null;
-  }
-
-  return `${inr(Math.round(amount / 12))} / month, billed yearly`;
-};
-
 /* ================================================================== page */
 
 const SubscriptionPage = () => {
@@ -75,12 +65,19 @@ const SubscriptionPage = () => {
 
     fetchPlans();
   }, []);
+
   return (
     <div className="min-h-full w-full bg-black text-white">
       <style>{`
         @keyframes lpFadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .lp-enter {
@@ -124,6 +121,7 @@ const SubscriptionPage = () => {
         {/* =========================================================
             PLANS
         ========================================================= */}
+
         {loading ? (
           <div className="flex min-h-[300px] items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#7C5CFF]" />
@@ -133,123 +131,134 @@ const SubscriptionPage = () => {
             No subscription plans are currently available.
           </div>
         ) : (
-          <div className="grid items-stretch gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {plans.map((plan, i) => {
               const isPremium = plan.plan_type === "premium";
               const isCurrent = plan.id === CURRENT_PLAN_ID;
-              const perMonth = monthlyEquivalent(plan);
-              const PlanIcon = isPremium ? Crown : Sparkles;
 
               return (
                 <article
                   key={plan.id}
                   style={{ animationDelay: `${i * 85}ms` }}
-                  className={`lp-enter group relative flex h-full min-w-0 flex-col overflow-hidden p-7 transition-all duration-300 hover:-translate-y-1 ${
+                  className={`lp-enter group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-300 sm:p-8 ${
                     isPremium
-                      ? "rounded-3xl border border-[#7C5CFF]/25 bg-[#0C0A16] hover:border-[#7C5CFF]/55 hover:shadow-[0_18px_50px_rgba(124,92,255,0.14)]"
-                      : "rounded-3xl border border-white/10 bg-[#0A0A0A] hover:border-white/20 hover:shadow-[0_18px_50px_rgba(124,92,255,0.08)]"
+                      ? "border-[#7C5CFF]/60 bg-[#0C0A16] shadow-[0_12px_40px_rgba(124,92,255,0.12)] hover:-translate-y-1 hover:border-[#9D82FF] hover:shadow-[0_20px_55px_rgba(124,92,255,0.22)]"
+                      : "border-white/10 bg-[#0A0A0A]/90 backdrop-blur-sm hover:-translate-y-1 hover:border-[#7C5CFF]/35 hover:shadow-[0_18px_45px_rgba(124,92,255,0.10)]"
                   }`}
                 >
-                  {/* Premium top hairline — subtle premium signal */}
+                  {/* Subtle premium top border */}
+
                   {isPremium && (
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/60 to-transparent"
+                      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#A78BFA] to-transparent"
                     />
                   )}
 
-                  {/* Ambient glow */}
+                  {/* Ambient violet glow */}
+
                   <span
                     aria-hidden="true"
                     className={`pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full blur-3xl transition-opacity duration-500 ${
                       isPremium
-                        ? "bg-[#7C5CFF]/15 opacity-0 group-hover:opacity-100"
+                        ? "bg-[#7C5CFF]/20 opacity-40 group-hover:opacity-100"
                         : "bg-[#7C5CFF]/10 opacity-0 group-hover:opacity-100"
                     }`}
                   />
 
-                  {/* Diagonal shine sweep */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  {/* Glass shine effect */}
 
-                  {/* Content */}
-                  <div className="relative flex h-full min-w-0 flex-col">
-                    {/* Icon tile + name + status pill */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex min-w-0 items-center gap-3.5">
-                        {/* Plan icon tile — mirrors the header icon tiles */}
-                        <div
-                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 ${
-                            isPremium
-                              ? "bg-[#7C5CFF]/[0.1] text-[#7C5CFF] group-hover:bg-[#7C5CFF]/[0.16] group-hover:text-[#9D82FF] group-hover:shadow-[0_0_18px_rgba(124,92,255,0.18)]"
-                              : "bg-white/[0.04] text-white/50 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#7C5CFF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]"
-                          }`}
-                        >
-                          <PlanIcon
-                            className="h-[22px] w-[22px] transition-transform duration-300 group-hover:scale-110"
-                            strokeWidth={1.8}
-                          />
-                        </div>
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 -translate-x-full -translate-y-full rounded-2xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent transition-transform duration-500 group-hover:translate-x-0 group-hover:translate-y-0"
+                  />
 
-                        <h2 className="min-w-0 font-['Space_Grotesk'] text-xl font-semibold leading-snug text-white [overflow-wrap:anywhere]">
-                          {plan.name}
-                        </h2>
+                  {/* Premium badge with crown symbol */}
+
+                  {isPremium && (
+                    <div className="absolute -top-0 left-1/2 z-10 -translate-x-1/2">
+                      <div className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-b-xl bg-gradient-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-2 text-[10px] font-semibold tracking-wide text-white shadow-lg shadow-[#7C5CFF]/20 sm:text-xs">
+                        <Crown
+                          aria-hidden="true"
+                          className="h-3.5 w-3.5 shrink-0"
+                          strokeWidth={2.2}
+                        />
+                        <span>Premium</span>
                       </div>
-
-                      <span
-                        className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
-                          isPremium
-                            ? "bg-[#7C5CFF]/15 text-[#A78BFA] ring-1 ring-inset ring-[#7C5CFF]/20"
-                            : "bg-white/10 text-white/55"
-                        }`}
-                      >
-                        {isPremium ? "Premium" : "Free"}
-                      </span>
                     </div>
+                  )}
 
-                    <p className="mt-4 min-w-0 text-sm leading-6 text-white/50 [overflow-wrap:anywhere]">
-                      {plan.description}
-                    </p>
+                  {/* Card content */}
 
-                    {/* Price */}
-                    <div className="mt-6 min-w-0">
-                      <div className="flex min-w-0 items-baseline gap-2">
-                        <span className="min-w-0 font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-white [overflow-wrap:anywhere]">
+                  <div
+                    className={`relative flex h-full min-w-0 flex-col ${
+                      isPremium ? "pt-5" : ""
+                    }`}
+                  >
+                    {/* Plan heading */}
+
+                    <div className="mb-6 text-center sm:mb-8">
+                      {/* Plan name */}
+
+                      <h2 className="mb-2 break-words font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-white">
+                        {plan.name}
+                      </h2>
+
+                      {/* Plan description */}
+
+                      <p className="mx-auto min-h-[40px] max-w-xs text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
+                        {plan.description}
+                      </p>
+
+                      {/* Price */}
+
+                      <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1">
+                        <span className="break-words bg-gradient-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
                           {formatPrice(plan)}
                         </span>
 
                         {isPremium && plan.billing_interval && (
-                          <span className="shrink-0 text-sm text-white/45">
+                          <span className="text-sm text-white/45">
                             / {INTERVAL_WORD[plan.billing_interval]}
                           </span>
                         )}
                       </div>
-
-                      {/* Clarifying sub-line keeps height steady across cards */}
-                      <p className="mt-1.5 h-4 text-xs text-white/40">
-                        {perMonth ??
-                          (plan.plan_type === "free" ? "Free forever" : "")}
-                      </p>
                     </div>
 
-                    <div className="my-6 h-px w-full bg-white/[0.07]" />
+                    {/* Divider */}
+
+                    <div
+                      className={`mb-6 h-px w-full ${
+                        isPremium
+                          ? "bg-gradient-to-r from-transparent via-[#7C5CFF]/30 to-transparent"
+                          : "bg-white/[0.08]"
+                      }`}
+                    />
 
                     {/* Benefits */}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="mb-4 text-xs font-medium uppercase tracking-wide text-white/40">
+
+                    <div className="mb-7 min-w-0 flex-1 sm:mb-8">
+                      <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.12em] text-white/45">
                         What's included
                       </h3>
 
-                      <ul className="space-y-3">
+                      <ul className="space-y-4">
                         {plan.benefits.map((benefit, index) => (
                           <li
                             key={`${plan.id}-${index}`}
-                            className="flex min-w-0 items-start gap-3 text-sm text-white/70"
+                            className="flex min-w-0 items-start gap-3"
                           >
-                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#7C5CFF]/15 text-[#A78BFA] ring-1 ring-inset ring-[#7C5CFF]/20 transition-colors duration-300 group-hover:bg-[#7C5CFF]/20">
-                              <Check className="h-3 w-3" strokeWidth={3} />
+                            <span
+                              className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-colors duration-300 ${
+                                isPremium
+                                  ? "bg-[#7C5CFF]/20 text-[#B9A7FF] group-hover:bg-[#7C5CFF]/30"
+                                  : "bg-[#7C5CFF]/10 text-[#A78BFA] group-hover:bg-[#7C5CFF]/20"
+                              }`}
+                            >
+                              <Check className="h-3 w-3" strokeWidth={2.8} />
                             </span>
 
-                            <span className="min-w-0 [overflow-wrap:anywhere]">
+                            <span className="min-w-0 break-words text-sm leading-5 text-white/70 transition-colors duration-300 group-hover:text-white/90">
                               {benefit}
                             </span>
                           </li>
@@ -258,11 +267,12 @@ const SubscriptionPage = () => {
                     </div>
 
                     {/* CTA */}
+
                     {isCurrent ? (
                       <button
                         type="button"
                         disabled
-                        className="cursor-pointer mt-8 flex w-full shrink-0 cursor-default items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white/55"
+                        className="mt-auto flex w-full shrink-0 cursor-default items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/50"
                       >
                         <Check className="h-4 w-4" strokeWidth={2.4} />
                         Current plan
@@ -270,7 +280,7 @@ const SubscriptionPage = () => {
                     ) : isPremium ? (
                       <button
                         type="button"
-                        className="cursor-pointer group/btn mt-8 flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-3 text-sm font-medium text-white shadow-lg shadow-[#7C5CFF]/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/40"
+                        className="group/btn mt-auto flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                       >
                         Choose plan
                         <ArrowRight
@@ -281,10 +291,20 @@ const SubscriptionPage = () => {
                     ) : (
                       <button
                         type="button"
-                        className="group/btn relative mt-8 w-full shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/25 hover:bg-[#7C5CFF]/10 hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
+                        className="group/btn relative mt-auto w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/35 hover:bg-[#7C5CFF]/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                       >
-                        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
-                        <span className="relative z-10">Get started</span>
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full"
+                        />
+
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                          Get started
+                          <ArrowRight
+                            className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1"
+                            strokeWidth={2}
+                          />
+                        </span>
                       </button>
                     )}
                   </div>

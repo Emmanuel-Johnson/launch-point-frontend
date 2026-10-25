@@ -685,13 +685,15 @@ const SettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-xl
-    bg-[#7C5CFF] px-6 py-3 text-sm font-semibold text-white
-    shadow-md shadow-[#7C5CFF]/20
-    transition-all duration-200
-    hover:bg-[#6B4DE6] hover:shadow-lg hover:shadow-[#7C5CFF]/25
+                              className="group/button inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl
+    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3
+    text-sm font-semibold text-white
+    shadow-lg shadow-violet-950/40
+    transition-all duration-300
+    hover:-translate-y-0.5 hover:brightness-110
+    focus:outline-none focus:ring-2 focus:ring-violet-400/60
     active:scale-[0.98]
-    disabled:cursor-not-allowed disabled:opacity-60"
+    disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                             >
                               {isSavingPassword ? (
                                 <>
@@ -703,7 +705,10 @@ const SettingsPage = () => {
                                 </>
                               ) : (
                                 <>
-                                  <LockKeyhole size={16} />
+                                  <LockKeyhole
+                                    size={16}
+                                    className="transition-transform duration-300 group-hover/button:scale-110"
+                                  />
                                   Save new password
                                 </>
                               )}
@@ -802,9 +807,20 @@ const SettingsPage = () => {
                           type="button"
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
-                          className="group flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#8E72FF] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#7C5CFF]/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/25 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="group/button inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl
+    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3
+    text-sm font-semibold text-white
+    shadow-lg shadow-violet-950/40
+    transition-all duration-300
+    hover:-translate-y-0.5 hover:brightness-110
+    focus:outline-none focus:ring-2 focus:ring-violet-400/60
+    active:translate-y-0
+    disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                         >
-                          <Save size={16} />
+                          <Save
+                            size={16}
+                            className="transition-transform duration-300 group-hover/button:scale-110"
+                          />
 
                           {isSavingNotifications
                             ? "Saving..."
