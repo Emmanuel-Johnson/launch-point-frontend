@@ -98,16 +98,26 @@ const SubscriptionPage = () => {
         {/* =========================================================
             HEADER
         ========================================================= */}
+
         <section
           className="lp-enter flex flex-col justify-between gap-6 lg:flex-row lg:items-end"
           style={{ animationDelay: "60ms" }}
         >
-          <div className="min-w-0">
-            <p className="mb-2 text-sm font-medium text-[#7C5CFF]">Account</p>
+          <div className="min-w-0 cursor-default">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
+              Account
+            </p>
 
-            <h1 className="bg-gradient-to-r from-white via-white to-[#9B7CFF] bg-clip-text font-['Space_Grotesk'] text-3xl font-bold tracking-tight text-transparent md:text-4xl">
-              Subscription Plans
+            <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                Subscription Plans
+              </span>
             </h1>
+
+            <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+              Explore your subscription benefits and manage your learning
+              experience.
+            </p>
           </div>
         </section>
 

@@ -632,29 +632,23 @@ const CoursesPage = () => {
       `}</style>
 
       {/* Page heading */}
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
-          <div className="mb-4 flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.2em] text-[#A78BFA]">
-            <span className="h-1 w-1 rounded-full bg-[#8B5CF6] shadow-[0_0_6px_1px_rgba(139,92,246,0.7)]" />
-            Your next chapter starts here
-          </div>
 
-          <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div className="cursor-default">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
+            Your next chapter starts here
+          </p>
+
+          <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
             Explore{" "}
-            <span className="bg-gradient-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
 
-          <p className="mt-4 max-w-xl text-sm leading-7 text-white/50 sm:text-[15px]">
-            Discover new skills, learn from industry experts, and build the{" "}
-            <span
-              className="italic text-white/70"
-              style={{ fontFamily: '"Fraunces", serif' }}
-            >
-              future you want
-            </span>
-            .
+          <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+            Discover new skills, learn from industry experts, and build the
+            future you want.
           </p>
         </div>
       </section>
@@ -1200,16 +1194,17 @@ const CoursesPage = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.025] px-2 py-1.5">
-            <span className="text-[10px] text-white/40">Showing</span>
-            <span className="text-xs font-medium tabular-nums text-white">
+          <p className="text-[10px] uppercase tracking-wider text-white/45">
+            <span className="mr-1">Showing</span>
+            <span className="font-semibold tabular-nums text-white/80">
               {firstCourseNumber}–{lastCourseNumber}
             </span>
-            <span className="text-white/20">/</span>
-            <span className="text-xs tabular-nums text-white/50">
+            <span className="mx-1 text-white/25">of</span>
+            <span className="font-medium tabular-nums text-violet-300">
               {filteredCourses.length}
             </span>
-          </div>
+            <span className="ml-0.5">courses</span>
+          </p>
         </div>
 
         {filteredCourses.length > 0 ? (
