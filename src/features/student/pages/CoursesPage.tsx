@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Clock3,
   Code2,
+  Crown,
   Database,
   Flame,
   Bookmark,
@@ -1196,32 +1197,27 @@ const CoursesPage = () => {
         </div>
 
         {filteredCourses.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {paginatedCourses.map((course, courseIndex) => {
               const isSaved = saved.includes(course.id);
 
               return (
                 <article
                   key={`${course.id}-${startIndex + courseIndex}`}
-                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0C] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:-translate-y-1.5 hover:border-[#8B5CF6]/45 hover:shadow-[0_24px_60px_-12px_rgba(124,92,255,0.25),0_18px_45px_rgba(0,0,0,0.45)]"
+                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
                 >
                   {/* Course image */}
-                  <div className="relative -mb-px h-48 overflow-hidden bg-[#14101D]">
+                  <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
                     <img
                       src={course.image}
                       alt={course.title}
                       loading="lazy"
                       className="block h-full w-full object-cover"
                     />
-                    <div
-                      className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br ${course.accent} opacity-80 transition-opacity duration-500 group-hover:opacity-100`}
-                    />
-                    <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
-
                     <div className="absolute left-3 top-3 z-20">
                       {course.plan === "Premium" ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-400/40 bg-[#281447]/90 px-3 py-1.5 text-[11px] font-semibold text-violet-200 shadow-lg backdrop-blur-md">
-                          <Sparkles className="h-3.5 w-3.5" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+                          <Crown className="h-3.5 w-3.5 text-amber-300" />
                           Premium
                         </span>
                       ) : (
@@ -1257,21 +1253,21 @@ const CoursesPage = () => {
                       />
                     </button>
 
-                    <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1.5 text-[11px] text-white/80 backdrop-blur-md">
-                      <Clock3 className="h-3.5 w-3.5 text-violet-300" />
+                    <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+                      <Clock3 className="h-3.5 w-3.5 text-cyan-300" />
                       {course.duration}
                     </div>
 
-                    <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1.5 text-[11px] text-white/80 backdrop-blur-md">
-                      <BookOpen className="h-3.5 w-3.5 text-violet-300" />
+                    <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+                      <BookOpen className="h-3.5 w-3.5 text-cyan-300" />
                       {course.lessons} lessons
                     </div>
                   </div>
 
                   {/* Course information */}
-                  <div className="flex flex-1 flex-col p-4">
-                    <div className="mb-3 flex items-center justify-between gap-2">
-                      <span className="rounded-md border border-violet-500/20 bg-violet-500/[0.08] px-2.5 py-1 text-[10px] font-medium text-violet-300">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-4 flex items-center justify-between gap-2">
+                      <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
                         {course.category}
                       </span>
                       <span className="text-[11px] text-white/35">
@@ -1279,14 +1275,14 @@ const CoursesPage = () => {
                       </span>
                     </div>
 
-                    <p className="mb-2 text-[10px] font-normal tracking-wide text-white/45">
+                    <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
                       {course.level} level
                     </p>
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 text-white transition-colors group-hover:text-violet-200">
+                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {course.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-5 text-white/45">
+                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
                       {course.description}
                     </p>
 
@@ -1294,14 +1290,14 @@ const CoursesPage = () => {
                       {course.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-md border border-white/[0.07] bg-white/[0.025] px-2 py-1 text-[10px] text-white/55 transition-colors group-hover:border-violet-400/20 group-hover:bg-violet-500/[0.06] group-hover:text-white/70"
+                          className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
                         >
                           {skill}
                         </span>
                       ))}
                     </div>
 
-                    <div className="mb-4 flex items-center gap-3 border-t border-white/[0.07] pt-4">
+                    <div className="mb-4 mt-1 flex items-center gap-3 border-t border-white/[0.07] pt-4">
                       <img
                         src={course.instructorImage}
                         alt={course.instructor}
@@ -1319,7 +1315,7 @@ const CoursesPage = () => {
                       </div>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-3">
+                    <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-4">
                       <div className="flex items-center gap-1.5">
                         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                         <span className="text-xs font-semibold text-white">
@@ -1335,7 +1331,7 @@ const CoursesPage = () => {
                         onClick={() =>
                           navigate(`/student/courses/${course.id}`)
                         }
-                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-violet-300/30 bg-gradient-to-r from-violet-500/25 to-purple-500/15 px-3 py-2 text-xs font-semibold text-violet-100 shadow-[0_4px_16px_rgba(139,92,246,0.14)] transition-all duration-300 hover:border-violet-300/50 hover:from-violet-500/40 hover:to-purple-500/30 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300/50"
                       >
                         View course
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
