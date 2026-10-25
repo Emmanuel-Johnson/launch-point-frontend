@@ -20,7 +20,6 @@ import {
   SlidersHorizontal,
   Sparkles,
   Star,
-  X,
   Zap,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -643,22 +642,58 @@ const CoursesPage = () => {
         <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
         <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid min-h-[320px] items-center md:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid min-h-[320px] items-center md:grid-cols-[0.9fr_1.1fr]">
+          {/* Left side - Photo */}
+          <div className="relative hidden min-h-[320px] h-full md:block">
+            <img
+              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
+              alt="Learners building new skills with digital learning tools"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-45"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-l from-[#100C20] via-[#100C20]/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
+
+            <div className="absolute left-7 top-7 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0B0D]/70 p-3.5 shadow-xl backdrop-blur-xl">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20">
+                <Zap className="h-5 w-5 text-violet-300" />
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-white">Keep growing</p>
+                <p className="mt-1 text-xs text-white/50">
+                  One lesson at a time
+                </p>
+              </div>
+            </div>
+
+            <div className="absolute bottom-7 left-7 right-7 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-violet-200">
+                Your next chapter
+              </p>
+
+              <p className="mt-2 text-lg font-semibold text-white">
+                Discover. Practice. Grow.
+              </p>
+
+              <p className="mt-1 text-sm text-white/55">
+                Turn curiosity into skills you can use.
+              </p>
+            </div>
+          </div>
+
+          {/* Right side - Text */}
           <div className="relative z-10 px-6 py-9 sm:px-9 lg:px-11 lg:py-12">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-violet-200 sm:text-xs">
               <Sparkles className="h-3.5 w-3.5" />
               YOUR LEARNING JOURNEY STARTS HERE
             </div>
 
-            <h2 className="max-w-xl text-2xl font-normal italic leading-[1.25] tracking-[-0.035em] sm:text-3xl lg:text-[34px]">
+            <h2 className="max-w-xl text-2xl font-medium leading-[1.25] tracking-[-0.04em] sm:text-3xl lg:text-[34px]">
               One new skill can
               <br />
-              <span
-                className="font-medium bg-gradient-to-r from-white via-[#DDD6FE] to-[#A78BFA] bg-clip-text text-transparent"
-                style={{ fontFamily: '"Fraunces", serif' }}
-              >
-                open new possibilities.
-              </span>
+              open new possibilities.
             </h2>
 
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/60 sm:text-base">
@@ -681,45 +716,11 @@ const CoursesPage = () => {
                 Explore courses
                 <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
               </button>
+
               <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/60">
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 Learn at your own pace
               </span>
-            </div>
-          </div>
-
-          <div className="relative hidden min-h-[320px] h-full md:block">
-            <img
-              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
-              alt="Learners building new skills with digital learning tools"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-45"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#100C20] via-[#100C20]/35 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
-
-            <div className="absolute right-7 top-7 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0B0D]/70 p-3.5 shadow-xl backdrop-blur-xl">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20">
-                <Zap className="h-5 w-5 text-violet-300" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Keep growing</p>
-                <p className="mt-1 text-xs text-white/50">
-                  One lesson at a time
-                </p>
-              </div>
-            </div>
-
-            <div className="absolute bottom-7 left-7 right-7 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-violet-200">
-                Your next chapter
-              </p>
-              <p className="mt-2 text-lg font-semibold text-white">
-                Discover. Practice. Grow.
-              </p>
-              <p className="mt-1 text-sm text-white/55">
-                Turn curiosity into skills you can use.
-              </p>
             </div>
           </div>
         </div>
