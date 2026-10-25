@@ -139,8 +139,8 @@ const SubscriptionPage = () => {
               return (
                 <article
                   key={plan.id}
-                  style={{ animationDelay: `${i * 85}ms` }}
-                  className={`lp-enter group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-300 sm:p-8 ${
+                  style={{ animationDelay: `${i * 100}ms` }}
+                  className={`lp-enter group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.02] sm:p-8 ${
                     isPremium
                       ? "border-[#7C5CFF]/60 bg-[#0C0A16] shadow-[0_12px_40px_rgba(124,92,255,0.12)] hover:-translate-y-1 hover:border-[#9D82FF] hover:shadow-[0_20px_55px_rgba(124,92,255,0.22)]"
                       : "border-white/10 bg-[#0A0A0A]/90 backdrop-blur-sm hover:-translate-y-1 hover:border-[#7C5CFF]/35 hover:shadow-[0_18px_45px_rgba(124,92,255,0.10)]"
