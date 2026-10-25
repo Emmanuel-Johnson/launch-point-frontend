@@ -69,6 +69,10 @@ import InstructorDoubtsPage from "../../features/instructor/pages/InstructorDoub
 import InstructorStudentsPage from "../../features/instructor/pages/InstructorStudentsPage";
 import InstructorSubmissionsPage from "../../features/instructor/pages/InstructorSubmissionsPage";
 import InstructorCoursesPage from "../../features/instructor/pages/InstructorCoursesPage";
+import AnalyticsReportsPage from "../../features/admin/pages/AnalyticsReportsPage";
+import RevenuePage from "../../features/admin/pages/RevenuePage";
+import FinancialsPage from "../../features/admin/pages/FinancialsPage";
+import AdminNotificationsPage from "../../features/admin/pages/NotificationsPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -370,6 +374,22 @@ export const routeConfig: RouteObject[] = [
           {
             path: "subscriptions/:planId",
             element: <SubscriptionPlanDetailPage />,
+          },
+          {
+            path: "revenue",
+            element: <RevenuePage />,
+          },
+          {
+            path: "financials",
+            element: <FinancialsPage />,
+          },
+          {
+            path: "analytics-and-reports",
+            element: <AnalyticsReportsPage />,
+          },
+          {
+            path: "notifications",
+            element: <AdminNotificationsPage />,
           },
         ],
       },
