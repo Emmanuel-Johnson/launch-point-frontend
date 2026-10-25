@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import {
-  Heart,
   Search,
   Clock3,
   Star,
@@ -17,7 +16,7 @@ import {
 type CourseAccess = "Free" | "Premium";
 type CourseLevel = "Beginner" | "Intermediate" | "Advanced";
 
-interface WishlistCourse {
+interface SavedCourse {
   id: number;
   title: string;
   description: string;
@@ -32,7 +31,7 @@ interface WishlistCourse {
   thumbnail: string;
 }
 
-const initialWishlist: WishlistCourse[] = [
+const initialSavedCourses: SavedCourse[] = [
   {
     id: 1,
     title: "Full Stack Web Development",
@@ -107,21 +106,19 @@ const categories = [
   "Database",
 ];
 
-export default function WishlistPage() {
-  const [wishlist, setWishlist] = useState<WishlistCourse[]>(initialWishlist);
+export default function SavedPage() {
+  const [savedCourses, setSaved] = useState<SavedCourse[]>(initialSavedCourses);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
-  const [selectedCourse, setSelectedCourse] = useState<WishlistCourse | null>(
+  const [selectedCourse, setSelectedCourse] = useState<SavedCourse | null>(
     null,
   );
-  const [confirmRemove, setConfirmRemove] = useState<WishlistCourse | null>(
-    null,
-  );
+  const [confirmRemove, setConfirmRemove] = useState<SavedCourse | null>(null);
 
-  const filteredWishlist = useMemo(() => {
+  const filteredSavedCourses = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return wishlist.filter((course) => {
+    return savedCourses.filter((course) => {
       const matchesSearch =
         course.title.toLowerCase().includes(query) ||
         course.instructor.toLowerCase().includes(query) ||
@@ -132,12 +129,10 @@ export default function WishlistPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [wishlist, search, category]);
+  }, [savedCourses, search, category]);
 
-  const removeFromWishlist = (courseId: number) => {
-    setWishlist((current) =>
-      current.filter((course) => course.id !== courseId),
-    );
+  const removeSavedCourse = (courseId: number) => {
+    setSaved((current) => current.filter((course) => course.id !== courseId));
 
     setConfirmRemove(null);
     setSelectedCourse((current) => (current?.id === courseId ? null : current));
@@ -161,7 +156,7 @@ export default function WishlistPage() {
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                My Wishlist
+                My Saved
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
                 Keep track of the courses you want to take and choose what you
@@ -170,16 +165,16 @@ export default function WishlistPage() {
             </div>
 
             <div className="flex w-fit items-center gap-3 rounded-xl border border-violet-500/20 bg-violet-500/10 px-4 py-3">
-              <Heart size={22} className="text-violet-400" />
+              <Bookmark size={22} className="text-violet-400" />
               <div>
-                <p className="text-xl font-bold">{wishlist.length}</p>
+                <p className="text-xl font-bold">{savedCourses.length}</p>
                 <p className="text-xs text-gray-400">Saved courses</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Wishlist summary */}
+        {/* Saved summary */}
         <section className="relative overflow-hidden rounded-2xl border border-violet-500/20 bg-gradient-to-r from-violet-950/70 via-[#171326] to-[#101016] p-6 sm:p-8">
           <div className="absolute -right-12 -top-16 size-56 rounded-full bg-violet-500/10 blur-3xl" />
 
@@ -201,7 +196,7 @@ export default function WishlistPage() {
             </div>
 
             <a
-              href="/student/explore-courses"
+              href="/student/courses"
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
             >
               Explore courses
@@ -261,16 +256,16 @@ export default function WishlistPage() {
             <div>
               <h2 className="text-lg font-semibold">Saved courses</h2>
               <p className="mt-1 text-sm text-gray-500">
-                {filteredWishlist.length}{" "}
-                {filteredWishlist.length === 1 ? "course" : "courses"} found
+                {filteredSavedCourses.length}{" "}
+                {filteredSavedCourses.length === 1 ? "course" : "courses"} found
               </p>
             </div>
           </div>
 
-          {filteredWishlist.length > 0 ? (
+          {filteredSavedCourses.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredWishlist.map((course) => (
-                <WishlistCourseCard
+              {filteredSavedCourses.map((course) => (
+                <SavedCourseCard
                   key={course.id}
                   course={course}
                   onView={() => setSelectedCourse(course)}
@@ -281,24 +276,24 @@ export default function WishlistPage() {
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 bg-[#101016] px-6 py-16 text-center">
               <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-violet-500/10">
-                <Heart size={30} className="text-violet-400" />
+                <Bookmark size={30} className="text-violet-400" />
               </div>
 
               <h3 className="font-semibold">
-                {wishlist.length === 0
-                  ? "Your wishlist is empty"
+                {savedCourses.length === 0
+                  ? "Your saved courses are empty"
                   : "No saved courses found"}
               </h3>
 
               <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
-                {wishlist.length === 0
+                {savedCourses.length === 0
                   ? "Discover courses that interest you and save them here for later."
                   : "Try a different search or category to find your saved courses."}
               </p>
 
-              {wishlist.length === 0 ? (
+              {savedCourses.length === 0 ? (
                 <a
-                  href="/student/explore-courses"
+                  href="/student/courses"
                   className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
                 >
                   <ShoppingBag size={17} />
@@ -326,7 +321,7 @@ export default function WishlistPage() {
             <div
               role="dialog"
               aria-modal="true"
-              aria-labelledby="wishlist-course-title"
+              aria-labelledby="saved-course-title"
               className="my-auto w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 bg-[#111119] shadow-2xl"
               onClick={(event) => event.stopPropagation()}
             >
@@ -369,7 +364,7 @@ export default function WishlistPage() {
                 </div>
 
                 <div>
-                  <h2 id="wishlist-course-title" className="text-2xl font-bold">
+                  <h2 id="saved-course-title" className="text-2xl font-bold">
                     {selectedCourse.title}
                   </h2>
 
@@ -408,11 +403,11 @@ export default function WishlistPage() {
 
                   <button
                     type="button"
-                    onClick={() => removeFromWishlist(selectedCourse.id)}
+                    onClick={() => removeSavedCourse(selectedCourse.id)}
                     className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/20 px-5 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10"
                   >
                     <Trash2 size={16} />
-                    Remove from wishlist
+                    Remove from saved
                   </button>
                 </div>
               </div>
@@ -429,7 +424,7 @@ export default function WishlistPage() {
             <div
               role="dialog"
               aria-modal="true"
-              aria-labelledby="remove-wishlist-title"
+              aria-labelledby="remove-saved-title"
               className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111119] p-6 shadow-2xl"
               onClick={(event) => event.stopPropagation()}
             >
@@ -437,7 +432,7 @@ export default function WishlistPage() {
                 <Trash2 size={22} />
               </div>
 
-              <h2 id="remove-wishlist-title" className="text-lg font-semibold">
+              <h2 id="remove-saved-title" className="text-lg font-semibold">
                 Remove saved course?
               </h2>
 
@@ -446,7 +441,7 @@ export default function WishlistPage() {
                 <span className="font-medium text-white">
                   {confirmRemove.title}
                 </span>{" "}
-                from your wishlist?
+                from your saved courses?
               </p>
 
               <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -460,7 +455,7 @@ export default function WishlistPage() {
 
                 <button
                   type="button"
-                  onClick={() => removeFromWishlist(confirmRemove.id)}
+                  onClick={() => removeSavedCourse(confirmRemove.id)}
                   className="rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-400"
                 >
                   Remove course
@@ -474,12 +469,12 @@ export default function WishlistPage() {
   );
 }
 
-function WishlistCourseCard({
+function SavedCourseCard({
   course,
   onView,
   onRemove,
 }: {
-  course: WishlistCourse;
+  course: SavedCourse;
   onView: () => void;
   onRemove: () => void;
 }) {
@@ -508,11 +503,11 @@ function WishlistCourseCard({
         <button
           type="button"
           onClick={onRemove}
-          aria-label={`Remove ${course.title} from wishlist`}
-          title="Remove from wishlist"
+          aria-label={`Remove ${course.title} from saved courses`}
+          title="Remove from saved"
           className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full border border-white/10 bg-black/60 text-red-400 backdrop-blur-sm transition hover:bg-red-500 hover:text-white"
         >
-          <Heart size={18} className="fill-current" />
+          <Bookmark size={18} className="fill-current" />
         </button>
 
         <span className="absolute bottom-4 left-4 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-xs text-white backdrop-blur-sm">

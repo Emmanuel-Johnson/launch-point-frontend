@@ -982,7 +982,7 @@ export default function CommunityPage() {
                   icon={<Code2 size={17} />}
                   label="Explore courses"
                   onClick={() =>
-                    window.location.assign("/student/explore-courses")
+                    window.location.assign("/student/courses")
                   }
                 />
                 <QuickLink

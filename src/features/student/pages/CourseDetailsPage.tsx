@@ -40,7 +40,7 @@ export default function CourseDetailsPage() {
 
           <button
             type="button"
-            onClick={() => navigate("/student/explore-courses")}
+            onClick={() => navigate("/student/courses")}
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
           >
             <ArrowLeft size={16} />
@@ -75,7 +75,7 @@ export default function CourseDetailsPage() {
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Back navigation */}
         <Link
-          to="/student/explore-courses"
+          to="/student/courses"
           className="inline-flex items-center gap-2 text-sm text-gray-400 transition hover:text-violet-300"
         >
           <ArrowLeft size={17} />
@@ -369,7 +369,7 @@ export default function CourseDetailsPage() {
               </p>
 
               <Link
-                to="/student/explore-courses"
+                to="/student/courses"
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/[0.04]"
               >
                 <ArrowLeft size={16} />

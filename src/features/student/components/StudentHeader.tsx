@@ -4,7 +4,7 @@ import {
   ChevronDown,
   ChevronRight,
   GraduationCap,
-  Heart,
+  Bookmark,
   LogOut,
   Search,
   Settings,
@@ -221,17 +221,17 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
 
         {/* Right Side */}
         <div className="flex shrink-0 items-center gap-3">
-          {/* Wishlist */}
+          {/* Saved */}
           <button
             type="button"
-            aria-label="Wishlist"
+            aria-label="Saved"
             className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
           >
             {/* Shine */}
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
-            <Heart
+            <Bookmark
               className="relative z-10 h-5 w-5 transition-all duration-300 group-hover:scale-110 group-hover:text-[#9D82FF]"
               strokeWidth={1.8}
             />
