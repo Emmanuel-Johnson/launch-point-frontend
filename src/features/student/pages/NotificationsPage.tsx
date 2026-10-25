@@ -53,7 +53,7 @@ const initialNotifications: StudentNotification[] = [
     createdAt: "Just now",
     read: false,
     actionLabel: "Explore courses",
-    actionPath: "/student/explore-courses",
+    actionPath: "/student/courses",
   },
   {
     id: 2,

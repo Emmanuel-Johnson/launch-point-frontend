@@ -382,7 +382,7 @@ const courses: Course[] = [
   },
 ];
 
-const ExploreCoursesPage = () => {
+const CoursesPage = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<Category>("All Courses");
   const [searchQuery, setSearchQuery] = useState("");
@@ -409,7 +409,6 @@ const ExploreCoursesPage = () => {
   >(null);
 
   const [saved, setSaved] = useState<number[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [categoriesOverflow, setCategoriesOverflow] = useState(false);
@@ -1244,7 +1243,7 @@ const ExploreCoursesPage = () => {
                       className={`absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ${
                         isSaved
                           ? "border-violet-400/50 bg-violet-500/25 text-violet-200"
-                          : "border-white/15 bg-black/35 text-white/80 hover:border-violet-400/50 hover:bg-violet-500/20 hover:text-violet-200"
+                          : "border-white/15 bg-black/35 text-white/80 hover:border-violet-300/60 hover:bg-[#DDD6FE] hover:text-[#24113F] hover:shadow-[0_0_18px_rgba(196,181,253,0.28)]"
                       }`}
                     >
                       <Bookmark
@@ -1328,7 +1327,9 @@ const ExploreCoursesPage = () => {
 
                       <button
                         type="button"
-                        onClick={() => setSelectedCourse(course)}
+                        onClick={() =>
+                          navigate(`/student/courses/${course.id}`)
+                        }
                         className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
                       >
                         View course
@@ -1458,131 +1459,8 @@ const ExploreCoursesPage = () => {
           </button>
         </div>
       </section> */}
-
-      {/* Course preview modal — UI only */}
-      {selectedCourse && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setSelectedCourse(null);
-            }
-          }}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="course-preview-title"
-            className="relative my-auto w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 bg-[#101014] shadow-2xl shadow-black/60"
-          >
-            <div className="relative h-52 overflow-hidden">
-              <img
-                src={selectedCourse.image}
-                alt={selectedCourse.title}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#101014] via-black/10 to-black/20" />
-
-              <button
-                type="button"
-                onClick={() => setSelectedCourse(null)}
-                aria-label="Close course preview"
-                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur-md transition hover:bg-white/15"
-              >
-                <X className="h-4 w-4" />
-              </button>
-
-              <span className="absolute bottom-4 left-5 rounded-full border border-violet-400/30 bg-violet-500/20 px-3 py-1.5 text-xs font-medium text-violet-200 backdrop-blur-md">
-                {selectedCourse.plan} course
-              </span>
-            </div>
-
-            <div className="p-6 sm:p-7">
-              <div className="flex items-center gap-2 text-xs text-white/45">
-                <span>{selectedCourse.category}</span>
-                <span>•</span>
-                <span>{selectedCourse.level}</span>
-                <span>•</span>
-                <span>{selectedCourse.duration}</span>
-              </div>
-
-              <h2
-                id="course-preview-title"
-                className="mt-3 text-2xl font-semibold tracking-tight"
-              >
-                {selectedCourse.title}
-              </h2>
-
-              <p className="mt-3 text-sm leading-6 text-white/55">
-                {selectedCourse.description}
-              </p>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                {selectedCourse.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/65"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-6 flex items-center gap-3 border-t border-white/[0.08] pt-5">
-                <img
-                  src={selectedCourse.instructorImage}
-                  alt={selectedCourse.instructor}
-                  className="h-11 w-11 rounded-full object-cover"
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {selectedCourse.instructor}
-                  </p>
-                  <p className="mt-1 text-xs text-white/45">
-                    {selectedCourse.instructorRole}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 text-sm">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  {selectedCourse.rating.toFixed(1)}
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3">
-                  <BookOpen className="mb-2 h-4 w-4 text-violet-300" />
-                  <p className="text-lg font-semibold">
-                    {selectedCourse.lessons}
-                  </p>
-                  <p className="mt-1 text-xs text-white/45">Lessons</p>
-                </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3">
-                  <Clock3 className="mb-2 h-4 w-4 text-violet-300" />
-                  <p className="text-lg font-semibold">
-                    {selectedCourse.duration}
-                  </p>
-                  <p className="mt-1 text-xs text-white/45">Learning time</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedCourse(null)}
-                className="mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition hover:brightness-110"
-              >
-                Close preview
-                <ArrowRight className="h-4 w-4" />
-              </button>
-
-              <p className="mt-3 text-center text-[11px] text-white/35">
-                Preview only · Course enrollment is not connected yet
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default ExploreCoursesPage;
+export default CoursesPage;

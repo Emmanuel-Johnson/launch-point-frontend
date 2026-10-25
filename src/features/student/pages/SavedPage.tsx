@@ -196,7 +196,7 @@ export default function SavedPage() {
             </div>
 
             <a
-              href="/student/explore-courses"
+              href="/student/courses"
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
             >
               Explore courses
@@ -293,7 +293,7 @@ export default function SavedPage() {
 
               {savedCourses.length === 0 ? (
                 <a
-                  href="/student/explore-courses"
+                  href="/student/courses"
                   className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
                 >
                   <ShoppingBag size={17} />

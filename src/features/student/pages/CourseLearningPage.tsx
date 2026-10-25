@@ -108,7 +108,7 @@ export default function CourseLearningPage() {
 
           <button
             type="button"
-            onClick={() => navigate("/student/explore-courses")}
+            onClick={() => navigate("/student/courses")}
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold hover:bg-violet-500"
           >
             <ArrowLeft size={16} />
@@ -134,7 +134,7 @@ export default function CourseLearningPage() {
           </p>
 
           <Link
-            to={`/student/explore-courses/${course.id}`}
+            to={`/student/courses/${course.id}`}
             className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/[0.05]"
           >
             <ArrowLeft size={16} />
@@ -162,7 +162,7 @@ export default function CourseLearningPage() {
 
             <div className="min-w-0">
               <Link
-                to="/student/explore-courses"
+                to="/student/courses"
                 className="text-xs text-violet-400 hover:text-violet-300"
               >
                 Explore Courses
@@ -175,7 +175,7 @@ export default function CourseLearningPage() {
           </div>
 
           <Link
-            to={`/student/explore-courses/${course.id}`}
+            to={`/student/courses/${course.id}`}
             className="hidden shrink-0 items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/[0.05] sm:inline-flex"
           >
             <ArrowLeft size={16} />
@@ -314,7 +314,7 @@ export default function CourseLearningPage() {
 
               <div className="border-t border-white/[0.07] p-4">
                 <Link
-                  to={`/student/explore-courses/${course.id}`}
+                  to={`/student/courses/${course.id}`}
                   className="flex items-center gap-2 text-sm text-gray-400 transition hover:text-violet-300"
                 >
                   <ArrowLeft size={16} />
@@ -458,7 +458,7 @@ export default function CourseLearningPage() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => navigate("/student/explore-courses")}
+                  onClick={() => navigate("/student/courses")}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
                 >
                   Finish course
