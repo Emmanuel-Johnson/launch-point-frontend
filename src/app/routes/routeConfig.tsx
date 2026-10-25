@@ -219,6 +219,11 @@ export const routeConfig: RouteObject[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    element: <ProtectedRoute allowedRoles={["instructor"]} />,
+    children: [
       {
         path: "/instructor",
         element: <InstructorLayout />,
@@ -230,6 +235,14 @@ export const routeConfig: RouteObject[] = [
           {
             path: "dashboard",
             element: <InstructorDashboardPage />,
+          },
+          {
+            path: "profile",
+            element: <InstructorProfilePage />,
+          },
+          {
+            path: "settings",
+            element: <InstructorSettingsPage />,
           },
           {
             path: "courses",
@@ -262,41 +275,6 @@ export const routeConfig: RouteObject[] = [
           {
             path: "analytics",
             element: <InstructorAnalyticsPage />,
-          },
-          {
-            path: "profile",
-            element: <InstructorProfilePage />,
-          },
-          {
-            path: "settings",
-            element: <InstructorSettingsPage />,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    element: <ProtectedRoute allowedRoles={["instructor"]} />,
-    children: [
-      {
-        path: "/instructor",
-        element: <InstructorLayout />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="dashboard" replace />,
-          },
-          {
-            path: "dashboard",
-            element: <InstructorDashboardPage />,
-          },
-          {
-            path: "profile",
-            element: <InstructorProfilePage />,
-          },
-          {
-            path: "settings",
-            element: <InstructorSettingsPage />,
           },
         ],
       },
