@@ -4,19 +4,15 @@ import {
   ArrowDownUp,
   ArrowRight,
   ArrowUpAZ,
-  BarChart3,
   BookOpen,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
-  Code2,
   Crown,
-  Database,
   Flame,
   Bookmark,
-  Palette,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -99,15 +95,12 @@ const formatRelativeUploadDate = (uploadedAt: string) => {
   return "Just now";
 };
 
-const categories: {
-  name: Category;
-  icon: typeof Code2;
-}[] = [
-  { name: "All Courses", icon: Sparkles },
-  { name: "Development", icon: Code2 },
-  { name: "Design", icon: Palette },
-  { name: "Business", icon: BarChart3 },
-  { name: "Data Science", icon: Database },
+const categories: { name: Category }[] = [
+  { name: "All Courses" },
+  { name: "Development" },
+  { name: "Design" },
+  { name: "Business" },
+  { name: "Data Science" },
 ];
 
 // Options for the custom, app-styled filter dropdowns below. Values match the
@@ -609,6 +602,35 @@ const CoursesPage = () => {
 
   return (
     <div className="min-h-full space-y-8 pb-8 text-white">
+      {/* Glassy card sheen — plays only on hover, nothing on un-hover */}
+      <style>{`
+        @keyframes lp-card-sheen {
+          0% {
+            opacity: 0;
+            transform: translateX(-150%) skewX(-12deg);
+          }
+          40% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+            transform: translateX(260%) skewX(-12deg);
+          }
+        }
+        .lp-card-sheen {
+          opacity: 0;
+          transform: translateX(-150%) skewX(-12deg);
+        }
+        .group:hover .lp-card-sheen {
+          animation: lp-card-sheen 1.1s ease-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lp-card-sheen {
+            display: none;
+          }
+        }
+      `}</style>
+
       {/* Page heading */}
       <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
         <div>
@@ -1116,7 +1138,7 @@ const CoursesPage = () => {
             className="flex min-w-0 flex-1 items-stretch gap-2 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {categories.map(({ name, icon: Icon }) => {
+            {categories.map(({ name }) => {
               const isActive = activeCategory === name;
 
               return (
@@ -1133,12 +1155,6 @@ const CoursesPage = () => {
                       : "border-white/[0.07] bg-[#0B0B0F] text-white/50 hover:border-white/15 hover:text-white/85"
                   }`}
                 >
-                  <Icon
-                    className={`h-4 w-4 ${
-                      isActive ? "text-violet-300" : "text-white/40"
-                    }`}
-                  />
-
                   {name}
 
                   {isActive && (
@@ -1206,6 +1222,9 @@ const CoursesPage = () => {
                   key={`${course.id}-${startIndex + courseIndex}`}
                   className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
                 >
+                  {/* Glassy sheen — animates only while hovering, invisible on un-hover */}
+                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
                   {/* Course image */}
                   <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
                     <img
@@ -1239,16 +1258,16 @@ const CoursesPage = () => {
                       aria-pressed={isSaved}
                       className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 active:scale-90 ${
                         isSaved
-                          ? "border-violet-700/60 bg-[#25143D]/95 text-violet-400 shadow-[0_0_12px_rgba(109,40,217,0.18)]"
-                          : "border-violet-950/70 bg-[#0D0918]/90 text-[#5B21B6] hover:border-violet-700/50 hover:bg-gradient-to-br hover:from-[#24113F] hover:to-[#170D2B] hover:text-violet-400 hover:shadow-[0_0_14px_rgba(109,40,217,0.14)]"
+                          ? "border-violet-950/70 bg-[#0D0918]/90 text-violet-500"
+                          : "border-violet-950/70 bg-[#0D0918]/90 text-[#5B21B6] hover:border-violet-700/50 hover:bg-gradient-to-br hover:from-[#24113F] hover:to-[#170D2B] hover:text-violet-400"
                       }`}
                     >
                       <Bookmark
-                        className={`h-[17px] w-[17px] transition-all duration-300 ${
+                        className={`h-[17px] w-[17px] transition-transform duration-300 ${
                           isSaved ? "scale-110" : "group-hover:scale-110"
                         }`}
-                        fill={isSaved ? "#7C3AED" : "none"}
-                        stroke={isSaved ? "#7C3AED" : "currentColor"}
+                        fill={isSaved ? "#8B5CF6" : "none"}
+                        stroke={isSaved ? "#8B5CF6" : "currentColor"}
                         strokeWidth={1.8}
                       />
                     </button>
@@ -1331,10 +1350,10 @@ const CoursesPage = () => {
                         onClick={() =>
                           navigate(`/student/courses/${course.id}`)
                         }
-                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-violet-300/30 bg-gradient-to-r from-violet-500/25 to-purple-500/15 px-3 py-2 text-xs font-semibold text-violet-100 shadow-[0_4px_16px_rgba(139,92,246,0.14)] transition-all duration-300 hover:border-violet-300/50 hover:from-violet-500/40 hover:to-purple-500/30 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300/50"
+                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                       >
                         View course
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/button:translate-x-0.5" />
                       </button>
                     </div>
                   </div>
