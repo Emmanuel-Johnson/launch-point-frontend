@@ -1241,15 +1241,19 @@ const CoursesPage = () => {
                           : `Add ${course.title} to saved`
                       }
                       aria-pressed={isSaved}
-                      className={`absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ${
+                      className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 active:scale-90 ${
                         isSaved
-                          ? "border-violet-400/50 bg-violet-500/25 text-violet-200"
-                          : "border-white/15 bg-black/35 text-white/80 hover:border-violet-300/60 hover:bg-[#DDD6FE] hover:text-[#24113F] hover:shadow-[0_0_18px_rgba(196,181,253,0.28)]"
+                          ? "border-violet-700/60 bg-[#25143D]/95 text-violet-400 shadow-[0_0_12px_rgba(109,40,217,0.18)]"
+                          : "border-violet-950/70 bg-[#0D0918]/90 text-[#5B21B6] hover:border-violet-700/50 hover:bg-gradient-to-br hover:from-[#24113F] hover:to-[#170D2B] hover:text-violet-400 hover:shadow-[0_0_14px_rgba(109,40,217,0.14)]"
                       }`}
                     >
                       <Bookmark
-                        className="h-[17px] w-[17px]"
-                        fill={isSaved ? "currentColor" : "none"}
+                        className={`h-[17px] w-[17px] transition-all duration-300 ${
+                          isSaved ? "scale-110" : "group-hover:scale-110"
+                        }`}
+                        fill={isSaved ? "#7C3AED" : "none"}
+                        stroke={isSaved ? "#7C3AED" : "currentColor"}
+                        strokeWidth={1.8}
                       />
                     </button>
 
