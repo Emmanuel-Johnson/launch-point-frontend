@@ -698,13 +698,15 @@ const InstructorSettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-xl
-    bg-[#3B82F6] px-6 py-3 text-sm font-semibold text-white
-    shadow-md shadow-[#3B82F6]/20
-    transition-all duration-200
-    hover:bg-[#2563EB] hover:shadow-lg hover:shadow-[#3B82F6]/25
-    active:scale-[0.98]
-    disabled:cursor-not-allowed disabled:opacity-60"
+                              className="inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl
+    bg-[oklch(54%_0.20_255)] px-6 py-3 text-sm font-semibold text-white
+    shadow-md shadow-[oklch(54%_0.20_255)]/20
+    transition-all duration-300 ease-out
+    hover:-translate-y-0.5 hover:bg-[oklch(48%_0.21_255)]
+    hover:shadow-lg hover:shadow-[oklch(54%_0.20_255)]/30
+    active:translate-y-0 active:scale-[0.98]
+    disabled:cursor-not-allowed disabled:opacity-60
+    disabled:hover:translate-y-0 disabled:hover:shadow-md"
                             >
                               {isSavingPassword ? (
                                 <>
@@ -815,7 +817,16 @@ const InstructorSettingsPage = () => {
                           type="button"
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
-                          className="group flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#3B82F6]/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#3B82F6]/25 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl
+    bg-gradient-to-r from-[oklch(54%_0.20_255)] to-[oklch(48%_0.21_255)]
+    px-5 py-3 text-sm font-medium text-white
+    shadow-lg shadow-[oklch(54%_0.20_255)]/15
+    transition-all duration-300 ease-out
+    hover:-translate-y-0.5 hover:from-[oklch(58%_0.20_255)] hover:to-[oklch(52%_0.21_255)]
+    hover:shadow-xl hover:shadow-[oklch(54%_0.20_255)]/30
+    active:translate-y-0 active:scale-[0.98]
+    disabled:cursor-not-allowed disabled:opacity-50
+    disabled:hover:translate-y-0 disabled:hover:shadow-lg"
                         >
                           <Save size={16} />
 

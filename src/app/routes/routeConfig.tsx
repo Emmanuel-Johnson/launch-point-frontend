@@ -61,6 +61,14 @@ import NonAdminRoute from "./NonAdminRoute";
 import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
 import CommunityPage from "../../features/student/pages/CommunityPage";
 import SavedPage from "../../features/student/pages/SavedPage";
+import InstructorAnalyticsPage from "../../features/instructor/pages/InstructorAnalyticsPage";
+import InstructorRevenuePage from "../../features/instructor/pages/InstructorRevenuePage";
+import InstructorNotificationsPage from "../../features/instructor/pages/InstructorNotificationsPage";
+import InstructorCommunityPage from "../../features/instructor/pages/InstructorCommunityPage";
+import InstructorDoubtsPage from "../../features/instructor/pages/InstructorDoubtsPage";
+import InstructorStudentsPage from "../../features/instructor/pages/InstructorStudentsPage";
+import InstructorSubmissionsPage from "../../features/instructor/pages/InstructorSubmissionsPage";
+import InstructorCoursesPage from "../../features/instructor/pages/InstructorCoursesPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -208,6 +216,60 @@ export const routeConfig: RouteObject[] = [
           {
             path: "applications/:applicationId",
             element: <InstructorApplicationDetailsPage />,
+          },
+        ],
+      },
+      {
+        path: "/instructor",
+        element: <InstructorLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: "dashboard",
+            element: <InstructorDashboardPage />,
+          },
+          {
+            path: "courses",
+            element: <InstructorCoursesPage />,
+          },
+          {
+            path: "submissions",
+            element: <InstructorSubmissionsPage />,
+          },
+          {
+            path: "students",
+            element: <InstructorStudentsPage />,
+          },
+          {
+            path: "doubts",
+            element: <InstructorDoubtsPage />,
+          },
+          {
+            path: "community",
+            element: <InstructorCommunityPage />,
+          },
+          {
+            path: "notifications",
+            element: <InstructorNotificationsPage />,
+          },
+          {
+            path: "revenue",
+            element: <InstructorRevenuePage />,
+          },
+          {
+            path: "analytics",
+            element: <InstructorAnalyticsPage />,
+          },
+          {
+            path: "profile",
+            element: <InstructorProfilePage />,
+          },
+          {
+            path: "settings",
+            element: <InstructorSettingsPage />,
           },
         ],
       },
