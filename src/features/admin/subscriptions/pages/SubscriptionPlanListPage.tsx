@@ -48,10 +48,76 @@ interface SubscriptionPlanListItem {
   is_active: boolean;
 }
 
+/* -------------------------------- */
+/* Skeleton primitive               */
+/* -------------------------------- */
+
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[spSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder rows — mirror the plan table columns. */
+const PlanRowsSkeleton = () => {
+  return (
+    <>
+      {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+        <tr key={`skeleton-${index}`} className="border-b border-white/[0.04]">
+          {/* Plan */}
+          <td className="px-6 py-5">
+            <div className="flex items-center gap-3">
+              <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+              <div className="min-w-0 flex-1">
+                <Shimmer className="h-4 w-32" />
+                <Shimmer className="mt-1.5 h-3 w-16" />
+              </div>
+            </div>
+          </td>
+
+          {/* Type */}
+          <td className="px-6 py-5">
+            <Shimmer className="h-7 w-24 rounded-full" />
+          </td>
+
+          {/* Price */}
+          <td className="px-6 py-5">
+            <div className="flex justify-center">
+              <Shimmer className="h-5 w-16" />
+            </div>
+          </td>
+
+          {/* Billing */}
+          <td className="px-6 py-5">
+            <Shimmer className="h-7 w-24 rounded-md" />
+          </td>
+
+          {/* Status */}
+          <td className="px-6 py-5">
+            <Shimmer className="h-7 w-24 rounded-full" />
+          </td>
+
+          {/* Action */}
+          <td className="px-6 py-5">
+            <div className="flex items-center justify-end gap-2">
+              <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
+              <Shimmer className="h-9 w-32 rounded-lg" />
+            </div>
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+};
+
 const SubscriptionPlanListPage = () => {
   const navigate = useNavigate();
 
   const [plans, setPlans] = useState<SubscriptionPlanListItem[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -76,10 +142,14 @@ const SubscriptionPlanListPage = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
+        setIsLoading(true);
+
         const data = await getAdminSubscriptionPlans();
         setPlans(data);
       } catch (error) {
         console.error("Failed to fetch subscription plans:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -312,6 +382,10 @@ const SubscriptionPlanListPage = () => {
         @media (prefers-reduced-motion: reduce) {
           .sp-item { animation: none; }
         }
+
+        @keyframes spSkeletonShimmer {
+          100% { transform: translateX(100%); }
+        }
       `}</style>
 
       <div className="sp-font-body space-y-6 text-white">
@@ -471,7 +545,9 @@ const SubscriptionPlanListPage = () => {
               </thead>
 
               <tbody>
-                {paginatedPlans.length === 0 ? (
+                {isLoading ? (
+                  <PlanRowsSkeleton />
+                ) : paginatedPlans.length === 0 ? (
                   <tr>
                     <td
                       colSpan={6}
@@ -650,7 +726,7 @@ const SubscriptionPlanListPage = () => {
           </div>
 
           {/* Pagination */}
-          {filteredPlans.length > 0 && (
+          {!isLoading && filteredPlans.length > 0 && (
             <div className="flex flex-col gap-3 border-t border-white/[0.06] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-white/40">
                 Showing{" "}

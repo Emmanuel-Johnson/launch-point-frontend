@@ -55,6 +55,107 @@ const STATUS_FILTERS: StatusFilter[] = [
 
 const APPLICATIONS_PER_PAGE = 5;
 
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[iaSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the applications table rows. */
+const ApplicationTableSkeleton = () => {
+  return (
+    <div className="hidden overflow-x-auto md:block">
+      <style>{`
+        @keyframes iaSkeletonShimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
+
+      <table className="w-full table-fixed">
+        <thead className="cursor-default">
+          <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+            <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Applicant
+            </th>
+            <th className="w-[22%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Email
+            </th>
+            <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Experience
+            </th>
+            <th className="w-[16%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Applied
+            </th>
+            <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Status
+            </th>
+            <th className="w-[12%] px-6 py-4">
+              <div className="flex justify-end">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  Action
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {Array.from({ length: APPLICATIONS_PER_PAGE }).map((_, index) => (
+            <tr
+              key={`skeleton-${index}`}
+              className="border-b border-white/[0.06]"
+            >
+              {/* Applicant */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <Shimmer className="h-11 w-11 shrink-0 rounded-full" />
+                  <div className="min-w-0 flex-1">
+                    <Shimmer className="h-4 w-24" />
+                    <Shimmer className="mt-1.5 h-3 w-16" />
+                  </div>
+                </div>
+              </td>
+
+              {/* Email */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-4 w-40 max-w-full" />
+              </td>
+
+              {/* Experience */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-4 w-20" />
+              </td>
+
+              {/* Applied */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <Shimmer className="h-4 w-4 shrink-0" />
+                  <Shimmer className="h-4 w-20" />
+                </div>
+              </td>
+
+              {/* Status */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-7 w-24 rounded-full" />
+              </td>
+
+              {/* Action */}
+              <td className="px-6 py-4">
+                <div className="flex justify-end">
+                  <Shimmer className="h-9 w-24 rounded-lg" />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const InstructorApplicationAdminListPage = () => {
   const navigate = useNavigate();
 
@@ -416,15 +517,7 @@ const InstructorApplicationAdminListPage = () => {
             </div>
           </div>
 
-          {isLoading && (
-            <div
-              className="flex flex-col items-center justify-center gap-3 px-6 py-16"
-              role="status"
-              aria-label="Loading instructor applications"
-            >
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
-            </div>
-          )}
+          {isLoading && <ApplicationTableSkeleton />}
 
           {!isLoading && error && (
             <div

@@ -30,7 +30,7 @@ import NotFoundPage from "../../features/marketing/pages/NotFoundPage";
 import AdminDashboardPage from "../../features/admin/dashboard/pages/DashboardPage";
 import StudentListPage from "../../features/admin/students/pages/StudentListPage";
 import StudentDetailPage from "../../features/admin/students/pages/StudentDetailPage";
-import InstructorListPage from "../../features/admin/applications/instructors/pages/InstructorListPage";
+import InstructorListPage from "../../features/admin/instructors/pages/InstructorListPage";
 import SubscriptionPlanListPage from "../../features/admin/subscriptions/pages/SubscriptionPlanListPage";
 import SubscriptionPlanDetailPage from "../../features/admin/subscriptions/pages/SubscriptionPlanDetailPage";
 import NotificationsPage from "../../features/student/pages/NotificationsPage";
@@ -48,7 +48,7 @@ import ApplicationLayout from "../../features/admin/layout/ApplicationLayout";
 import InstructorApplicationAdminListPage from "../../features/admin/applications/instructors/pages/InstructorApplicationAdminListPage";
 import InstructorApplicationAdminDetailPage from "../../features/admin/applications/instructors/pages/InstructorApplicationAdminDetailPage";
 import InstructorProfilePage from "../../features/instructor/pages/InstructorProfilePage";
-import InstructorDetailPage from "../../features/admin/applications/instructors/pages/InstructorDetailPage";
+import InstructorDetailPage from "../../features/admin/instructors/pages/InstructorDetailPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";

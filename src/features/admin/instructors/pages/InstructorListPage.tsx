@@ -23,6 +23,108 @@ type Instructor = AdminInstructor;
 
 const ITEMS_PER_PAGE = 5;
 
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[ilSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the instructor table rows. */
+const InstructorTableSkeleton = () => {
+  return (
+    <div className="overflow-x-auto">
+      <style>{`
+        @keyframes ilSkeletonShimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
+
+      <table className="w-full table-fixed">
+        <thead className="cursor-default">
+          <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+            <th className="w-[22%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Instructor
+            </th>
+            <th className="w-[24%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Email
+            </th>
+            <th className="w-[15%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Occupation
+            </th>
+            <th className="w-[13%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Experience
+            </th>
+            <th className="w-[12%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              Status
+            </th>
+            <th className="w-[14%] px-6 py-4">
+              <div className="flex justify-end">
+                <span className="w-28 text-left text-[11px] font-semibold uppercase tracking-wider text-white/35">
+                  Action
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+            <tr
+              key={`skeleton-${index}`}
+              className="border-b border-white/[0.06]"
+            >
+              {/* Instructor */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <Shimmer className="h-11 w-11 shrink-0 rounded-full" />
+                  <div className="min-w-0 flex-1">
+                    <Shimmer className="h-4 w-24" />
+                    <Shimmer className="mt-1.5 h-3 w-16" />
+                  </div>
+                </div>
+              </td>
+
+              {/* Email */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <Shimmer className="h-4 w-4 shrink-0" />
+                  <Shimmer className="h-4 w-36 max-w-full" />
+                </div>
+              </td>
+
+              {/* Occupation */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-4 w-24" />
+                <Shimmer className="mt-1.5 h-3 w-20" />
+              </td>
+
+              {/* Experience */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-8 w-28 max-w-full rounded-full" />
+              </td>
+
+              {/* Status */}
+              <td className="px-6 py-4">
+                <Shimmer className="h-7 w-20 rounded-full" />
+              </td>
+
+              {/* Action */}
+              <td className="px-6 py-4">
+                <div className="flex justify-end">
+                  <Shimmer className="h-9 w-28 rounded-lg" />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const InstructorListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -395,14 +497,7 @@ const InstructorListPage = () => {
           </div>
 
           {/* Loading */}
-          {isLoading && (
-            <div className="flex min-h-[400px] items-center justify-center">
-              <div
-                className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-[#34D399]"
-                aria-label="Loading instructors"
-              />
-            </div>
-          )}
+          {isLoading && <InstructorTableSkeleton />}
 
           {/* Error */}
           {!isLoading && error && (
