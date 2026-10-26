@@ -406,51 +406,38 @@ const SettingsPage = () => {
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#7C5CFF]/20 blur-3xl"
               />
-
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -bottom-28 left-1/3 h-52 w-52 rounded-full bg-[#7C5CFF]/[0.07] blur-3xl"
               />
-
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -bottom-24 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
               />
-
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
               />
-
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
                 style={{ backgroundImage: `url("${GRAIN_URL}")` }}
               />
 
-              <div className="relative">
-                <p className="mb-2 text-sm font-medium text-[#7C5CFF]">
+              <div className="cursor-default">
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
                   Preferences
                 </p>
 
-                <h1
-                  className="text-3xl font-bold tracking-tight sm:text-4xl"
-                  style={{
-                    fontFamily: DISPLAY_FONT,
-                    backgroundImage:
-                      "linear-gradient(90deg, #FFFFFF 0%, #E6DEFF 45%, #9B7CFF 100%)",
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "inline-block",
-                  }}
-                >
-                  Settings
+                <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+                  <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                    Settings
+                  </span>
                 </h1>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-white/55">
+                <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
                   Manage your account security and choose how you receive
-                  updates from Launch Point.
+                  updates.
                 </p>
               </div>
             </div>
@@ -698,13 +685,15 @@ const SettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-xl
-    bg-[#7C5CFF] px-6 py-3 text-sm font-semibold text-white
-    shadow-md shadow-[#7C5CFF]/20
-    transition-all duration-200
-    hover:bg-[#6B4DE6] hover:shadow-lg hover:shadow-[#7C5CFF]/25
+                              className="group/button inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl
+    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3
+    text-sm font-semibold text-white
+    shadow-lg shadow-violet-950/40
+    transition-all duration-300
+    hover:-translate-y-0.5 hover:brightness-110
+    focus:outline-none focus:ring-2 focus:ring-violet-400/60
     active:scale-[0.98]
-    disabled:cursor-not-allowed disabled:opacity-60"
+    disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                             >
                               {isSavingPassword ? (
                                 <>
@@ -716,7 +705,10 @@ const SettingsPage = () => {
                                 </>
                               ) : (
                                 <>
-                                  <LockKeyhole size={16} />
+                                  <LockKeyhole
+                                    size={16}
+                                    className="transition-transform duration-300 group-hover/button:scale-110"
+                                  />
                                   Save new password
                                 </>
                               )}
@@ -815,9 +807,20 @@ const SettingsPage = () => {
                           type="button"
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
-                          className="group flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#8E72FF] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#7C5CFF]/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/25 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="group/button inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl
+    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3
+    text-sm font-semibold text-white
+    shadow-lg shadow-violet-950/40
+    transition-all duration-300
+    hover:-translate-y-0.5 hover:brightness-110
+    focus:outline-none focus:ring-2 focus:ring-violet-400/60
+    active:translate-y-0
+    disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                         >
-                          <Save size={16} />
+                          <Save
+                            size={16}
+                            className="transition-transform duration-300 group-hover/button:scale-110"
+                          />
 
                           {isSavingNotifications
                             ? "Saving..."

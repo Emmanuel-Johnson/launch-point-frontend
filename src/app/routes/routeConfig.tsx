@@ -61,6 +61,18 @@ import NonAdminRoute from "./NonAdminRoute";
 import CourseLearningPage from "../../features/student/pages/CourseLearningPage";
 import CommunityPage from "../../features/student/pages/CommunityPage";
 import SavedPage from "../../features/student/pages/SavedPage";
+import InstructorAnalyticsPage from "../../features/instructor/pages/InstructorAnalyticsPage";
+import InstructorRevenuePage from "../../features/instructor/pages/InstructorRevenuePage";
+import InstructorNotificationsPage from "../../features/instructor/pages/InstructorNotificationsPage";
+import InstructorCommunityPage from "../../features/instructor/pages/InstructorCommunityPage";
+import InstructorDoubtsPage from "../../features/instructor/pages/InstructorDoubtsPage";
+import InstructorStudentsPage from "../../features/instructor/pages/InstructorStudentsPage";
+import InstructorSubmissionsPage from "../../features/instructor/pages/InstructorSubmissionsPage";
+import InstructorCoursesPage from "../../features/instructor/pages/InstructorCoursesPage";
+import AnalyticsReportsPage from "../../features/admin/pages/AnalyticsReportsPage";
+import RevenuePage from "../../features/admin/pages/RevenuePage";
+import FinancialsPage from "../../features/admin/pages/FinancialsPage";
+import AdminNotificationsPage from "../../features/admin/pages/NotificationsPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -236,6 +248,38 @@ export const routeConfig: RouteObject[] = [
             path: "settings",
             element: <InstructorSettingsPage />,
           },
+          {
+            path: "courses",
+            element: <InstructorCoursesPage />,
+          },
+          {
+            path: "submissions",
+            element: <InstructorSubmissionsPage />,
+          },
+          {
+            path: "students",
+            element: <InstructorStudentsPage />,
+          },
+          {
+            path: "doubts",
+            element: <InstructorDoubtsPage />,
+          },
+          {
+            path: "community",
+            element: <InstructorCommunityPage />,
+          },
+          {
+            path: "notifications",
+            element: <InstructorNotificationsPage />,
+          },
+          {
+            path: "revenue",
+            element: <InstructorRevenuePage />,
+          },
+          {
+            path: "analytics",
+            element: <InstructorAnalyticsPage />,
+          },
         ],
       },
     ],
@@ -330,6 +374,22 @@ export const routeConfig: RouteObject[] = [
           {
             path: "subscriptions/:planId",
             element: <SubscriptionPlanDetailPage />,
+          },
+          {
+            path: "revenue",
+            element: <RevenuePage />,
+          },
+          {
+            path: "financials",
+            element: <FinancialsPage />,
+          },
+          {
+            path: "analytics-and-reports",
+            element: <AnalyticsReportsPage />,
+          },
+          {
+            path: "notifications",
+            element: <AdminNotificationsPage />,
           },
         ],
       },

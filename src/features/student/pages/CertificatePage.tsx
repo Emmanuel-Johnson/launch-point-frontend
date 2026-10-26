@@ -1,369 +1,112 @@
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
-import {
-  Award,
-  Search,
-  Download,
-  Eye,
-  CalendarDays,
-  BookOpen,
-  ShieldCheck,
-  GraduationCap,
-  LockKeyhole,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { certificates } from "../data/certificateData";
-import type { Certificate } from "../data/certificateData";
-
-type FilterType = "all" | "earned" | "in-progress";
-
-export default function CertificatePage() {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<FilterType>("all");
-
-  const earnedCount = certificates.filter(
-    (certificate) => certificate.status === "earned",
-  ).length;
-
-  const inProgressCount = certificates.filter(
-    (certificate) => certificate.status === "in-progress",
-  ).length;
-
-  const filteredCertificates = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
-
-    return certificates.filter((certificate) => {
-      const matchesSearch =
-        certificate.title.toLowerCase().includes(normalizedSearch) ||
-        certificate.category.toLowerCase().includes(normalizedSearch) ||
-        certificate.instructor.toLowerCase().includes(normalizedSearch);
-
-      const matchesFilter = filter === "all" || certificate.status === filter;
-
-      return matchesSearch && matchesFilter;
-    });
-  }, [search, filter]);
-
-  const handleDownload = (certificate: Certificate) => {
-    if (certificate.status !== "earned") return;
-
-    // TODO: Replace with your certificate download API.
-    console.info(`Download certificate: ${certificate.certificateNumber}`);
-  };
-
-  const clearFilters = () => {
-    setSearch("");
-    setFilter("all");
-  };
-
-  return (
-    <div className="min-h-screen bg-[#08080D] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        {/* Page heading */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="mb-2 flex items-center gap-2 text-sm text-violet-400">
-              <GraduationCap size={18} />
-              <span>Student Portal</span>
-            </div>
-
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              My Certificates
-            </h1>
-
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-              Celebrate your achievements and track the certificates you earn
-              throughout your learning journey.
-            </p>
-          </div>
-
-          <div className="flex w-fit items-center gap-3 rounded-xl border border-violet-500/20 bg-violet-500/10 px-4 py-3">
-            <ShieldCheck className="text-violet-400" size={22} />
-            <div>
-              <p className="text-xs text-gray-400">Certificates earned</p>
-              <p className="text-lg font-semibold">{earnedCount}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <StatCard
-            icon={<Award size={21} />}
-            label="Earned certificates"
-            value={earnedCount}
-            description="Successfully completed courses"
-            iconClass="bg-violet-500/10 text-violet-400"
-          />
-
-          <StatCard
-            icon={<BookOpen size={21} />}
-            label="In progress"
-            value={inProgressCount}
-            description="Courses you are working toward"
-            iconClass="bg-blue-500/10 text-blue-400"
-          />
-
-          <StatCard
-            icon={<ShieldCheck size={21} />}
-            label="Total achievements"
-            value={earnedCount}
-            description="Certificates ready to collect"
-            iconClass="bg-emerald-500/10 text-emerald-400"
-          />
-        </div>
-
-        {/* Search and filters */}
-        <div className="flex flex-col gap-4 rounded-2xl border border-white/[0.07] bg-[#101016] p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full sm:max-w-sm">
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-            />
-
-            <input
-              type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search certificates..."
-              aria-label="Search certificates"
-              className="w-full rounded-xl border border-white/10 bg-[#0A0A10] py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/10"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {(
-              [
-                { label: "All", value: "all" },
-                { label: "Earned", value: "earned" },
-                { label: "In progress", value: "in-progress" },
-              ] as const
-            ).map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setFilter(option.value)}
-                aria-pressed={filter === option.value}
-                className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${
-                  filter === option.value
-                    ? "bg-violet-600 text-white"
-                    : "border border-white/10 bg-white/[0.03] text-gray-400 hover:bg-white/[0.07] hover:text-white"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Certificate list */}
-        <section>
-          <div className="mb-5 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold">Your achievements</h2>
-            <span className="text-sm text-gray-500">
-              {filteredCertificates.length} results
-            </span>
-          </div>
-
-          {filteredCertificates.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-              {filteredCertificates.map((certificate) => (
-                <CertificateCard
-                  key={certificate.id}
-                  certificate={certificate}
-                  onView={() =>
-                    navigate(`/student/certificates/${certificate.id}`)
-                  }
-                  onDownload={() => handleDownload(certificate)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-white/10 bg-[#101016] px-6 py-16 text-center">
-              <Award size={38} className="mx-auto mb-4 text-gray-600" />
-
-              <h3 className="font-semibold text-gray-200">
-                No certificates found
-              </h3>
-
-              <p className="mt-2 text-sm text-gray-500">
-                Try another search or choose a different filter.
-              </p>
-
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="mt-5 text-sm font-medium text-violet-400 hover:text-violet-300"
-              >
-                Clear filters
-              </button>
-            </div>
-          )}
-        </section>
-      </div>
-    </div>
-  );
+interface ComingSoonPageProps {
+  featureName?: string;
+  title?: string;
+  description?: string;
 }
 
-interface StatCardProps {
-  icon: ReactNode;
-  label: string;
-  value: number;
-  description: string;
-  iconClass: string;
-}
-
-function StatCard({
-  icon,
-  label,
-  value,
-  description,
-  iconClass,
-}: StatCardProps) {
+export default function ComingSoonPage({
+  featureName = "Something New",
+  description = "A new experience is taking shape. We're building something meaningful to help you learn, grow, and go further.",
+}: ComingSoonPageProps) {
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#101016] p-5 transition hover:border-violet-500/20">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-400">{label}</p>
-          <p className="mt-3 text-3xl font-bold tracking-tight">{value}</p>
-        </div>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#08070D] px-6 py-20 text-white selection:bg-violet-500/30">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-[42%] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[150px]" />
 
-        <div className={`rounded-xl p-3 ${iconClass}`}>{icon}</div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#08070D_78%)]" />
+
+        <div className="absolute inset-0 opacity-[0.025] [background-image:linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] [background-size:72px_72px]" />
       </div>
 
-      <p className="mt-4 text-xs text-gray-500">{description}</p>
-    </div>
-  );
-}
+      {/* Top label */}
+      <div className="absolute left-6 top-7 flex items-center gap-3 sm:left-10 sm:top-9">
+        <span className="text-[11px] font-medium tracking-[0.12em] text-white/50">
+          BUILT FOR WHAT'S NEXT
+        </span>
+      </div>
 
-interface CertificateCardProps {
-  certificate: Certificate;
-  onView: () => void;
-  onDownload: () => void;
-}
+      {/* Availability */}
+      <div className="absolute right-6 top-8 flex items-center gap-2.5 sm:right-10 sm:top-10">
+        <span className="h-1.5 w-1.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(167,139,250,0.8)]" />
 
-function CertificateCard({
-  certificate,
-  onView,
-  onDownload,
-}: CertificateCardProps) {
-  const isEarned = certificate.status === "earned";
+        <span className="text-[10px] font-medium uppercase tracking-[0.17em] text-white/40">
+          In the making
+        </span>
+      </div>
 
-  return (
-    <article className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-[#101016] transition hover:border-violet-500/30">
-      {/* Certificate illustration */}
-      <div className="relative overflow-hidden border-b border-white/[0.06] bg-gradient-to-br from-violet-950/70 via-[#171326] to-[#0C0C12] p-6 sm:p-8">
-        <div className="absolute -right-10 -top-10 size-40 rounded-full bg-violet-500/10 blur-2xl transition group-hover:bg-violet-500/20" />
+      {/* Main content */}
+      <section className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center pt-8 text-center">
+        {/* Orbital centerpiece */}
+        <div className="relative mb-10 flex h-36 w-36 items-center justify-center sm:mb-12 sm:h-44 sm:w-44">
+          {/* Outer orbit */}
+          <div className="absolute inset-0 rounded-full border border-white/[0.055]" />
 
-        <div className="relative flex min-h-36 items-center gap-5 sm:min-h-40">
-          <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-violet-400/30 bg-violet-500/10 sm:size-20">
-            {isEarned ? (
-              <Award size={38} className="text-violet-300 sm:size-11" />
-            ) : (
-              <LockKeyhole size={34} className="text-gray-500 sm:size-10" />
-            )}
+          {/* Middle orbit */}
+          <div className="absolute inset-[15px] rounded-full border border-violet-300/[0.12]" />
+
+          {/* Inner orbit */}
+          <div className="absolute inset-[31px] rounded-full border border-white/[0.07]" />
+
+          {/* Orbital path */}
+          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-violet-300/[0.16]" />
+
+          {/* Orbiting point */}
+          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full">
+            <span className="absolute left-1/2 top-[-3px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
           </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-300 sm:text-xs">
-              Launch Point LMS
-            </p>
+          {/* Core glow */}
+          <div className="absolute h-16 w-16 rounded-full bg-violet-500/20 blur-2xl sm:h-20 sm:w-20" />
 
-            <p className="mt-2 text-lg font-bold leading-snug text-white sm:text-xl">
-              {isEarned ? "Certificate of Completion" : "Keep Learning"}
-            </p>
-
-            <p className="mt-2 line-clamp-2 text-xs leading-5 text-gray-400">
-              {certificate.title}
-            </p>
+          {/* Centerpiece */}
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-[#100D19] shadow-[inset_0_0_25px_rgba(139,92,246,0.08),0_0_40px_rgba(139,92,246,0.08)] sm:h-16 sm:w-16">
+            <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-white via-violet-200 to-violet-500 shadow-[0_0_22px_rgba(167,139,250,0.7)]" />
           </div>
         </div>
 
-        <div className="absolute right-4 top-4">
-          <span
-            className={`rounded-full px-3 py-1 text-[10px] font-semibold ${
-              isEarned
-                ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                : "border border-amber-500/20 bg-amber-500/10 text-amber-400"
-            }`}
-          >
-            {isEarned ? "Earned" : "In progress"}
+        {/* Feature label */}
+        <div className="mb-7 flex items-center gap-3">
+          <span className="h-px w-5 bg-violet-400/40" />
+
+          <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-violet-300/90 sm:text-[11px]">
+            {featureName} · Coming Soon
+          </p>
+
+          <span className="h-px w-5 bg-violet-400/40" />
+        </div>
+
+        {/* Headline */}
+        <h1 className="max-w-3xl text-[42px] font-medium leading-[1.08] tracking-[-0.065em] text-white sm:text-6xl md:text-7xl lg:text-[84px]">
+          The future looks
+          <span className="mt-1 block bg-gradient-to-r from-violet-200 via-purple-300 to-violet-400 bg-clip-text pb-2 text-transparent">
+            different here.
           </span>
-        </div>
-      </div>
+        </h1>
 
-      {/* Certificate information */}
-      <div className="p-5">
-        <h3 className="font-semibold leading-6 text-white">
-          {certificate.title}
-        </h3>
-
-        <p className="mt-2 text-sm text-gray-400">
-          Instructor: {certificate.instructor}
+        {/* Description */}
+        <p className="mt-7 max-w-md text-sm leading-7 text-white/45 sm:mt-8 sm:text-base sm:leading-8">
+          {description}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
-          <span className="rounded-lg border border-white/[0.07] px-2.5 py-1.5">
-            {certificate.category}
-          </span>
-
-          {isEarned && certificate.issuedAt && (
-            <span className="inline-flex items-center gap-1.5">
-              <CalendarDays size={14} />
-              {new Date(`${certificate.issuedAt}T00:00:00`).toLocaleDateString(
-                "en-US",
-                {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                },
-              )}
-            </span>
-          )}
+        {/* Bottom accent */}
+        <div className="mt-12 flex items-center gap-2.5">
+          <span className="h-1 w-1 rounded-full bg-violet-300/40" />
+          <span className="h-1 w-1 rounded-full bg-violet-300/70" />
+          <span className="h-1 w-1 rounded-full bg-violet-300/40" />
         </div>
+      </section>
 
-        {!isEarned && (
-          <div className="mt-5">
-            <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-gray-400">Course progress</span>
-              <span className="font-medium text-violet-300">
-                {certificate.progress}%
-              </span>
-            </div>
+      {/* Bottom footer */}
+      <footer className="absolute bottom-7 left-6 right-6 flex flex-col items-center justify-between gap-3 sm:bottom-9 sm:left-10 sm:right-10 sm:flex-row">
+        <p className="text-[10px] tracking-wide text-white/25">
+          Learn Today, Lead Tomorrow.
+        </p>
 
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-violet-500 transition-all"
-                style={{ width: `${certificate.progress}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="mt-5 flex gap-3">
-          <button
-            type="button"
-            onClick={onView}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm font-medium text-gray-300 transition hover:border-violet-500/40 hover:bg-violet-500/5 hover:text-white"
-          >
-            <Eye size={16} />
-            View details
-          </button>
-
-          {isEarned && (
-            <button
-              type="button"
-              onClick={onDownload}
-              aria-label={`Download ${certificate.title}`}
-              title="Download certificate"
-              className="inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-2.5 text-white transition hover:bg-violet-500"
-            >
-              <Download size={17} />
-            </button>
-          )}
-        </div>
-      </div>
-    </article>
+        <p className="text-[10px] tracking-[0.12em] text-white/25">
+          A LITTLE MORE TO LOOK FORWARD TO.
+        </p>
+      </footer>
+    </main>
   );
 }

@@ -354,14 +354,19 @@ const ViewProfile = () => {
             style={{ animationDelay: "80ms" }}
           >
             <div className="cursor-default">
-              <p className="mb-2 text-sm font-medium text-[#7C5CFF]">Account</p>
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
+                Account
+              </p>
 
-              <h1
-                className="cursor-default bg-gradient-to-r from-white via-white to-[#9B7CFF] bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-4xl"
-                style={{ fontFamily: DISPLAY_FONT }}
-              >
-                My Profile
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+                <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                  My Profile
+                </span>
               </h1>
+
+              <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+                Manage your personal information and customize your profile.
+              </p>
             </div>
 
             <button

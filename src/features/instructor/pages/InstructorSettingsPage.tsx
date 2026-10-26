@@ -698,26 +698,29 @@ const InstructorSettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-xl
-    bg-[#3B82F6] px-6 py-3 text-sm font-semibold text-white
-    shadow-md shadow-[#3B82F6]/20
-    transition-all duration-200
-    hover:bg-[#2563EB] hover:shadow-lg hover:shadow-[#3B82F6]/25
-    active:scale-[0.98]
-    disabled:cursor-not-allowed disabled:opacity-60"
+                              className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255_/_0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                             >
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
                               {isSavingPassword ? (
                                 <>
                                   <LoaderCircle
                                     size={16}
-                                    className="animate-spin"
+                                    className="relative z-10 animate-spin"
                                   />
-                                  Updating password...
+                                  <span className="relative z-10">
+                                    Updating password...
+                                  </span>
                                 </>
                               ) : (
                                 <>
-                                  <LockKeyhole size={16} />
-                                  Save new password
+                                  <LockKeyhole
+                                    size={16}
+                                    className="relative z-10 transition-transform duration-300 group-hover:scale-110"
+                                  />
+                                  <span className="relative z-10">
+                                    Save new password
+                                  </span>
                                 </>
                               )}
                             </button>
@@ -815,13 +818,20 @@ const InstructorSettingsPage = () => {
                           type="button"
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
-                          className="group flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#3B82F6]/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#3B82F6]/25 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255_/_0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                         >
-                          <Save size={16} />
+                          <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
-                          {isSavingNotifications
-                            ? "Saving..."
-                            : "Save preferences"}
+                          <Save
+                            size={16}
+                            className="relative z-10 transition-transform duration-300 group-hover:scale-110"
+                          />
+
+                          <span className="relative z-10">
+                            {isSavingNotifications
+                              ? "Saving..."
+                              : "Save preferences"}
+                          </span>
                         </button>
                       </div>
                     </section>

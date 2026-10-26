@@ -4,23 +4,19 @@ import {
   ArrowDownUp,
   ArrowRight,
   ArrowUpAZ,
-  BarChart3,
   BookOpen,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
-  Code2,
-  Database,
+  Crown,
   Flame,
   Bookmark,
-  Palette,
   Search,
   SlidersHorizontal,
   Sparkles,
   Star,
-  X,
   Zap,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -99,15 +95,12 @@ const formatRelativeUploadDate = (uploadedAt: string) => {
   return "Just now";
 };
 
-const categories: {
-  name: Category;
-  icon: typeof Code2;
-}[] = [
-  { name: "All Courses", icon: Sparkles },
-  { name: "Development", icon: Code2 },
-  { name: "Design", icon: Palette },
-  { name: "Business", icon: BarChart3 },
-  { name: "Data Science", icon: Database },
+const categories: { name: Category }[] = [
+  { name: "All Courses" },
+  { name: "Development" },
+  { name: "Design" },
+  { name: "Business" },
+  { name: "Data Science" },
 ];
 
 // Options for the custom, app-styled filter dropdowns below. Values match the
@@ -609,30 +602,53 @@ const CoursesPage = () => {
 
   return (
     <div className="min-h-full space-y-8 pb-8 text-white">
-      {/* Page heading */}
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
-          <div className="mb-4 flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.2em] text-[#A78BFA]">
-            <span className="h-1 w-1 rounded-full bg-[#8B5CF6] shadow-[0_0_6px_1px_rgba(139,92,246,0.7)]" />
-            Your next chapter starts here
-          </div>
+      {/* Glassy card sheen — plays only on hover, nothing on un-hover */}
+      <style>{`
+        @keyframes lp-card-sheen {
+          0% {
+            opacity: 0;
+            transform: translateX(-150%) skewX(-12deg);
+          }
+          40% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+            transform: translateX(260%) skewX(-12deg);
+          }
+        }
+        .lp-card-sheen {
+          opacity: 0;
+          transform: translateX(-150%) skewX(-12deg);
+        }
+        .group:hover .lp-card-sheen {
+          animation: lp-card-sheen 1.1s ease-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lp-card-sheen {
+            display: none;
+          }
+        }
+      `}</style>
 
-          <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+      {/* Page heading */}
+
+      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div className="cursor-default">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
+            Your next chapter starts here
+          </p>
+
+          <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
             Explore{" "}
-            <span className="bg-gradient-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
 
-          <p className="mt-4 max-w-xl text-sm leading-7 text-white/50 sm:text-[15px]">
-            Discover new skills, learn from industry experts, and build the{" "}
-            <span
-              className="italic text-white/70"
-              style={{ fontFamily: '"Fraunces", serif' }}
-            >
-              future you want
-            </span>
-            .
+          <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+            Discover new skills, learn from industry experts, and build the
+            future you want.
           </p>
         </div>
       </section>
@@ -643,22 +659,58 @@ const CoursesPage = () => {
         <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
         <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid min-h-[320px] items-center md:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid min-h-[320px] items-center md:grid-cols-[0.9fr_1.1fr]">
+          {/* Left side - Photo */}
+          <div className="relative hidden min-h-[320px] h-full md:block">
+            <img
+              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
+              alt="Learners building new skills with digital learning tools"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-45"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-l from-[#100C20] via-[#100C20]/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
+
+            <div className="absolute left-7 top-7 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0B0D]/70 p-3.5 shadow-xl backdrop-blur-xl">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20">
+                <Zap className="h-5 w-5 text-violet-300" />
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-white">Keep growing</p>
+                <p className="mt-1 text-xs text-white/50">
+                  One lesson at a time
+                </p>
+              </div>
+            </div>
+
+            <div className="absolute bottom-7 left-7 right-7 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-violet-200">
+                Your next chapter
+              </p>
+
+              <p className="mt-2 text-lg font-semibold text-white">
+                Discover. Practice. Grow.
+              </p>
+
+              <p className="mt-1 text-sm text-white/55">
+                Turn curiosity into skills you can use.
+              </p>
+            </div>
+          </div>
+
+          {/* Right side - Text */}
           <div className="relative z-10 px-6 py-9 sm:px-9 lg:px-11 lg:py-12">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-violet-200 sm:text-xs">
               <Sparkles className="h-3.5 w-3.5" />
               YOUR LEARNING JOURNEY STARTS HERE
             </div>
 
-            <h2 className="max-w-xl text-2xl font-normal italic leading-[1.25] tracking-[-0.035em] sm:text-3xl lg:text-[34px]">
+            <h2 className="max-w-xl text-2xl font-medium leading-[1.25] tracking-[-0.04em] sm:text-3xl lg:text-[34px]">
               One new skill can
               <br />
-              <span
-                className="font-medium bg-gradient-to-r from-white via-[#DDD6FE] to-[#A78BFA] bg-clip-text text-transparent"
-                style={{ fontFamily: '"Fraunces", serif' }}
-              >
-                open new possibilities.
-              </span>
+              open new possibilities.
             </h2>
 
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/60 sm:text-base">
@@ -681,45 +733,11 @@ const CoursesPage = () => {
                 Explore courses
                 <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
               </button>
+
               <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/60">
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 Learn at your own pace
               </span>
-            </div>
-          </div>
-
-          <div className="relative hidden min-h-[320px] h-full md:block">
-            <img
-              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
-              alt="Learners building new skills with digital learning tools"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-45"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#100C20] via-[#100C20]/35 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
-
-            <div className="absolute right-7 top-7 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0B0D]/70 p-3.5 shadow-xl backdrop-blur-xl">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20">
-                <Zap className="h-5 w-5 text-violet-300" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Keep growing</p>
-                <p className="mt-1 text-xs text-white/50">
-                  One lesson at a time
-                </p>
-              </div>
-            </div>
-
-            <div className="absolute bottom-7 left-7 right-7 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-violet-200">
-                Your next chapter
-              </p>
-              <p className="mt-2 text-lg font-semibold text-white">
-                Discover. Practice. Grow.
-              </p>
-              <p className="mt-1 text-sm text-white/55">
-                Turn curiosity into skills you can use.
-              </p>
             </div>
           </div>
         </div>
@@ -1114,7 +1132,7 @@ const CoursesPage = () => {
             className="flex min-w-0 flex-1 items-stretch gap-2 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {categories.map(({ name, icon: Icon }) => {
+            {categories.map(({ name }) => {
               const isActive = activeCategory === name;
 
               return (
@@ -1131,12 +1149,6 @@ const CoursesPage = () => {
                       : "border-white/[0.07] bg-[#0B0B0F] text-white/50 hover:border-white/15 hover:text-white/85"
                   }`}
                 >
-                  <Icon
-                    className={`h-4 w-4 ${
-                      isActive ? "text-violet-300" : "text-white/40"
-                    }`}
-                  />
-
                   {name}
 
                   {isActive && (
@@ -1182,45 +1194,44 @@ const CoursesPage = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.025] px-2 py-1.5">
-            <span className="text-[10px] text-white/40">Showing</span>
-            <span className="text-xs font-medium tabular-nums text-white">
+          <p className="text-[10px] uppercase tracking-wider text-white/45">
+            <span className="mr-1">Showing</span>
+            <span className="font-semibold tabular-nums text-white/80">
               {firstCourseNumber}–{lastCourseNumber}
             </span>
-            <span className="text-white/20">/</span>
-            <span className="text-xs tabular-nums text-white/50">
+            <span className="mx-1 text-white/25">of</span>
+            <span className="font-medium tabular-nums text-violet-300">
               {filteredCourses.length}
             </span>
-          </div>
+            <span className="ml-0.5">courses</span>
+          </p>
         </div>
 
         {filteredCourses.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {paginatedCourses.map((course, courseIndex) => {
               const isSaved = saved.includes(course.id);
 
               return (
                 <article
                   key={`${course.id}-${startIndex + courseIndex}`}
-                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0C] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:-translate-y-1.5 hover:border-[#8B5CF6]/45 hover:shadow-[0_24px_60px_-12px_rgba(124,92,255,0.25),0_18px_45px_rgba(0,0,0,0.45)]"
+                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
                 >
+                  {/* Glassy sheen — animates only while hovering, invisible on un-hover */}
+                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
                   {/* Course image */}
-                  <div className="relative -mb-px h-48 overflow-hidden bg-[#14101D]">
+                  <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
                     <img
                       src={course.image}
                       alt={course.title}
                       loading="lazy"
                       className="block h-full w-full object-cover"
                     />
-                    <div
-                      className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br ${course.accent} opacity-80 transition-opacity duration-500 group-hover:opacity-100`}
-                    />
-                    <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
-
                     <div className="absolute left-3 top-3 z-20">
                       {course.plan === "Premium" ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-400/40 bg-[#281447]/90 px-3 py-1.5 text-[11px] font-semibold text-violet-200 shadow-lg backdrop-blur-md">
-                          <Sparkles className="h-3.5 w-3.5" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+                          <Crown className="h-3.5 w-3.5 text-amber-300" />
                           Premium
                         </span>
                       ) : (
@@ -1240,33 +1251,37 @@ const CoursesPage = () => {
                           : `Add ${course.title} to saved`
                       }
                       aria-pressed={isSaved}
-                      className={`absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ${
+                      className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 active:scale-90 ${
                         isSaved
-                          ? "border-violet-400/50 bg-violet-500/25 text-violet-200"
-                          : "border-white/15 bg-black/35 text-white/80 hover:border-violet-300/60 hover:bg-[#DDD6FE] hover:text-[#24113F] hover:shadow-[0_0_18px_rgba(196,181,253,0.28)]"
+                          ? "border-violet-950/70 bg-[#0D0918]/90 text-violet-500"
+                          : "border-violet-950/70 bg-[#0D0918]/90 text-[#5B21B6] hover:border-violet-700/50 hover:bg-gradient-to-br hover:from-[#24113F] hover:to-[#170D2B] hover:text-violet-400"
                       }`}
                     >
                       <Bookmark
-                        className="h-[17px] w-[17px]"
-                        fill={isSaved ? "currentColor" : "none"}
+                        className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                          isSaved ? "scale-110" : "group-hover:scale-110"
+                        }`}
+                        fill={isSaved ? "#8B5CF6" : "none"}
+                        stroke={isSaved ? "#8B5CF6" : "currentColor"}
+                        strokeWidth={1.8}
                       />
                     </button>
 
-                    <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1.5 text-[11px] text-white/80 backdrop-blur-md">
-                      <Clock3 className="h-3.5 w-3.5 text-violet-300" />
+                    <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+                      <Clock3 className="h-3.5 w-3.5 text-cyan-300" />
                       {course.duration}
                     </div>
 
-                    <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1.5 text-[11px] text-white/80 backdrop-blur-md">
-                      <BookOpen className="h-3.5 w-3.5 text-violet-300" />
+                    <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+                      <BookOpen className="h-3.5 w-3.5 text-cyan-300" />
                       {course.lessons} lessons
                     </div>
                   </div>
 
                   {/* Course information */}
-                  <div className="flex flex-1 flex-col p-4">
-                    <div className="mb-3 flex items-center justify-between gap-2">
-                      <span className="rounded-md border border-violet-500/20 bg-violet-500/[0.08] px-2.5 py-1 text-[10px] font-medium text-violet-300">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-4 flex items-center justify-between gap-2">
+                      <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
                         {course.category}
                       </span>
                       <span className="text-[11px] text-white/35">
@@ -1274,14 +1289,14 @@ const CoursesPage = () => {
                       </span>
                     </div>
 
-                    <p className="mb-2 text-[10px] font-normal tracking-wide text-white/45">
+                    <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
                       {course.level} level
                     </p>
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 text-white transition-colors group-hover:text-violet-200">
+                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {course.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-5 text-white/45">
+                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
                       {course.description}
                     </p>
 
@@ -1289,14 +1304,14 @@ const CoursesPage = () => {
                       {course.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-md border border-white/[0.07] bg-white/[0.025] px-2 py-1 text-[10px] text-white/55 transition-colors group-hover:border-violet-400/20 group-hover:bg-violet-500/[0.06] group-hover:text-white/70"
+                          className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
                         >
                           {skill}
                         </span>
                       ))}
                     </div>
 
-                    <div className="mb-4 flex items-center gap-3 border-t border-white/[0.07] pt-4">
+                    <div className="mb-4 mt-1 flex items-center gap-3 border-t border-white/[0.07] pt-4">
                       <img
                         src={course.instructorImage}
                         alt={course.instructor}
@@ -1314,7 +1329,7 @@ const CoursesPage = () => {
                       </div>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-3">
+                    <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-4">
                       <div className="flex items-center gap-1.5">
                         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                         <span className="text-xs font-semibold text-white">
@@ -1330,10 +1345,10 @@ const CoursesPage = () => {
                         onClick={() =>
                           navigate(`/student/courses/${course.id}`)
                         }
-                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
+                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                       >
                         View course
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/button:translate-x-0.5" />
                       </button>
                     </div>
                   </div>
