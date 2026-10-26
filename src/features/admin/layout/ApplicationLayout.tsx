@@ -7,7 +7,7 @@ const ApplicationLayout = () => {
   return (
     <div className="min-w-0 space-y-6">
       {/* Application Navigation */}
-      <div className="relative isolate overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090B0A]">
+      <div className="animate-page-item relative isolate overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090B0A]">
         {/* Ambient Background Lighting */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute -left-20 -top-24 h-48 w-48 rounded-full bg-[#34D399]/[0.035] blur-3xl" />
