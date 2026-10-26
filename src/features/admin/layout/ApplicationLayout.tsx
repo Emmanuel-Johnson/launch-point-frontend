@@ -19,7 +19,7 @@ const ApplicationLayout = () => {
           <NavLink
             to="/admin/applications/instructors"
             className={({ isActive }) =>
-              `group relative flex min-h-[142px] min-w-0 items-start gap-4 overflow-hidden p-5 transition-colors duration-300 sm:p-6 ${
+              `group relative flex min-h-[120px] min-w-0 items-start gap-4 overflow-hidden p-4 transition-colors duration-300 sm:p-5 ${
                 isActive ? "bg-[#34D399]/[0.045]" : "hover:bg-white/[0.025]"
               }`
             }
@@ -52,14 +52,14 @@ const ApplicationLayout = () => {
 
                 {/* Icon Container */}
                 <span
-                  className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
+                  className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
                     isActive
                       ? "border-[#34D399]/25 bg-[#34D399]/[0.10] text-[#34D399] shadow-[0_0_24px_rgba(52,211,153,0.07)]"
                       : "border-white/[0.08] bg-white/[0.025] text-white/45 group-hover:border-[#34D399]/20 group-hover:bg-[#34D399]/[0.06] group-hover:text-[#34D399]"
                   }`}
                 >
                   <GraduationCap
-                    size={22}
+                    size={21}
                     strokeWidth={1.7}
                     className="transition-transform duration-300 group-hover:scale-110"
                   />
@@ -89,7 +89,7 @@ const ApplicationLayout = () => {
                     />
                   </span>
 
-                  <span className="mt-2 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
+                  <span className="mt-1.5 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
                     Review applicant profiles and their teaching expertise.
                   </span>
                 </span>
@@ -101,7 +101,7 @@ const ApplicationLayout = () => {
           <NavLink
             to="/admin/applications/courses"
             className={({ isActive }) =>
-              `group relative flex min-h-[142px] min-w-0 items-start gap-4 overflow-hidden border-t border-white/[0.07] p-5 transition-colors duration-300 sm:border-l sm:border-t-0 sm:p-6 ${
+              `group relative flex min-h-[120px] min-w-0 items-start gap-4 overflow-hidden border-t border-white/[0.07] p-4 transition-colors duration-300 sm:border-l sm:border-t-0 sm:p-5 ${
                 isActive ? "bg-[#34D399]/[0.045]" : "hover:bg-white/[0.025]"
               }`
             }
@@ -134,14 +134,14 @@ const ApplicationLayout = () => {
 
                 {/* Icon Container */}
                 <span
-                  className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
+                  className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
                     isActive
                       ? "border-[#34D399]/25 bg-[#34D399]/[0.10] text-[#34D399] shadow-[0_0_24px_rgba(52,211,153,0.07)]"
                       : "border-white/[0.08] bg-white/[0.025] text-white/45 group-hover:border-[#34D399]/20 group-hover:bg-[#34D399]/[0.06] group-hover:text-[#34D399]"
                   }`}
                 >
                   <BookOpen
-                    size={21}
+                    size={20}
                     strokeWidth={1.7}
                     className="transition-transform duration-300 group-hover:scale-110"
                   />
@@ -171,7 +171,7 @@ const ApplicationLayout = () => {
                     />
                   </span>
 
-                  <span className="mt-2 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
+                  <span className="mt-1.5 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
                     Review course submissions and manage their approval status.
                   </span>
                 </span>
