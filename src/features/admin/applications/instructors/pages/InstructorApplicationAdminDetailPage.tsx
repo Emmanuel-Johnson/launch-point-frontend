@@ -333,6 +333,185 @@ const SectionHeading = ({
 const cardSurface =
   "rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_48px_-28px_rgba(0,0,0,0.9)]";
 
+/* ================================================================
+
+   SKELETON — loading placeholder mirroring the detail layout
+
+\================================================================ */
+
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[apSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+const ApplicationDetailSkeleton = () => (
+  <div className="mx-auto max-w-7xl space-y-6 pb-10">
+    <style>{`
+      @keyframes apSkeletonShimmer {
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
+
+    {/* Breadcrumb */}
+    <Shimmer className="h-4 w-16" />
+
+    {/* Applicant header */}
+    <div
+      className={`relative overflow-hidden p-5 sm:p-7 ${cardSurface} rounded-2xl`}
+    >
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
+          <Shimmer className="h-16 w-16 shrink-0 rounded-2xl" />
+          <div className="min-w-0">
+            <Shimmer className="h-7 w-48" />
+            <Shimmer className="mt-3 h-4 w-56 max-w-full" />
+            <div className="mt-3 flex flex-wrap gap-4">
+              <Shimmer className="h-4 w-32" />
+              <Shimmer className="h-4 w-40" />
+            </div>
+          </div>
+        </div>
+
+        <Shimmer className="h-9 w-32 shrink-0 self-start rounded-lg" />
+      </div>
+    </div>
+
+    {/* Main + sidebar */}
+    <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="min-w-0 space-y-6">
+        {/* Applicant Information */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-40" />
+              <Shimmer className="mt-2 h-3 w-48" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <Shimmer className="mt-0.5 h-4 w-4 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <Shimmer className="h-3 w-20" />
+                  <Shimmer className="mt-2 h-4 w-32" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Teaching Categories */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-40" />
+              <Shimmer className="mt-2 h-3 w-48" />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Shimmer className="h-9 w-24 rounded-lg" />
+            <Shimmer className="h-9 w-32 rounded-lg" />
+            <Shimmer className="h-9 w-20 rounded-lg" />
+            <Shimmer className="h-9 w-28 rounded-lg" />
+          </div>
+        </section>
+
+        {/* Professional Profile */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-44" />
+              <Shimmer className="mt-2 h-3 w-56 max-w-full" />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <Shimmer className="h-4 w-32" />
+              <Shimmer className="mt-3 h-4 w-full" />
+              <Shimmer className="mt-2 h-4 w-full max-w-[90%]" />
+            </div>
+            <div className="border-t border-white/[0.08] pt-5">
+              <Shimmer className="h-4 w-56 max-w-full" />
+              <Shimmer className="mt-3 h-4 w-full" />
+              <Shimmer className="mt-2 h-4 w-full max-w-[80%]" />
+            </div>
+          </div>
+        </section>
+
+        {/* Professional Links */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-40" />
+              <Shimmer className="mt-2 h-3 w-48" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Shimmer key={i} className="h-[58px] w-full rounded-xl" />
+            ))}
+          </div>
+        </section>
+
+        {/* Resume / CV */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-28" />
+              <Shimmer className="mt-2 h-3 w-56 max-w-full" />
+            </div>
+          </div>
+
+          <Shimmer className="h-[80px] w-full rounded-xl" />
+        </section>
+
+        {/* Supporting Documents */}
+        <section className={`p-5 sm:p-6 ${cardSurface}`}>
+          <div className="mb-6 flex items-start gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              <Shimmer className="h-4 w-48" />
+              <Shimmer className="mt-2 h-3 w-40" />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <Shimmer key={i} className="h-[80px] w-full rounded-xl" />
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Review sidebar */}
+      <aside className="space-y-6 xl:sticky xl:top-6">
+        <section className={`relative overflow-hidden p-5 ${cardSurface}`}>
+          <Shimmer className="h-4 w-40" />
+          <Shimmer className="mt-3 h-3 w-full" />
+          <Shimmer className="mt-2 h-3 w-[80%]" />
+
+          <div className="my-5 border-t border-white/[0.08]" />
+
+          <Shimmer className="h-12 w-full rounded-xl" />
+          <Shimmer className="mt-3 h-12 w-full rounded-xl" />
+        </section>
+      </aside>
+    </div>
+  </div>
+);
+
 type DocumentCardProps = {
   name: string;
 
@@ -616,15 +795,7 @@ const InstructorApplicationAdminDetailPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div
-        className="flex min-h-[40vh] flex-col items-center justify-center gap-3"
-        role="status"
-        aria-label="Loading instructor application"
-      >
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
-      </div>
-    );
+    return <ApplicationDetailSkeleton />;
   }
 
   if (loadError || !application) {

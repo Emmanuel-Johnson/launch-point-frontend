@@ -331,6 +331,111 @@ const FileTypeIcon = ({
   );
 };
 
+/* ================================================================
+
+   SKELETON — loading placeholder mirroring the details layout
+
+================================================================ */
+
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[iadSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+const PanelSkeleton = ({ rows = 1 }: { rows?: number }) => (
+  <section className="min-w-0 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 sm:p-6">
+    <div className="flex items-center gap-3">
+      <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+      <div>
+        <Shimmer className="h-4 w-32" />
+        <Shimmer className="mt-2 h-3 w-48 max-w-full" />
+      </div>
+    </div>
+
+    <div className="mt-6 space-y-4">
+      {Array.from({ length: rows }).map((_, i) => (
+        <Shimmer key={i} className="h-5 w-full max-w-[85%]" />
+      ))}
+    </div>
+  </section>
+);
+
+const ApplicationDetailsSkeleton = () => (
+  <main className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100 antialiased">
+    <style>{`
+      @keyframes iadSkeletonShimmer {
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
+
+    {/* Ambient blue backdrop */}
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+
+    <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-6xl">
+        {/* Breadcrumb row */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <Shimmer className="h-6 w-28" />
+            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-600" />
+            <Shimmer className="h-8 w-40 rounded-lg" />
+          </div>
+        </div>
+
+        {/* Hero */}
+        <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.10] via-white/[0.02] to-transparent">
+          <div className="relative flex flex-col gap-7 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+            {/* Identity */}
+            <div className="flex min-w-0 items-center gap-5">
+              <Shimmer className="h-18 w-18 shrink-0 rounded-2xl" />
+              <div className="min-w-0">
+                <Shimmer className="h-3 w-40" />
+                <Shimmer className="mt-2 h-8 w-56 max-w-full" />
+                <Shimmer className="mt-2 h-4 w-48" />
+              </div>
+            </div>
+
+            {/* Status block */}
+            <div className="w-full lg:max-w-md">
+              <div className="flex items-start gap-3 rounded-2xl border border-white/[0.08] p-4">
+                <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+                <div className="min-w-0 flex-1">
+                  <Shimmer className="h-4 w-28" />
+                  <Shimmer className="mt-2 h-3 w-full" />
+                  <Shimmer className="mt-1.5 h-3 w-[70%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Content grid */}
+        <div className="mt-5 grid gap-5 lg:grid-cols-3">
+          {/* Primary column */}
+          <div className="min-w-0 space-y-5 lg:col-span-2">
+            <PanelSkeleton rows={2} />
+            <PanelSkeleton rows={1} />
+            <PanelSkeleton rows={3} />
+            <PanelSkeleton rows={1} />
+            <PanelSkeleton rows={2} />
+          </div>
+
+          {/* Summary rail */}
+          <aside className="min-w-0 lg:col-span-1">
+            <div className="space-y-5">
+              <PanelSkeleton rows={3} />
+              <PanelSkeleton rows={3} />
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+);
+
 const InstructorApplicationDetailsPage = () => {
   const { applicationId } = useParams<{ applicationId: string }>();
 
@@ -465,11 +570,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#07111F]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-blue-400" />
-      </div>
-    );
+    return <ApplicationDetailsSkeleton />;
   }
 
   if (error || !application) {

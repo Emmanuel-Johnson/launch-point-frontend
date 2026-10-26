@@ -271,6 +271,139 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
   );
 };
 
+/* ============================================================ SKELETON LOADER */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-skeleton-shimmer bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+const ProfileSkeleton = () => {
+  return (
+    <div className="min-h-full w-full bg-black text-white">
+      {/* Keyframes for the shimmer sweep (scoped, no global CSS needed) */}
+      <style>{`
+        @keyframes skeleton-shimmer {
+          100% { transform: translateX(100%); }
+        }
+        .animate-skeleton-shimmer {
+          animation: skeleton-shimmer 1.6s ease-in-out infinite;
+        }
+      `}</style>
+
+      <div className="space-y-6">
+        {/* HEADER */}
+        <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <Shimmer className="mb-3 h-3 w-20" />
+            <Shimmer className="h-10 w-56" />
+            <Shimmer className="mt-3 h-4 w-72" />
+          </div>
+
+          <Shimmer className="h-12 w-36 rounded-xl" />
+        </section>
+
+        {/* HERO + ABOUT */}
+        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1fr_3fr]">
+          {/* HERO */}
+          <section>
+            <div className="h-full rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px">
+              <div className="relative h-full overflow-hidden rounded-[25px] bg-[#0A0A0A]">
+                <div className="relative flex h-full flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
+                  {/* Avatar */}
+                  <Shimmer className="h-32 w-32 rounded-full sm:h-36 sm:w-36" />
+
+                  {/* Name */}
+                  <Shimmer className="mt-7 h-7 w-44" />
+
+                  {/* Joined */}
+                  <Shimmer className="mt-4 h-9 w-40 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ABOUT */}
+          <section className="flex min-w-0 flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <Shimmer className="h-11 w-11 rounded-xl" />
+              <div>
+                <Shimmer className="h-5 w-24" />
+                <Shimmer className="mt-2 h-4 w-40" />
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-1 flex-col justify-center gap-3 pl-10">
+              <Shimmer className="h-5 w-full max-w-[90%]" />
+              <Shimmer className="h-5 w-full max-w-[80%]" />
+              <Shimmer className="h-5 w-full max-w-[60%]" />
+            </div>
+          </section>
+        </div>
+
+        {/* DETAILS + SOCIAL */}
+        <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+          {/* PERSONAL INFORMATION */}
+          <section className="flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <Shimmer className="h-11 w-11 rounded-xl" />
+              <div>
+                <Shimmer className="h-5 w-40" />
+                <Shimmer className="mt-2 h-4 w-32" />
+              </div>
+            </div>
+
+            <div className="mt-7 grid gap-5 sm:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i}>
+                  <Shimmer className="mb-2 h-3 w-24" />
+                  <Shimmer className="h-[52px] w-full rounded-xl" />
+                </div>
+              ))}
+
+              <div className="sm:col-span-2">
+                <Shimmer className="mb-2 h-3 w-28" />
+                <Shimmer className="h-[52px] w-full rounded-xl" />
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-white/[0.06] pt-5">
+              <Shimmer className="h-3 w-40" />
+            </div>
+          </section>
+
+          {/* SOCIAL LINKS */}
+          <section className="flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <Shimmer className="h-11 w-11 rounded-xl" />
+              <div>
+                <Shimmer className="h-5 w-28" />
+                <Shimmer className="mt-2 h-4 w-32" />
+              </div>
+            </div>
+
+            <div className="mt-7 space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Shimmer key={i} className="h-[68px] w-full rounded-xl" />
+              ))}
+            </div>
+
+            <div className="flex flex-1 items-end">
+              <div className="mt-6 w-full border-t border-white/[0.06] pt-5">
+                <Shimmer className="h-3 w-36" />
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ============================================================ MAIN COMPONENT */
 
 const ViewProfile = () => {
@@ -315,14 +448,7 @@ const ViewProfile = () => {
   /* ---------------------------------------------------------- loading */
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-full w-full items-center justify-center bg-black text-white">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-[#7C5CFF]" />
-          <p className="text-sm text-white/50">Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   /* ------------------------------------------------------------ error */

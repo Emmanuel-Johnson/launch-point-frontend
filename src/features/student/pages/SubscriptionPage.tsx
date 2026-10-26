@@ -45,6 +45,71 @@ const INTERVAL_WORD: Record<string, string> = {
   yearly: "year",
 };
 
+/* ----------------------------------------------------------- skeleton bits */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[lpShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — three cards mirroring the real plan layout. */
+const PlansSkeleton = () => {
+  return (
+    <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 3 }).map((_, i) => {
+        const isPremium = i === 1;
+
+        return (
+          <article
+            key={i}
+            className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border p-6 sm:p-8 ${
+              isPremium
+                ? "border-[#7C5CFF]/40 bg-[#0C0A16]"
+                : "border-white/10 bg-[#0A0A0A]/90"
+            }`}
+          >
+            <div
+              className={`relative flex h-full min-w-0 flex-col ${isPremium ? "pt-5" : ""}`}
+            >
+              {/* Plan heading */}
+              <div className="mb-6 flex flex-col items-center text-center sm:mb-8">
+                <Shimmer className="h-7 w-32" />
+                <Shimmer className="mt-3 h-4 w-48" />
+                <Shimmer className="mt-1 h-4 w-40" />
+                <Shimmer className="mt-5 h-11 w-36" />
+              </div>
+
+              {/* Divider */}
+              <div className="mb-6 h-px w-full bg-white/[0.08]" />
+
+              {/* Benefits */}
+              <div className="mb-7 min-w-0 flex-1 sm:mb-8">
+                <Shimmer className="mb-5 h-3 w-28" />
+
+                <ul className="space-y-4">
+                  {Array.from({ length: 4 }).map((__, b) => (
+                    <li key={b} className="flex min-w-0 items-start gap-3">
+                      <Shimmer className="mt-0.5 h-5 w-5 shrink-0 rounded-full" />
+                      <Shimmer className="h-4 w-full max-w-[85%]" />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* CTA */}
+              <Shimmer className="mt-auto h-12 w-full shrink-0 rounded-xl" />
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+};
+
 /* ================================================================== page */
 
 const SubscriptionPage = () => {
@@ -82,6 +147,12 @@ const SubscriptionPage = () => {
 
         .lp-enter {
           animation: lpFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes lpShimmer {
+          100% {
+            transform: translateX(100%);
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -123,9 +194,7 @@ const SubscriptionPage = () => {
         ========================================================= */}
 
         {loading ? (
-          <div className="flex min-h-[300px] items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#7C5CFF]" />
-          </div>
+          <PlansSkeleton />
         ) : plans.length === 0 ? (
           <div className="flex min-h-[300px] items-center justify-center text-sm text-white/50">
             No subscription plans are currently available.

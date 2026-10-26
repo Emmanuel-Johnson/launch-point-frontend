@@ -157,6 +157,106 @@ const SectionHeader = ({
   );
 };
 
+/* ----------------------------------------------------------- skeleton bits */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[isSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the header, sidebar, and content layout. */
+const SettingsSkeleton = () => {
+  return (
+    <div className="min-h-full w-full bg-black text-white">
+      <style>{`
+        @keyframes isSkeletonShimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
+
+      <div className="space-y-8">
+        {/* PAGE HEADER */}
+        <section>
+          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+            <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
+              <Shimmer className="h-4 w-24" />
+              <Shimmer className="mt-3 h-9 w-44" />
+              <Shimmer className="mt-3 h-4 w-80 max-w-full" />
+            </div>
+          </div>
+        </section>
+
+        {/* SETTINGS LAYOUT */}
+        <section className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+          {/* SIDEBAR */}
+          <aside className="h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+            <div className="px-3 py-3">
+              <Shimmer className="h-3 w-20" />
+            </div>
+
+            <div className="space-y-1">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="flex w-full items-center gap-3 p-3">
+                  <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+                  <div className="min-w-0 flex-1">
+                    <Shimmer className="h-4 w-24" />
+                    <Shimmer className="mt-2 h-3 w-32" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+
+          {/* MAIN CONTENT */}
+          <main className="min-w-0">
+            <div className="rounded-3xl bg-gradient-to-b from-white/[0.1] via-white/[0.04] to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
+              <div className="relative overflow-hidden rounded-[23px] bg-[#0A0A0A] p-5 sm:p-8">
+                {/* Section header */}
+                <div className="mb-8 flex items-start gap-4">
+                  <Shimmer className="h-12 w-12 shrink-0 rounded-xl" />
+                  <div>
+                    <Shimmer className="h-6 w-28" />
+                    <Shimmer className="mt-2 h-4 w-72 max-w-full" />
+                  </div>
+                </div>
+
+                {/* Card */}
+                <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-4 sm:p-6">
+                  <div className="mb-6 flex items-center gap-3">
+                    <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+                    <div>
+                      <Shimmer className="h-4 w-36" />
+                      <Shimmer className="mt-2 h-3 w-56 max-w-full" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-5">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i}>
+                        <Shimmer className="mb-2 h-4 w-32" />
+                        <Shimmer className="h-[46px] w-full rounded-xl" />
+                      </div>
+                    ))}
+
+                    <div className="flex flex-col gap-3 border-t border-white/[0.07] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                      <Shimmer className="h-4 w-64 max-w-full" />
+                      <Shimmer className="h-11 w-44 rounded-xl" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </section>
+      </div>
+    </div>
+  );
+};
+
 /* ============================================================ MAIN COMPONENT */
 
 const InstructorSettingsPage = () => {
@@ -165,6 +265,30 @@ const InstructorSettingsPage = () => {
 
   const [activeSection, setActiveSection] =
     useState<SettingsSection>("security");
+
+  /*
+    Set to `true` and clear it once settings are fetched to show the skeleton.
+    Defaults to `false`, so the page behaves exactly as before.
+
+    Example wiring when you connect notification preferences to the API:
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+      const fetchSettings = async () => {
+        try {
+          // const data = await getNotificationSettings();
+          // setNotifications(data);
+        } catch (error) {
+          console.error("Failed to load settings:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchSettings();
+    }, []);
+  */
+  const [isLoading] = useState(false);
 
   const [showPasswords, setShowPasswords] = useState({
     currentPassword: false,
@@ -389,6 +513,12 @@ const InstructorSettingsPage = () => {
 
   const inputClass =
     "w-full rounded-xl border border-white/[0.08] bg-[#0F0F12] px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 hover:border-white/[0.14] focus:border-[#3B82F6]/60 focus:bg-[#121216] focus:ring-4 focus:ring-[#3B82F6]/[0.08]";
+
+  /* ---------------------------------------------------------- loading */
+
+  if (isLoading) {
+    return <SettingsSkeleton />;
+  }
 
   return (
     <div className="min-h-full w-full bg-black text-white">

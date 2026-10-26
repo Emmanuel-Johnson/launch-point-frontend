@@ -159,6 +159,190 @@ const LinkedinMark = () => (
   </svg>
 );
 
+/* ----------------------------------------------------------- skeleton bits */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[idSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the instructor detail layout. */
+const InstructorDetailSkeleton = () => {
+  return (
+    <div className="min-h-full w-full bg-black text-white">
+      <style>{`
+        @keyframes idSkeletonShimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
+
+      <div className="space-y-6">
+        {/* Back */}
+        <Shimmer className="h-4 w-16" />
+
+        {/* Hero */}
+        <section>
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-6 sm:p-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex min-w-0 items-start gap-4 sm:gap-5">
+                <Shimmer className="h-16 w-16 shrink-0 rounded-2xl sm:h-20 sm:w-20" />
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Shimmer className="h-7 w-48" />
+                    <Shimmer className="h-6 w-24 rounded-full" />
+                    <Shimmer className="h-7 w-20 rounded-full" />
+                  </div>
+                  <Shimmer className="mt-3 h-4 w-40" />
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Shimmer className="h-8 w-56 max-w-full rounded-lg" />
+                    <Shimmer className="h-8 w-40 rounded-lg" />
+                  </div>
+                </div>
+              </div>
+
+              <Shimmer className="h-11 w-full min-w-[190px] rounded-xl sm:w-52" />
+            </div>
+          </div>
+        </section>
+
+        {/* About */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-5 w-1 rounded-full bg-white/10" />
+            <div>
+              <Shimmer className="h-5 w-24" />
+              <Shimmer className="mt-2 h-3 w-72 max-w-full" />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+            <div className="flex items-start gap-4">
+              <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+              <div className="min-w-0 flex-1">
+                <Shimmer className="h-3 w-28" />
+                <Shimmer className="mt-3 h-4 w-full max-w-3xl" />
+                <Shimmer className="mt-2 h-4 w-full max-w-2xl" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Basic Information */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-5 w-1 rounded-full bg-white/10" />
+            <div>
+              <Shimmer className="h-5 w-40" />
+              <Shimmer className="mt-2 h-3 w-72 max-w-full" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+              >
+                <Shimmer className="h-10 w-10 rounded-xl" />
+                <Shimmer className="mt-4 h-3 w-20" />
+                <Shimmer className="mt-2 h-4 w-28" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Teaching Categories */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-5 w-1 rounded-full bg-white/10" />
+            <div>
+              <Shimmer className="h-5 w-44" />
+              <Shimmer className="mt-2 h-3 w-64 max-w-full" />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 sm:p-6">
+            <div className="mb-4 flex items-center gap-3">
+              <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+              <div>
+                <Shimmer className="h-4 w-36" />
+                <Shimmer className="mt-2 h-3 w-28" />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Shimmer className="h-9 w-24 rounded-lg" />
+              <Shimmer className="h-9 w-32 rounded-lg" />
+              <Shimmer className="h-9 w-20 rounded-lg" />
+              <Shimmer className="h-9 w-28 rounded-lg" />
+            </div>
+          </div>
+        </section>
+
+        {/* Social & Portfolio */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-5 w-1 rounded-full bg-white/10" />
+            <div>
+              <Shimmer className="h-5 w-40" />
+              <Shimmer className="mt-2 h-3 w-64 max-w-full" />
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+              >
+                <Shimmer className="h-11 w-11 shrink-0 rounded-xl" />
+                <div className="min-w-0 flex-1">
+                  <Shimmer className="h-4 w-20" />
+                  <Shimmer className="mt-2 h-3 w-32" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Account Information */}
+        <section>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-5 w-1 rounded-full bg-white/10" />
+            <div>
+              <Shimmer className="h-5 w-48" />
+              <Shimmer className="mt-2 h-3 w-72 max-w-full" />
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
+            <div className="grid md:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="border-b border-white/[0.06] p-5 md:odd:border-r"
+                >
+                  <div className="flex items-start gap-3">
+                    <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
+                    <div className="min-w-0 flex-1">
+                      <Shimmer className="h-3 w-24" />
+                      <Shimmer className="mt-2 h-4 w-36" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
 const InstructorDetailPage = () => {
   const navigate = useNavigate();
   const { instructorId } = useParams<{ instructorId: string }>();
@@ -257,12 +441,7 @@ const InstructorDetailPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-full w-full items-center justify-center bg-black px-6 py-16 text-sm text-white/50">
-        <span className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-[#34D399]" />
-        Loading instructor details...
-      </div>
-    );
+    return <InstructorDetailSkeleton />;
   }
 
   if (error || !instructor) {
