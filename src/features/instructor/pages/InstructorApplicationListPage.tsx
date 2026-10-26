@@ -44,6 +44,73 @@ const getStatusConfig = (status: ApplicationStatus) => {
   }
 };
 
+/* ----------------------------------------------------------- skeleton bits */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[iaSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the application cards. */
+const ApplicationsSkeleton = () => (
+  <div className="space-y-4">
+    <style>{`
+      @keyframes iaSkeletonShimmer {
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
+
+    {Array.from({ length: 3 }).map((_, i) => (
+      <article
+        key={i}
+        className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent"
+      >
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-white/10" />
+
+        <div className="relative p-5 sm:p-6">
+          {/* Top row */}
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex min-w-0 items-start gap-4">
+              <Shimmer className="h-12 w-12 shrink-0 rounded-xl" />
+
+              <div className="min-w-0">
+                <Shimmer className="h-5 w-32" />
+                <div className="mt-2 flex flex-wrap items-center gap-4">
+                  <Shimmer className="h-4 w-48 max-w-full" />
+                  <Shimmer className="h-4 w-24" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3">
+              <Shimmer className="h-9 w-32 rounded-full" />
+              <Shimmer className="h-9 w-28 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Categories footer */}
+          <div className="mt-5 border-t border-white/[0.06] pt-4">
+            <div className="flex items-center gap-2">
+              <Shimmer className="h-3 w-44" />
+              <span className="h-px flex-1 bg-gradient-to-r from-blue-400/20 to-transparent" />
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Shimmer className="h-8 w-24 rounded-lg" />
+              <Shimmer className="h-8 w-28 rounded-lg" />
+              <Shimmer className="h-8 w-20 rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+);
+
 const InstructorApplicationListPage = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState<InstructorApplication[]>([]);
@@ -94,10 +161,7 @@ const InstructorApplicationListPage = () => {
           {/* Applications */}
           {isLoading ? (
             /* Loading State */
-
-            <div className="flex min-h-[300px] items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-blue-400" />
-            </div>
+            <ApplicationsSkeleton />
           ) : error ? (
             /* Error State */
             <div className="relative overflow-hidden rounded-2xl border border-red-400/15 bg-gradient-to-b from-red-500/[0.06] to-transparent px-6 py-16 text-center">
