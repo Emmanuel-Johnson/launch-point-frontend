@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Clock3,
   Eye,
-  GraduationCap,
   Search,
   Users,
   XCircle,
@@ -227,47 +226,6 @@ const InstructorApplicationAdminListPage = () => {
   return (
     <div className="min-h-full w-full bg-black text-white">
       <div className="space-y-6">
-        {/* Header */}
-        <section
-          className="animate-page-item"
-          style={{ animationDelay: "80ms" }}
-        >
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
-            />
-
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
-            />
-
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
-            />
-
-            <div className="relative cursor-default">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#34D399]/25">
-                  <GraduationCap className="h-5 w-5" strokeWidth={1.8} />
-                </div>
-
-                <div>
-                  <h1 className="text-2xl font-semibold tracking-tight">
-                    Instructor Applications
-                  </h1>
-
-                  <p className="mt-1 text-sm text-white/50">
-                    Review applicant profiles and their teaching expertise.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* Total Applications */}

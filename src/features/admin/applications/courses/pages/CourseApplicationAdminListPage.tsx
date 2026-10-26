@@ -55,51 +55,7 @@ const INITIAL_APPLICATIONS: CourseApplication[] = [
     submitted_at: "2026-10-15T08:15:00Z",
     status: "approved",
   },
-  {
-    id: 1003,
-    course_title: "Django REST Framework in Practice",
-    instructor_name: "Rahul Das",
-    instructor_email: "rahul.das@example.com",
-    level: "Advanced",
-    submitted_at: "2026-10-14T13:45:00Z",
-    status: "pending",
-  },
-  {
-    id: 1004,
-    course_title: "SQL and Database Fundamentals",
-    instructor_name: "Meera Krishnan",
-    instructor_email: "meera.krishnan@example.com",
-    level: "Beginner",
-    submitted_at: "2026-10-12T09:00:00Z",
-    status: "rejected",
-  },
-  {
-    id: 1005,
-    course_title: "Building APIs with Python",
-    instructor_name: "Arjun Thomas",
-    instructor_email: "arjun.thomas@example.com",
-    level: "Intermediate",
-    submitted_at: "2026-10-11T15:20:00Z",
-    status: "approved",
-  },
-  {
-    id: 1006,
-    course_title: "JavaScript Essentials",
-    instructor_name: "Nisha Varma",
-    instructor_email: "nisha.varma@example.com",
-    level: "Beginner",
-    submitted_at: "2026-10-10T12:10:00Z",
-    status: "pending",
-  },
-  {
-    id: 1007,
-    course_title: "Advanced CSS and Responsive Design",
-    instructor_name: "Vishnu Raj",
-    instructor_email: "vishnu.raj@example.com",
-    level: "Advanced",
-    submitted_at: "2026-10-09T07:40:00Z",
-    status: "rejected",
-  },
+  
 ];
 
 const statusConfig: Record<
@@ -220,40 +176,6 @@ const CourseApplicationAdminListPage = () => {
   return (
     <div className="min-h-full w-full bg-black text-white">
       <div className="space-y-6">
-        {/* Header */}
-        <section
-          className="animate-page-item"
-          style={{ animationDelay: "80ms" }}
-        >
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
-            />
-            <div className="relative flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] ring-1 ring-inset ring-[#34D399]/25">
-                <BookOpen className="h-5 w-5" strokeWidth={1.8} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight">
-                  Course Applications
-                </h1>
-                <p className="mt-1 text-sm text-white/50">
-                  Review course submissions and manage their approval status.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Statistics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
