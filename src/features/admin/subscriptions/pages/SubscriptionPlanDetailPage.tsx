@@ -41,6 +41,116 @@ interface SubscriptionPlanDetail {
   updated_at: string;
 }
 
+/* -------------------------------- */
+/* Skeleton                         */
+/* -------------------------------- */
+
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[spdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+const SubscriptionPlanDetailSkeleton = () => (
+  <div className="space-y-6 text-white">
+    <style>{`
+      @keyframes spdSkeletonShimmer {
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
+
+    {/* Back */}
+    <Shimmer className="h-4 w-16" />
+
+    {/* Hero */}
+    <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 items-center gap-4">
+          <Shimmer className="h-16 w-16 shrink-0 rounded-2xl" />
+          <div className="min-w-0">
+            <Shimmer className="h-7 w-48" />
+            <Shimmer className="mt-2 h-4 w-24" />
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <Shimmer className="h-7 w-24 rounded-full" />
+              <Shimmer className="h-7 w-20 rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
+          <Shimmer className="h-12 w-30 rounded-lg" />
+          <Shimmer className="h-12 w-50 rounded-lg" />
+        </div>
+      </div>
+    </div>
+
+    {/* Body grid */}
+    <div className="grid gap-6 lg:grid-cols-3">
+      {/* Left column */}
+      <div className="space-y-6 lg:col-span-2">
+        {/* Description */}
+        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+          <Shimmer className="h-3 w-24" />
+          <Shimmer className="mt-4 h-4 w-full" />
+          <Shimmer className="mt-2 h-4 w-[80%]" />
+        </section>
+
+        {/* Benefits */}
+        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+          <div className="flex items-center justify-between">
+            <Shimmer className="h-3 w-20" />
+            <Shimmer className="h-5 w-8 rounded-full" />
+          </div>
+
+          <ul className="mt-4 space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <Shimmer className="mt-0.5 h-5 w-5 shrink-0 rounded-full" />
+                <Shimmer className="h-4 w-full max-w-[75%]" />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      {/* Right column */}
+      <div className="space-y-6">
+        {/* Pricing */}
+        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+          <div className="flex items-center gap-3">
+            <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
+            <Shimmer className="h-3 w-20" />
+          </div>
+
+          <div className="mt-5">
+            <Shimmer className="h-9 w-32" />
+            <Shimmer className="mt-2 h-4 w-28" />
+          </div>
+        </section>
+
+        {/* Timeline */}
+        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+          <Shimmer className="h-3 w-24" />
+
+          <div className="mt-4 space-y-4">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
+                <div className="min-w-0 flex-1">
+                  <Shimmer className="h-3 w-16" />
+                  <Shimmer className="mt-2 h-4 w-28" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+);
+
 const SubscriptionPlanDetailPage = () => {
   const navigate = useNavigate();
   const { planId } = useParams<{ planId: string }>();
@@ -95,11 +205,7 @@ const SubscriptionPlanDetailPage = () => {
   }
 
   if (!plan) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-emerald-400" />
-      </div>
-    );
+    return <SubscriptionPlanDetailSkeleton />;
   }
   /*
    * Activate / Deactivate — open confirm modal

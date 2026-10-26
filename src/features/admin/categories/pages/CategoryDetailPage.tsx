@@ -21,6 +21,112 @@ import {
 import CategoryStatusConfirmModal from "../components/CategoryStatusConfirmModal";
 import CategoryFormModal from "../components/CategoryFormModal";
 
+/* ----------------------------------------------------------- skeleton bits */
+
+/* A tiny shimmering block used as the skeleton primitive. */
+const Shimmer = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+  >
+    <div className="absolute inset-0 -translate-x-full animate-[cdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+  </div>
+);
+
+/* Loading placeholder — mirrors the category detail layout. */
+const CategoryDetailSkeleton = () => (
+  <div className="min-h-full w-full bg-black text-white">
+    <style>{`
+      @keyframes cdSkeletonShimmer {
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
+
+    <div className="space-y-6">
+      {/* Back */}
+      <Shimmer className="h-4 w-16" />
+
+      {/* Header */}
+      <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-start gap-5">
+            <Shimmer className="h-16 w-16 shrink-0 rounded-2xl" />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-3">
+                <Shimmer className="h-7 w-48" />
+                <Shimmer className="h-7 w-20 rounded-full" />
+              </div>
+              <Shimmer className="mt-3 h-7 w-40 rounded-lg" />
+            </div>
+          </div>
+
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+            <Shimmer className="h-11 w-32 rounded-xl" />
+            <Shimmer className="h-11 w-44 rounded-xl" />
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {[1, 2, 3].map((item) => (
+          <div
+            key={item}
+            className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <Shimmer className="h-3 w-24" />
+                <Shimmer className="mt-3 h-7 w-20" />
+              </div>
+              <Shimmer className="h-11 w-11 shrink-0 rounded-xl" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Information */}
+      <div>
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-5 w-1 rounded-full bg-white/10" />
+          <div>
+            <Shimmer className="h-5 w-48" />
+            <Shimmer className="mt-2 h-3 w-56 max-w-full" />
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
+          <div className="grid md:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="border-b border-white/[0.06] p-5 md:odd:border-r"
+              >
+                <div className="flex items-start gap-3">
+                  <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
+                  <div className="min-w-0 flex-1">
+                    <Shimmer className="h-3 w-20" />
+                    <Shimmer className="mt-2 h-4 w-32" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Description */}
+          <div className="border-t border-white/[0.07] p-5">
+            <div className="flex items-center gap-2">
+              <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
+              <Shimmer className="h-3 w-24" />
+            </div>
+            <Shimmer className="mt-3 h-4 w-full" />
+            <Shimmer className="mt-2 h-4 w-[80%]" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const CategoryDetailPage = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -148,39 +254,7 @@ const CategoryDetailPage = () => {
   // =========================================================
 
   if (isLoading) {
-    return (
-      <div className="min-h-full w-full bg-black text-white">
-        <div className="space-y-6">
-          {/* Back Skeleton */}
-          <div className="h-5 w-28 animate-pulse rounded bg-white/[0.06]" />
-
-          {/* Header Skeleton */}
-          <div className="rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0C0C0C] to-[#050505] p-8">
-            <div className="flex items-center gap-5">
-              <div className="h-16 w-16 animate-pulse rounded-2xl bg-white/[0.06]" />
-
-              <div className="space-y-3">
-                <div className="h-7 w-48 animate-pulse rounded bg-white/[0.06]" />
-                <div className="h-6 w-32 animate-pulse rounded bg-white/[0.04]" />
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Skeleton */}
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {[1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="h-32 animate-pulse rounded-2xl border border-white/[0.07] bg-[#0A0A0A]"
-              />
-            ))}
-          </div>
-
-          {/* Information Skeleton */}
-          <div className="h-80 animate-pulse rounded-2xl border border-white/[0.07] bg-[#0A0A0A]" />
-        </div>
-      </div>
-    );
+    return <CategoryDetailSkeleton />;
   }
 
   // =========================================================
