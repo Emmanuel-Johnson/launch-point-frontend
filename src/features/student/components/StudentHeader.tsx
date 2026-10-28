@@ -46,7 +46,7 @@ interface StudentHeaderProps {
 const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth?.user);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -95,22 +95,15 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   }, []);
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refresh");
-
     setIsLoggingOut(true);
 
     try {
-      // Call the backend logout API when a refresh token exists.
-      if (refreshToken) {
-        await logoutUser(refreshToken);
-      }
+      // The browser sends the HttpOnly refresh_token cookie automatically,
+      // so the backend can blacklist it and clear the cookie.
+      await logoutUser();
     } catch (error) {
       console.error("Student logout failed:", error);
     } finally {
-      // Remove student authentication tokens.
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
       // Clear the user and authentication status from Redux.
       dispatch(clearCredentials());
 

@@ -8,7 +8,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { login, googleLogin } from "../api/authApi";
 import { useAppDispatch } from "../../../app/store/hooks";
-import { setCredentials } from "../slices/authSlice";
+import { setAccessToken, setCredentials } from "../slices/authSlice";
 
 // Validation schema
 const loginSchema = z.object({
@@ -54,17 +54,15 @@ const LoginPage = () => {
 
       console.log("Login successful:", result);
 
-      localStorage.setItem("access", result.tokens.access);
-      localStorage.setItem("refresh", result.tokens.refresh);
+      dispatch(setAccessToken(result.access));
+      dispatch(setCredentials(result.user));
 
       if (result.user.role === "instructor") {
-        dispatch(setCredentials(result.user));
         navigate("/instructor/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let's get started.", {
           containerId: "instructor",
         });
       } else {
-        dispatch(setCredentials(result.user));
         navigate("/student/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let's get started.");
       }
@@ -105,17 +103,15 @@ const LoginPage = () => {
 
       console.log("Google authentication successful:", response);
 
-      localStorage.setItem("access", response.tokens.access);
-      localStorage.setItem("refresh", response.tokens.refresh);
+      dispatch(setAccessToken(response.access));
+      dispatch(setCredentials(response.user));
 
       if (response.user.role === "instructor") {
-        dispatch(setCredentials(response.user));
         navigate("/instructor/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let’s get started.", {
           containerId: "instructor",
         });
       } else {
-        dispatch(setCredentials(response.user));
         navigate("/student/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let's get started.");
       }

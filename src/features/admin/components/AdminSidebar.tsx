@@ -149,20 +149,15 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   // =========================================================
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refresh");
-
     setIsLoggingOut(true);
 
     try {
-      if (refreshToken) {
-        await logoutAdmin(refreshToken);
-      }
+      // The browser sends the HttpOnly refresh_token cookie automatically.
+      await logoutAdmin();
     } catch (error) {
+      // Continue local logout even if the API request fails.
       console.error("Admin logout failed:", error);
     } finally {
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
       // Clear the logged-in user from Redux.
       dispatch(clearCredentials());
 

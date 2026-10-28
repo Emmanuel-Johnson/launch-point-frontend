@@ -27,7 +27,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const admin = useAppSelector((state) =>
-    state.auth.user?.role === "admin" ? state.auth.user : null,
+    state.auth?.user?.role === "admin" ? state.auth.user : null,
   );
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -55,23 +55,16 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   }, []);
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refresh");
-
     setIsLoggingOut(true);
 
     try {
-      // Revoke the admin refresh token on the backend.
-      if (refreshToken) {
-        await logoutAdmin(refreshToken);
-      }
+      // The browser sends the HttpOnly refresh_token cookie automatically,
+      // so the backend can blacklist it and clear the cookie.
+      await logoutAdmin();
     } catch (error) {
       // Continue local logout even if the API request fails.
       console.error("Admin logout failed:", error);
     } finally {
-      // Remove admin authentication tokens.
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
       // Clear the authenticated user from Redux.
       dispatch(clearCredentials());
 

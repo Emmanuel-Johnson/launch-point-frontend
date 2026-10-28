@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import { verifyEmail, resendVerificationOTP } from "../api/authApi";
 import { useAppDispatch } from "../../../app/store/hooks";
-import { setCredentials } from "../slices/authSlice";
+import { setAccessToken, setCredentials } from "../slices/authSlice";
 
 const RESEND_COOLDOWN = 60;
 
@@ -214,9 +214,7 @@ const VerifyEmailPage = () => {
       /*
        * Store JWT tokens after successful email verification.
        */
-      localStorage.setItem("access", result.tokens.access);
-      localStorage.setItem("refresh", result.tokens.refresh);
-
+      dispatch(setAccessToken(result.access));
       dispatch(setCredentials(result.user));
 
       /*

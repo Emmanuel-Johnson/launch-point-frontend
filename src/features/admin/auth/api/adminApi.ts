@@ -17,10 +17,7 @@ export interface AdminLoginResponse {
     email: string;
     role: "admin";
   };
-  tokens: {
-    access: string;
-    refresh: string;
-  };
+  access: string; // top-level; refresh is set as an HttpOnly cookie
 }
 
 export const adminLogin = async (
@@ -35,19 +32,15 @@ export const adminLogin = async (
 };
 
 // =========================================================
-// Admin Logout
+// Admin Logout  (refresh token is the HttpOnly cookie — no body needed)
 // =========================================================
 
 export interface AdminLogoutResponse {
   message: string;
 }
 
-export const logoutAdmin = async (
-  refreshToken: string,
-): Promise<AdminLogoutResponse> => {
-  const response = await api.post<AdminLogoutResponse>("/auth/admin/logout/", {
-    refresh: refreshToken,
-  });
+export const logoutAdmin = async (): Promise<AdminLogoutResponse> => {
+  const response = await api.post<AdminLogoutResponse>("/auth/admin/logout/");
 
   return response.data;
 };

@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { adminLogin } from "../api/adminApi";
 
 import { useAppDispatch } from "../../../../app/store/hooks";
-import { setCredentials } from "../../../auth/slices/authSlice";
+import { setAccessToken, setCredentials } from "../../../auth/slices/authSlice";
 
 // =========================================================
 // Validation schema
@@ -64,8 +64,9 @@ const AdminLoginPage = () => {
         password: data.password,
       });
 
-      localStorage.setItem("access", response.tokens.access);
-      localStorage.setItem("refresh", response.tokens.refresh);
+      // Access token lives in Redux (the axios interceptor reads it from there).
+      // The refresh token is set by the backend as an HttpOnly cookie.
+      dispatch(setAccessToken(response.access));
 
       dispatch(
         setCredentials({
@@ -76,20 +77,6 @@ const AdminLoginPage = () => {
           profile_image: null,
         }),
       );
-
-      console.log("Redux auth state:", {
-        user: response.user,
-        reduxUser: {
-          id: response.user.id,
-          full_name: response.user.full_name,
-          email: response.user.email,
-          role: "admin",
-          profile_image: null,
-        },
-      });
-
-      console.log("Stored access token:", localStorage.getItem("access"));
-      console.log("Stored refresh token:", localStorage.getItem("refresh"));
 
       toast.success("Login successful!", {
         containerId: "admin",

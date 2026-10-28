@@ -7,7 +7,7 @@ import { signup, googleLogin } from "../api/authApi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
-import { setCredentials } from "../slices/authSlice";
+import { setAccessToken, setCredentials } from "../slices/authSlice";
 import { useAppDispatch } from "../../../app/store/hooks";
 
 // Validation schema
@@ -152,17 +152,15 @@ const SignupPage = () => {
         id_token: idToken,
       });
 
-      localStorage.setItem("access", result.tokens.access);
-      localStorage.setItem("refresh", result.tokens.refresh);
+      dispatch(setAccessToken(result.access));
+      dispatch(setCredentials(result.user));
 
       if (result.user.role === "instructor") {
-        dispatch(setCredentials(result.user));
         navigate("/instructor/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let’s get started.", {
           containerId: "instructor",
         });
       } else {
-        dispatch(setCredentials(result.user));
         navigate("/student/dashboard", { replace: true });
         toast.success("Welcome to Launch Point! Let's get started.");
       }
