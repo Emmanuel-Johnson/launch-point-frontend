@@ -13,9 +13,11 @@ import {
   Mail,
   MapPin,
   User,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   getInstructorProfile,
   type InstructorProfile,
@@ -114,12 +116,18 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
 interface AvatarProps {
   src: string | null;
   initials: string;
+  onClick?: () => void;
 }
 
-const ProfileAvatar = ({ src, initials }: AvatarProps) => {
+const ProfileAvatar = ({ src, initials, onClick }: AvatarProps) => {
   return (
-    <div className="relative shrink-0">
-      <div className="rounded-full bg-gradient-to-br from-[#4D8DFF] via-[#3B82F6] to-[#38BDF8] p-[2.5px] shadow-[0_0_55px_-4px_rgba(77,141,255,0.55)]">
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="View profile picture"
+      className="group/avatar relative shrink-0 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6FA3FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+    >
+      <div className="rounded-full bg-gradient-to-br from-[#4D8DFF] via-[#3B82F6] to-[#38BDF8] p-[2.5px] shadow-[0_0_55px_-4px_rgba(77,141,255,0.55)] transition-transform duration-300 group-hover/avatar:scale-[1.03]">
         <div className="rounded-full bg-[#0A0A0A] p-[3px]">
           <div className="relative h-28 w-28 overflow-hidden rounded-full sm:h-32 sm:w-32">
             <div
@@ -139,10 +147,190 @@ const ProfileAvatar = ({ src, initials }: AvatarProps) => {
                 }}
               />
             )}
+
+            {/* Hover overlay hint */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover/avatar:bg-black/45 group-hover/avatar:opacity-100">
+              <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/90">
+                View
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </button>
+  );
+};
+
+/* ------------------------------------------------------- image preview modal */
+
+interface ImagePreviewModalProps {
+  src: string | null;
+  initials: string;
+  name: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ImagePreviewModal = ({
+  src,
+  initials,
+  name,
+  isOpen,
+  onClose,
+}: ImagePreviewModalProps) => {
+  // Track the specific src that failed to load instead of a boolean flag.
+  // When `src` changes, `failedSrc !== src` again, so the image re-shows
+  // automatically — no effect-driven setState (avoids cascading renders).
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
+  const imgFailed = !!src && failedSrc === src;
+
+  // Close on Escape + lock background scroll while open.
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  // Rendered through a portal into <body> so it always centers on the full
+  // viewport, unaffected by any parent transforms, overflow, or stacking.
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Profile picture preview"
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+    >
+      {/* Keyframes for the modal entrance + ambient motion */}
+      <style>{`
+        @keyframes ipPreviewFade { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes ipPreviewPop {
+          from { opacity: 0; transform: scale(0.9) translateY(14px) }
+          to   { opacity: 1; transform: scale(1) translateY(0) }
+        }
+        @keyframes ipPreviewAura {
+          0%, 100% { opacity: 0.5;  transform: translate(-50%, -50%) scale(1) }
+          50%      { opacity: 0.85; transform: translate(-50%, -50%) scale(1.1) }
+        }
+      `}</style>
+
+      {/* Backdrop — deeper blur + subtle vignette for a premium feel */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/85 backdrop-blur-md"
+        style={{ animation: "ipPreviewFade 0.25s ease-out" }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 42%, rgba(77,141,255,0.14), transparent 55%)",
+          animation: "ipPreviewFade 0.4s ease-out",
+        }}
+      />
+
+      {/* Content */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col items-center"
+        style={{ animation: "ipPreviewPop 0.42s cubic-bezier(0.22,1,0.36,1)" }}
+      >
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close preview"
+          className="absolute -top-3 right-0 z-30 flex h-10 w-10 -translate-y-full cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/70 backdrop-blur transition-all duration-300 hover:rotate-90 hover:border-[#4D8DFF]/45 hover:bg-[#4D8DFF]/20 hover:text-white"
+        >
+          <X className="h-5 w-5" strokeWidth={2} />
+        </button>
+
+        {/* Card — the image sits inside this framed box */}
+        <div className="relative w-full overflow-hidden rounded-[30px] bg-gradient-to-b from-white/[0.16] via-white/[0.05] to-transparent p-px shadow-[0_40px_120px_-25px_rgba(0,0,0,0.95)]">
+          <div className="relative overflow-hidden rounded-[29px] bg-gradient-to-b from-[#0E1320] to-[#0A0A0A]">
+            {/* Ambient glows */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#4D8DFF]/25 blur-3xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-24 -right-16 h-56 w-56 rounded-full bg-[#38BDF8]/[0.08] blur-3xl"
+            />
+            {/* Top hairline accent */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4D8DFF]/60 to-transparent"
+            />
+            {/* Film grain */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+              style={{ backgroundImage: `url("${GRAIN_URL}")` }}
+            />
+
+            <div className="relative p-5 sm:p-6">
+              {/* Pulsing aura behind the image box */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 h-[90%] w-[90%] rounded-[24px] bg-[#4D8DFF]/20 blur-2xl"
+                style={{ animation: "ipPreviewAura 5s ease-in-out infinite" }}
+              />
+
+              {/* Gradient-bordered image box (square) */}
+              <div className="relative rounded-[22px] bg-gradient-to-br from-[#4D8DFF]/60 via-[#3B82F6]/30 to-[#38BDF8]/50 p-[2px] shadow-[0_18px_50px_-15px_rgba(77,141,255,0.5)]">
+                <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-[#0A0A0A]">
+                  {/* Initials fallback */}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#4D8DFF] to-[#1D4ED8] text-7xl font-semibold tracking-wide text-white sm:text-8xl"
+                    style={{ fontFamily: DISPLAY_FONT }}
+                  >
+                    {initials}
+                  </div>
+
+                  {src && !imgFailed && (
+                    <img
+                      src={src}
+                      alt={`${name}'s profile picture`}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      onError={() => setFailedSrc(src)}
+                    />
+                  )}
+
+                  {/* Soft inner highlight for depth */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-inset ring-white/10"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
   );
 };
 
@@ -400,6 +588,7 @@ const InstructorProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -527,7 +716,11 @@ const InstructorProfilePage = () => {
                         className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4D8DFF]/25 blur-2xl"
                       />
 
-                      <ProfileAvatar src={imageSrc} initials={initials} />
+                      <ProfileAvatar
+                        src={imageSrc}
+                        initials={initials}
+                        onClick={() => setIsImagePreviewOpen(true)}
+                      />
                     </div>
 
                     {/* NAME */}
@@ -712,6 +905,16 @@ const InstructorProfilePage = () => {
           </section>
         </div>
       </div>
+
+      {/* Image preview modal */}
+      <ImagePreviewModal
+        src={imageSrc}
+        initials={initials}
+        name={profile.full_name}
+        isOpen={isImagePreviewOpen}
+        onClose={() => setIsImagePreviewOpen(false)}
+      />
+
       {isEditModalOpen && profile && (
         <EditInstructorProfileModal
           profile={profile}
