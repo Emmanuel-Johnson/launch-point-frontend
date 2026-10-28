@@ -179,6 +179,16 @@ api.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError);
 
+      if (axios.isAxiosError(refreshError)) {
+        console.error("Token refresh failed:", {
+          status: refreshError.response?.status,
+          response: refreshError.response?.data,
+          url: refreshError.config?.url,
+        });
+      } else {
+        console.error("Token refresh failed:", refreshError);
+      }
+
       await clearSession();
 
       if (window.location.pathname !== "/login") {
