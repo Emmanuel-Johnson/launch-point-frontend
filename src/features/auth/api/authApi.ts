@@ -32,10 +32,7 @@ export type GoogleLoginData = {
 export type GoogleLoginResponse = {
   message: string;
   user: AuthUser;
-  tokens: {
-    access: string;
-    refresh: string;
-  };
+  access: string;
 };
 
 export const googleLogin = async (
@@ -79,10 +76,7 @@ export type VerifyEmailData = {
 export type VerifyEmailResponse = {
   message: string;
   user: AuthUser;
-  tokens: {
-    access: string;
-    refresh: string;
-  };
+  access: string;
 };
 
 export const verifyEmail = async (
@@ -131,10 +125,7 @@ export type LoginData = {
 export type LoginResponse = {
   message: string;
   user: AuthUser;
-  tokens: {
-    access: string;
-    refresh: string;
-  };
+  access: string;
 };
 
 export const login = async (data: LoginData): Promise<LoginResponse> => {
@@ -246,10 +237,9 @@ export type LogoutResponse = {
   message: string;
 };
 
-export const logoutUser = async (refresh: string): Promise<LogoutResponse> => {
-  const response = await api.post<LogoutResponse>("/auth/logout/", {
-    refresh,
-  });
+export const logoutUser = async (): Promise<LogoutResponse> => {
+  // The browser sends the HttpOnly refresh_token cookie automatically.
+  const response = await api.post<LogoutResponse>("/auth/logout/");
 
   return response.data;
 };

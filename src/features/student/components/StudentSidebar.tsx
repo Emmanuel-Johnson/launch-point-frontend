@@ -88,21 +88,14 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refresh");
-
     setIsLoggingOut(true);
 
     try {
-      if (refreshToken) {
-        await logoutUser(refreshToken);
-      }
+      // The browser sends the HttpOnly refresh_token cookie automatically.
+      await logoutUser();
     } catch (error) {
       console.error("Student logout failed:", error);
     } finally {
-      // Remove authentication tokens.
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
       // Clear authentication state in Redux.
       dispatch(clearCredentials());
 

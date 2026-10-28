@@ -1,156 +1,151 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+
 import { persistor, store } from "../../app/store/store";
-import { clearCredentials as clearAuthState } from "../../features/auth/slices/authSlice";
+import {
+  clearCredentials,
+  setAccessToken,
+} from "../../features/auth/slices/authSlice";
+
+const API_BASE_URL = "http://localhost:8000/api";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: API_BASE_URL,
+  withCredentials: true,
 });
 
-// ============================================================================
+type RetriableRequest = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
+type RefreshResponse = {
+  access: string;
+};
+
+type FailedQueueItem = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
+// -----------------------------------------------------------------------------
 // REQUEST INTERCEPTOR
-// ============================================================================
+// -----------------------------------------------------------------------------
 
-api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("access");
+api.interceptors.request.use(
+  (config) => {
+    // auth may be undefined in the inferred persisted Redux state.
+    const accessToken = store.getState().auth?.accessToken;
 
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    } else {
+      delete config.headers.Authorization;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error: unknown) => Promise.reject(error),
+);
 
-// ============================================================================
-// TOKEN REFRESH
-// ============================================================================
+// -----------------------------------------------------------------------------
+// TOKEN REFRESH QUEUE
+// -----------------------------------------------------------------------------
 
 let isRefreshing = false;
 
-let failedQueue: {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-}[] = [];
+let failedQueue: FailedQueueItem[] = [];
 
-// ============================================================================
-// PROCESS QUEUED REQUESTS
-// ============================================================================
-
-const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach((promise) => {
+function processQueue(error: unknown, token: string | null = null) {
+  failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
-      promise.reject(error);
+      reject(error);
     } else if (token) {
-      promise.resolve(token);
+      resolve(token);
+    } else {
+      reject(new Error("Token refresh failed."));
     }
   });
 
   failedQueue = [];
-};
+}
 
-// ============================================================================
-// CLEAR AUTHENTICATION CREDENTIALS
-// ============================================================================
+// -----------------------------------------------------------------------------
+// SESSION CLEANUP
+// -----------------------------------------------------------------------------
 
-const clearAllCredentials = async () => {
-  // Remove JWT tokens
-  localStorage.removeItem("access");
-  localStorage.removeItem("refresh");
-
-  // Clear Redux authentication state
-  store.dispatch(clearAuthState());
-
-  // Clear persisted Redux state
+async function clearSession() {
+  store.dispatch(clearCredentials());
   await persistor.purge();
-};
+}
 
-// ============================================================================
+// -----------------------------------------------------------------------------
+// AUTH ENDPOINT DETECTION
+// -----------------------------------------------------------------------------
+
+function isAuthEndpoint(url = ""): boolean {
+  const authEndpoints = [
+    "/auth/login/",
+    "/auth/signup/",
+    "/auth/google/",
+    "/auth/verify-email/",
+    "/auth/forgot-password/",
+    "/auth/verify-password-reset-otp/",
+    "/auth/reset-password/",
+    "/auth/resend-verification-otp/",
+    "/auth/resend-password-reset-otp/",
+    "/auth/token/refresh/",
+    "/auth/logout/",
+    "/auth/admin/login/",
+    "/auth/admin/logout/",
+  ];
+
+  return authEndpoints.some((endpoint) => url.includes(endpoint));
+}
+
+// -----------------------------------------------------------------------------
 // RESPONSE INTERCEPTOR
-// ============================================================================
+// -----------------------------------------------------------------------------
 
 api.interceptors.response.use(
   (response) => response,
 
   async (error: AxiosError) => {
-    const originalRequest = error.config as
-      | (InternalAxiosRequestConfig & {
-          _retry?: boolean;
-        })
-      | undefined;
+    const originalRequest = error.config as RetriableRequest | undefined;
 
-    // Redirect when instructor access is denied
+    // Handle forbidden instructor access.
     if (error.response?.status === 403) {
-      const responseData = error.response.data as {
-        code?: string;
-        message?: string;
-      };
+      const data = error.response.data as { code?: string } | undefined;
 
-      if (responseData?.code === "instructor_access_denied") {
-        // Clear access and refresh tokens
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
+      if (data?.code === "instructor_access_denied") {
+        await clearSession();
 
-        // Clear Redux authentication state
-        store.dispatch(clearAuthState());
-
-        // Clear persisted Redux state
-        await persistor.purge();
-
-        // Redirect to the home page if needed
-        // window.location.replace("/");
+        if (window.location.pathname !== "/login") {
+          window.location.replace("/login");
+        }
       }
 
       return Promise.reject(error);
     }
 
-    // ------------------------------------------------------------------------
-    // Only handle 401 responses
-    // ------------------------------------------------------------------------
-
+    // Only attempt refresh for eligible 401 responses.
     if (
       error.response?.status !== 401 ||
       !originalRequest ||
-      originalRequest._retry
+      originalRequest._retry ||
+      isAuthEndpoint(originalRequest.url)
     ) {
-      return Promise.reject(error);
-    }
-
-    // ------------------------------------------------------------------------
-    // Don't refresh token for authentication endpoints
-    // ------------------------------------------------------------------------
-
-    if (
-      originalRequest.url?.includes("/auth/login/") ||
-      originalRequest.url?.includes("/auth/signup/") ||
-      originalRequest.url?.includes("/auth/google/") ||
-      originalRequest.url?.includes("/auth/forgot-password/")
-    ) {
-      return Promise.reject(error);
-    }
-
-    // ------------------------------------------------------------------------
-    // Don't refresh the refresh-token request itself
-    // ------------------------------------------------------------------------
-
-    if (originalRequest.url?.includes("/token/refresh/")) {
       return Promise.reject(error);
     }
 
     originalRequest._retry = true;
 
-    // ------------------------------------------------------------------------
-    // If another request is already refreshing,
-    // wait for that refresh to finish
-    // ------------------------------------------------------------------------
-
+    // If another request is already refreshing, wait for its result.
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({
-          resolve: (token) => {
+          resolve: (token: string) => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
-
             resolve(api(originalRequest));
           },
-
           reject,
         });
       });
@@ -158,58 +153,37 @@ api.interceptors.response.use(
 
     isRefreshing = true;
 
-    const refreshToken = localStorage.getItem("refresh");
-
-    // ------------------------------------------------------------------------
-    // No refresh token → logout
-    // ------------------------------------------------------------------------
-
-    if (!refreshToken) {
-      isRefreshing = false;
-
-      await clearAllCredentials();
-
-      window.location.href = "/login";
-
-      return Promise.reject(error);
-    }
-
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/token/refresh/",
-        {
-          refresh: refreshToken,
-        },
-      );
+      // The browser sends the HttpOnly refresh cookie automatically,
+      // provided the cookie's scope and browser policies allow it.
+      const response = await api.post<RefreshResponse>("/auth/token/refresh/");
 
-      // Get the new access token
       const newAccessToken = response.data.access;
 
       if (!newAccessToken) {
-        throw new Error("Refresh response did not contain an access token");
+        throw new Error(
+          "Token refresh response did not contain an access token.",
+        );
       }
 
-      // Save only the new access token
-      localStorage.setItem("access", newAccessToken);
+      // Save the new access token in Redux.
+      store.dispatch(setAccessToken(newAccessToken));
 
-      // Keep the existing refresh token unchanged
-
-      // Resolve all queued requests
+      // Retry requests waiting in the queue.
       processQueue(null, newAccessToken);
 
-      // Retry the original request
+      // Retry the original request.
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
       return api(originalRequest);
     } catch (refreshError) {
-      // Reject all waiting requests
       processQueue(refreshError);
 
-      // Clear all authentication credentials
-      await clearAllCredentials();
+      await clearSession();
 
-      // Redirect to login
-      window.location.href = "/login";
+      if (window.location.pathname !== "/login") {
+        window.location.replace("/login");
+      }
 
       return Promise.reject(refreshError);
     } finally {

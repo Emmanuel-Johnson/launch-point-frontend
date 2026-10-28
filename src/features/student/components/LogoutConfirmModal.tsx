@@ -14,7 +14,7 @@ const LogoutConfirmModal = ({
   onCancel,
   onConfirm,
 }: LogoutConfirmModalProps) => {
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth?.user);
 
   // Escape to dismiss + lock background scroll while the modal is open.
   useEffect(() => {

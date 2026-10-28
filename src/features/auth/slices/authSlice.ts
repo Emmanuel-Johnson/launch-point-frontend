@@ -12,11 +12,13 @@ type User = {
 
 type AuthState = {
   user: User | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
 };
 
 const initialState: AuthState = {
   user: null,
+  accessToken: null,
   isAuthenticated: false,
 };
 
@@ -29,8 +31,13 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
 
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload;
+    },
+
     clearCredentials: (state) => {
       state.user = null;
+      state.accessToken = null;
       state.isAuthenticated = false;
     },
 
@@ -51,7 +58,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, clearCredentials, setProfileImage, updateUser } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  setAccessToken,
+  clearCredentials,
+  setProfileImage,
+  updateUser,
+} = authSlice.actions;
 
 export default authSlice.reducer;
