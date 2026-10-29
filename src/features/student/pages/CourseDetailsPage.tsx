@@ -746,11 +746,67 @@ const CourseDetailsPage = () => {
         .lp-play-ring {
           animation: lp-play-ring 3s ease-in-out infinite;
         }
+
+        /* ── HERO PREVIEW — refined hover / unhover system ──────────────
+           Every transition is symmetric (same easing + timing on enter and
+           exit) so leaving the card eases back just as smoothly as entering.
+           A single shared easing curve keeps image, overlays, play button
+           and glows moving as one coordinated motion. */
+        .lp-hero-ease {
+          --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* Image: slow, premium Ken-Burns zoom + gentle brightness lift.
+           Rest and hover are kept close together so unhover never looks
+           black and hover never looks blown-out. */
+        .lp-hero-img {
+          transform: scale(1.05);
+          filter: brightness(0.93) saturate(0.97);
+          transition:
+            transform 2000ms var(--lp-ease),
+            filter 1500ms var(--lp-ease),
+            opacity 900ms ease;
+          will-change: transform, filter;
+        }
+        .group\\/hero:hover .lp-hero-img {
+          transform: scale(1);
+          filter: brightness(1.02) saturate(1);
+        }
+        /* Soft vignette that lifts slightly on hover — subtle, not a blackout */
+        .lp-hero-veil {
+          opacity: 1;
+          transition: opacity 1500ms var(--lp-ease);
+        }
+        .group\\/hero:hover .lp-hero-veil {
+          opacity: 0.4;
+        }
+        /* Blooms intensify a touch on hover (layered over the breathing anim) */
+        .lp-hero-glow {
+          transition: opacity 1600ms var(--lp-ease);
+        }
+        .group\\/hero:hover .lp-hero-glow {
+          opacity: 1;
+        }
+        /* Play disc — smooth, gentle scale on hover AND on release */
+        .lp-hero-disc {
+          transform: scale(1);
+          transition:
+            transform 900ms var(--lp-ease),
+            border-color 900ms var(--lp-ease),
+            background-color 900ms var(--lp-ease),
+            box-shadow 900ms var(--lp-ease);
+        }
+        .group\\/play:hover .lp-hero-disc {
+          transform: scale(1.1);
+        }
         @media (prefers-reduced-motion: reduce) {
           .lp-card-sheen { display: none; }
           .lp-aura { animation: none !important; }
           .lp-hero-bloom { animation: none !important; }
           .lp-play-ring { animation: none !important; }
+          .lp-hero-img,
+          .lp-hero-veil,
+          .lp-hero-glow,
+          .lp-hero-disc { transition: none !important; }
         }
       `}</style>
 
@@ -812,7 +868,7 @@ const CourseDetailsPage = () => {
             `${event.clientY - rect.top}px`,
           );
         }}
-        className="group/hero relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0B0817] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]"
+        className="lp-hero-ease group/hero relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0B0817] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/25 hover:shadow-[0_55px_150px_-45px_rgba(124,58,237,0.45)]"
       >
         {/* Ambient radial base */}
         <div
@@ -829,12 +885,12 @@ const CourseDetailsPage = () => {
         {/* Animated color blooms (opacity-only, GPU-promoted — no flicker) */}
         <div
           aria-hidden="true"
-          className="lp-hero-bloom pointer-events-none absolute -right-20 -top-28 z-0 h-80 w-80 rounded-full bg-violet-600/25 blur-[120px]"
+          className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -right-20 -top-28 z-0 h-80 w-80 rounded-full bg-violet-600/25 blur-[120px]"
         />
 
         <div
           aria-hidden="true"
-          className="lp-hero-bloom pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
+          className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
         />
 
         {/* Cursor-follow spotlight */}
@@ -844,8 +900,10 @@ const CourseDetailsPage = () => {
         />
 
         <div className="relative z-10 grid lg:grid-cols-[0.92fr_1.08fr]">
-          {/* Text — now on the RIGHT (lg:order-2); image moved to the left */}
-          <div className="relative z-10 order-2 flex flex-col justify-center p-6 sm:p-10 lg:order-2 lg:p-12">
+          {/* Text — now on the RIGHT (lg:order-2); image moved to the left.
+              lg:-ml-px overlaps the panel 1px onto the image's right edge so
+              no sub-pixel light seam shows between the two columns. */}
+          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#0B0817] p-6 sm:p-10 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-12">
             {/* Category + level badges — refreshed UI, dot removed */}
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
@@ -942,7 +1000,7 @@ const CourseDetailsPage = () => {
           </div>
 
           {/* Image — now on the LEFT (order-1) */}
-          <div className="relative isolate order-1 min-h-[260px] overflow-hidden bg-[#0B0817] transform-gpu sm:min-h-[320px] lg:order-1 lg:min-h-[460px]">
+          <div className="relative isolate order-1 min-h-[260px] overflow-hidden bg-[#0B0817] sm:min-h-[320px] lg:order-1 lg:min-h-[460px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
@@ -950,9 +1008,15 @@ const CourseDetailsPage = () => {
               decoding="async"
               draggable={false}
               onLoad={() => setHeroImageLoaded(true)}
-              className={`absolute inset-0 block h-full w-full scale-110 transform-gpu object-cover [backface-visibility:hidden] transition-[transform,opacity] duration-[2200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/hero:scale-100 ${
+              className={`lp-hero-img absolute inset-0 block h-full w-full transform-gpu object-cover [backface-visibility:hidden] ${
                 heroImageLoaded ? "opacity-100" : "opacity-0"
               }`}
+            />
+
+            {/* Dark veil that lifts on hover — reveals the image smoothly */}
+            <div
+              aria-hidden="true"
+              className="lp-hero-veil pointer-events-none absolute inset-0 bg-[#0B0817]/20"
             />
 
             {/* Cinematic blend into panel */}
@@ -984,8 +1048,9 @@ const CourseDetailsPage = () => {
                 className="lp-play-ring absolute h-[128px] w-[128px] rounded-full border border-white/10 [animation-delay:-1.5s]"
               />
 
-              {/* Fully transparent disc — the image stays visible underneath; slow 700ms hover both ways */}
-              <span className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-all duration-700 ease-out group-hover/play:scale-110 group-hover/play:border-white/80 group-hover/play:bg-white/5 group-hover/play:shadow-[0_14px_52px_-6px_rgba(124,58,237,0.6)]">
+              {/* Fully transparent disc — the image stays visible underneath;
+                  springy, symmetric scale on hover and release */}
+              <span className="lp-hero-disc relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] group-hover/play:border-white/80 group-hover/play:bg-white/5 group-hover/play:shadow-[0_14px_52px_-6px_rgba(124,58,237,0.6)]">
                 {/* Faint glow that fades in on hover (kept see-through) */}
                 <span
                   aria-hidden="true"
@@ -998,6 +1063,15 @@ const CourseDetailsPage = () => {
               </span>
             </button>
           </div>
+
+          {/* Seam cover — removes the 1px sub-pixel hairline that shows
+              between the image and the text panel on first paint (large
+              screens only). Both sides are ~#0B0817 right at the boundary,
+              so this narrow strip is invisible and simply hides the seam. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-[3px] -translate-x-1/2 bg-[#0B0817] lg:block"
+          />
         </div>
       </section>
 
@@ -1429,46 +1503,51 @@ const CourseDetailsPage = () => {
 
         <aside className="xl:sticky xl:top-6 xl:self-start">
           <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
+            {/* Shared sheen + top accent line + corner bloom */}
             <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
             <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
             <div className="relative p-5">
-              {/* Course includes */}
-              <div>
-                <h4 className="text-sm font-semibold text-white">
+              {/* Title + plan */}
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="line-clamp-2 text-sm font-semibold leading-5 tracking-[-0.01em] text-white">
+                  {course.title}
+                </h3>
+                <PlanBadge plan={course.plan} />
+              </div>
+
+              {/* Course includes — tight rows */}
+              <div className="mt-4">
+                <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-violet-200/70">
                   This course includes
                 </h4>
 
-                <ul className="mt-3.5 space-y-2.5">
+                <ul className="mt-2.5 space-y-1.5">
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-3 text-sm leading-5 text-white/65"
+                      className="flex items-center gap-2.5 text-[13px] leading-5 text-white/70"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
-                        <Icon className="h-3.5 w-3.5" />
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
+                        <Icon className="h-3 w-3" />
                       </span>
-
                       <span className="min-w-0">{label}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Course details */}
-              <div className="mt-5 border-t border-white/[0.08] pt-5">
-                <h4 className="text-sm font-semibold text-white">
-                  Course details
-                </h4>
-
-                <dl className="mt-3 space-y-2 text-sm">
+              {/* Course details — compact tiles */}
+              <div className="mt-4 border-t border-white/[0.08] pt-4">
+                <dl className="grid grid-cols-2 gap-2">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="flex items-center justify-between gap-3"
+                      className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-2"
                     >
-                      <dt className="text-white/45">{label}</dt>
-                      <dd className="text-right font-medium text-white/80">
+                      <dt className="text-[10px] text-white/40">{label}</dt>
+                      <dd className="mt-0.5 text-[13px] font-medium text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -1476,16 +1555,23 @@ const CourseDetailsPage = () => {
                 </dl>
               </div>
 
-              {/* Primary action */}
+              {/* Primary action — bottom */}
               <div className="mt-5 border-t border-white/[0.08] pt-5">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
+                  className="group/button inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
                 >
-                  {isPremium ? "Enroll Now" : "Start Learning"}
+                  {isPremium ? (
+                    <>Enroll Now</>
+                  ) : (
+                    <>
+                      <PlayCircle className="h-4 w-4" />
+                      Start Learning
+                    </>
+                  )}
 
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/button:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
                 </button>
               </div>
             </div>
