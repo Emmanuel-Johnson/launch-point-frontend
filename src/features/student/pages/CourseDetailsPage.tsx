@@ -16,6 +16,7 @@ import {
   Laptop,
   ListChecks,
   MessageCircle,
+  Play,
   PlayCircle,
   Star,
   Target,
@@ -626,6 +627,7 @@ const CourseDetailsPage = () => {
     courses.find((item) => item.id === Number(courseId)) ?? courses[0];
 
   const [saved, setSaved] = useState(false);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [expandedModules, setExpandedModules] = useState<number[]>([0]);
   const [showAllModules, setShowAllModules] = useState(false);
   const [relatedCanScrollLeft, setRelatedCanScrollLeft] = useState(false);
@@ -724,117 +726,180 @@ const CourseDetailsPage = () => {
           0%, 100% { opacity: 0.55; }
           50% { opacity: 1; }
         }
+        /* Soft glow for the hero blooms — opacity-only so it never
+           repaints the compositor layer (prevents first-paint flicker). */
+        @keyframes lp-hero-bloom {
+          0%, 100% { opacity: 0.55; }
+          50% { opacity: 1; }
+        }
+        .lp-hero-bloom {
+          will-change: opacity;
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          animation: lp-hero-bloom 8s ease-in-out infinite;
+        }
+        /* Gentle breathing ring around the play button */
+        @keyframes lp-play-ring {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.12); opacity: 0.9; }
+        }
+        .lp-play-ring {
+          animation: lp-play-ring 3s ease-in-out infinite;
+        }
         @media (prefers-reduced-motion: reduce) {
           .lp-card-sheen { display: none; }
           .lp-aura { animation: none !important; }
+          .lp-hero-bloom { animation: none !important; }
+          .lp-play-ring { animation: none !important; }
         }
       `}</style>
-      {/* Top bar — back button + breadcrumb share one surface so they sit together as a unit */}
 
-      <div className="flex min-w-0 flex-wrap items-center gap-3">
+      {/* Top bar — circular glass back button + clean boxless breadcrumb */}
+
+      <div className="flex min-w-0 flex-wrap items-center gap-3.5">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="group inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/65 transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-white"
+          aria-label="Go back"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
         >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-          <span>Back</span>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
         </button>
 
         <nav
           aria-label="Breadcrumb"
           className="flex min-w-0 items-center gap-2 text-xs"
         >
-          <span className="hidden shrink-0 text-white/40 transition-colors hover:text-white/70 sm:inline">
+          <span className="hidden shrink-0 font-medium text-white/40 sm:inline">
             Courses
           </span>
 
-          <ChevronRight className="hidden h-3 w-3 shrink-0 text-white/25 sm:block" />
+          <ChevronRight
+            aria-hidden="true"
+            className="hidden h-3.5 w-3.5 shrink-0 text-white/30 sm:block"
+          />
 
-          <span className="hidden max-w-[120px] truncate text-white/40 sm:inline">
+          <span className="hidden max-w-[120px] shrink-0 truncate text-white/40 sm:inline">
             {course.category}
           </span>
 
-          <ChevronRight className="h-3 w-3 shrink-0 text-white/25" />
+          <ChevronRight
+            aria-hidden="true"
+            className="h-3.5 w-3.5 shrink-0 text-white/30"
+          />
 
-          <span className="max-w-[180px] truncate rounded-md border border-violet-400/15 bg-violet-500/[0.07] px-2.5 py-1.5 font-medium text-violet-200 sm:max-w-[260px]">
+          <span className="min-w-0 truncate bg-gradient-to-r from-white to-violet-200 bg-clip-text font-semibold text-transparent">
             {course.title}
           </span>
         </nav>
       </div>
 
-      {/* Hero — tightened height, cleaner structure */}
+      {/* ── Hero — modern, premium refresh ─────────────────────────── */}
 
-      <section className="group/hero relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
-        {/* Background layers */}
+      <section
+        onMouseMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          event.currentTarget.style.setProperty(
+            "--mx",
+            `${event.clientX - rect.left}px`,
+          );
+          event.currentTarget.style.setProperty(
+            "--my",
+            `${event.clientY - rect.top}px`,
+          );
+        }}
+        className="group/hero relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0B0817] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]"
+      >
+        {/* Ambient radial base */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(130%_130%_at_0%_0%,#1B1238_0%,#0B0817_45%,#0A1022_100%)]"
+        />
+
+        {/* Fine masked grid texture */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] [transform:translateZ(0)] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(80%_80%_at_20%_0%,#000_0%,transparent_75%)]"
+        />
+
+        {/* Animated color blooms (opacity-only, GPU-promoted — no flicker) */}
+        <div
+          aria-hidden="true"
+          className="lp-hero-bloom pointer-events-none absolute -right-20 -top-28 z-0 h-80 w-80 rounded-full bg-violet-600/25 blur-[120px]"
         />
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-24 z-0 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]"
+          className="lp-hero-bloom pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
         />
 
+        {/* Cursor-follow spotlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-28 left-1/3 z-0 h-64 w-64 rounded-full bg-blue-500/10 blur-[100px]"
+          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover/hero:opacity-100 [background:radial-gradient(500px_circle_at_var(--mx,50%)_var(--my,50%),rgba(139,92,246,0.10),transparent_60%)]"
         />
 
-        <div className="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr]">
-          {/* Left — text */}
-          <div className="relative z-10 flex flex-col justify-center p-6 sm:p-9 lg:p-10">
-            <div className="mb-5 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1.5 text-[11px] font-medium text-violet-200">
+        <div className="relative z-10 grid lg:grid-cols-[0.92fr_1.08fr]">
+          {/* Text — now on the RIGHT (lg:order-2); image moved to the left */}
+          <div className="relative z-10 order-2 flex flex-col justify-center p-6 sm:p-10 lg:order-2 lg:p-12">
+            {/* Category + level badges — refreshed UI, dot removed */}
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+                <Laptop className="h-3.5 w-3.5 text-violet-300" />
                 {course.category}
               </span>
 
-              <span className="rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1.5 text-[11px] text-white/60">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/25 bg-gradient-to-r from-cyan-500/15 to-cyan-500/[0.04] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+                <GraduationCap className="h-3.5 w-3.5 text-cyan-300" />
                 {course.level}
               </span>
 
               <PlanBadge plan={course.plan} />
             </div>
 
-            <h1 className="max-w-2xl text-[30px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[40px] lg:text-[42px]">
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            <h1 className="max-w-2xl text-[32px] font-semibold leading-[1.03] tracking-[-0.04em] sm:text-[42px] lg:text-[46px]">
+              <span className="bg-gradient-to-br from-white via-[#EDE7FF] to-[#9F85FF] bg-clip-text text-transparent [text-wrap:balance]">
                 {course.title}
               </span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-[15px] italic leading-7 tracking-[0.01em] text-white/50">
+            <p className="mt-4 max-w-xl text-[15px] leading-7 tracking-[0.01em] text-white/55 [text-wrap:pretty]">
               {course.subtitle}
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-xs text-white/50">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+            <div className="mt-7 flex flex-wrap items-center gap-2.5 text-xs text-white/55">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 <strong className="text-white">
                   {course.rating.toFixed(1)}
                 </strong>
-                <span className="text-white/45">
+                <span className="text-white/40">
                   ({course.reviewCount} reviews)
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Users className="h-4 w-4 text-violet-300" />
                 <strong className="text-white">{course.students}</strong>
-                <span className="text-white/45">learners</span>
+                <span className="text-white/40">learners</span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Clock3 className="h-4 w-4 text-cyan-300" />
                 <strong className="text-white">{course.duration}</strong>
               </span>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
+              {/* Primary CTA — now matches the sidebar "Enroll Now" button UI */}
               <button
                 type="button"
                 onClick={handleLearningAction}
-                className="group/button inline-flex min-h-12 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                className="group/button inline-flex min-h-12 min-w-[200px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
               >
                 {isPremium ? (
                   <>Enroll Now</>
@@ -845,13 +910,13 @@ const CourseDetailsPage = () => {
                   </>
                 )}
 
-                <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
               </button>
 
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 transition-colors duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 backdrop-blur-sm transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
               >
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 View curriculum
@@ -862,10 +927,10 @@ const CourseDetailsPage = () => {
                 onClick={() => setSaved((current) => !current)}
                 aria-pressed={saved}
                 aria-label={saved ? "Remove saved course" : "Save course"}
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border transition-colors duration-200 ${
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-200 ${
                   saved
-                    ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_20px_-6px_rgba(167,139,250,0.7)]"
-                    : "border-white/10 bg-white/[0.03] text-white/60 hover:border-violet-400/30 hover:text-violet-200"
+                    ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_24px_-6px_rgba(167,139,250,0.8)]"
+                    : "border-white/10 bg-white/[0.03] text-white/55 hover:border-violet-400/30 hover:text-violet-200"
                 }`}
               >
                 <Bookmark
@@ -876,36 +941,60 @@ const CourseDetailsPage = () => {
             </div>
           </div>
 
-          {/* Right — image */}
-          <div className="relative isolate min-h-[240px] overflow-hidden bg-[#100C20] sm:min-h-[300px] lg:min-h-[420px]">
+          {/* Image — now on the LEFT (order-1) */}
+          <div className="relative isolate order-1 min-h-[260px] overflow-hidden bg-[#0B0817] transform-gpu sm:min-h-[320px] lg:order-1 lg:min-h-[460px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
               loading="eager"
               decoding="async"
               draggable={false}
-              className="absolute inset-0 block h-full w-full scale-100 object-cover opacity-90"
+              onLoad={() => setHeroImageLoaded(true)}
+              className={`absolute inset-0 block h-full w-full scale-110 transform-gpu object-cover [backface-visibility:hidden] transition-[transform,opacity] duration-[2200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/hero:scale-100 ${
+                heroImageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
 
-            {/* Image overlay */}
+            {/* Cinematic blend into panel */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#100C20] via-[#100C20]/20 to-transparent lg:bg-gradient-to-r lg:from-[#100C20] lg:via-[#100C20]/25 lg:to-transparent"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0817] via-[#0B0817]/25 to-transparent lg:bg-gradient-to-l lg:from-[#0B0817] lg:via-[#0B0817]/20 lg:to-transparent"
             />
 
-            {/* Explore button */}
+            {/* Subtle color wash */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-violet-900/30 via-transparent to-sky-900/20 mix-blend-soft-light"
+            />
+
+            {/* Play / preview — ultra-transparent glass control */}
             <button
               type="button"
               onClick={scrollToCurriculum}
-              aria-label="Explore course lessons"
-              className="absolute inset-0 flex cursor-pointer items-center justify-center"
+              aria-label="Preview this course"
+              className="group/play absolute inset-0 flex cursor-pointer items-center justify-center"
             >
-              <span className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition-[transform,background-color,border-color] duration-300 hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
+              {/* Breathing outer rings — layered, see-through */}
+              <span
+                aria-hidden="true"
+                className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
+              />
+              <span
+                aria-hidden="true"
+                className="lp-play-ring absolute h-[128px] w-[128px] rounded-full border border-white/10 [animation-delay:-1.5s]"
+              />
+
+              {/* Fully transparent disc — the image stays visible underneath; slow 700ms hover both ways */}
+              <span className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-all duration-700 ease-out group-hover/play:scale-110 group-hover/play:border-white/80 group-hover/play:bg-white/5 group-hover/play:shadow-[0_14px_52px_-6px_rgba(124,58,237,0.6)]">
+                {/* Faint glow that fades in on hover (kept see-through) */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full border border-white/20"
+                  className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-violet-400/20 via-transparent to-sky-400/10 opacity-0 transition-opacity duration-700 ease-out group-hover/play:opacity-100"
                 />
-                <PlayCircle className="h-8 w-8" />
+                <Play
+                  className="relative h-7 w-7 translate-x-[2px] fill-white text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out group-hover/play:scale-105"
+                  strokeWidth={0}
+                />
               </span>
             </button>
           </div>
@@ -1341,7 +1430,6 @@ const CourseDetailsPage = () => {
         <aside className="xl:sticky xl:top-6 xl:self-start">
           <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
             <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
             <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
             <div className="relative p-5">
