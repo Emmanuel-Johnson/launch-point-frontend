@@ -5,23 +5,18 @@ import {
   ArrowLeft,
   ArrowRight,
   Bookmark,
-  BadgeCheck,
   BookOpen,
-  CalendarDays,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
   Crown,
-  Globe2,
   GraduationCap,
   Laptop,
   ListChecks,
   MessageCircle,
-  MonitorPlay,
   PlayCircle,
-  Sparkles,
   Star,
   Target,
   Users,
@@ -51,6 +46,7 @@ type Course = {
   rating: number;
   reviewCount: string;
   students: string;
+  publishedAt: string;
   updatedAt: string;
   language: string;
   image: string;
@@ -82,6 +78,7 @@ const courses: Course[] = [
     rating: 4.9,
     reviewCount: "1.2k",
     students: "8.4k",
+    publishedAt: "January 2024",
     updatedAt: "October 2026",
     language: "English",
     image:
@@ -181,6 +178,7 @@ const courses: Course[] = [
     rating: 4.8,
     reviewCount: "856",
     students: "5.2k",
+    publishedAt: "March 2024",
     updatedAt: "July 2026",
     language: "English",
     image:
@@ -246,6 +244,7 @@ const courses: Course[] = [
     rating: 4.8,
     reviewCount: "2.1k",
     students: "12.6k",
+    publishedAt: "February 2023",
     updatedAt: "October 2025",
     language: "English",
     image:
@@ -312,6 +311,7 @@ const courses: Course[] = [
     rating: 4.9,
     reviewCount: "980",
     students: "6.1k",
+    publishedAt: "May 2022",
     updatedAt: "October 2023",
     language: "English",
     image:
@@ -382,6 +382,7 @@ const courses: Course[] = [
     rating: 4.7,
     reviewCount: "743",
     students: "7.3k",
+    publishedAt: "August 2024",
     updatedAt: "October 2026",
     language: "English",
     image:
@@ -452,6 +453,7 @@ const courses: Course[] = [
     rating: 4.7,
     reviewCount: "512",
     students: "3.8k",
+    publishedAt: "June 2024",
     updatedAt: "April 2026",
     language: "English",
     image:
@@ -554,9 +556,20 @@ const reviews = [
   },
 ];
 
-/* Shared card look — the violet "to-b" gradient surface used across the page */
+/* ──────────────────────────────────────────────────────────────────
+   UNIFIED SURFACE SYSTEM
+   One violet-black card surface, one interactive-pill surface, and one
+   set of hover states — shared by every card and control on the page so
+   backgrounds and hovers read as a single, consistent system.
+   ────────────────────────────────────────────────────────────────── */
+
+/* Standard content card — same base gradient + border everywhere */
 const CARD_BASE =
-  "relative overflow-hidden border border-violet-400/20 bg-gradient-to-b from-violet-500/[0.1] to-transparent";
+  "relative overflow-hidden border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814]";
+
+/* Pill / ghost control surface (back button, badges, "view all", arrows) */
+const PILL =
+  "border border-white/[0.08] bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
 
 const SectionHeading = ({
   icon: Icon,
@@ -626,6 +639,29 @@ const CourseDetailsPage = () => {
 
   const isPremium = course.plan === "Premium";
 
+  /* Sidebar facts — deliberately NON-redundant with the hero and the
+     "Skills you'll develop" section. These describe access, format and
+     deliverables rather than re-listing title/subtitle/skills. */
+  const courseIncludes = [
+    { icon: Clock3, label: `${course.duration} of on-demand content` },
+    {
+      icon: ListChecks,
+      label: `${course.lessonCount} lessons across ${totalModules} modules`,
+    },
+    { icon: Laptop, label: "Access on mobile, tablet and desktop" },
+    { icon: GraduationCap, label: "Certificate of completion" },
+    { icon: BookOpen, label: `Taught in ${course.language}` },
+  ];
+
+  /* Compact "Course details" rows for the sidebar — published / updated
+     dates plus a couple of facts not emphasised in the hero. */
+  const courseDetails = [
+    { label: "Published", value: course.publishedAt },
+    { label: "Last updated", value: course.updatedAt },
+    { label: "Skill level", value: course.level },
+    { label: "Language", value: course.language },
+  ];
+
   const handleLearningAction = () => {
     // UI-only: connect this action to your actual subscription,
     // enrollment, and lesson-player routes when integrating the backend.
@@ -635,6 +671,12 @@ const CourseDetailsPage = () => {
     }
 
     navigate("/student/courses");
+  };
+
+  const handleViewInstructor = () => {
+    // UI-only: point this at your instructor profile route when the
+    // backend is connected.
+    navigate("/student/instructors");
   };
 
   const toggleModule = (index: number) => {
@@ -676,48 +718,59 @@ const CourseDetailsPage = () => {
         .group:hover .lp-card-sheen {
           animation: lp-card-sheen 1.1s ease-out;
         }
+        @keyframes lp-aura {
+          0%, 100% { opacity: 0.55; }
+          50% { opacity: 1; }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .lp-card-sheen {
-            display: none;
-          }
+          .lp-card-sheen { display: none; }
+          .lp-aura { animation: none !important; }
         }
       `}</style>
+      {/* Top bar — back button + breadcrumb share one surface so they sit together as a unit */}
 
-      {/* Top navigation — minimal, modern breadcrumb */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center gap-4">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/[0.08] bg-[#0B0B0F] px-4 py-2 text-sm text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+          className="group inline-flex shrink-0 cursor-pointer items-center gap-2 text-[13px] font-medium text-white/60 transition-colors duration-200 hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-          Back
+          <ArrowLeft className="h-4 w-4 text-white/50 transition-all duration-200 group-hover:-translate-x-0.5 group-hover:text-violet-300" />
+          <span>Back</span>
         </button>
 
         <nav
           aria-label="Breadcrumb"
-          className="hidden items-center gap-2 text-xs sm:flex"
+          className="flex min-w-0 items-center gap-1.5 text-xs"
         >
-          <span className="text-white/35">Courses</span>
-          <ChevronRight className="h-3 w-3 text-white/20" />
-          <span className="text-white/35">{course.category}</span>
-          <ChevronRight className="h-3 w-3 text-white/20" />
-          <span className="max-w-[220px] truncate font-medium text-white/70">
+          <span className="hidden shrink-0 text-white/40 sm:inline">
+            Courses
+          </span>
+
+          <ChevronRight className="hidden h-3 w-3 shrink-0 text-white/25 sm:block" />
+
+          <span className="hidden max-w-[140px] truncate text-white/40 sm:inline">
+            {course.category}
+          </span>
+
+          <ChevronRight className="h-3 w-3 shrink-0 text-white/25" />
+
+          <span className="max-w-[180px] truncate font-medium text-white/65 sm:max-w-[260px]">
             {course.title}
           </span>
         </nav>
       </div>
 
-      {/* Hero */}
+      {/* Hero — tightened height, cleaner structure */}
       <section className="group/hero relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]" />
-        <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
-        <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
+        <div className="absolute -right-16 -top-24 -z-10 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]" />
+        <div className="absolute -bottom-28 left-1/3 -z-10 h-64 w-64 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
           {/* Left — text */}
-          <div className="relative z-10 flex flex-col justify-center p-7 sm:p-10 lg:p-12">
-            <div className="mb-6 flex flex-wrap items-center gap-2">
+          <div className="relative z-10 flex flex-col justify-center p-6 sm:p-9 lg:p-10">
+            <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1.5 text-[11px] font-medium text-violet-200">
                 {course.category}
               </span>
@@ -727,18 +780,18 @@ const CourseDetailsPage = () => {
               <PlanBadge plan={course.plan} />
             </div>
 
-            <h1 className="max-w-2xl text-[32px] font-semibold leading-[1.06] tracking-[-0.035em] sm:text-5xl lg:text-[46px]">
+            <h1 className="max-w-2xl text-[30px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[40px] lg:text-[42px]">
               <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                 {course.title}
               </span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-[15px] italic leading-7 tracking-[0.01em] text-white/50 sm:text-base">
+            <p className="mt-4 max-w-xl text-[15px] italic leading-7 tracking-[0.01em] text-white/50">
               {course.subtitle}
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs text-white/50">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0B0B0F] px-3 py-1.5">
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-xs text-white/50">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 <strong className="text-white">
                   {course.rating.toFixed(1)}
@@ -748,35 +801,26 @@ const CourseDetailsPage = () => {
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0B0B0F] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
                 <Users className="h-4 w-4 text-violet-300" />
                 <strong className="text-white">{course.students}</strong>
                 <span className="text-white/45">learners</span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0B0B0F] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
                 <Clock3 className="h-4 w-4 text-cyan-300" />
                 <strong className="text-white">{course.duration}</strong>
               </span>
-
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0B0B0F] px-3 py-1.5">
-                <CalendarDays className="h-4 w-4 text-violet-300" />
-                <span className="text-white/45">Updated</span>
-                <strong className="text-white">{course.updatedAt}</strong>
-              </span>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={handleLearningAction}
                 className="group/button inline-flex min-h-12 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
               >
                 {isPremium ? (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Explore Premium
-                  </>
+                  <>Enroll Now</>
                 ) : (
                   <>
                     <PlayCircle className="h-4 w-4" />
@@ -812,16 +856,10 @@ const CourseDetailsPage = () => {
                 />
               </button>
             </div>
-
-            <p className="mt-5 text-[11px] leading-5 text-white/35">
-              {isPremium
-                ? "Premium subscription required to access the full course."
-                : "Start exploring the lessons and build your skills at your own pace."}
-            </p>
           </div>
 
           {/* Right — image */}
-          <div className="relative min-h-[280px] overflow-hidden sm:min-h-[360px] lg:min-h-[540px]">
+          <div className="relative min-h-[240px] overflow-hidden sm:min-h-[300px] lg:min-h-[420px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
@@ -829,67 +867,30 @@ const CourseDetailsPage = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#100C20] via-[#100C20]/20 to-transparent lg:bg-gradient-to-r lg:from-[#100C20] lg:via-[#100C20]/25 lg:to-transparent" />
 
-            <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/15 bg-[#0B0B0D]/70 px-3.5 py-2 backdrop-blur-xl sm:left-auto sm:right-5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-300" />
-              </span>
-              <MonitorPlay className="h-4 w-4 text-violet-300" />
-              <span className="text-xs font-medium text-white/90">
-                Course preview
-              </span>
-            </div>
-
             <button
               type="button"
               onClick={scrollToCurriculum}
               aria-label="Explore course lessons"
               className="absolute inset-0 flex cursor-pointer items-center justify-center"
             >
-              <span className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
+              <span className="relative flex h-18 w-18 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
                 <span className="absolute inset-0 animate-ping rounded-full border border-white/20" />
-                <PlayCircle className="h-9 w-9" />
+                <PlayCircle className="h-8 w-8" />
               </span>
             </button>
           </div>
         </div>
       </section>
-
-      {/* Quick stat strip */}
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { icon: MonitorPlay, label: "Lessons", value: course.lessonCount },
-          { icon: Clock3, label: "Duration", value: course.duration },
-          { icon: Users, label: "Learners", value: course.students },
-          { icon: Star, label: "Rating", value: course.rating.toFixed(1) },
-        ].map(({ icon: Icon, label, value }) => (
-          <div
-            key={label}
-            className={`${CARD_BASE} group rounded-2xl p-4 transition hover:border-violet-400/35`}
-          >
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-violet-500/15 blur-2xl transition group-hover:bg-violet-500/25" />
-            <div className="relative">
-              <Icon className="h-4 w-4 text-violet-300" />
-              <p className="mt-3 text-lg font-semibold tracking-tight text-white">
-                {value}
-              </p>
-              <p className="mt-0.5 text-[11px] text-white/40">{label}</p>
-            </div>
-          </div>
-        ))}
-      </section>
-
       {/* Main content and sidebar */}
-      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_356px]">
         <div className="min-w-0 space-y-8">
           {/* Overview */}
           <section id="course-overview" className="scroll-mt-24 space-y-8">
-            {/* About */}
-            <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-8`}>
+            {/* About — tightened, with a compact meta strip for better structure */}
+            <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
               <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
-              <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
+              <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl" />
 
               <div className="relative">
                 <SectionHeading
@@ -898,31 +899,9 @@ const CourseDetailsPage = () => {
                   caption="What this course is about"
                 />
 
-                <p className="mt-6 text-[15px] leading-7 text-white/60">
+                <p className="mt-5 text-[15px] leading-7 text-white/60">
                   {course.description}
                 </p>
-                <p className="mt-3 text-[15px] leading-7 text-white/55">
-                  Learn at your own pace, revisit lessons when you need to, and
-                  build a foundation you can use in your next project.
-                </p>
-
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {[
-                    { icon: MonitorPlay, text: course.category },
-                    { icon: GraduationCap, text: `${course.level} level` },
-                    { icon: Globe2, text: course.language },
-                    { icon: Clock3, text: course.duration },
-                    { icon: CalendarDays, text: `Updated ${course.updatedAt}` },
-                  ].map(({ icon: Icon, text }) => (
-                    <span
-                      key={text}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium text-white/70"
-                    >
-                      <Icon className="h-3.5 w-3.5 text-violet-300" />
-                      {text}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -983,7 +962,9 @@ const CourseDetailsPage = () => {
                 caption="Explore the modules and lessons included."
               />
 
-              <span className="rounded-full border border-white/[0.08] bg-[#0B0B0F] px-4 py-2 text-xs font-medium text-white/55">
+              <span
+                className={`rounded-full px-4 py-2 text-xs font-medium ${PILL}`}
+              >
                 {course.lessonCount} lessons · {course.duration}
               </span>
             </div>
@@ -996,10 +977,10 @@ const CourseDetailsPage = () => {
                 return (
                   <div
                     key={module.title}
-                    className={`overflow-hidden rounded-2xl border transition-colors ${
+                    className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
                       expanded
-                        ? "border-violet-400/25 bg-gradient-to-b from-violet-500/[0.1] to-transparent"
-                        : "border-white/[0.08] bg-[#0A0A0C] hover:border-white/[0.14]"
+                        ? "border-violet-400/25 bg-gradient-to-b from-[#130E24] to-[#0B0814]"
+                        : "border-white/[0.07] bg-[#0B0814] hover:border-violet-400/25 hover:bg-[#120D22]"
                     }`}
                   >
                     <button
@@ -1083,7 +1064,7 @@ const CourseDetailsPage = () => {
               <button
                 type="button"
                 onClick={() => setShowAllModules((current) => !current)}
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 py-3.5 text-sm font-medium text-white/65 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-violet-200"
+                className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-medium ${PILL}`}
               >
                 {showAllModules ? "Show fewer modules" : "View all modules"}
                 <ChevronDown
@@ -1135,62 +1116,64 @@ const CourseDetailsPage = () => {
             </div>
           </section>
 
-          {/* Instructor — minimal, modern, premium */}
-          <section
-            id="course-instructor"
-            className={`${CARD_BASE} group scroll-mt-24 rounded-3xl p-6 sm:p-7`}
-          >
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-            <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
+          {/* Instructor — heading outside the card (like Student reviews) */}
+          <section id="course-instructor" className="scroll-mt-24 space-y-6">
+            <SectionHeading
+              icon={GraduationCap}
+              title="Meet your instructor"
+              caption="Learn from an experienced industry professional."
+            />
 
-            <div className="relative">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-violet-300/80">
-                Your instructor
-              </p>
+            <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
+              <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
-              <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center">
-                <div className="relative shrink-0">
-                  <span className="absolute -inset-1 rounded-[22px] bg-gradient-to-br from-violet-500/40 to-indigo-500/15 blur-sm" />
-                  <img
-                    src={course.instructorImage}
-                    alt={course.instructor}
-                    className="relative h-20 w-20 rounded-2xl border border-white/15 object-cover shadow-lg"
-                  />
-                  <span className="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full border border-violet-400/30 bg-[#0B0B0F] text-violet-300 shadow-lg">
-                    <BadgeCheck className="h-3.5 w-3.5" />
-                  </span>
-                </div>
+              <div className="relative">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                  <div className="relative shrink-0">
+                    <span className="absolute -inset-1 rounded-full bg-gradient-to-br from-violet-500/40 to-indigo-500/15 blur-sm" />
+                    <img
+                      src={course.instructorImage}
+                      alt={course.instructor}
+                      className="relative h-20 w-20 rounded-full border border-white/15 object-cover shadow-lg"
+                    />
+                  </div>
 
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-xl font-semibold tracking-[-0.015em]">
-                    {course.instructor}
-                  </h3>
-                  <p className="mt-1 text-sm font-medium text-violet-300/80">
-                    {course.instructorRole}
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xl font-semibold tracking-[-0.015em]">
+                      {course.instructor}
+                    </h3>
+                    <p className="mt-1 text-sm font-medium text-violet-300/80">
+                      {course.instructorRole}
+                    </p>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/50">
-                    <span className="inline-flex items-center gap-1.5">
-                      <GraduationCap className="h-3.5 w-3.5 text-violet-300" />
-                      {course.instructorExperience}
-                    </span>
-                    <span className="h-3 w-px bg-white/10" />
-                    <span className="inline-flex items-center gap-1.5">
-                      <Users className="h-3.5 w-3.5 text-violet-300" />
-                      {course.students} learners
-                    </span>
-                    <span className="h-3 w-px bg-white/10" />
-                    <span className="inline-flex items-center gap-1.5">
-                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                      {course.rating.toFixed(1)} rating
-                    </span>
+                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/50">
+                      <span className="inline-flex items-center gap-1.5">
+                        <GraduationCap className="h-3.5 w-3.5 text-violet-300" />
+                        {course.instructorExperience}
+                      </span>
+                      <span className="h-3 w-px bg-white/10" />
+                      <span className="inline-flex items-center gap-1.5">
+                        <Users className="h-3.5 w-3.5 text-violet-300" />
+                        {course.students} learners
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <p className="mt-5 border-t border-white/[0.08] pt-5 text-sm leading-7 text-white/55">
-                {course.instructorBio}
-              </p>
+                <p className="mt-5 border-t border-white/[0.08] pt-5 text-sm leading-7 text-white/55">
+                  {course.instructorBio}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={handleViewInstructor}
+                  className={`mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-medium ${PILL}`}
+                >
+                  View instructor profile
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </section>
 
@@ -1267,7 +1250,7 @@ const CourseDetailsPage = () => {
               {reviews.slice(0, 4).map((review) => (
                 <article
                   key={review.name}
-                  className={`${CARD_BASE} rounded-2xl p-5 transition hover:border-violet-400/35`}
+                  className={`${CARD_BASE} rounded-2xl p-5 transition-colors duration-300 hover:border-violet-400/35`}
                 >
                   <div className="relative flex items-start gap-3">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-violet-400/20 bg-gradient-to-br from-violet-500/20 to-violet-500/5 text-xs font-semibold text-violet-100">
@@ -1309,7 +1292,7 @@ const CourseDetailsPage = () => {
             {reviews.length > 4 && (
               <button
                 type="button"
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 py-3.5 text-sm font-medium text-white/65 transition hover:border-violet-400/30 hover:text-violet-200"
+                className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-medium ${PILL}`}
               >
                 View all reviews
                 <ArrowRight className="h-4 w-4" />
@@ -1318,110 +1301,76 @@ const CourseDetailsPage = () => {
           </section>
         </div>
 
-        {/* Enroll card — sticky, capped to the viewport so the button stays visible */}
-        <aside className="relative z-10 xl:sticky xl:top-6 xl:self-start">
-          <div
-            className={`${CARD_BASE} group flex max-h-[calc(100vh-3rem)] flex-col rounded-3xl bg-[#0A0812] shadow-[0_30px_80px_-40px_rgba(124,58,237,0.6)]`}
-          >
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/70 to-transparent" />
+        {/* ──────────────────────────────────────────────────────────
+            ENROLL CARD — no image, no preview button (those duplicated
+            the hero). A branded card with the "This course includes"
+            panel, a compact "Course details" block (published / updated
+            dates and more), and the CTA.
+            ────────────────────────────────────────────────────────── */}
+        <aside className="xl:sticky xl:top-6 xl:self-start">
+          <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
+            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
+            <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
-            {/* Header */}
-            <div className="relative shrink-0 overflow-hidden border-b border-white/[0.06] p-6">
-              <div className="absolute -right-8 -top-10 h-32 w-32 rounded-full bg-violet-500/25 blur-3xl" />
-              <div className="relative">
-                <div className="flex items-center justify-between gap-2">
-                  <PlanBadge plan={course.plan} />
-                  <span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/30 px-2.5 py-1 text-[10px] font-medium text-white/70 backdrop-blur-md">
-                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                    {course.rating.toFixed(1)}
-                  </span>
-                </div>
-                <h3 className="mt-4 text-xl font-semibold tracking-[-0.015em]">
-                  Course details
-                </h3>
-                <p className="mt-2 text-xs leading-6 text-white/50">
-                  Everything included with this course.
-                </p>
+            <div className="relative p-6">
+              {/* This course includes — access, format and deliverables */}
+              <div>
+                <h4 className="text-sm font-semibold text-white">
+                  This course includes
+                </h4>
+
+                <ul className="mt-4 space-y-3.5">
+                  {courseIncludes.map(({ icon: Icon, label }) => (
+                    <li
+                      key={label}
+                      className="flex items-center gap-3 text-sm leading-5 text-white/65"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
+                        <Icon className="h-4 w-4" />
+                      </span>
+
+                      <span className="min-w-0">{label}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
 
-            {/* Details list — fills remaining height, scrolls if needed */}
-            <div className="relative min-h-0 flex-1 space-y-1 overflow-y-auto p-4 [scrollbar-width:thin]">
-              {[
-                {
-                  icon: MonitorPlay,
-                  label: "Lessons",
-                  value: `${course.lessonCount} lessons`,
-                  tone: "text-violet-300",
-                },
-                {
-                  icon: Clock3,
-                  label: "Duration",
-                  value: course.duration,
-                  tone: "text-cyan-300",
-                },
-                {
-                  icon: Globe2,
-                  label: "Language",
-                  value: course.language,
-                  tone: "text-violet-300",
-                },
-                {
-                  icon: GraduationCap,
-                  label: "Level",
-                  value: course.level,
-                  tone: "text-violet-300",
-                },
-                {
-                  icon: CalendarDays,
-                  label: "Last updated",
-                  value: course.updatedAt,
-                  tone: "text-violet-300",
-                },
-              ].map(({ icon: Icon, label, value, tone }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-3 rounded-xl border border-transparent px-2 py-2.5 transition hover:border-violet-400/15 hover:bg-violet-500/[0.05]"
+              {/* Course details — published / updated dates and key facts */}
+              <div className="mt-6 border-t border-white/[0.08] pt-6">
+                <h4 className="text-sm font-semibold text-white">
+                  Course details
+                </h4>
+
+                <dl className="mt-4 space-y-2.5 text-sm">
+                  {courseDetails.map(({ label, value }) => (
+                    <div
+                      key={label}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <dt className="text-white/45">{label}</dt>
+                      <dd className="font-medium text-white/80">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+
+              {/* Primary action */}
+              <div className="mt-6 border-t border-white/[0.08] pt-6">
+                <button
+                  type="button"
+                  onClick={handleLearningAction}
+                  className="group/button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/[0.1]">
-                    <Icon className={`h-4 w-4 ${tone}`} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] text-white/40">{label}</p>
-                    <p className="mt-0.5 text-xs font-medium text-white/80">
-                      {value}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  {isPremium ? "Enroll Now" : "Start Learning"}
 
-            {/* Enroll — pinned to the bottom */}
-            <div className="relative shrink-0 border-t border-white/[0.06] p-4">
-              <button
-                type="button"
-                onClick={handleLearningAction}
-                className="group/enroll inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/50 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
-              >
-                {isPremium ? (
-                  <Sparkles className="h-4 w-4" />
-                ) : (
-                  <PlayCircle className="h-4 w-4" />
-                )}
-                Enroll Now
-                <ArrowRight className="h-4 w-4 transition-transform group-hover/enroll:translate-x-1" />
-              </button>
-              <p className="mt-3 text-center text-[11px] text-white/35">
-                {isPremium
-                  ? "Unlock full access with Premium."
-                  : "Free to start — learn at your own pace."}
-              </p>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/button:translate-x-1" />
+                </button>
+              </div>
             </div>
           </div>
         </aside>
       </div>
-
       {/* Related courses — presented like the Explore Courses listing */}
       <section className="space-y-6 pt-2">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -1436,32 +1385,43 @@ const CourseDetailsPage = () => {
               Discover more courses to build on what you learn here.
             </p>
           </div>
+
           <div className="flex items-center gap-2">
             <button
               type="button"
               aria-label="Scroll related courses left"
               disabled={!relatedCanScrollLeft}
-              onClick={() =>
-                relatedCoursesRef.current?.scrollBy({
-                  left: -340,
+              onClick={() => {
+                const element = relatedCoursesRef.current;
+                if (!element) return;
+
+                element.scrollTo({
+                  left: Math.max(0, element.scrollLeft - 340),
                   behavior: "smooth",
-                })
-              }
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-white/[0.08] bg-[#0B0B0F] text-white/70 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-25"
+                });
+              }}
+              className={`flex h-11 w-11 cursor-pointer items-center justify-center rounded-full ${PILL} disabled:cursor-not-allowed disabled:opacity-25`}
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
+
             <button
               type="button"
               aria-label="Scroll related courses right"
               disabled={!relatedCanScrollRight}
-              onClick={() =>
-                relatedCoursesRef.current?.scrollBy({
-                  left: 340,
+              onClick={() => {
+                const element = relatedCoursesRef.current;
+                if (!element) return;
+
+                element.scrollTo({
+                  left: Math.min(
+                    element.scrollWidth - element.clientWidth,
+                    element.scrollLeft + 340,
+                  ),
                   behavior: "smooth",
-                })
-              }
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-white/[0.08] bg-[#0B0B0F] text-white/70 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-violet-200 disabled:cursor-not-allowed disabled:opacity-25"
+                });
+              }}
+              className={`flex h-11 w-11 cursor-pointer items-center justify-center rounded-full ${PILL} disabled:cursor-not-allowed disabled:opacity-25`}
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -1472,13 +1432,14 @@ const CourseDetailsPage = () => {
           ref={relatedCoursesRef}
           onScroll={(event) => {
             const element = event.currentTarget;
+
             setRelatedCanScrollLeft(element.scrollLeft > 4);
             setRelatedCanScrollRight(
               element.scrollLeft + element.clientWidth <
                 element.scrollWidth - 4,
             );
           }}
-          className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {[
@@ -1502,7 +1463,7 @@ const CourseDetailsPage = () => {
             .map((related) => (
               <article
                 key={related.id}
-                className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-violet-400/20 bg-gradient-to-b from-violet-500/[0.1] to-transparent transition-transform duration-500 ease-in-out hover:scale-[1.02]"
+                className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] transition-transform duration-500 ease-in-out hover:scale-[1.02] hover:border-violet-400/35"
               >
                 <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
@@ -1513,9 +1474,11 @@ const CourseDetailsPage = () => {
                     loading="lazy"
                     className="block h-full w-full object-cover"
                   />
+
                   <div className="absolute left-3 top-3 z-20">
                     <PlanBadge plan={related.plan} />
                   </div>
+
                   <span className="absolute bottom-3 right-3 z-20 inline-flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     {related.rating.toFixed(1)}
@@ -1548,9 +1511,11 @@ const CourseDetailsPage = () => {
                       loading="lazy"
                       className="h-7 w-7 rounded-full border border-white/10 object-cover"
                     />
+
                     <span className="min-w-0 flex-1 truncate">
                       {related.instructor}
                     </span>
+
                     <span className="inline-flex shrink-0 items-center gap-1">
                       <Clock3 className="h-3.5 w-3.5 text-cyan-300" />
                       {related.duration}
