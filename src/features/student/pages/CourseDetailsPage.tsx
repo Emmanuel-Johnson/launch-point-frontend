@@ -20,6 +20,7 @@ import {
   Star,
   Target,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 type Lesson = {
@@ -648,18 +649,19 @@ const CourseDetailsPage = () => {
       icon: ListChecks,
       label: `${course.lessonCount} lessons across ${totalModules} modules`,
     },
-    { icon: Laptop, label: "Access on mobile, tablet and desktop" },
-    { icon: GraduationCap, label: "Certificate of completion" },
     { icon: BookOpen, label: `Taught in ${course.language}` },
+    { icon: UsersRound, label: `1024 learners enrolled` },
+    { icon: Star, label: `${course.rating} course rating` },
+    { icon: GraduationCap, label: "Certificate of completion" },
   ];
 
   /* Compact "Course details" rows for the sidebar — published / updated
      dates plus a couple of facts not emphasised in the hero. */
   const courseDetails = [
+    { label: "Category", value: course.category },
+    { label: "Skill level", value: course.level },
     { label: "Published", value: course.publishedAt },
     { label: "Last updated", value: course.updatedAt },
-    { label: "Skill level", value: course.level },
-    { label: "Language", value: course.language },
   ];
 
   const handleLearningAction = () => {
@@ -729,54 +731,69 @@ const CourseDetailsPage = () => {
       `}</style>
       {/* Top bar — back button + breadcrumb share one surface so they sit together as a unit */}
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="group inline-flex shrink-0 cursor-pointer items-center gap-2 text-[13px] font-medium text-white/60 transition-colors duration-200 hover:text-white"
+          className="group inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/65 transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 text-white/50 transition-all duration-200 group-hover:-translate-x-0.5 group-hover:text-violet-300" />
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
           <span>Back</span>
         </button>
 
         <nav
           aria-label="Breadcrumb"
-          className="flex min-w-0 items-center gap-1.5 text-xs"
+          className="flex min-w-0 items-center gap-2 text-xs"
         >
-          <span className="hidden shrink-0 text-white/40 sm:inline">
+          <span className="hidden shrink-0 text-white/40 transition-colors hover:text-white/70 sm:inline">
             Courses
           </span>
 
           <ChevronRight className="hidden h-3 w-3 shrink-0 text-white/25 sm:block" />
 
-          <span className="hidden max-w-[140px] truncate text-white/40 sm:inline">
+          <span className="hidden max-w-[120px] truncate text-white/40 sm:inline">
             {course.category}
           </span>
 
           <ChevronRight className="h-3 w-3 shrink-0 text-white/25" />
 
-          <span className="max-w-[180px] truncate font-medium text-white/65 sm:max-w-[260px]">
+          <span className="max-w-[180px] truncate rounded-md border border-violet-400/15 bg-violet-500/[0.07] px-2.5 py-1.5 font-medium text-violet-200 sm:max-w-[260px]">
             {course.title}
           </span>
         </nav>
       </div>
 
       {/* Hero — tightened height, cleaner structure */}
-      <section className="group/hero relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]" />
-        <div className="absolute -right-16 -top-24 -z-10 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]" />
-        <div className="absolute -bottom-28 left-1/3 -z-10 h-64 w-64 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="group/hero relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
+        {/* Background layers */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]"
+        />
+
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -top-24 z-0 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]"
+        />
+
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-28 left-1/3 z-0 h-64 w-64 rounded-full bg-blue-500/10 blur-[100px]"
+        />
+
+        <div className="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr]">
           {/* Left — text */}
           <div className="relative z-10 flex flex-col justify-center p-6 sm:p-9 lg:p-10">
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1.5 text-[11px] font-medium text-violet-200">
                 {course.category}
               </span>
+
               <span className="rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1.5 text-[11px] text-white/60">
                 {course.level}
               </span>
+
               <PlanBadge plan={course.plan} />
             </div>
 
@@ -827,13 +844,14 @@ const CourseDetailsPage = () => {
                     Start Learning
                   </>
                 )}
+
                 <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
               </button>
 
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 transition-colors duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
               >
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 View curriculum
@@ -844,7 +862,7 @@ const CourseDetailsPage = () => {
                 onClick={() => setSaved((current) => !current)}
                 aria-pressed={saved}
                 aria-label={saved ? "Remove saved course" : "Save course"}
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border transition ${
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border transition-colors duration-200 ${
                   saved
                     ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_20px_-6px_rgba(167,139,250,0.7)]"
                     : "border-white/10 bg-white/[0.03] text-white/60 hover:border-violet-400/30 hover:text-violet-200"
@@ -859,28 +877,41 @@ const CourseDetailsPage = () => {
           </div>
 
           {/* Right — image */}
-          <div className="relative min-h-[240px] overflow-hidden sm:min-h-[300px] lg:min-h-[420px]">
+          <div className="relative isolate min-h-[240px] overflow-hidden bg-[#100C20] sm:min-h-[300px] lg:min-h-[420px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
-              className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-[1200ms] group-hover/hero:scale-105"
+              loading="eager"
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 block h-full w-full scale-100 object-cover opacity-90"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20] via-[#100C20]/20 to-transparent lg:bg-gradient-to-r lg:from-[#100C20] lg:via-[#100C20]/25 lg:to-transparent" />
 
+            {/* Image overlay */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#100C20] via-[#100C20]/20 to-transparent lg:bg-gradient-to-r lg:from-[#100C20] lg:via-[#100C20]/25 lg:to-transparent"
+            />
+
+            {/* Explore button */}
             <button
               type="button"
               onClick={scrollToCurriculum}
               aria-label="Explore course lessons"
               className="absolute inset-0 flex cursor-pointer items-center justify-center"
             >
-              <span className="relative flex h-18 w-18 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
-                <span className="absolute inset-0 animate-ping rounded-full border border-white/20" />
+              <span className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition-[transform,background-color,border-color] duration-300 hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-full border border-white/20"
+                />
                 <PlayCircle className="h-8 w-8" />
               </span>
             </button>
           </div>
         </div>
       </section>
+
       {/* Main content and sidebar */}
       <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_356px]">
         <div className="min-w-0 space-y-8">
@@ -1300,34 +1331,34 @@ const CourseDetailsPage = () => {
             )}
           </section>
         </div>
-
         {/* ──────────────────────────────────────────────────────────
             ENROLL CARD — no image, no preview button (those duplicated
             the hero). A branded card with the "This course includes"
             panel, a compact "Course details" block (published / updated
             dates and more), and the CTA.
             ────────────────────────────────────────────────────────── */}
+
         <aside className="xl:sticky xl:top-6 xl:self-start">
           <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
             <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
             <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
-            <div className="relative p-6">
-              {/* This course includes — access, format and deliverables */}
+            <div className="relative p-5">
+              {/* Course includes */}
               <div>
                 <h4 className="text-sm font-semibold text-white">
                   This course includes
                 </h4>
 
-                <ul className="mt-4 space-y-3.5">
+                <ul className="mt-3.5 space-y-2.5">
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
                       className="flex items-center gap-3 text-sm leading-5 text-white/65"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
-                        <Icon className="h-4 w-4" />
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
+                        <Icon className="h-3.5 w-3.5" />
                       </span>
 
                       <span className="min-w-0">{label}</span>
@@ -1336,31 +1367,33 @@ const CourseDetailsPage = () => {
                 </ul>
               </div>
 
-              {/* Course details — published / updated dates and key facts */}
-              <div className="mt-6 border-t border-white/[0.08] pt-6">
+              {/* Course details */}
+              <div className="mt-5 border-t border-white/[0.08] pt-5">
                 <h4 className="text-sm font-semibold text-white">
                   Course details
                 </h4>
 
-                <dl className="mt-4 space-y-2.5 text-sm">
+                <dl className="mt-3 space-y-2 text-sm">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
                       className="flex items-center justify-between gap-3"
                     >
                       <dt className="text-white/45">{label}</dt>
-                      <dd className="font-medium text-white/80">{value}</dd>
+                      <dd className="text-right font-medium text-white/80">
+                        {value}
+                      </dd>
                     </div>
                   ))}
                 </dl>
               </div>
 
               {/* Primary action */}
-              <div className="mt-6 border-t border-white/[0.08] pt-6">
+              <div className="mt-5 border-t border-white/[0.08] pt-5">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
+                  className="group/button flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
                 >
                   {isPremium ? "Enroll Now" : "Start Learning"}
 
