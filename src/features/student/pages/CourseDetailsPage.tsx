@@ -59,6 +59,7 @@ type Course = {
   language: string;
   image: string;
   instructor: string;
+  instructorId: number;
   instructorRole: string;
   instructorImage: string;
   instructorBio: string;
@@ -92,6 +93,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&h=1000&fit=crop",
     instructor: "Sarah Mitchell",
+    instructorId: 101,
     instructorRole: "Senior Full Stack Developer",
     instructorImage:
       "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=faces",
@@ -227,6 +229,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=1600&h=1000&fit=crop",
     instructor: "Alex Carter",
+    instructorId: 101,
     instructorRole: "Product Designer",
     instructorImage:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces",
@@ -318,6 +321,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=1600&h=1000&fit=crop",
     instructor: "James Wilson",
+    instructorId: 101,
     instructorRole: "Software Engineer",
     instructorImage:
       "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=faces",
@@ -410,6 +414,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&h=1000&fit=crop",
     instructor: "Priya Sharma",
+    instructorId: 101,
     instructorRole: "Data Analyst",
     instructorImage:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces",
@@ -506,6 +511,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1600&h=1000&fit=crop",
     instructor: "Daniel Brooks",
+    instructorId: 101,
     instructorRole: "Frontend Engineer",
     instructorImage:
       "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=200&h=200&fit=crop&crop=faces",
@@ -602,6 +608,7 @@ const courses: Course[] = [
     image:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&h=1000&fit=crop",
     instructor: "Olivia Bennett",
+    instructorId: 101,
     instructorRole: "Product Strategist",
     instructorImage:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=faces",
@@ -938,9 +945,7 @@ const CourseDetailsPage = () => {
   };
 
   const handleViewInstructor = () => {
-    // UI-only: point this at your instructor profile route when the
-    // backend is connected.
-    navigate("/student/instructors");
+    navigate(`/student/instructors/101`);
   };
 
   const toggleModule = (index: number) => {
@@ -1912,6 +1917,9 @@ const CourseDetailsPage = () => {
             {reviews.length > 4 && (
               <button
                 type="button"
+                onClick={() =>
+                  navigate(`/student/courses/${course.id}/reviews`)
+                }
                 className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-medium ${PILL}`}
               >
                 View all reviews
