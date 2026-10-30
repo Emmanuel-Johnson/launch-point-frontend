@@ -1151,12 +1151,12 @@ const CourseDetailsPage = () => {
             `${event.clientY - rect.top}px`,
           );
         }}
-        className="lp-hero-ease group/hero relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0B0817] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/25 hover:shadow-[0_55px_150px_-45px_rgba(124,58,237,0.45)]"
+        className="lp-hero-ease group/hero relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]"
       >
         {/* Ambient radial base */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(130%_130%_at_0%_0%,#1B1238_0%,#0B0817_45%,#0A1022_100%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(130%_130%_at_0%_0%,#241044_0%,#100821_48%,#0C0719_100%)]"
         />
 
         {/* Fine masked grid texture */}
@@ -1186,7 +1186,7 @@ const CourseDetailsPage = () => {
           {/* Text — now on the RIGHT (lg:order-2); image moved to the left.
               lg:-ml-px overlaps the panel 1px onto the image's right edge so
               no sub-pixel light seam shows between the two columns. */}
-          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#0B0817] p-6 sm:p-10 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-12">
+          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#100821] p-5 sm:p-7 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-8 xl:p-9">
             {/* Category + level badges — refreshed UI, dot removed */}
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
@@ -1202,17 +1202,17 @@ const CourseDetailsPage = () => {
               <PlanBadge plan={course.plan} />
             </div>
 
-            <h1 className="max-w-2xl text-[32px] font-semibold leading-[1.03] tracking-[-0.04em] sm:text-[42px] lg:text-[46px]">
+            <h1 className="max-w-2xl font-serif text-[29px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[36px] lg:text-[40px]">
               <span className="bg-gradient-to-br from-white via-[#EDE7FF] to-[#9F85FF] bg-clip-text text-transparent [text-wrap:balance]">
                 {course.title}
               </span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-[15px] leading-7 tracking-[0.01em] text-white/55 [text-wrap:pretty]">
+            <p className="mt-5 max-w-xl text-sm leading-7 tracking-[0.01em] text-white/60 sm:text-[14px]">
               {course.subtitle}
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-2.5 text-xs text-white/55">
+            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-white/55">
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 <strong className="text-white">
@@ -1283,7 +1283,7 @@ const CourseDetailsPage = () => {
           </div>
 
           {/* Image — now on the LEFT (order-1) */}
-          <div className="relative isolate order-1 min-h-[260px] overflow-hidden bg-[#0B0817] sm:min-h-[320px] lg:order-1 lg:min-h-[460px]">
+          <div className="relative isolate order-1 min-h-[220px] overflow-hidden bg-[#100821] sm:min-h-[270px] lg:order-1 lg:min-h-[360px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
@@ -1299,13 +1299,13 @@ const CourseDetailsPage = () => {
             {/* Dark veil that lifts on hover — reveals the image smoothly */}
             <div
               aria-hidden="true"
-              className="lp-hero-veil pointer-events-none absolute inset-0 bg-[#0B0817]/20"
+              className="lp-hero-veil pointer-events-none absolute inset-0 bg-[#100821]/25"
             />
 
             {/* Cinematic blend into panel */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0817] via-[#0B0817]/25 to-transparent lg:bg-gradient-to-l lg:from-[#0B0817] lg:via-[#0B0817]/20 lg:to-transparent"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#100821] via-[#100821]/25 to-transparent lg:bg-gradient-to-l lg:from-[#100821] lg:via-[#100821]/25 lg:to-transparent"
             />
 
             {/* Subtle color wash */}
@@ -1353,7 +1353,7 @@ const CourseDetailsPage = () => {
               so this narrow strip is invisible and simply hides the seam. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-[3px] -translate-x-1/2 bg-[#0B0817] lg:block"
+            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-[3px] -translate-x-1/2 bg-[#100821] lg:block"
           />
         </div>
       </section>
@@ -1936,52 +1936,107 @@ const CourseDetailsPage = () => {
             ────────────────────────────────────────────────────────── */}
 
         <aside className="xl:sticky xl:top-6 xl:self-start">
-          <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
-            {/* Shared sheen + top accent line + corner bloom */}
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
-            <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
+          <div
+            onMouseMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
 
-            <div className="relative p-5">
-              {/* Title + plan */}
+              event.currentTarget.style.setProperty(
+                "--mx",
+                `${event.clientX - rect.left}px`,
+              );
+
+              event.currentTarget.style.setProperty(
+                "--my",
+                `${event.clientY - rect.top}px`,
+              );
+            }}
+            className="group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/[0.14] bg-[#090611] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-violet-400/25 hover:shadow-[0_30px_90px_-35px_rgba(76,29,149,0.22)]"
+          >
+            {/* Deep violet background */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(120%_100%_at_0%_0%,#1A1030_0%,#10091D_42%,#090611_100%)]"
+            />
+
+            {/* Subtle grid texture */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 opacity-[0.035] [background-image:linear-gradient(to_right,#C4B5FD_1px,transparent_1px),linear-gradient(to_bottom,#C4B5FD_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+            />
+
+            {/* Upper violet ambient light */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-24 -top-28 z-0 h-72 w-72 rounded-full bg-violet-700/[0.16] blur-[110px]"
+            />
+
+            {/* Lower purple ambient light */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-28 -left-20 z-0 h-72 w-72 rounded-full bg-purple-600/[0.10] blur-[110px]"
+            />
+
+            {/* Cursor-follow violet spotlight */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover/sidebar:opacity-100 [background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,50%),rgba(139,92,246,0.09),transparent_70%)]"
+            />
+
+            {/* Fine top accent */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent"
+            />
+
+            {/* Hover sheen */}
+            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.035] to-transparent" />
+
+            {/* Sidebar content */}
+            <div className="relative z-10 p-5">
+              {/* Course title + plan */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="line-clamp-2 text-sm font-semibold leading-5 tracking-[-0.01em] text-white">
+                <h3 className="line-clamp-2 text-sm font-semibold leading-5 tracking-[-0.02em] text-white/95">
                   {course.title}
                 </h3>
+
                 <PlanBadge plan={course.plan} />
               </div>
 
-              {/* Course includes — tight rows */}
-              <div className="mt-4">
-                <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-violet-200/70">
+              {/* Course includes */}
+              <div className="mt-5">
+                <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-violet-300/75">
                   This course includes
                 </h4>
 
-                <ul className="mt-2.5 space-y-1.5">
+                <ul className="mt-3 space-y-2">
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-2.5 text-[13px] leading-5 text-white/70"
+                      className="flex items-center gap-2.5 text-[13px] leading-5 text-white/65 transition-colors duration-300 hover:text-white/90"
                     >
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
-                        <Icon className="h-3 w-3" />
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/[0.12] bg-violet-500/[0.07] text-violet-300/90 transition-colors duration-300 hover:border-violet-400/25 hover:bg-violet-500/[0.12]">
+                        <Icon className="h-3.5 w-3.5" />
                       </span>
+
                       <span className="min-w-0">{label}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Course details — compact tiles */}
-              <div className="mt-4 border-t border-white/[0.08] pt-4">
-                <dl className="grid grid-cols-2 gap-2">
+              {/* Course details */}
+              <div className="mt-5 border-t border-white/[0.07] pt-5">
+                <dl className="grid grid-cols-2 gap-2.5">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-2"
+                      className="rounded-xl border border-violet-300/[0.08] bg-white/[0.025] px-3 py-2.5 transition-colors duration-300 hover:border-violet-400/[0.18] hover:bg-violet-500/[0.045]"
                     >
-                      <dt className="text-[10px] text-white/40">{label}</dt>
-                      <dd className="mt-0.5 text-[13px] font-medium text-white/85">
+                      <dt className="text-[10px] font-medium tracking-wide text-white/40">
+                        {label}
+                      </dt>
+
+                      <dd className="mt-1 text-[13px] font-semibold text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -1989,23 +2044,30 @@ const CourseDetailsPage = () => {
                 </dl>
               </div>
 
-              {/* Primary action — bottom */}
-              <div className="mt-5 border-t border-white/[0.08] pt-5">
+              {/* Primary action */}
+              <div className="mt-5 border-t border-white/[0.07] pt-5">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
+                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.65)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#090611]"
                 >
-                  {isPremium ? (
-                    <>Enroll Now</>
-                  ) : (
-                    <>
-                      <PlayCircle className="h-4 w-4" />
-                      Start Learning
-                    </>
-                  )}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent transition-transform duration-700 group-hover/button:translate-x-[120%]"
+                  />
 
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
+                  <span className="relative z-10 inline-flex items-center gap-2">
+                    {isPremium ? (
+                      <>Enroll Now</>
+                    ) : (
+                      <>
+                        <PlayCircle className="h-4 w-4" />
+                        Start Learning
+                      </>
+                    )}
+
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
+                  </span>
                 </button>
               </div>
             </div>
