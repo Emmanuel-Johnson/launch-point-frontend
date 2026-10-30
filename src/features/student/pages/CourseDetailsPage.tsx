@@ -1523,7 +1523,7 @@ const CourseDetailsPage = () => {
                 const counts = countItems(module.lessons);
 
                 /* Running lesson counter so only lessons get a number;
-                   quizzes and assignments are labelled by their badge. */
+       quizzes and assignments are labelled by their badge. */
                 let lessonNumber = 0;
 
                 return (
@@ -1532,11 +1532,12 @@ const CourseDetailsPage = () => {
                     className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
                       expanded
                         ? "border-violet-400/30 bg-gradient-to-b from-[#150F28] to-[#0B0814] shadow-[0_18px_50px_-24px_rgba(124,58,237,0.6)]"
-                        : "border-white/[0.07] bg-[#0B0814] hover:border-violet-400/25 hover:bg-[#120D22]"
+                        : "border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] hover:border-violet-400/30"
                     }`}
                   >
-                    {/* Shared hover shimmer */}
-                    <CardSheen />
+                    {/* Shared hover shimmer — raised above the z-20 header so the sheen
+            sweeps over the module row on hover, like the other cards. */}
+                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                     {/* Left accent bar — lights up when the module is open */}
                     <span
@@ -1643,7 +1644,7 @@ const CourseDetailsPage = () => {
                                     {lesson.title}
                                   </p>
                                 </div>
-                                
+
                                 {type !== "lesson" && (
                                   <span
                                     className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${
@@ -1655,7 +1656,7 @@ const CourseDetailsPage = () => {
                                     {meta.label}
                                   </span>
                                 )}
-                                
+
                                 <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
                                   {type === "lesson" && (
                                     <Clock3 className="h-3 w-3 text-white/30" />
