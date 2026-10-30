@@ -630,7 +630,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
             >
               <button
                 type="button"
-                onClick={() => navigate("/instructor-landing/applications")}
+                onClick={() => navigate("/instructor/landing/applications")}
                 className="group inline-flex items-center gap-2 rounded-md py-1 text-slate-400 transition-all duration-200 hover:text-white"
               >
                 <LayoutGrid className="h-4 w-4 text-slate-500 transition-colors duration-200 group-hover:text-blue-400" />

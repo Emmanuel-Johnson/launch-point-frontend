@@ -211,7 +211,7 @@ export const routeConfig: RouteObject[] = [
     element: <ProtectedRoute allowedRoles={["student", "instructor"]} />,
     children: [
       {
-        path: "/instructor-landing",
+        path: "/instructor/landing",
         element: <InstructorPublicLayout />,
         children: [
           {

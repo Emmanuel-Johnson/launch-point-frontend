@@ -181,7 +181,7 @@ const InstructorSidebar = ({
           {/* BRAND */}
 
           <Link
-            to="/instructor-landing"
+            to="/instructor/landing"
             className={`flex min-w-0 items-center transition-all duration-500 ${
               isCollapsed ? "justify-center" : "gap-3"
             }`}

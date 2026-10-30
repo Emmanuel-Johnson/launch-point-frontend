@@ -1234,7 +1234,7 @@ const InstructorApplicationModal = ({
 
       closeAndReset();
 
-      navigate("/instructor-landing/applications");
+      navigate("/instructor/landing/applications");
     } catch (error) {
       console.error("Failed to submit instructor application:", error);
 

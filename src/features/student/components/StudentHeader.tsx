@@ -142,7 +142,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
     setIsProfileOpen(false);
 
     if (!canSwitchToInstructor) {
-      navigate("/instructor-landing");
+      navigate("/instructor/landing");
       return;
     }
 
