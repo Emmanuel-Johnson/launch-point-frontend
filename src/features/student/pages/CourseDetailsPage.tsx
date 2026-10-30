@@ -1186,9 +1186,10 @@ const CourseDetailsPage = () => {
           {/* Text — now on the RIGHT (lg:order-2); image moved to the left.
               lg:-ml-px overlaps the panel 1px onto the image's right edge so
               no sub-pixel light seam shows between the two columns. */}
-          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#100821] p-5 sm:p-7 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-8 xl:p-9">
-            {/* Category + level badges — refreshed UI, dot removed */}
-            <div className="mb-6 flex flex-wrap items-center gap-2">
+
+          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#100821] p-6 sm:p-8 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-9 xl:p-10">
+            {/* Category + level badges */}
+            <div className="mb-7 flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
                 <Laptop className="h-3.5 w-3.5 text-violet-300" />
                 {course.category}
@@ -1202,80 +1203,89 @@ const CourseDetailsPage = () => {
               <PlanBadge plan={course.plan} />
             </div>
 
-            <h1 className="max-w-2xl font-serif text-[29px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[36px] lg:text-[40px]">
+            {/* Course title */}
+            <h1 className="max-w-2xl font-serif text-[29px] font-semibold leading-[1.15] tracking-[-0.035em] sm:text-[36px] lg:text-[40px]">
               <span className="bg-gradient-to-br from-white via-[#EDE7FF] to-[#9F85FF] bg-clip-text text-transparent [text-wrap:balance]">
                 {course.title}
               </span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-sm leading-7 tracking-[0.01em] text-white/60 sm:text-[14px]">
+            {/* Course subtitle */}
+            <p className="mt-5 max-w-xl text-[13px] font-medium leading-[1.85] tracking-[-0.012em] text-white/65 sm:text-[14px] sm:leading-[1.8]">
               {course.subtitle}
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-white/55">
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            {/* Course statistics */}
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+                <Star className="h-4 w-4 shrink-0 fill-amber-400 text-amber-400" />
+
                 <strong className="text-white">
                   {course.rating.toFixed(1)}
                 </strong>
+
                 <span className="text-white/40">
                   ({course.reviewCount} reviews)
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
-                <Users className="h-4 w-4 text-violet-300" />
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+                <Users className="h-4 w-4 shrink-0 text-violet-300" />
+
                 <strong className="text-white">{course.students}</strong>
+
                 <span className="text-white/40">learners</span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
-                <Clock3 className="h-4 w-4 text-cyan-300" />
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+                <Clock3 className="h-4 w-4 shrink-0 text-cyan-300" />
+
                 <strong className="text-white">{course.duration}</strong>
               </span>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              {/* Primary CTA — now matches the sidebar "Enroll Now" button UI */}
+            {/* CTA buttons */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={handleLearningAction}
-                className="group/button inline-flex min-h-12 min-w-[200px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
+                className="group/button inline-flex min-h-[58px] min-w-[270px] cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-12 py-4 text-[15px] font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
               >
                 {isPremium ? (
                   <>Enroll Now</>
                 ) : (
                   <>
-                    <PlayCircle className="h-4 w-4" />
+                    <PlayCircle className="h-5 w-5" />
                     Start Learning
                   </>
                 )}
 
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
+                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover/button:translate-x-1" />
               </button>
 
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 backdrop-blur-sm transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
+                className="inline-flex min-h-[58px] min-w-[200px] cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-8 py-4 text-[15px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
               >
-                <BookOpen className="h-4 w-4 text-violet-300" />
+                <BookOpen className="h-5 w-5 text-violet-300" />
                 View curriculum
               </button>
 
+              {/* Save course */}
               <button
                 type="button"
                 onClick={() => setSaved((current) => !current)}
                 aria-pressed={saved}
                 aria-label={saved ? "Remove saved course" : "Save course"}
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-200 ${
+                className={`flex h-[58px] w-[58px] shrink-0 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 ${
                   saved
                     ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_24px_-6px_rgba(167,139,250,0.8)]"
                     : "border-white/10 bg-white/[0.03] text-white/55 hover:border-violet-400/30 hover:text-violet-200"
                 }`}
               >
                 <Bookmark
-                  className="h-[18px] w-[18px]"
+                  className="h-5 w-5"
                   fill={saved ? "currentColor" : "none"}
                 />
               </button>
@@ -1346,7 +1356,6 @@ const CourseDetailsPage = () => {
               </span>
             </button>
           </div>
-
           {/* Seam cover — removes the 1px sub-pixel hairline that shows
               between the image and the text panel on first paint (large
               screens only). Both sides are ~#0B0817 right at the boundary,
@@ -1950,7 +1959,7 @@ const CourseDetailsPage = () => {
                 `${event.clientY - rect.top}px`,
               );
             }}
-            className="group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/[0.14] bg-[#090611] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-violet-400/25 hover:shadow-[0_30px_90px_-35px_rgba(76,29,149,0.22)]"
+            className="group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/[0.14] bg-[#090611] font-['Manrope'] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-violet-400/25 hover:shadow-[0_30px_90px_-35px_rgba(76,29,149,0.22)]"
           >
             {/* Deep violet background */}
             <div
@@ -1995,7 +2004,7 @@ const CourseDetailsPage = () => {
             <div className="relative z-10 p-5">
               {/* Course title + plan */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="line-clamp-2 text-sm font-semibold leading-5 tracking-[-0.02em] text-white/95">
+                <h3 className="line-clamp-2 min-w-0 text-[14px] font-bold leading-[1.55] tracking-[-0.035em] text-white/95">
                   {course.title}
                 </h3>
 
@@ -2004,7 +2013,7 @@ const CourseDetailsPage = () => {
 
               {/* Course includes */}
               <div className="mt-5">
-                <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-violet-300/75">
+                <h4 className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-violet-300/80">
                   This course includes
                 </h4>
 
@@ -2012,7 +2021,7 @@ const CourseDetailsPage = () => {
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-2.5 text-[13px] leading-5 text-white/65 transition-colors duration-300 hover:text-white/90"
+                      className="flex items-center gap-2.5 text-[12.5px] font-medium leading-5 tracking-[-0.012em] text-white/65 transition-colors duration-300 hover:text-white/90"
                     >
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/[0.12] bg-violet-500/[0.07] text-violet-300/90 transition-colors duration-300 hover:border-violet-400/25 hover:bg-violet-500/[0.12]">
                         <Icon className="h-3.5 w-3.5" />
@@ -2030,13 +2039,13 @@ const CourseDetailsPage = () => {
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="rounded-xl border border-violet-300/[0.08] bg-white/[0.025] px-3 py-2.5 transition-colors duration-300 hover:border-violet-400/[0.18] hover:bg-violet-500/[0.045]"
+                      className="min-w-0 rounded-xl border border-violet-300/[0.08] bg-white/[0.025] px-3 py-2.5 transition-colors duration-300 hover:border-violet-400/[0.18] hover:bg-violet-500/[0.045]"
                     >
-                      <dt className="text-[10px] font-medium tracking-wide text-white/40">
+                      <dt className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/40">
                         {label}
                       </dt>
 
-                      <dd className="mt-1 text-[13px] font-semibold text-white/85">
+                      <dd className="mt-1 break-words text-[12px] font-bold leading-[1.6] tracking-[-0.02em] text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -2049,7 +2058,7 @@ const CourseDetailsPage = () => {
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.65)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#090611]"
+                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-[13px] font-bold tracking-[-0.015em] text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.65)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#090611]"
                 >
                   <span
                     aria-hidden="true"
