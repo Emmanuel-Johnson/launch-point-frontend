@@ -1106,32 +1106,33 @@ const CourseDetailsPage = () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
           />
+
           <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
         </button>
 
         <nav
           aria-label="Breadcrumb"
-          className="flex min-w-0 items-center gap-2 text-xs"
+          className="flex min-w-0 items-center gap-2 font-['Manrope'] text-[11px] italic tracking-[-0.01em] sm:text-xs"
         >
-          <span className="hidden shrink-0 font-medium text-white/40 sm:inline">
+          <span className="hidden shrink-0 font-semibold tracking-[0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:inline">
             Courses
           </span>
 
           <ChevronRight
             aria-hidden="true"
-            className="hidden h-3.5 w-3.5 shrink-0 text-white/30 sm:block"
+            className="hidden h-3.5 w-3.5 shrink-0 text-violet-300/50 sm:block"
           />
 
-          <span className="hidden max-w-[120px] shrink-0 truncate text-white/40 sm:inline">
-            {course.category}
+          <span className="hidden max-w-[120px] shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
+            Development
           </span>
 
           <ChevronRight
             aria-hidden="true"
-            className="h-3.5 w-3.5 shrink-0 text-white/30"
+            className="h-3.5 w-3.5 shrink-0 text-violet-300/50"
           />
 
-          <span className="min-w-0 truncate bg-gradient-to-r from-white to-violet-200 bg-clip-text font-semibold text-transparent">
+          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
             {course.title}
           </span>
         </nav>
@@ -1454,9 +1455,7 @@ const CourseDetailsPage = () => {
                 caption="Explore each module, build your skills step by step, and put your knowledge into practice."
               />
             </div>
-
             {/* Stat tiles — modules / lessons / quizzes / assignments / length. */}
-
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
               {(
                 [
@@ -1530,14 +1529,13 @@ const CourseDetailsPage = () => {
                 </div>
               ))}
             </div>
-
+            
             <div className="space-y-3">
               {displayedModules.map((module, index) => {
                 const expanded = expandedModules.includes(index);
                 const counts = countItems(module.lessons);
 
-                /* Running lesson counter so only lessons get a number;
-       quizzes and assignments are labelled by their badge. */
+                /* Only lessons receive a running number. */
                 let lessonNumber = 0;
 
                 return (
@@ -1549,24 +1547,37 @@ const CourseDetailsPage = () => {
                         : "border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] hover:border-violet-400/30"
                     }`}
                   >
-                    {/* Shared hover shimmer — raised above the z-20 header so the sheen
-            sweeps over the module row on hover, like the other cards. */}
-                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                    {/* Left accent bar — lights up when the module is open */}
+                    {/* Always-visible top-right ambient light */}
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-violet-400 to-indigo-500 transition-opacity duration-300 ${
+                      className="pointer-events-none absolute -right-12 -top-16 z-0 h-36 w-36 rounded-full bg-violet-500/[0.12] blur-3xl"
+                    />
+
+                    {/* Soft top-right gradient highlight */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-0 top-0 z-0 h-28 w-40 bg-gradient-to-bl from-violet-400/[0.07] via-violet-500/[0.025] to-transparent"
+                    />
+
+                    {/* Hover shimmer — remains inactive until hover */}
+                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                    {/* Left accent bar — visible when expanded */}
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-[3px] bg-gradient-to-b from-violet-400 to-indigo-500 transition-opacity duration-300 ${
                         expanded ? "opacity-100" : "opacity-0"
                       }`}
                     />
 
+                    {/* Module header */}
                     <button
                       type="button"
                       onClick={() => toggleModule(index)}
                       aria-expanded={expanded}
                       className="relative z-20 flex w-full cursor-pointer items-center gap-3.5 px-4 py-4 text-left sm:px-5"
                     >
+                      {/* Module number */}
                       <span
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-xs font-semibold transition ${
                           expanded
@@ -1577,12 +1588,11 @@ const CourseDetailsPage = () => {
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
+                      {/* Module title and content counts */}
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm font-semibold text-white/90">
                           {module.title}
                         </span>
-
-                        {/* Per-type counts with small glowing balls */}
 
                         <span className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-white/45">
                           {(["lesson", "quiz", "assignment"] as LessonType[])
@@ -1609,6 +1619,7 @@ const CourseDetailsPage = () => {
                         </span>
                       </span>
 
+                      {/* Expand / collapse icon */}
                       <span
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition ${
                           expanded
@@ -1624,6 +1635,7 @@ const CourseDetailsPage = () => {
                       </span>
                     </button>
 
+                    {/* Expandable module content */}
                     <div
                       className={`relative z-20 grid transition-all duration-300 ease-out ${
                         expanded
@@ -1639,6 +1651,7 @@ const CourseDetailsPage = () => {
                             const ItemIcon = meta.icon;
 
                             if (type === "lesson") lessonNumber += 1;
+
                             const number =
                               type === "lesson" ? lessonNumber : null;
 
@@ -1647,11 +1660,14 @@ const CourseDetailsPage = () => {
                                 key={`${lesson.title}-${lessonIndex}`}
                                 className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition hover:border-white/[0.06] hover:bg-white/[0.03] sm:px-3"
                               >
+                                {/* Lesson, quiz, or assignment icon */}
                                 <span
                                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition ${meta.bubble} ${meta.bubbleHover}`}
                                 >
                                   <ItemIcon className="h-4 w-4" />
                                 </span>
+
+                                {/* Item title */}
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-[13px] font-medium leading-5 text-white/80">
                                     {number ? `${number}. ` : ""}
@@ -1659,6 +1675,7 @@ const CourseDetailsPage = () => {
                                   </p>
                                 </div>
 
+                                {/* Quiz / assignment badge */}
                                 {type !== "lesson" && (
                                   <span
                                     className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${
@@ -1671,6 +1688,7 @@ const CourseDetailsPage = () => {
                                   </span>
                                 )}
 
+                                {/* Duration */}
                                 <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
                                   {type === "lesson" && (
                                     <Clock3 className="h-3 w-3 text-white/30" />
@@ -1687,7 +1705,7 @@ const CourseDetailsPage = () => {
                 );
               })}
             </div>
-
+            
             {totalModules > 3 && (
               <button
                 type="button"
