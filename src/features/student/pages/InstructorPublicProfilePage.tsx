@@ -11,7 +11,6 @@ import {
   Clock3,
   Globe2,
   GraduationCap,
-  Linkedin,
   MapPin,
   MessageCircle,
   PlayCircle,
@@ -584,7 +583,7 @@ const InstructorPublicProfilePage = () => {
                   aria-label={`${instructor.name} on LinkedIn`}
                   className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/65 transition hover:border-violet-300/30 hover:bg-violet-500/10 hover:text-violet-200"
                 >
-                  <Linkedin className="h-4 w-4" />
+                  {/* <Linkedin className="h-4 w-4" /> */}
                 </a>
               )}
               <button

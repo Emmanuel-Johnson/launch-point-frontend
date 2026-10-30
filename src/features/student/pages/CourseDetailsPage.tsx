@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { ComponentType } from "react";
+import type { ComponentType, CSSProperties } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -751,9 +751,9 @@ const CardSheen = () => (
    CURRICULUM ITEM TYPES
    Each curriculum entry can be a lesson, a quiz, or an assignment.
    This map drives the icon, icon-bubble colors, badge styling, the small
-   count-dot color and the stat-tile palette for every item type so
-   lessons, quizzes and assignments read as one consistent system that
-   matches the page's blue / amber / emerald accents.
+   count-dot color (and its glow), and the stat-tile palette for every item
+   type so lessons, quizzes and assignments read as one consistent system
+   that matches the page's blue / amber / emerald accents.
    ────────────────────────────────────────────────────────────────── */
 const ITEM_META: Record<
   LessonType,
@@ -765,6 +765,7 @@ const ITEM_META: Record<
     bubbleHover: string;
     badge: string;
     dot: string;
+    dotGlow: string;
     tile: string;
     tileIcon: string;
   }
@@ -778,6 +779,7 @@ const ITEM_META: Record<
       "group-hover/lesson:bg-blue-500/20 group-hover/lesson:text-blue-200",
     badge: "border-blue-400/25 bg-blue-500/10 text-blue-200",
     dot: "bg-blue-400",
+    dotGlow: "rgba(96,165,250,0.9)",
     tile: "border-blue-400/20 bg-blue-500/[0.07]",
     tileIcon: "bg-blue-500/15 text-blue-200",
   },
@@ -790,6 +792,7 @@ const ITEM_META: Record<
       "group-hover/lesson:bg-amber-500/20 group-hover/lesson:text-amber-200",
     badge: "border-amber-300/30 bg-amber-500/10 text-amber-200",
     dot: "bg-amber-400",
+    dotGlow: "rgba(251,191,36,0.9)",
     tile: "border-amber-300/20 bg-amber-500/[0.07]",
     tileIcon: "bg-amber-500/15 text-amber-200",
   },
@@ -802,6 +805,7 @@ const ITEM_META: Record<
       "group-hover/lesson:bg-emerald-500/20 group-hover/lesson:text-emerald-200",
     badge: "border-emerald-400/30 bg-emerald-500/10 text-emerald-200",
     dot: "bg-emerald-400",
+    dotGlow: "rgba(52,211,153,0.9)",
     tile: "border-emerald-400/20 bg-emerald-500/[0.07]",
     tileIcon: "bg-emerald-500/15 text-emerald-200",
   },
@@ -897,17 +901,6 @@ const CourseDetailsPage = () => {
     },
     { lesson: 0, quiz: 0, assignment: 0 },
   );
-
-  /* Expand / collapse all control state for the currently displayed modules. */
-  const allExpanded =
-    displayedModules.length > 0 &&
-    displayedModules.every((_, index) => expandedModules.includes(index));
-
-  const toggleAllModules = () => {
-    setExpandedModules(
-      allExpanded ? [] : displayedModules.map((_, index) => index),
-    );
-  };
 
   /* Sidebar facts — deliberately NON-redundant with the hero and the
      "Skills you'll develop" section. These describe access, format and
@@ -1014,6 +1007,23 @@ const CourseDetailsPage = () => {
           animation: lp-play-ring 3s ease-in-out infinite;
         }
 
+        /* Curriculum count dots — a soft glowing ball that breathes in its
+           own accent color. Each dot sets its own --dot-glow color. */
+        @keyframes lp-dot-glow {
+          0%, 100% {
+            box-shadow: 0 0 4px 0 var(--dot-glow, transparent);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 9px 1px var(--dot-glow, transparent);
+            transform: scale(1.15);
+          }
+        }
+        .lp-dot-glow {
+          animation: lp-dot-glow 2.2s ease-in-out infinite;
+          will-change: box-shadow, transform;
+        }
+
         /* ── HERO PREVIEW — refined hover / unhover system ──────────────
            Every transition is symmetric (same easing + timing on enter and
            exit) so leaving the card eases back just as smoothly as entering.
@@ -1070,6 +1080,7 @@ const CourseDetailsPage = () => {
           .lp-aura { animation: none !important; }
           .lp-hero-bloom { animation: none !important; }
           .lp-play-ring { animation: none !important; }
+          .lp-dot-glow { animation: none !important; }
           .lp-hero-img,
           .lp-hero-veil,
           .lp-hero-glow,
@@ -1419,8 +1430,7 @@ const CourseDetailsPage = () => {
           {/* ──────────────────────────────────────────────────────────
               CURRICULUM — refreshed to match the page's premium surface.
               A stat row of module / lesson / quiz / assignment / duration
-              tiles, an expand-collapse-all control, and richer module +
-              item rows with per-type accents.
+              tiles and richer module + item rows with per-type accents.
               ────────────────────────────────────────────────────────── */}
           <section id="course-curriculum" className="scroll-mt-24 space-y-5">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -1429,26 +1439,10 @@ const CourseDetailsPage = () => {
                 title="Course curriculum"
                 caption="Explore each module, build your skills step by step, and put your knowledge into practice."
               />
-
-              {totalModules > 0 && (
-                <button
-                  type="button"
-                  onClick={toggleAllModules}
-                  className={`cursor-pointer inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${PILL}`}
-                >
-                  {allExpanded ? "Collapse all" : "Expand all"}
-                  <ChevronDown
-                    className={`h-3.5 w-3.5 transition-transform duration-300 ${
-                      allExpanded ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              )}
             </div>
 
-            {/* Stat tiles — modules / lessons / quizzes / assignments / length.
-                The Modules tile uses a fuchsia accent so it's clearly distinct
-                from the violet section icon beside the heading. */}
+            {/* Stat tiles — modules / lessons / quizzes / assignments / length. */}
+
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
               {(
                 [
@@ -1498,17 +1492,23 @@ const CourseDetailsPage = () => {
               ).map(({ key, value, label, Icon, tile, chip }) => (
                 <div
                   key={key}
-                  className={`flex items-center gap-3 rounded-2xl border p-3.5 ${tile}`}
+                  className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl border p-3.5 transition-colors duration-300 hover:border-white/25 ${tile}`}
                 >
+                  {/* Reuse the existing card shimmer animation */}
+                  <CardSheen />
+
+                  {/* Keep the original content above the shimmer */}
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chip}`}
+                    className={`relative z-20 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chip}`}
                   >
                     <Icon className="h-4 w-4" />
                   </span>
-                  <div className="min-w-0">
+
+                  <div className="relative z-20 min-w-0">
                     <p className="text-lg font-semibold leading-none text-white">
                       {value}
                     </p>
+
                     <p className="mt-1 truncate text-[11px] text-white/55">
                       {label}
                     </p>
@@ -1566,7 +1566,8 @@ const CourseDetailsPage = () => {
                         <span className="block text-sm font-semibold text-white/90">
                           {module.title}
                         </span>
-                        {/* Per-type counts with small colored dots */}
+
+                        {/* Per-type counts with small glowing balls */}
 
                         <span className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-white/45">
                           {(["lesson", "quiz", "assignment"] as LessonType[])
@@ -1577,7 +1578,12 @@ const CourseDetailsPage = () => {
                                 className="inline-flex items-center gap-1.5"
                               >
                                 <span
-                                  className={`h-1.5 w-1.5 rounded-full ${ITEM_META[type].dot}`}
+                                  className={`lp-dot-glow h-1.5 w-1.5 rounded-full ${ITEM_META[type].dot}`}
+                                  style={
+                                    {
+                                      "--dot-glow": ITEM_META[type].dotGlow,
+                                    } as CSSProperties
+                                  }
                                 />
                                 {counts[type]}{" "}
                                 {counts[type] > 1
@@ -1631,22 +1637,25 @@ const CourseDetailsPage = () => {
                                 >
                                   <ItemIcon className="h-4 w-4" />
                                 </span>
-
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-[13px] font-medium leading-5 text-white/80">
                                     {number ? `${number}. ` : ""}
                                     {lesson.title}
                                   </p>
                                 </div>
-
+                                
                                 {type !== "lesson" && (
                                   <span
-                                    className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${meta.badge}`}
+                                    className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${
+                                      type === "quiz"
+                                        ? "border-amber-400/25 bg-gradient-to-r from-amber-400/15 via-yellow-300/10 to-amber-500/15 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.08)]"
+                                        : meta.badge
+                                    }`}
                                   >
                                     {meta.label}
                                   </span>
                                 )}
-
+                                
                                 <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
                                   {type === "lesson" && (
                                     <Clock3 className="h-3 w-3 text-white/30" />
