@@ -10,12 +10,16 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
   Clock3,
   Crown,
+  FileQuestion,
   GraduationCap,
   Laptop,
+  Layers,
   ListChecks,
   MessageCircle,
+  Play,
   PlayCircle,
   Star,
   Target,
@@ -23,10 +27,13 @@ import {
   UsersRound,
 } from "lucide-react";
 
+type LessonType = "lesson" | "quiz" | "assignment";
+
 type Lesson = {
   title: string;
   duration: string;
   preview?: boolean;
+  type?: LessonType;
 };
 
 type Module = {
@@ -125,6 +132,11 @@ const courses: Course[] = [
             title: "Understanding the development workflow",
             duration: "10:15",
           },
+          {
+            title: "Web development basics quiz",
+            duration: "6 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -135,6 +147,16 @@ const courses: Course[] = [
           { title: "React hooks and reusable components", duration: "31:20" },
           { title: "Building responsive user interfaces", duration: "26:40" },
           { title: "TypeScript with React", duration: "32:15" },
+          {
+            title: "React fundamentals quiz",
+            duration: "10 questions",
+            type: "quiz",
+          },
+          {
+            title: "Build a responsive component",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -144,6 +166,11 @@ const courses: Course[] = [
           { title: "Models, views and serializers", duration: "29:40" },
           { title: "Building REST APIs", duration: "35:15" },
           { title: "Authentication and permissions", duration: "30:10" },
+          {
+            title: "Django & REST API quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -152,6 +179,11 @@ const courses: Course[] = [
           { title: "Database design fundamentals", duration: "20:30" },
           { title: "Writing SQL queries", duration: "27:45" },
           { title: "Relationships and query optimization", duration: "24:20" },
+          {
+            title: "SQL & database design quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -161,6 +193,16 @@ const courses: Course[] = [
           { title: "Integrating frontend and backend", duration: "32:50" },
           { title: "Testing and debugging", duration: "25:30" },
           { title: "Deployment and next steps", duration: "22:15" },
+          {
+            title: "Full stack concepts quiz",
+            duration: "12 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final capstone project submission",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -213,6 +255,11 @@ const courses: Course[] = [
         lessons: [
           { title: "Introduction to UI/UX", duration: "12:20", preview: true },
           { title: "Visual hierarchy and typography", duration: "22:10" },
+          {
+            title: "Design fundamentals quiz",
+            duration: "6 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -220,6 +267,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Figma workspace and tools", duration: "18:30" },
           { title: "Components and auto layout", duration: "26:45" },
+          {
+            title: "Figma skills quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
+          {
+            title: "Design a landing page in Figma",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -227,6 +284,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Creating interactive prototypes", duration: "24:10" },
           { title: "Building reusable design systems", duration: "29:15" },
+          {
+            title: "Prototyping & design systems quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final design system submission",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -280,6 +347,11 @@ const courses: Course[] = [
           { title: "Introduction to Python", duration: "10:20", preview: true },
           { title: "Variables and data types", duration: "18:40" },
           { title: "Conditions and loops", duration: "24:15" },
+          {
+            title: "Python fundamentals quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -287,6 +359,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Writing reusable functions", duration: "20:10" },
           { title: "Lists, tuples and dictionaries", duration: "27:30" },
+          {
+            title: "Functions & data structures quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
+          {
+            title: "Build a data processing script",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -294,6 +376,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Classes and objects", duration: "26:15" },
           { title: "Inheritance and encapsulation", duration: "30:20" },
+          {
+            title: "OOP concepts quiz",
+            duration: "9 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final mini-application project",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -350,6 +442,11 @@ const courses: Course[] = [
             preview: true,
           },
           { title: "SELECT, WHERE and ORDER BY", duration: "22:40" },
+          {
+            title: "SQL foundations quiz",
+            duration: "6 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -357,6 +454,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Working with joins", duration: "28:10" },
           { title: "Grouping and aggregate functions", duration: "25:35" },
+          {
+            title: "Joins & aggregation quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
+          {
+            title: "Write queries for a sample dataset",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -364,6 +471,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Analyzing business datasets", duration: "30:15" },
           { title: "Writing analytical reports", duration: "24:50" },
+          {
+            title: "Data analysis quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final analytical report submission",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -421,6 +538,11 @@ const courses: Course[] = [
             preview: true,
           },
           { title: "Variables and functions", duration: "20:30" },
+          {
+            title: "JavaScript essentials quiz",
+            duration: "6 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -428,6 +550,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Arrays and objects", duration: "25:15" },
           { title: "Promises and async/await", duration: "30:40" },
+          {
+            title: "Modern JavaScript quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
+          {
+            title: "Build an async data fetcher",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -435,6 +567,16 @@ const courses: Course[] = [
         lessons: [
           { title: "DOM manipulation", duration: "22:20" },
           { title: "Building a practical project", duration: "34:10" },
+          {
+            title: "DOM & browser quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final interactive app submission",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -492,6 +634,11 @@ const courses: Course[] = [
             preview: true,
           },
           { title: "Understanding customer needs", duration: "20:15" },
+          {
+            title: "Product thinking quiz",
+            duration: "6 questions",
+            type: "quiz",
+          },
         ],
       },
       {
@@ -499,6 +646,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Market and competitor analysis", duration: "24:40" },
           { title: "Validating product ideas", duration: "21:10" },
+          {
+            title: "Market research quiz",
+            duration: "7 questions",
+            type: "quiz",
+          },
+          {
+            title: "Conduct a market analysis",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
       {
@@ -506,6 +663,16 @@ const courses: Course[] = [
         lessons: [
           { title: "Setting product priorities", duration: "18:25" },
           { title: "Building a product roadmap", duration: "26:30" },
+          {
+            title: "Planning & execution quiz",
+            duration: "8 questions",
+            type: "quiz",
+          },
+          {
+            title: "Final product roadmap submission",
+            duration: "Project",
+            type: "assignment",
+          },
         ],
       },
     ],
@@ -572,6 +739,83 @@ const CARD_BASE =
 const PILL =
   "border border-white/[0.08] bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
 
+/* Reusable hover shimmer — the SAME sheen used on every card so the whole
+   page shimmers consistently on hover. Drop <CardSheen /> as the first child
+   of any card that also has the `group` class and `relative overflow-hidden`
+   (CARD_BASE already provides the latter two). */
+const CardSheen = () => (
+  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+);
+
+/* ──────────────────────────────────────────────────────────────────
+   CURRICULUM ITEM TYPES
+   Each curriculum entry can be a lesson, a quiz, or an assignment.
+   This map drives the icon, icon-bubble colors, badge styling, the small
+   count-dot color and the stat-tile palette for every item type so
+   lessons, quizzes and assignments read as one consistent system that
+   matches the page's blue / amber / emerald accents.
+   ────────────────────────────────────────────────────────────────── */
+const ITEM_META: Record<
+  LessonType,
+  {
+    label: string;
+    plural: string;
+    icon: ComponentType<{ className?: string }>;
+    bubble: string;
+    bubbleHover: string;
+    badge: string;
+    dot: string;
+    tile: string;
+    tileIcon: string;
+  }
+> = {
+  lesson: {
+    label: "Lesson",
+    plural: "Lessons",
+    icon: PlayCircle,
+    bubble: "bg-blue-500/10 text-blue-300",
+    bubbleHover:
+      "group-hover/lesson:bg-blue-500/20 group-hover/lesson:text-blue-200",
+    badge: "border-blue-400/25 bg-blue-500/10 text-blue-200",
+    dot: "bg-blue-400",
+    tile: "border-blue-400/20 bg-blue-500/[0.07]",
+    tileIcon: "bg-blue-500/15 text-blue-200",
+  },
+  quiz: {
+    label: "Quiz",
+    plural: "Quizzes",
+    icon: FileQuestion,
+    bubble: "bg-amber-500/10 text-amber-300",
+    bubbleHover:
+      "group-hover/lesson:bg-amber-500/20 group-hover/lesson:text-amber-200",
+    badge: "border-amber-300/30 bg-amber-500/10 text-amber-200",
+    dot: "bg-amber-400",
+    tile: "border-amber-300/20 bg-amber-500/[0.07]",
+    tileIcon: "bg-amber-500/15 text-amber-200",
+  },
+  assignment: {
+    label: "Assignment",
+    plural: "Assignments",
+    icon: ClipboardList,
+    bubble: "bg-emerald-500/10 text-emerald-300",
+    bubbleHover:
+      "group-hover/lesson:bg-emerald-500/20 group-hover/lesson:text-emerald-200",
+    badge: "border-emerald-400/30 bg-emerald-500/10 text-emerald-200",
+    dot: "bg-emerald-400",
+    tile: "border-emerald-400/20 bg-emerald-500/[0.07]",
+    tileIcon: "bg-emerald-500/15 text-emerald-200",
+  },
+};
+
+/* Count the lesson / quiz / assignment items inside a set of lessons. */
+const countItems = (lessons: Lesson[]) => {
+  const counts = { lesson: 0, quiz: 0, assignment: 0 };
+  lessons.forEach((lesson) => {
+    counts[lesson.type ?? "lesson"] += 1;
+  });
+  return counts;
+};
+
 const SectionHeading = ({
   icon: Icon,
   title,
@@ -626,6 +870,7 @@ const CourseDetailsPage = () => {
     courses.find((item) => item.id === Number(courseId)) ?? courses[0];
 
   const [saved, setSaved] = useState(false);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [expandedModules, setExpandedModules] = useState<number[]>([0]);
   const [showAllModules, setShowAllModules] = useState(false);
   const [relatedCanScrollLeft, setRelatedCanScrollLeft] = useState(false);
@@ -639,6 +884,30 @@ const CourseDetailsPage = () => {
     : course.modules.slice(0, 3);
 
   const isPremium = course.plan === "Premium";
+
+  /* Whole-course curriculum totals used for the stat tiles under the
+     curriculum heading. */
+  const curriculumTotals = course.modules.reduce(
+    (totals, module) => {
+      const counts = countItems(module.lessons);
+      totals.lesson += counts.lesson;
+      totals.quiz += counts.quiz;
+      totals.assignment += counts.assignment;
+      return totals;
+    },
+    { lesson: 0, quiz: 0, assignment: 0 },
+  );
+
+  /* Expand / collapse all control state for the currently displayed modules. */
+  const allExpanded =
+    displayedModules.length > 0 &&
+    displayedModules.every((_, index) => expandedModules.includes(index));
+
+  const toggleAllModules = () => {
+    setExpandedModules(
+      allExpanded ? [] : displayedModules.map((_, index) => index),
+    );
+  };
 
   /* Sidebar facts — deliberately NON-redundant with the hero and the
      "Skills you'll develop" section. These describe access, format and
@@ -724,117 +993,238 @@ const CourseDetailsPage = () => {
           0%, 100% { opacity: 0.55; }
           50% { opacity: 1; }
         }
+        /* Soft glow for the hero blooms — opacity-only so it never
+           repaints the compositor layer (prevents first-paint flicker). */
+        @keyframes lp-hero-bloom {
+          0%, 100% { opacity: 0.55; }
+          50% { opacity: 1; }
+        }
+        .lp-hero-bloom {
+          will-change: opacity;
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          animation: lp-hero-bloom 8s ease-in-out infinite;
+        }
+        /* Gentle breathing ring around the play button */
+        @keyframes lp-play-ring {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.12); opacity: 0.9; }
+        }
+        .lp-play-ring {
+          animation: lp-play-ring 3s ease-in-out infinite;
+        }
+
+        /* ── HERO PREVIEW — refined hover / unhover system ──────────────
+           Every transition is symmetric (same easing + timing on enter and
+           exit) so leaving the card eases back just as smoothly as entering.
+           A single shared easing curve keeps image, overlays, play button
+           and glows moving as one coordinated motion. */
+        .lp-hero-ease {
+          --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* Image: slow, premium Ken-Burns zoom + gentle brightness lift.
+           Rest and hover are kept close together so unhover never looks
+           black and hover never looks blown-out. */
+        .lp-hero-img {
+          transform: scale(1.05);
+          filter: brightness(0.93) saturate(0.97);
+          transition:
+            transform 2000ms var(--lp-ease),
+            filter 1500ms var(--lp-ease),
+            opacity 900ms ease;
+          will-change: transform, filter;
+        }
+        .group\\/hero:hover .lp-hero-img {
+          transform: scale(1);
+          filter: brightness(1.02) saturate(1);
+        }
+        /* Soft vignette that lifts slightly on hover — subtle, not a blackout */
+        .lp-hero-veil {
+          opacity: 1;
+          transition: opacity 1500ms var(--lp-ease);
+        }
+        .group\\/hero:hover .lp-hero-veil {
+          opacity: 0.4;
+        }
+        /* Blooms intensify a touch on hover (layered over the breathing anim) */
+        .lp-hero-glow {
+          transition: opacity 1600ms var(--lp-ease);
+        }
+        .group\\/hero:hover .lp-hero-glow {
+          opacity: 1;
+        }
+        /* Play disc — smooth, gentle scale on hover AND on release */
+        .lp-hero-disc {
+          transform: scale(1);
+          transition:
+            transform 900ms var(--lp-ease),
+            border-color 900ms var(--lp-ease),
+            background-color 900ms var(--lp-ease),
+            box-shadow 900ms var(--lp-ease);
+        }
+        .group\\/play:hover .lp-hero-disc {
+          transform: scale(1.1);
+        }
         @media (prefers-reduced-motion: reduce) {
           .lp-card-sheen { display: none; }
           .lp-aura { animation: none !important; }
+          .lp-hero-bloom { animation: none !important; }
+          .lp-play-ring { animation: none !important; }
+          .lp-hero-img,
+          .lp-hero-veil,
+          .lp-hero-glow,
+          .lp-hero-disc { transition: none !important; }
         }
       `}</style>
-      {/* Top bar — back button + breadcrumb share one surface so they sit together as a unit */}
 
-      <div className="flex min-w-0 flex-wrap items-center gap-3">
+      {/* Top bar — circular glass back button + clean boxless breadcrumb */}
+
+      <div className="flex min-w-0 flex-wrap items-center gap-3.5">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="group inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/65 transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-white"
+          aria-label="Go back"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
         >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
-          <span>Back</span>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
         </button>
 
         <nav
           aria-label="Breadcrumb"
           className="flex min-w-0 items-center gap-2 text-xs"
         >
-          <span className="hidden shrink-0 text-white/40 transition-colors hover:text-white/70 sm:inline">
+          <span className="hidden shrink-0 font-medium text-white/40 sm:inline">
             Courses
           </span>
 
-          <ChevronRight className="hidden h-3 w-3 shrink-0 text-white/25 sm:block" />
+          <ChevronRight
+            aria-hidden="true"
+            className="hidden h-3.5 w-3.5 shrink-0 text-white/30 sm:block"
+          />
 
-          <span className="hidden max-w-[120px] truncate text-white/40 sm:inline">
+          <span className="hidden max-w-[120px] shrink-0 truncate text-white/40 sm:inline">
             {course.category}
           </span>
 
-          <ChevronRight className="h-3 w-3 shrink-0 text-white/25" />
+          <ChevronRight
+            aria-hidden="true"
+            className="h-3.5 w-3.5 shrink-0 text-white/30"
+          />
 
-          <span className="max-w-[180px] truncate rounded-md border border-violet-400/15 bg-violet-500/[0.07] px-2.5 py-1.5 font-medium text-violet-200 sm:max-w-[260px]">
+          <span className="min-w-0 truncate bg-gradient-to-r from-white to-violet-200 bg-clip-text font-semibold text-transparent">
             {course.title}
           </span>
         </nav>
       </div>
 
-      {/* Hero — tightened height, cleaner structure */}
+      {/* ── Hero — modern, premium refresh ─────────────────────────── */}
 
-      <section className="group/hero relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
-        {/* Background layers */}
+      <section
+        onMouseMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          event.currentTarget.style.setProperty(
+            "--mx",
+            `${event.clientX - rect.left}px`,
+          );
+          event.currentTarget.style.setProperty(
+            "--my",
+            `${event.clientY - rect.top}px`,
+          );
+        }}
+        className="lp-hero-ease group/hero relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0B0817] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/25 hover:shadow-[0_55px_150px_-45px_rgba(124,58,237,0.45)]"
+      >
+        {/* Ambient radial base */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(130%_130%_at_0%_0%,#1B1238_0%,#0B0817_45%,#0A1022_100%)]"
+        />
+
+        {/* Fine masked grid texture */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] [transform:translateZ(0)] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(80%_80%_at_20%_0%,#000_0%,transparent_75%)]"
+        />
+
+        {/* Animated color blooms (opacity-only, GPU-promoted — no flicker) */}
+        <div
+          aria-hidden="true"
+          className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -right-20 -top-28 z-0 h-80 w-80 rounded-full bg-violet-600/25 blur-[120px]"
         />
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-24 z-0 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]"
+          className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
         />
 
+        {/* Cursor-follow spotlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-28 left-1/3 z-0 h-64 w-64 rounded-full bg-blue-500/10 blur-[100px]"
+          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover/hero:opacity-100 [background:radial-gradient(500px_circle_at_var(--mx,50%)_var(--my,50%),rgba(139,92,246,0.10),transparent_60%)]"
         />
 
-        <div className="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr]">
-          {/* Left — text */}
-          <div className="relative z-10 flex flex-col justify-center p-6 sm:p-9 lg:p-10">
-            <div className="mb-5 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1.5 text-[11px] font-medium text-violet-200">
+        <div className="relative z-10 grid lg:grid-cols-[0.92fr_1.08fr]">
+          {/* Text — now on the RIGHT (lg:order-2); image moved to the left.
+              lg:-ml-px overlaps the panel 1px onto the image's right edge so
+              no sub-pixel light seam shows between the two columns. */}
+          <div className="relative z-10 order-2 flex flex-col justify-center bg-[#0B0817] p-6 sm:p-10 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-12">
+            {/* Category + level badges — refreshed UI, dot removed */}
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+                <Laptop className="h-3.5 w-3.5 text-violet-300" />
                 {course.category}
               </span>
 
-              <span className="rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1.5 text-[11px] text-white/60">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/25 bg-gradient-to-r from-cyan-500/15 to-cyan-500/[0.04] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+                <GraduationCap className="h-3.5 w-3.5 text-cyan-300" />
                 {course.level}
               </span>
 
               <PlanBadge plan={course.plan} />
             </div>
 
-            <h1 className="max-w-2xl text-[30px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[40px] lg:text-[42px]">
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            <h1 className="max-w-2xl text-[32px] font-semibold leading-[1.03] tracking-[-0.04em] sm:text-[42px] lg:text-[46px]">
+              <span className="bg-gradient-to-br from-white via-[#EDE7FF] to-[#9F85FF] bg-clip-text text-transparent [text-wrap:balance]">
                 {course.title}
               </span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-[15px] italic leading-7 tracking-[0.01em] text-white/50">
+            <p className="mt-4 max-w-xl text-[15px] leading-7 tracking-[0.01em] text-white/55 [text-wrap:pretty]">
               {course.subtitle}
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-xs text-white/50">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+            <div className="mt-7 flex flex-wrap items-center gap-2.5 text-xs text-white/55">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 <strong className="text-white">
                   {course.rating.toFixed(1)}
                 </strong>
-                <span className="text-white/45">
+                <span className="text-white/40">
                   ({course.reviewCount} reviews)
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Users className="h-4 w-4 text-violet-300" />
                 <strong className="text-white">{course.students}</strong>
-                <span className="text-white/45">learners</span>
+                <span className="text-white/40">learners</span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-[#0E0A1A] px-3 py-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 backdrop-blur-sm">
                 <Clock3 className="h-4 w-4 text-cyan-300" />
                 <strong className="text-white">{course.duration}</strong>
               </span>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
+              {/* Primary CTA — now matches the sidebar "Enroll Now" button UI */}
               <button
                 type="button"
                 onClick={handleLearningAction}
-                className="group/button inline-flex min-h-12 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                className="group/button inline-flex min-h-12 min-w-[200px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
               >
                 {isPremium ? (
                   <>Enroll Now</>
@@ -845,13 +1235,13 @@ const CourseDetailsPage = () => {
                   </>
                 )}
 
-                <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
               </button>
 
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 transition-colors duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 backdrop-blur-sm transition-all duration-200 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
               >
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 View curriculum
@@ -862,10 +1252,10 @@ const CourseDetailsPage = () => {
                 onClick={() => setSaved((current) => !current)}
                 aria-pressed={saved}
                 aria-label={saved ? "Remove saved course" : "Save course"}
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border transition-colors duration-200 ${
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-200 ${
                   saved
-                    ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_20px_-6px_rgba(167,139,250,0.7)]"
-                    : "border-white/10 bg-white/[0.03] text-white/60 hover:border-violet-400/30 hover:text-violet-200"
+                    ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_24px_-6px_rgba(167,139,250,0.8)]"
+                    : "border-white/10 bg-white/[0.03] text-white/55 hover:border-violet-400/30 hover:text-violet-200"
                 }`}
               >
                 <Bookmark
@@ -876,39 +1266,79 @@ const CourseDetailsPage = () => {
             </div>
           </div>
 
-          {/* Right — image */}
-          <div className="relative isolate min-h-[240px] overflow-hidden bg-[#100C20] sm:min-h-[300px] lg:min-h-[420px]">
+          {/* Image — now on the LEFT (order-1) */}
+          <div className="relative isolate order-1 min-h-[260px] overflow-hidden bg-[#0B0817] sm:min-h-[320px] lg:order-1 lg:min-h-[460px]">
             <img
               src={course.image}
               alt={`${course.title} course`}
               loading="eager"
               decoding="async"
               draggable={false}
-              className="absolute inset-0 block h-full w-full scale-100 object-cover opacity-90"
+              onLoad={() => setHeroImageLoaded(true)}
+              className={`lp-hero-img absolute inset-0 block h-full w-full transform-gpu object-cover [backface-visibility:hidden] ${
+                heroImageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
 
-            {/* Image overlay */}
+            {/* Dark veil that lifts on hover — reveals the image smoothly */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#100C20] via-[#100C20]/20 to-transparent lg:bg-gradient-to-r lg:from-[#100C20] lg:via-[#100C20]/25 lg:to-transparent"
+              className="lp-hero-veil pointer-events-none absolute inset-0 bg-[#0B0817]/20"
             />
 
-            {/* Explore button */}
+            {/* Cinematic blend into panel */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0817] via-[#0B0817]/25 to-transparent lg:bg-gradient-to-l lg:from-[#0B0817] lg:via-[#0B0817]/20 lg:to-transparent"
+            />
+
+            {/* Subtle color wash */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-violet-900/30 via-transparent to-sky-900/20 mix-blend-soft-light"
+            />
+
+            {/* Play / preview — ultra-transparent glass control */}
             <button
               type="button"
               onClick={scrollToCurriculum}
-              aria-label="Explore course lessons"
-              className="absolute inset-0 flex cursor-pointer items-center justify-center"
+              aria-label="Preview this course"
+              className="group/play absolute inset-0 flex cursor-pointer items-center justify-center"
             >
-              <span className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/25 bg-black/30 text-white shadow-2xl backdrop-blur-md transition-[transform,background-color,border-color] duration-300 hover:scale-105 hover:border-violet-300/50 hover:bg-violet-600/60">
+              {/* Breathing outer rings — layered, see-through */}
+              <span
+                aria-hidden="true"
+                className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
+              />
+              <span
+                aria-hidden="true"
+                className="lp-play-ring absolute h-[128px] w-[128px] rounded-full border border-white/10 [animation-delay:-1.5s]"
+              />
+
+              {/* Fully transparent disc — the image stays visible underneath;
+                  springy, symmetric scale on hover and release */}
+              <span className="lp-hero-disc relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] group-hover/play:border-white/80 group-hover/play:bg-white/5 group-hover/play:shadow-[0_14px_52px_-6px_rgba(124,58,237,0.6)]">
+                {/* Faint glow that fades in on hover (kept see-through) */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full border border-white/20"
+                  className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-violet-400/20 via-transparent to-sky-400/10 opacity-0 transition-opacity duration-700 ease-out group-hover/play:opacity-100"
                 />
-                <PlayCircle className="h-8 w-8" />
+                <Play
+                  className="relative h-7 w-7 translate-x-[2px] fill-white text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out group-hover/play:scale-105"
+                  strokeWidth={0}
+                />
               </span>
             </button>
           </div>
+
+          {/* Seam cover — removes the 1px sub-pixel hairline that shows
+              between the image and the text panel on first paint (large
+              screens only). Both sides are ~#0B0817 right at the boundary,
+              so this narrow strip is invisible and simply hides the seam. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-[3px] -translate-x-1/2 bg-[#0B0817] lg:block"
+          />
         </div>
       </section>
 
@@ -919,7 +1349,7 @@ const CourseDetailsPage = () => {
           <section id="course-overview" className="scroll-mt-24 space-y-8">
             {/* About — tightened, with a compact meta strip for better structure */}
             <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
-              <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              <CardSheen />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
               <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl" />
 
@@ -937,7 +1367,8 @@ const CourseDetailsPage = () => {
             </div>
 
             {/* What you'll learn */}
-            <div className={`${CARD_BASE} rounded-3xl p-6 sm:p-7`}>
+            <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
+              <CardSheen />
               <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl" />
               <div className="relative">
                 <SectionHeading
@@ -962,7 +1393,8 @@ const CourseDetailsPage = () => {
             </div>
 
             {/* Skills */}
-            <div className={`${CARD_BASE} rounded-3xl p-6 sm:p-7`}>
+            <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
+              <CardSheen />
               <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-violet-500/12 blur-3xl" />
               <div className="relative">
                 <SectionHeading
@@ -984,46 +1416,146 @@ const CourseDetailsPage = () => {
             </div>
           </section>
 
-          {/* Curriculum */}
+          {/* ──────────────────────────────────────────────────────────
+              CURRICULUM — refreshed to match the page's premium surface.
+              A stat row of module / lesson / quiz / assignment / duration
+              tiles, an expand-collapse-all control, and richer module +
+              item rows with per-type accents.
+              ────────────────────────────────────────────────────────── */}
           <section id="course-curriculum" className="scroll-mt-24 space-y-5">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <SectionHeading
                 icon={ListChecks}
                 title="Course curriculum"
-                caption="Explore the modules and lessons included."
+                caption="Explore each module, build your skills step by step, and put your knowledge into practice."
               />
 
-              <span
-                className={`rounded-full px-4 py-2 text-xs font-medium ${PILL}`}
-              >
-                {course.lessonCount} lessons · {course.duration}
-              </span>
+              {totalModules > 0 && (
+                <button
+                  type="button"
+                  onClick={toggleAllModules}
+                  className={`cursor-pointer inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${PILL}`}
+                >
+                  {allExpanded ? "Collapse all" : "Expand all"}
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform duration-300 ${
+                      allExpanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              )}
+            </div>
+
+            {/* Stat tiles — modules / lessons / quizzes / assignments / length.
+                The Modules tile uses a fuchsia accent so it's clearly distinct
+                from the violet section icon beside the heading. */}
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+              {(
+                [
+                  {
+                    key: "modules",
+                    value: totalModules,
+                    label: "Modules",
+                    Icon: Layers,
+                    tile: "border-violet-400/30 bg-violet-500/15",
+                    chip: "bg-violet-500/25 text-violet-100",
+                  },
+                  {
+                    key: "lesson",
+                    value: curriculumTotals.lesson,
+                    label: "Lessons",
+                    Icon: PlayCircle,
+                    tile: "border-blue-400/30 bg-blue-500/15",
+                    chip: "bg-blue-500/25 text-blue-100",
+                  },
+                  {
+                    key: "quiz",
+                    value: curriculumTotals.quiz,
+                    label: "Quizzes",
+                    Icon: FileQuestion,
+                    tile: "border-amber-300/30 bg-amber-500/15",
+                    chip: "bg-amber-500/25 text-amber-100",
+                  },
+                  {
+                    key: "assignment",
+                    value: curriculumTotals.assignment,
+                    label: "Assignments",
+                    Icon: ClipboardList,
+                    tile: "border-emerald-400/30 bg-emerald-500/15",
+                    chip: "bg-emerald-500/25 text-emerald-100",
+                  },
+                  {
+                    key: "length",
+                    value: course.duration
+                      .replace(" hours", "h")
+                      .replace(" hour", "h"),
+                    label: "Total length",
+                    Icon: Clock3,
+                    tile: "border-cyan-400/30 bg-cyan-500/15",
+                    chip: "bg-cyan-500/25 text-cyan-100",
+                  },
+                ] as const
+              ).map(({ key, value, label, Icon, tile, chip }) => (
+                <div
+                  key={key}
+                  className={`flex items-center gap-3 rounded-2xl border p-3.5 ${tile}`}
+                >
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chip}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-lg font-semibold leading-none text-white">
+                      {value}
+                    </p>
+                    <p className="mt-1 truncate text-[11px] text-white/55">
+                      {label}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="space-y-3">
               {displayedModules.map((module, index) => {
                 const expanded = expandedModules.includes(index);
-                const moduleMinutes = module.lessons.length;
+                const counts = countItems(module.lessons);
+
+                /* Running lesson counter so only lessons get a number;
+                   quizzes and assignments are labelled by their badge. */
+                let lessonNumber = 0;
 
                 return (
                   <div
                     key={module.title}
-                    className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
+                    className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
                       expanded
-                        ? "border-violet-400/25 bg-gradient-to-b from-[#130E24] to-[#0B0814]"
+                        ? "border-violet-400/30 bg-gradient-to-b from-[#150F28] to-[#0B0814] shadow-[0_18px_50px_-24px_rgba(124,58,237,0.6)]"
                         : "border-white/[0.07] bg-[#0B0814] hover:border-violet-400/25 hover:bg-[#120D22]"
                     }`}
                   >
+                    {/* Shared hover shimmer */}
+                    <CardSheen />
+
+                    {/* Left accent bar — lights up when the module is open */}
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-violet-400 to-indigo-500 transition-opacity duration-300 ${
+                        expanded ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+
                     <button
                       type="button"
                       onClick={() => toggleModule(index)}
                       aria-expanded={expanded}
-                      className="flex w-full cursor-pointer items-center gap-3.5 px-4 py-4 text-left sm:px-5"
+                      className="relative z-20 flex w-full cursor-pointer items-center gap-3.5 px-4 py-4 text-left sm:px-5"
                     >
                       <span
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-xs font-semibold transition ${
                           expanded
-                            ? "border-violet-400/30 bg-violet-500/15 text-violet-100"
+                            ? "border-violet-400/40 bg-gradient-to-br from-violet-500/30 to-violet-500/10 text-white"
                             : "border-violet-400/15 bg-violet-500/[0.08] text-violet-200"
                         }`}
                       >
@@ -1031,11 +1563,28 @@ const CourseDetailsPage = () => {
                       </span>
 
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-white/90">
+                        <span className="block text-sm font-semibold text-white/90">
                           {module.title}
                         </span>
-                        <span className="mt-1 block text-xs text-white/40">
-                          {moduleMinutes} lessons
+                        {/* Per-type counts with small colored dots */}
+
+                        <span className="mt-1.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-white/45">
+                          {(["lesson", "quiz", "assignment"] as LessonType[])
+                            .filter((type) => counts[type] > 0)
+                            .map((type) => (
+                              <span
+                                key={type}
+                                className="inline-flex items-center gap-1.5"
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${ITEM_META[type].dot}`}
+                                />
+                                {counts[type]}{" "}
+                                {counts[type] > 1
+                                  ? ITEM_META[type].plural.toLowerCase()
+                                  : ITEM_META[type].label.toLowerCase()}
+                              </span>
+                            ))}
                         </span>
                       </span>
 
@@ -1055,34 +1604,58 @@ const CourseDetailsPage = () => {
                     </button>
 
                     <div
-                      className={`grid transition-all duration-300 ease-out ${
+                      className={`relative z-20 grid transition-all duration-300 ease-out ${
                         expanded
                           ? "grid-rows-[1fr] opacity-100"
                           : "grid-rows-[0fr] opacity-0"
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="border-t border-white/[0.06] px-3 py-2 sm:px-4">
-                          {module.lessons.map((lesson, lessonIndex) => (
-                            <div
-                              key={lesson.title}
-                              className="group/lesson flex items-center gap-3 rounded-xl px-2 py-3 transition hover:bg-white/[0.03] sm:px-3"
-                            >
-                              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/45 transition group-hover/lesson:bg-violet-500/15 group-hover/lesson:text-violet-300">
-                                <PlayCircle className="h-4 w-4" />
-                              </span>
+                        <div className="space-y-1 border-t border-white/[0.06] px-3 py-2.5 sm:px-4">
+                          {module.lessons.map((lesson, lessonIndex) => {
+                            const type = lesson.type ?? "lesson";
+                            const meta = ITEM_META[type];
+                            const ItemIcon = meta.icon;
 
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate text-[13px] leading-5 text-white/75">
-                                  {lessonIndex + 1}. {lesson.title}
-                                </p>
+                            if (type === "lesson") lessonNumber += 1;
+                            const number =
+                              type === "lesson" ? lessonNumber : null;
+
+                            return (
+                              <div
+                                key={`${lesson.title}-${lessonIndex}`}
+                                className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition hover:border-white/[0.06] hover:bg-white/[0.03] sm:px-3"
+                              >
+                                <span
+                                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition ${meta.bubble} ${meta.bubbleHover}`}
+                                >
+                                  <ItemIcon className="h-4 w-4" />
+                                </span>
+
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-[13px] font-medium leading-5 text-white/80">
+                                    {number ? `${number}. ` : ""}
+                                    {lesson.title}
+                                  </p>
+                                </div>
+
+                                {type !== "lesson" && (
+                                  <span
+                                    className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${meta.badge}`}
+                                  >
+                                    {meta.label}
+                                  </span>
+                                )}
+
+                                <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
+                                  {type === "lesson" && (
+                                    <Clock3 className="h-3 w-3 text-white/30" />
+                                  )}
+                                  {lesson.duration}
+                                </span>
                               </div>
-
-                              <span className="shrink-0 text-[11px] tabular-nums text-white/35">
-                                {lesson.duration}
-                              </span>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -1097,7 +1670,9 @@ const CourseDetailsPage = () => {
                 onClick={() => setShowAllModules((current) => !current)}
                 className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-medium ${PILL}`}
               >
-                {showAllModules ? "Show fewer modules" : "View all modules"}
+                {showAllModules
+                  ? "Show fewer modules"
+                  : `View all ${totalModules} modules`}
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${
                     showAllModules ? "rotate-180" : ""
@@ -1109,8 +1684,9 @@ const CourseDetailsPage = () => {
 
           {/* Requirements */}
           <section
-            className={`${CARD_BASE} grid gap-5 rounded-3xl p-6 sm:grid-cols-2 sm:p-7`}
+            className={`${CARD_BASE} group grid gap-5 rounded-3xl p-6 sm:grid-cols-2 sm:p-7`}
           >
+            <CardSheen />
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-500/12 blur-3xl" />
             <div className="relative">
               <SectionHeading icon={ListChecks} title="Requirements" />
@@ -1156,7 +1732,7 @@ const CourseDetailsPage = () => {
             />
 
             <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
-              <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              <CardSheen />
               <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
               <div className="relative">
@@ -1218,8 +1794,9 @@ const CourseDetailsPage = () => {
 
             <div className="grid gap-4 sm:grid-cols-[210px_minmax(0,1fr)]">
               <div
-                className={`${CARD_BASE} flex flex-col items-center justify-center rounded-3xl p-6`}
+                className={`${CARD_BASE} group flex flex-col items-center justify-center rounded-3xl p-6`}
               >
+                <CardSheen />
                 <div className="absolute -top-8 h-24 w-24 rounded-full bg-violet-500/20 blur-2xl" />
                 <p className="relative text-5xl font-semibold tracking-tight">
                   {course.rating.toFixed(1)}
@@ -1242,8 +1819,9 @@ const CourseDetailsPage = () => {
               </div>
 
               <div
-                className={`${CARD_BASE} flex flex-col justify-center space-y-3 rounded-3xl p-6`}
+                className={`${CARD_BASE} group flex flex-col justify-center space-y-3 rounded-3xl p-6`}
               >
+                <CardSheen />
                 {[5, 4, 3, 2, 1].map((star) => {
                   const percentages: Record<number, number> = {
                     5: 78,
@@ -1281,8 +1859,9 @@ const CourseDetailsPage = () => {
               {reviews.slice(0, 4).map((review) => (
                 <article
                   key={review.name}
-                  className={`${CARD_BASE} rounded-2xl p-5 transition-colors duration-300 hover:border-violet-400/35`}
+                  className={`${CARD_BASE} group rounded-2xl p-5 transition-colors duration-300 hover:border-violet-400/35`}
                 >
+                  <CardSheen />
                   <div className="relative flex items-start gap-3">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-violet-400/20 bg-gradient-to-br from-violet-500/20 to-violet-500/5 text-xs font-semibold text-violet-100">
                       {review.initials}
@@ -1340,47 +1919,51 @@ const CourseDetailsPage = () => {
 
         <aside className="xl:sticky xl:top-6 xl:self-start">
           <div className="group relative overflow-hidden rounded-3xl border border-violet-400/20 bg-gradient-to-b from-[#1A1230] to-[#0B0814] shadow-xl shadow-black/30">
+            {/* Shared sheen + top accent line + corner bloom */}
             <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
             <div className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full bg-violet-500/15 blur-3xl" />
 
             <div className="relative p-5">
-              {/* Course includes */}
-              <div>
-                <h4 className="text-sm font-semibold text-white">
+              {/* Title + plan */}
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="line-clamp-2 text-sm font-semibold leading-5 tracking-[-0.01em] text-white">
+                  {course.title}
+                </h3>
+                <PlanBadge plan={course.plan} />
+              </div>
+
+              {/* Course includes — tight rows */}
+              <div className="mt-4">
+                <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-violet-200/70">
                   This course includes
                 </h4>
 
-                <ul className="mt-3.5 space-y-2.5">
+                <ul className="mt-2.5 space-y-1.5">
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-3 text-sm leading-5 text-white/65"
+                      className="flex items-center gap-2.5 text-[13px] leading-5 text-white/70"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
-                        <Icon className="h-3.5 w-3.5" />
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-violet-400/15 bg-violet-500/[0.08] text-violet-300">
+                        <Icon className="h-3 w-3" />
                       </span>
-
                       <span className="min-w-0">{label}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Course details */}
-              <div className="mt-5 border-t border-white/[0.08] pt-5">
-                <h4 className="text-sm font-semibold text-white">
-                  Course details
-                </h4>
-
-                <dl className="mt-3 space-y-2 text-sm">
+              {/* Course details — compact tiles */}
+              <div className="mt-4 border-t border-white/[0.08] pt-4">
+                <dl className="grid grid-cols-2 gap-2">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="flex items-center justify-between gap-3"
+                      className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-2"
                     >
-                      <dt className="text-white/45">{label}</dt>
-                      <dd className="text-right font-medium text-white/80">
+                      <dt className="text-[10px] text-white/40">{label}</dt>
+                      <dd className="mt-0.5 text-[13px] font-medium text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -1388,16 +1971,23 @@ const CourseDetailsPage = () => {
                 </dl>
               </div>
 
-              {/* Primary action */}
+              {/* Primary action — bottom */}
               <div className="mt-5 border-t border-white/[0.08] pt-5">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
+                  className="group/button inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-10 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0814]"
                 >
-                  {isPremium ? "Enroll Now" : "Start Learning"}
+                  {isPremium ? (
+                    <>Enroll Now</>
+                  ) : (
+                    <>
+                      <PlayCircle className="h-4 w-4" />
+                      Start Learning
+                    </>
+                  )}
 
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/button:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1" />
                 </button>
               </div>
             </div>

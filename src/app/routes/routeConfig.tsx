@@ -19,6 +19,7 @@ import MyLearningPage from "../../features/student/pages/MyLearningPage";
 import CertificatePage from "../../features/student/pages/CertificatePage";
 import CoursesPage from "../../features/student/pages/CoursesPage";
 import CourseDetailsPage from "../../features/student/pages/CourseDetailsPage";
+import InstructorPublicProfilePage from "../../features/student/pages/InstructorPublicProfilePage";
 import StudentSubscriptionPage from "../../features/student/pages/SubscriptionPage";
 import CertificateDetailsPage from "../../features/student/pages/CertificateDetailsPage";
 import StudentSettingsPage from "../../features/student/pages/StudentSettingsPage";
@@ -173,6 +174,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "learning/:courseId",
             element: <CourseLearningPage />,
+          },
+          {
+            path: "instructors/:instructorId",
+            element: <InstructorPublicProfilePage />,
           },
           {
             path: "saved",
