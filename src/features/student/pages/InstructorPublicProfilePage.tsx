@@ -18,6 +18,11 @@ import {
   X,
   type LucideIcon,
   ChevronRight,
+  BookOpen,
+  Users,
+  Clock3,
+  Star,
+  ArrowRight,
 } from "lucide-react";
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
@@ -71,6 +76,60 @@ const instructors: PublicInstructor[] = [
       "PostgreSQL",
       "System Design",
     ],
+  },
+];
+
+type InstructorCourse = {
+  id: number;
+  title: string;
+  category: string;
+  level: string;
+  duration: string;
+  learners: number;
+  rating: number;
+  image: string;
+  description: string;
+};
+
+const instructorCourses: InstructorCourse[] = [
+  {
+    id: 1,
+    title: "Modern React & TypeScript",
+    category: "Frontend Development",
+    level: "Intermediate",
+    duration: "12 hours",
+    learners: 1240,
+    rating: 4.9,
+    image:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=900&h=600&fit=crop",
+    description:
+      "Build polished, scalable interfaces with React, TypeScript, and modern frontend patterns.",
+  },
+  {
+    id: 2,
+    title: "Django REST Framework Masterclass",
+    category: "Backend Development",
+    level: "Intermediate",
+    duration: "16 hours",
+    learners: 980,
+    rating: 4.8,
+    image:
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=900&h=600&fit=crop",
+    description:
+      "Design secure, maintainable APIs and connect them to real-world applications.",
+  },
+  {
+    id: 3,
+    title: "PostgreSQL & Database Design",
+    category: "Database",
+    level: "Beginner",
+    duration: "9 hours",
+    learners: 760,
+    rating: 4.9,
+    image:
+      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=900&h=600&fit=crop",
+    description:
+      "Learn relational data modeling, SQL fundamentals, and practical query optimization.",
   },
 ];
 
@@ -419,6 +478,53 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
   );
 };
 
+const InstructorCourseCard = ({ course }: { course: InstructorCourse }) => (
+  <article className="group overflow-hidden rounded-2xl border border-violet-400/[0.12] bg-[#0D0A17] transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/30 hover:shadow-[0_18px_45px_-24px_rgba(139,92,246,0.45)]">
+    <div className="relative aspect-[16/9] overflow-hidden bg-violet-950/30">
+      <img
+        src={course.image}
+        alt=""
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0812]/80 via-transparent to-black/10" />
+      <span className="absolute left-3 top-3 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium text-white/90 backdrop-blur-md">
+        {course.level}
+      </span>
+      <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/45 px-2.5 py-1 text-xs text-white/90 backdrop-blur-md">
+        <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
+        {course.rating.toFixed(1)}
+      </span>
+    </div>
+
+    <div className="p-5">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-violet-300/80">
+        {course.category}
+      </p>
+      <h3
+        className="mt-2 text-lg font-semibold leading-snug text-white transition-colors group-hover:text-violet-200"
+        style={{ fontFamily: DISPLAY_FONT }}
+      >
+        {course.title}
+      </h3>
+      <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/45">
+        {course.description}
+      </p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.07] pt-4 text-xs text-white/45">
+        <span className="inline-flex items-center gap-1.5">
+          <Clock3 className="h-3.5 w-3.5 text-violet-300/80" />
+          {course.duration}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Users className="h-3.5 w-3.5 text-violet-300/80" />
+          {course.learners.toLocaleString()} learners
+        </span>
+      </div>
+    </div>
+  </article>
+);
+
 const InstructorPublicProfilePage = () => {
   const navigate = useNavigate();
   const { instructorId } = useParams<{ instructorId: string }>();
@@ -477,22 +583,40 @@ const InstructorPublicProfilePage = () => {
               />
 
               <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
-                Instructor Profile
+                Instructor Details
               </span>
             </nav>
           </div>
 
-          <div className="cursor-default">
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
-                Instructor Profile
-              </span>
-            </h1>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="cursor-default">
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+                <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                  Meet Your Instructor
+                </span>
+              </h1>
 
-            <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
-              Explore teaching expertise, professional experience, and areas of
-              specialization.
-            </p>
+              <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+                Explore teaching expertise, professional experience, and areas
+                of specialization.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById("instructor-courses")?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
+              className="cursor-pointer group inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-violet-400/25 bg-violet-500/[0.08] px-5 py-3 text-sm font-medium text-violet-200 transition-all duration-300 hover:border-violet-400/50 hover:bg-violet-500/[0.16] hover:text-white sm:self-center"
+            >
+
+              <span>View Sarah&apos;s Courses</span>
+
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
           </div>
 
           {/* HERO + ABOUT */}
@@ -571,8 +695,8 @@ const InstructorPublicProfilePage = () => {
             <section className="flex min-w-0 flex-col rounded-3xl border border-violet-400/[0.12] bg-[#0A0812] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8">
               <SectionHeader
                 icon={FileText}
-                title="Professional Bio"
-                description="A short introduction."
+                title="About the Instructor"
+                description="	Get to know your instructor."
               />
 
               <div className="relative mt-6 flex min-w-0 flex-1 flex-col justify-center pl-10">
@@ -599,8 +723,8 @@ const InstructorPublicProfilePage = () => {
             <section className="flex min-w-0 flex-col rounded-3xl border border-violet-400/[0.12] bg-[#0A0812] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8">
               <SectionHeader
                 icon={User}
-                title="Personal Information"
-                description="Professional and account details."
+                title="Professional Background"
+                description="Experience, education, and professional details."
               />
 
               <div className="mt-7 grid gap-5 sm:grid-cols-2">
@@ -645,8 +769,8 @@ const InstructorPublicProfilePage = () => {
             <section className="flex min-w-0 flex-col rounded-3xl border border-violet-400/[0.12] bg-[#0A0812] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8">
               <SectionHeader
                 icon={LinkIcon}
-                title="Social Links"
-                description="Connected public profiles."
+                title="Connect & Explore"
+                description="Explore professional profiles and work."
               />
 
               <div className="mt-7 space-y-3">
@@ -685,8 +809,8 @@ const InstructorPublicProfilePage = () => {
           <section className="flex flex-col rounded-3xl border border-violet-400/[0.12] bg-[#0A0812] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8">
             <SectionHeader
               icon={Layers}
-              title="Teaching Categories"
-              description="Areas this instructor teaches."
+              title="Areas of Expertise"
+              description="Explore the subjects this instructor specializes in."
             />
 
             <div className="mt-7 flex flex-wrap gap-3">
@@ -704,6 +828,65 @@ const InstructorPublicProfilePage = () => {
                   No categories added yet.
                 </span>
               )}
+            </div>
+          </section>
+
+          {/* INSTRUCTOR COURSES */}
+          <section id="instructor-courses" className="scroll-mt-8 space-y-6">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-[-0.03em] sm:text-[26px]">
+                  <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                    Courses by {instructor.full_name.split(" ")[0]}
+                  </span>
+                </h2>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-white/45">
+                  Explore courses created by this instructor and find the right
+                  next step for your learning journey.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="group rounded-3xl border border-white/[0.08] bg-[#0A0812] px-4 py-3.5 transition-all duration-300 hover:border-violet-400/25 sm:px-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-white/60">
+                      Total courses
+                    </span>
+
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/[0.10] text-violet-300 transition-colors duration-300 group-hover:bg-violet-500/[0.18]">
+                      <BookOpen className="h-4 w-4" />
+                    </div>
+                  </div>
+
+                  <p className="mt-2 text-3xl font-semibold tracking-tight text-white">
+                    {instructorCourses.length}
+                  </p>
+                </div>
+
+                <div className="group rounded-3xl border border-white/[0.08] bg-[#0A0812] px-4 py-3.5 transition-all duration-300 hover:border-violet-400/25 sm:px-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-white/60">
+                      Total learners
+                    </span>
+
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/[0.10] text-violet-300 transition-colors duration-300 group-hover:bg-violet-500/[0.18]">
+                      <Users className="h-4 w-4" />
+                    </div>
+                  </div>
+
+                  <p className="mt-2 text-3xl font-semibold tracking-tight text-white">
+                    {instructorCourses
+                      .reduce((total, course) => total + course.learners, 0)
+                      .toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {instructorCourses.map((course) => (
+                <InstructorCourseCard key={course.id} course={course} />
+              ))}
             </div>
           </section>
         </div>

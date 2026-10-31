@@ -1532,7 +1532,7 @@ const CourseDetailsPage = () => {
                 }) => (
                   <div
                     key={key}
-                    className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl border p-3.5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${tile}`}
+                    className={`group relative flex items-center gap-3 overflow-hidden rounded-3xl border p-3.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg ${tile}`}
                   >
                     {/* Soft colored glow */}
                     <span
@@ -1577,10 +1577,10 @@ const CourseDetailsPage = () => {
                 return (
                   <div
                     key={module.title}
-                    className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
+                    className={`group relative overflow-hidden rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] transition-all duration-500 ease-out ${
                       expanded
-                        ? "border-violet-400/30 bg-gradient-to-b from-[#150F28] to-[#0B0814] shadow-[0_18px_50px_-24px_rgba(124,58,237,0.6)]"
-                        : "border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] hover:border-violet-400/30"
+                        ? "border-violet-300/30 bg-gradient-to-b from-[#150F28] to-[#0B0814] shadow-[0_18px_50px_-24px_rgba(124,58,237,0.45)]"
+                        : "border-violet-300/20 bg-gradient-to-b from-[#130E24] to-[#0B0814] hover:border-violet-300/35"
                     }`}
                   >
                     {/* Always-visible top-right ambient light */}
@@ -1615,7 +1615,7 @@ const CourseDetailsPage = () => {
                     >
                       {/* Module number */}
                       <span
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-xs font-semibold transition ${
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-all duration-300 ${
                           expanded
                             ? "border-violet-400/40 bg-gradient-to-br from-violet-500/30 to-violet-500/10 text-white"
                             : "border-violet-400/15 bg-violet-500/[0.08] text-violet-200"
@@ -1657,7 +1657,7 @@ const CourseDetailsPage = () => {
 
                       {/* Expand / collapse icon */}
                       <span
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition ${
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
                           expanded
                             ? "border-violet-400/30 bg-violet-500/10 text-violet-300"
                             : "border-white/[0.08] text-white/40"
@@ -1694,11 +1694,11 @@ const CourseDetailsPage = () => {
                             return (
                               <div
                                 key={`${lesson.title}-${lessonIndex}`}
-                                className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition hover:border-white/[0.06] hover:bg-white/[0.03] sm:px-3"
+                                className="group/lesson flex items-center gap-3 rounded-2xl border border-transparent px-2.5 py-2.5 transition-all duration-300 ease-out hover:border-white/[0.08] hover:bg-white/[0.035] sm:px-3"
                               >
                                 {/* Lesson, quiz, or assignment icon */}
                                 <span
-                                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition ${meta.bubble} ${meta.bubbleHover}`}
+                                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${meta.bubble} ${meta.bubbleHover}`}
                                 >
                                   <ItemIcon className="h-4 w-4" />
                                 </span>
