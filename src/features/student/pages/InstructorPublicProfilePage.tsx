@@ -23,6 +23,10 @@ import {
   Clock3,
   Star,
   ArrowRight,
+  Bookmark,
+  Check,
+  Crown,
+  ArrowDown,
 } from "lucide-react";
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
@@ -83,10 +87,15 @@ type InstructorCourse = {
   id: number;
   title: string;
   category: string;
-  level: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
   duration: string;
   learners: number;
   rating: number;
+  reviews: string;
+  lessons: number;
+  plan: "Premium" | "Free";
+  uploadedAt: string;
+  skills: string[];
   image: string;
   description: string;
 };
@@ -100,6 +109,11 @@ const instructorCourses: InstructorCourse[] = [
     duration: "12 hours",
     learners: 1240,
     rating: 4.9,
+    reviews: "1.2k",
+    lessons: 32,
+    plan: "Premium",
+    uploadedAt: "2026-10-23T12:00:00Z",
+    skills: ["React", "TypeScript", "UI Patterns"],
     image:
       "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=900&h=600&fit=crop",
     description:
@@ -113,6 +127,11 @@ const instructorCourses: InstructorCourse[] = [
     duration: "16 hours",
     learners: 980,
     rating: 4.8,
+    reviews: "980",
+    lessons: 40,
+    plan: "Premium",
+    uploadedAt: "2026-08-15T12:00:00Z",
+    skills: ["Django", "REST APIs", "Python"],
     image:
       "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=900&h=600&fit=crop",
     description:
@@ -126,12 +145,42 @@ const instructorCourses: InstructorCourse[] = [
     duration: "9 hours",
     learners: 760,
     rating: 4.9,
+    reviews: "760",
+    lessons: 24,
+    plan: "Free",
+    uploadedAt: "2026-06-10T12:00:00Z",
+    skills: ["PostgreSQL", "SQL", "Data Modeling"],
     image:
       "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=900&h=600&fit=crop",
     description:
       "Learn relational data modeling, SQL fundamentals, and practical query optimization.",
   },
 ];
+
+const formatRelativeUploadDate = (uploadedAt: string) => {
+  const uploadedTime = new Date(uploadedAt).getTime();
+  const elapsedSeconds = Math.max(
+    0,
+    Math.floor((Date.now() - uploadedTime) / 1000),
+  );
+  const units = [
+    { label: "year", seconds: 365 * 24 * 60 * 60 },
+    { label: "month", seconds: 30 * 24 * 60 * 60 },
+    { label: "week", seconds: 7 * 24 * 60 * 60 },
+    { label: "day", seconds: 24 * 60 * 60 },
+    { label: "hour", seconds: 60 * 60 },
+    { label: "minute", seconds: 60 },
+  ];
+
+  for (const unit of units) {
+    const amount = Math.floor(elapsedSeconds / unit.seconds);
+    if (amount >= 1) {
+      return `${amount} ${unit.label}${amount === 1 ? "" : "s"} ago`;
+    }
+  }
+
+  return "Just now";
+};
 
 const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -478,48 +527,126 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
   );
 };
 
-const InstructorCourseCard = ({ course }: { course: InstructorCourse }) => (
-  <article className="group overflow-hidden rounded-2xl border border-violet-400/[0.12] bg-[#0D0A17] transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/30 hover:shadow-[0_18px_45px_-24px_rgba(139,92,246,0.45)]">
-    <div className="relative aspect-[16/9] overflow-hidden bg-violet-950/30">
+const InstructorCourseCard = ({
+  course,
+  isSaved,
+  onToggleSaved,
+  onViewCourse,
+}: {
+  course: InstructorCourse;
+  isSaved: boolean;
+  onToggleSaved: (courseId: number) => void;
+  onViewCourse: (courseId: number) => void;
+}) => (
+  <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]">
+    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+    <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
       <img
         src={course.image}
-        alt=""
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        alt={course.title}
         loading="lazy"
+        className="block h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0812]/80 via-transparent to-black/10" />
-      <span className="absolute left-3 top-3 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium text-white/90 backdrop-blur-md">
-        {course.level}
-      </span>
-      <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/45 px-2.5 py-1 text-xs text-white/90 backdrop-blur-md">
-        <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
-        {course.rating.toFixed(1)}
-      </span>
+
+      <div className="absolute left-3 top-3 z-20">
+        {course.plan === "Premium" ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+            <Crown className="h-3.5 w-3.5 text-amber-300" />
+            Premium
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-[#06251D]/90 px-3 py-1.5 text-[11px] font-semibold text-emerald-300 shadow-lg backdrop-blur-md">
+            <Check className="h-3.5 w-3.5" />
+            Free
+          </span>
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => onToggleSaved(course.id)}
+        aria-label={
+          isSaved
+            ? `Remove ${course.title} from saved`
+            : `Add ${course.title} to saved`
+        }
+        aria-pressed={isSaved}
+        className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 active:scale-90 ${
+          isSaved
+            ? "border-violet-400/35 bg-[#101827]/95 text-violet-400 shadow-[0_0_10px_rgba(167,139,250,0.12)]"
+            : "border-white/20 bg-[#101827]/90 text-white/80 hover:border-violet-400/50 hover:bg-[#201A35]/95 hover:text-violet-400 hover:shadow-[0_0_14px_rgba(167,139,250,0.18)]"
+        }`}
+      >
+        <Bookmark
+          className={`h-[17px] w-[17px] transition-transform duration-300 ${
+            isSaved ? "scale-110" : "group-hover:scale-110"
+          }`}
+          fill={isSaved ? "#A78BFA" : "none"}
+          stroke={isSaved ? "#A78BFA" : "currentColor"}
+          strokeWidth={1.8}
+        />
+      </button>
+
+      <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+        <Clock3 className="h-3.5 w-3.5 text-cyan-300" />
+        {course.duration}
+      </div>
+      <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
+        <BookOpen className="h-3.5 w-3.5 text-cyan-300" />
+        {course.lessons} lessons
+      </div>
     </div>
 
-    <div className="p-5">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-violet-300/80">
-        {course.category}
+    <div className="flex flex-1 flex-col p-5">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
+          {course.category}
+        </span>
+        <span className="shrink-0 text-[11px] text-white/35">
+          {formatRelativeUploadDate(course.uploadedAt)}
+        </span>
+      </div>
+
+      <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
+        {course.level} level
       </p>
-      <h3
-        className="mt-2 text-lg font-semibold leading-snug text-white transition-colors group-hover:text-violet-200"
-        style={{ fontFamily: DISPLAY_FONT }}
-      >
+      <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
         {course.title}
       </h3>
-      <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/45">
+
+      <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
         {course.description}
       </p>
 
-      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.07] pt-4 text-xs text-white/45">
-        <span className="inline-flex items-center gap-1.5">
-          <Clock3 className="h-3.5 w-3.5 text-violet-300/80" />
-          {course.duration}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <Users className="h-3.5 w-3.5 text-violet-300/80" />
-          {course.learners.toLocaleString()} learners
-        </span>
+      <div className="my-4 flex flex-wrap gap-1.5">
+        {course.skills.map((skill) => (
+          <span
+            key={skill}
+            className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-4">
+        <div className="flex items-center gap-1.5">
+          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+          <span className="text-xs font-semibold text-white">
+            {course.rating.toFixed(1)}
+          </span>
+          <span className="text-[10px] text-white/40">({course.reviews})</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onViewCourse(course.id)}
+          className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+        >
+          View course
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/button:translate-x-0.5" />
+        </button>
       </div>
     </div>
   </article>
@@ -534,6 +661,15 @@ const InstructorPublicProfilePage = () => {
     instructors[0];
 
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [savedCourses, setSavedCourses] = useState<number[]>([]);
+
+  const toggleSavedCourse = (courseId: number) => {
+    setSavedCourses((current) =>
+      current.includes(courseId)
+        ? current.filter((id) => id !== courseId)
+        : [...current, courseId],
+    );
+  };
 
   const initials = getInitials(instructor.full_name);
   const imageSrc = instructor.profile_image;
@@ -542,6 +678,23 @@ const InstructorPublicProfilePage = () => {
   return (
     <>
       <div className="min-h-full w-full bg-black pb-8 text-white">
+        <style>{`
+          @keyframes lp-card-sheen {
+            0% { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
+            40% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(260%) skewX(-12deg); }
+          }
+          .lp-card-sheen {
+            opacity: 0;
+            transform: translateX(-150%) skewX(-12deg);
+          }
+          .group:hover .lp-card-sheen {
+            animation: lp-card-sheen 1.1s ease-out;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .lp-card-sheen { display: none; }
+          }
+        `}</style>
         <div className="space-y-6">
           {/* Top bar — circular glass back button + clean boxless breadcrumb */}
 
@@ -565,7 +718,7 @@ const InstructorPublicProfilePage = () => {
               className="flex min-w-0 items-center gap-2 font-['Manrope'] text-[11px] italic tracking-[-0.01em] sm:text-xs"
             >
               <span className="hidden shrink-0 font-semibold tracking-[0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:inline">
-                Courses
+                Explore Courses
               </span>
 
               <ChevronRight
@@ -574,7 +727,7 @@ const InstructorPublicProfilePage = () => {
               />
 
               <span className="hidden max-w-[120px] shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
-                Development
+                Javascript Mastery
               </span>
 
               <ChevronRight
@@ -583,7 +736,7 @@ const InstructorPublicProfilePage = () => {
               />
 
               <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
-                Instructor Details
+                Sarah Mitchell
               </span>
             </nav>
           </div>
@@ -610,12 +763,13 @@ const InstructorPublicProfilePage = () => {
                   block: "start",
                 });
               }}
-              className="cursor-pointer group inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-violet-400/25 bg-violet-500/[0.08] px-5 py-3 text-sm font-medium text-violet-200 transition-all duration-300 hover:border-violet-400/50 hover:bg-violet-500/[0.16] hover:text-white sm:self-center"
+              className="group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 self-start rounded-xl border border-violet-400/25 bg-gradient-to-r from-violet-500/[0.12] to-purple-500/[0.08] px-5 py-3 text-sm font-semibold text-violet-200 shadow-sm shadow-violet-950/10 transition-all duration-300 hover:border-violet-400/50 hover:from-violet-500/20 hover:to-purple-500/[0.16] hover:text-white hover:shadow-md hover:shadow-violet-500/10 sm:self-center"
             >
+              <GraduationCap className="h-[18px] w-[18px] text-violet-300 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:text-white" />
 
               <span>View Sarah&apos;s Courses</span>
 
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowDown className="h-4 w-4 text-violet-300/70 transition-all duration-300 group-hover:translate-y-0.5 group-hover:text-white" />
             </button>
           </div>
 
@@ -883,9 +1037,17 @@ const InstructorPublicProfilePage = () => {
               </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {instructorCourses.map((course) => (
-                <InstructorCourseCard key={course.id} course={course} />
+                <InstructorCourseCard
+                  key={course.id}
+                  course={course}
+                  isSaved={savedCourses.includes(course.id)}
+                  onToggleSaved={toggleSavedCourse}
+                  onViewCourse={(courseId) =>
+                    navigate(`/student/courses/${courseId}`)
+                  }
+                />
               ))}
             </div>
           </section>
