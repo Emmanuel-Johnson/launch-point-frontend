@@ -1095,7 +1095,7 @@ const CourseDetailsPage = () => {
 
       {/* Top bar — circular glass back button + clean boxless breadcrumb */}
 
-      <div className="flex min-w-0 flex-wrap items-center gap-3.5">
+      <div className="mb-6 flex min-w-0 flex-wrap items-center gap-3.5">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -1115,7 +1115,7 @@ const CourseDetailsPage = () => {
           className="flex min-w-0 items-center gap-2 font-['Manrope'] text-[11px] italic tracking-[-0.01em] sm:text-xs"
         >
           <span className="hidden shrink-0 font-semibold tracking-[0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:inline">
-            Courses
+            Explore Courses
           </span>
 
           <ChevronRight
@@ -1123,19 +1123,32 @@ const CourseDetailsPage = () => {
             className="hidden h-3.5 w-3.5 shrink-0 text-violet-300/50 sm:block"
           />
 
-          <span className="hidden max-w-[120px] shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
+          {/* <span className="hidden max-w-[120px] shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
             Development
           </span>
 
           <ChevronRight
             aria-hidden="true"
             className="h-3.5 w-3.5 shrink-0 text-violet-300/50"
-          />
+          /> */}
 
           <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
             {course.title}
           </span>
         </nav>
+      </div>
+
+      <div className="mb-6 cursor-default">
+        <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+          <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            Course Overview
+          </span>
+        </h1>
+
+        <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+          Explore the curriculum, learning outcomes, and skills you'll gain
+          throughout this course.
+        </p>
       </div>
 
       {/* ── Hero — modern, premium refresh ─────────────────────────── */}
@@ -1465,9 +1478,9 @@ const CourseDetailsPage = () => {
                     value: totalModules,
                     label: "Modules",
                     Icon: Layers,
-                    tile: "border-violet-300/35 bg-gradient-to-br from-violet-400/25 via-violet-500/15 to-purple-500/10 hover:border-violet-300/60 hover:from-violet-400/35",
-                    chip: "border border-violet-300/30 bg-violet-300/20 text-violet-200",
-                    glow: "bg-violet-400/10",
+                    tile: "bg-gradient-to-br from-violet-400/20 via-violet-500/12 to-purple-500/[0.06] hover:from-violet-400/25",
+                    chip: "bg-violet-300/15 text-violet-200",
+                    glow: "bg-violet-400/[0.07]",
                     valueColor: "text-violet-100",
                     labelColor: "text-violet-200/75",
                   },
@@ -1476,9 +1489,9 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.lesson,
                     label: "Lessons",
                     Icon: PlayCircle,
-                    tile: "border-sky-300/35 bg-gradient-to-br from-sky-400/25 via-blue-500/15 to-cyan-500/10 hover:border-sky-300/60 hover:from-sky-400/35",
-                    chip: "border border-sky-300/30 bg-sky-300/20 text-sky-200",
-                    glow: "bg-sky-400/10",
+                    tile: "bg-gradient-to-br from-sky-400/20 via-blue-500/12 to-cyan-500/[0.06] hover:from-sky-400/25",
+                    chip: "bg-sky-300/15 text-sky-200",
+                    glow: "bg-sky-400/[0.07]",
                     valueColor: "text-sky-100",
                     labelColor: "text-sky-200/75",
                   },
@@ -1487,9 +1500,9 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.quiz,
                     label: "Quizzes",
                     Icon: FileQuestion,
-                    tile: "border-amber-300/35 bg-gradient-to-br from-amber-300/25 via-orange-400/15 to-yellow-500/10 hover:border-amber-300/60 hover:from-amber-300/35",
-                    chip: "border border-amber-300/30 bg-amber-300/20 text-amber-200",
-                    glow: "bg-amber-300/10",
+                    tile: "bg-gradient-to-br from-amber-300/20 via-orange-400/12 to-yellow-500/[0.06] hover:from-amber-300/25",
+                    chip: "bg-amber-300/15 text-amber-200",
+                    glow: "bg-amber-300/[0.07]",
                     valueColor: "text-amber-100",
                     labelColor: "text-amber-200/75",
                   },
@@ -1498,9 +1511,9 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.assignment,
                     label: "Assignments",
                     Icon: ClipboardList,
-                    tile: "border-emerald-300/35 bg-gradient-to-br from-emerald-300/25 via-green-500/15 to-teal-500/10 hover:border-emerald-300/60 hover:from-emerald-300/35",
-                    chip: "border border-emerald-300/30 bg-emerald-300/20 text-emerald-200",
-                    glow: "bg-emerald-300/10",
+                    tile: "bg-gradient-to-br from-emerald-300/20 via-green-500/12 to-teal-500/[0.06] hover:from-emerald-300/25",
+                    chip: "bg-emerald-300/15 text-emerald-200",
+                    glow: "bg-emerald-300/[0.07]",
                     valueColor: "text-emerald-100",
                     labelColor: "text-emerald-200/75",
                   },
@@ -1511,9 +1524,9 @@ const CourseDetailsPage = () => {
                       .replace(" hour", "h"),
                     label: "Total length",
                     Icon: Clock3,
-                    tile: "border-cyan-300/35 bg-gradient-to-br from-cyan-300/25 via-teal-400/15 to-blue-500/10 hover:border-cyan-300/60 hover:from-cyan-300/35",
-                    chip: "border border-cyan-300/30 bg-cyan-300/20 text-cyan-200",
-                    glow: "bg-cyan-300/10",
+                    tile: "bg-gradient-to-br from-cyan-300/20 via-teal-400/12 to-blue-500/[0.06] hover:from-cyan-300/25",
+                    chip: "bg-cyan-300/15 text-cyan-200",
+                    glow: "bg-cyan-300/[0.07]",
                     valueColor: "text-cyan-100",
                     labelColor: "text-cyan-200/75",
                   },
@@ -1532,9 +1545,9 @@ const CourseDetailsPage = () => {
                 }) => (
                   <div
                     key={key}
-                    className={`group relative flex items-center gap-3 overflow-hidden rounded-3xl border p-3.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg ${tile}`}
+                    className={`group relative flex items-center gap-3 overflow-hidden rounded-3xl p-3.5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg ${tile}`}
                   >
-                    {/* Soft colored glow */}
+                    {/* Soft, subdued colored glow */}
                     <span
                       className={`pointer-events-none absolute -right-5 -top-7 h-20 w-20 rounded-full blur-2xl ${glow}`}
                     />
@@ -1566,6 +1579,7 @@ const CourseDetailsPage = () => {
               )}
             </div>
 
+            {/* Course modules */}
             <div className="space-y-3">
               {displayedModules.map((module, index) => {
                 const expanded = expandedModules.includes(index);
@@ -1577,31 +1591,49 @@ const CourseDetailsPage = () => {
                 return (
                   <div
                     key={module.title}
-                    className={`group relative overflow-hidden rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] transition-all duration-500 ease-out ${
+                    className={`group relative isolate overflow-hidden rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] transition-all duration-500 ease-out ${
                       expanded
-                        ? "border-violet-300/30 bg-gradient-to-b from-[#150F28] to-[#0B0814] shadow-[0_18px_50px_-24px_rgba(124,58,237,0.45)]"
-                        : "border-violet-300/20 bg-gradient-to-b from-[#130E24] to-[#0B0814] hover:border-violet-300/35"
+                        ? "border-violet-300/25 bg-[#100B1D] shadow-[0_16px_44px_-28px_rgba(124,58,237,0.30)]"
+                        : "border-violet-300/15 bg-[#0D0917] hover:border-violet-300/25"
                     }`}
                   >
-                    {/* Always-visible top-right ambient light */}
+                    {/* Soft ambient sunlight from the upper-right corner.
+              Radial gradient removes the rectangular-box appearance. */}
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute -right-12 -top-16 z-0 h-36 w-36 rounded-full bg-violet-500/[0.12] blur-3xl"
+                      className={`pointer-events-none absolute -right-24 -top-28 z-0 h-72 w-72 rounded-full blur-[85px] transition-opacity duration-500 ${
+                        expanded
+                          ? "bg-violet-400/[0.13] opacity-100"
+                          : "bg-violet-500/[0.09] opacity-75 group-hover:opacity-100"
+                      }`}
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle, rgba(167,139,250,0.22) 0%, rgba(139,92,246,0.10) 35%, rgba(124,58,237,0.035) 58%, transparent 75%)",
+                      }}
                     />
 
-                    {/* Soft top-right gradient highlight */}
+                    {/* Gentle light spreading inward from the right.
+              This is a full-width fade rather than a rectangular highlight. */}
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute right-0 top-0 z-0 h-28 w-40 bg-gradient-to-bl from-violet-400/[0.07] via-violet-500/[0.025] to-transparent"
+                      className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-500 ${
+                        expanded
+                          ? "opacity-100"
+                          : "opacity-60 group-hover:opacity-90"
+                      }`}
+                      style={{
+                        background:
+                          "radial-gradient(ellipse 65% 90% at 100% 0%, rgba(139,92,246,0.075) 0%, rgba(124,58,237,0.035) 35%, transparent 75%)",
+                      }}
                     />
 
                     {/* Hover shimmer — remains inactive until hover */}
-                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
 
                     {/* Left accent bar — visible when expanded */}
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-[3px] bg-gradient-to-b from-violet-400 to-indigo-500 transition-opacity duration-300 ${
+                      className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-[3px] bg-gradient-to-b from-violet-400/80 to-indigo-500/70 transition-opacity duration-300 ${
                         expanded ? "opacity-100" : "opacity-0"
                       }`}
                     />
@@ -1617,8 +1649,8 @@ const CourseDetailsPage = () => {
                       <span
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-all duration-300 ${
                           expanded
-                            ? "border-violet-400/40 bg-gradient-to-br from-violet-500/30 to-violet-500/10 text-white"
-                            : "border-violet-400/15 bg-violet-500/[0.08] text-violet-200"
+                            ? "border-violet-400/30 bg-gradient-to-br from-violet-500/20 to-violet-500/[0.06] text-white"
+                            : "border-violet-400/12 bg-violet-500/[0.06] text-violet-200"
                         }`}
                       >
                         {String(index + 1).padStart(2, "0")}
@@ -1659,7 +1691,7 @@ const CourseDetailsPage = () => {
                       <span
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
                           expanded
-                            ? "border-violet-400/30 bg-violet-500/10 text-violet-300"
+                            ? "border-violet-400/25 bg-violet-500/[0.08] text-violet-300"
                             : "border-white/[0.08] text-white/40"
                         }`}
                       >
@@ -1741,6 +1773,7 @@ const CourseDetailsPage = () => {
                 );
               })}
             </div>
+            {/* View all modules */}
             {totalModules > 3 && (
               <button
                 type="button"
@@ -1750,6 +1783,7 @@ const CourseDetailsPage = () => {
                 {showAllModules
                   ? "Show fewer modules"
                   : `View all ${totalModules} modules`}
+
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${
                     showAllModules ? "rotate-180" : ""
@@ -1997,7 +2031,7 @@ const CourseDetailsPage = () => {
             dates and more), and the CTA.
             ────────────────────────────────────────────────────────── */}
 
-        <aside className="xl:sticky xl:top-6 xl:self-start">
+        <aside className="xl:sticky xl:top-6 xl:self-start xl:mt-5">
           <div
             onMouseMove={(event) => {
               const rect = event.currentTarget.getBoundingClientRect();
@@ -2057,11 +2091,12 @@ const CourseDetailsPage = () => {
             <div className="relative z-10 p-5">
               {/* Course title + plan */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="line-clamp-2 min-w-0 text-[14px] font-bold leading-[1.55] tracking-[-0.035em] text-white/95">
+                <h3 className="line-clamp-2 min-w-0 pt-2 font-['Manrope'] text-[19px] font-extrabold leading-[1.4] tracking-[-0.045em] text-white">
                   {course.title}
                 </h3>
-
-                <PlanBadge plan={course.plan} />
+                <div className="shrink-0 pt-1">
+                  <PlanBadge plan={course.plan} />
+                </div>
               </div>
 
               {/* Course includes */}

@@ -1251,18 +1251,18 @@ const CoursesPage = () => {
                           : `Add ${course.title} to saved`
                       }
                       aria-pressed={isSaved}
-                      className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 active:scale-90 ${
+                      className={`group absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 active:scale-90 ${
                         isSaved
-                          ? "border-violet-950/70 bg-[#0D0918]/90 text-violet-500"
-                          : "border-violet-950/70 bg-[#0D0918]/90 text-[#5B21B6] hover:border-violet-700/50 hover:bg-gradient-to-br hover:from-[#24113F] hover:to-[#170D2B] hover:text-violet-400"
+                          ? "border-violet-400/35 bg-[#101827]/95 text-violet-400 shadow-[0_0_10px_rgba(167,139,250,0.12)]"
+                          : "border-white/20 bg-[#101827]/90 text-white/80 hover:border-violet-400/50 hover:bg-[#201A35]/95 hover:text-violet-400 hover:shadow-[0_0_14px_rgba(167,139,250,0.18)]"
                       }`}
                     >
                       <Bookmark
                         className={`h-[17px] w-[17px] transition-transform duration-300 ${
                           isSaved ? "scale-110" : "group-hover:scale-110"
                         }`}
-                        fill={isSaved ? "#8B5CF6" : "none"}
-                        stroke={isSaved ? "#8B5CF6" : "currentColor"}
+                        fill={isSaved ? "#A78BFA" : "none"}
+                        stroke={isSaved ? "#A78BFA" : "currentColor"}
                         strokeWidth={1.8}
                       />
                     </button>
@@ -1271,7 +1271,6 @@ const CoursesPage = () => {
                       <Clock3 className="h-3.5 w-3.5 text-cyan-300" />
                       {course.duration}
                     </div>
-
                     <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-lg border border-slate-300/15 bg-[#090E1B]/90 px-2.5 py-1.5 text-[11px] font-medium text-slate-100 shadow-[0_4px_14px_rgba(0,0,0,0.25)] backdrop-blur-md">
                       <BookOpen className="h-3.5 w-3.5 text-cyan-300" />
                       {course.lessons} lessons
