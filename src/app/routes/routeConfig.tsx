@@ -74,6 +74,7 @@ import AnalyticsReportsPage from "../../features/admin/pages/AnalyticsReportsPag
 import RevenuePage from "../../features/admin/pages/RevenuePage";
 import FinancialsPage from "../../features/admin/pages/FinancialsPage";
 import AdminNotificationsPage from "../../features/admin/pages/NotificationsPage";
+import CourseReviewsPage from "../../features/student/pages/CourseReviewsPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -172,6 +173,10 @@ export const routeConfig: RouteObject[] = [
             element: <CourseDetailsPage />,
           },
           {
+            path: "courses/:courseId/reviews",
+            element: <CourseReviewsPage />,
+          },
+          {
             path: "learning/:courseId",
             element: <CourseLearningPage />,
           },
@@ -211,7 +216,7 @@ export const routeConfig: RouteObject[] = [
     element: <ProtectedRoute allowedRoles={["student", "instructor"]} />,
     children: [
       {
-        path: "/instructor-landing",
+        path: "/instructor/landing",
         element: <InstructorPublicLayout />,
         children: [
           {

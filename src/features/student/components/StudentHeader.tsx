@@ -142,7 +142,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
     setIsProfileOpen(false);
 
     if (!canSwitchToInstructor) {
-      navigate("/instructor-landing");
+      navigate("/instructor/landing");
       return;
     }
 
@@ -218,6 +218,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
           <button
             type="button"
             aria-label="Saved"
+            onClick={() => navigate("/student/saved")}
             className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
           >
             {/* Shine */}

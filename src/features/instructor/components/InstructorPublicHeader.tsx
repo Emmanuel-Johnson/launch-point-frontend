@@ -7,7 +7,7 @@ import type { InstructorApplication } from "../api/instructorApplicationApi";
 
 const BrandLogo = () => (
   <Link
-    to="/instructor-landing"
+    to="/instructor/landing"
     className="group flex items-center gap-3 transition-all duration-300"
   >
     <div className="flex h-9 w-9 items-center justify-center rounded-lg">
@@ -54,7 +54,7 @@ const InstructorPublicHeader = ({
   const { pathname } = useLocation();
 
   const isLanding =
-    pathname === "/instructor-landing" || pathname === "/instructor-landing/";
+    pathname === "/instructor/landing" || pathname === "/instructor/landing/";
 
   const hasOpenedDashboard =
     latestApplication?.status === "approved" &&
@@ -65,10 +65,10 @@ const InstructorPublicHeader = ({
 
   // Back target per page — only the `to` changes, the button never moves.
 
-  const backTo = pathname.startsWith("/instructor-landing/applications/")
-    ? "/instructor-landing/applications"
-    : pathname === "/instructor-landing/applications"
-      ? "/instructor-landing"
+  const backTo = pathname.startsWith("/instructor/landing/applications/")
+    ? "/instructor/landing/applications"
+    : pathname === "/instructor/landing/applications"
+      ? "/instructor/landing"
       : latestApplication?.status === "approved" &&
           latestApplication.is_dashboard_opened
         ? "/instructor/dashboard"
@@ -101,7 +101,7 @@ const InstructorPublicHeader = ({
             hasOpenedDashboard ? (
               <div className="flex items-center gap-3">
                 <Link
-                  to="/instructor-landing/applications"
+                  to="/instructor/landing/applications"
                   className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-blue-400/30 bg-blue-950/60 px-4 py-2.5 text-sm font-semibold text-blue-100 transition-all duration-300 hover:scale-105 hover:border-blue-400/50 hover:bg-blue-900/70 hover:shadow-[0_0_15px_rgba(59,130,246,0.25)]"
                 >
                   <History className="h-4 w-4 shrink-0" />
@@ -124,7 +124,7 @@ const InstructorPublicHeader = ({
               </div>
             ) : (
               <Link
-                to="/instructor-landing/applications"
+                to="/instructor/landing/applications"
                 className="inline-flex w-52 cursor-pointer items-center justify-center gap-2 rounded-lg border border-violet-400/30 bg-violet-600/20 px-5 py-2.5 text-sm font-semibold text-violet-200 transition-all duration-300 hover:scale-105 hover:border-violet-400/50 hover:bg-violet-600/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.25)]"
               >
                 <FileSearch className="h-4 w-4 shrink-0" />
