@@ -1456,6 +1456,7 @@ const CourseDetailsPage = () => {
               />
             </div>
             {/* Stat tiles — modules / lessons / quizzes / assignments / length. */}
+
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
               {(
                 [
@@ -1464,32 +1465,44 @@ const CourseDetailsPage = () => {
                     value: totalModules,
                     label: "Modules",
                     Icon: Layers,
-                    tile: "border-violet-400/30 bg-violet-500/15",
-                    chip: "bg-violet-500/25 text-violet-100",
+                    tile: "border-violet-300/35 bg-gradient-to-br from-violet-400/25 via-violet-500/15 to-purple-500/10 hover:border-violet-300/60 hover:from-violet-400/35",
+                    chip: "border border-violet-300/30 bg-violet-300/20 text-violet-200",
+                    glow: "bg-violet-400/10",
+                    valueColor: "text-violet-100",
+                    labelColor: "text-violet-200/75",
                   },
                   {
                     key: "lesson",
                     value: curriculumTotals.lesson,
                     label: "Lessons",
                     Icon: PlayCircle,
-                    tile: "border-blue-400/30 bg-blue-500/15",
-                    chip: "bg-blue-500/25 text-blue-100",
+                    tile: "border-sky-300/35 bg-gradient-to-br from-sky-400/25 via-blue-500/15 to-cyan-500/10 hover:border-sky-300/60 hover:from-sky-400/35",
+                    chip: "border border-sky-300/30 bg-sky-300/20 text-sky-200",
+                    glow: "bg-sky-400/10",
+                    valueColor: "text-sky-100",
+                    labelColor: "text-sky-200/75",
                   },
                   {
                     key: "quiz",
                     value: curriculumTotals.quiz,
                     label: "Quizzes",
                     Icon: FileQuestion,
-                    tile: "border-amber-300/30 bg-amber-500/15",
-                    chip: "bg-amber-500/25 text-amber-100",
+                    tile: "border-amber-300/35 bg-gradient-to-br from-amber-300/25 via-orange-400/15 to-yellow-500/10 hover:border-amber-300/60 hover:from-amber-300/35",
+                    chip: "border border-amber-300/30 bg-amber-300/20 text-amber-200",
+                    glow: "bg-amber-300/10",
+                    valueColor: "text-amber-100",
+                    labelColor: "text-amber-200/75",
                   },
                   {
                     key: "assignment",
                     value: curriculumTotals.assignment,
                     label: "Assignments",
                     Icon: ClipboardList,
-                    tile: "border-emerald-400/30 bg-emerald-500/15",
-                    chip: "bg-emerald-500/25 text-emerald-100",
+                    tile: "border-emerald-300/35 bg-gradient-to-br from-emerald-300/25 via-green-500/15 to-teal-500/10 hover:border-emerald-300/60 hover:from-emerald-300/35",
+                    chip: "border border-emerald-300/30 bg-emerald-300/20 text-emerald-200",
+                    glow: "bg-emerald-300/10",
+                    valueColor: "text-emerald-100",
+                    labelColor: "text-emerald-200/75",
                   },
                   {
                     key: "length",
@@ -1498,38 +1511,61 @@ const CourseDetailsPage = () => {
                       .replace(" hour", "h"),
                     label: "Total length",
                     Icon: Clock3,
-                    tile: "border-cyan-400/30 bg-cyan-500/15",
-                    chip: "bg-cyan-500/25 text-cyan-100",
+                    tile: "border-cyan-300/35 bg-gradient-to-br from-cyan-300/25 via-teal-400/15 to-blue-500/10 hover:border-cyan-300/60 hover:from-cyan-300/35",
+                    chip: "border border-cyan-300/30 bg-cyan-300/20 text-cyan-200",
+                    glow: "bg-cyan-300/10",
+                    valueColor: "text-cyan-100",
+                    labelColor: "text-cyan-200/75",
                   },
                 ] as const
-              ).map(({ key, value, label, Icon, tile, chip }) => (
-                <div
-                  key={key}
-                  className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl border p-3.5 transition-colors duration-300 hover:border-white/25 ${tile}`}
-                >
-                  {/* Reuse the existing card shimmer animation */}
-                  <CardSheen />
-
-                  {/* Keep the original content above the shimmer */}
-                  <span
-                    className={`relative z-20 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chip}`}
+              ).map(
+                ({
+                  key,
+                  value,
+                  label,
+                  Icon,
+                  tile,
+                  chip,
+                  glow,
+                  valueColor,
+                  labelColor,
+                }) => (
+                  <div
+                    key={key}
+                    className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl border p-3.5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${tile}`}
                   >
-                    <Icon className="h-4 w-4" />
-                  </span>
+                    {/* Soft colored glow */}
+                    <span
+                      className={`pointer-events-none absolute -right-5 -top-7 h-20 w-20 rounded-full blur-2xl ${glow}`}
+                    />
 
-                  <div className="relative z-20 min-w-0">
-                    <p className="text-lg font-semibold leading-none text-white">
-                      {value}
-                    </p>
+                    {/* Existing card shimmer */}
+                    <CardSheen />
 
-                    <p className="mt-1 truncate text-[11px] text-white/55">
-                      {label}
-                    </p>
+                    {/* Icon */}
+                    <span
+                      className={`relative z-20 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${chip}`}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+
+                    {/* Statistics */}
+                    <div className="relative z-20 min-w-0">
+                      <p
+                        className={`text-lg font-semibold leading-none ${valueColor}`}
+                      >
+                        {value}
+                      </p>
+
+                      <p className={`mt-1 truncate text-[11px] ${labelColor}`}>
+                        {label}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
-            
+
             <div className="space-y-3">
               {displayedModules.map((module, index) => {
                 const expanded = expandedModules.includes(index);
@@ -1705,7 +1741,6 @@ const CourseDetailsPage = () => {
                 );
               })}
             </div>
-            
             {totalModules > 3 && (
               <button
                 type="button"
