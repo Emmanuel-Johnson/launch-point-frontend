@@ -765,8 +765,7 @@ const InstructorPublicProfilePage = () => {
               }}
               className="group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 self-start rounded-xl border border-violet-400/25 bg-gradient-to-r from-violet-500/[0.12] to-purple-500/[0.08] px-5 py-3 text-sm font-semibold text-violet-200 shadow-sm shadow-violet-950/10 transition-all duration-300 hover:border-violet-400/50 hover:from-violet-500/20 hover:to-purple-500/[0.16] hover:text-white hover:shadow-md hover:shadow-violet-500/10 sm:self-center"
             >
-              <GraduationCap className="h-[18px] w-[18px] text-violet-300 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:text-white" />
-
+              <BookOpen className="h-[18px] w-[18px] text-violet-300 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 group-hover:text-white" />
               <span>View Sarah&apos;s Courses</span>
 
               <ArrowDown className="h-4 w-4 text-violet-300/70 transition-all duration-300 group-hover:translate-y-0.5 group-hover:text-white" />

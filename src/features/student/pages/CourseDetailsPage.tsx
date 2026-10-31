@@ -1648,10 +1648,10 @@ const CourseDetailsPage = () => {
                     >
                       {/* Module number */}
                       <span
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-all duration-300 ${
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-all duration-500 ease-out ${
                           expanded
-                            ? "border-violet-400/30 bg-gradient-to-br from-violet-500/20 to-violet-500/[0.06] text-white"
-                            : "border-violet-400/12 bg-violet-500/[0.06] text-violet-200"
+                            ? "border-violet-400/30 bg-gradient-to-br from-violet-500/25 via-violet-500/15 to-indigo-500/15 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                            : "border-violet-400/20 bg-gradient-to-br from-violet-500/15 via-violet-500/[0.10] to-indigo-500/[0.08] text-violet-200"
                         }`}
                       >
                         {String(index + 1).padStart(2, "0")}
