@@ -1154,20 +1154,7 @@ const CourseDetailsPage = () => {
 
       {/* ── Hero — modern, premium refresh ─────────────────────────── */}
 
-      <section
-        onMouseMove={(event) => {
-          const rect = event.currentTarget.getBoundingClientRect();
-          event.currentTarget.style.setProperty(
-            "--mx",
-            `${event.clientX - rect.left}px`,
-          );
-          event.currentTarget.style.setProperty(
-            "--my",
-            `${event.clientY - rect.top}px`,
-          );
-        }}
-        className="lp-hero-ease group/hero relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]"
-      >
+      <section className="lp-hero-ease group group/hero relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
         {/* Ambient radial base */}
         <div
           aria-hidden="true"
@@ -1191,10 +1178,10 @@ const CourseDetailsPage = () => {
           className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
         />
 
-        {/* Cursor-follow spotlight */}
-        <div
+        {/* Violet glass shimmer — uses the same hover timing as the other cards. */}
+        <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover/hero:opacity-100 [background:radial-gradient(500px_circle_at_var(--mx,50%)_var(--my,50%),rgba(139,92,246,0.10),transparent_60%)]"
+          className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.07] to-transparent"
         />
 
         <div className="relative z-10 grid lg:grid-cols-[0.92fr_1.08fr]">
@@ -1219,12 +1206,9 @@ const CourseDetailsPage = () => {
             </div>
 
             {/* Course title */}
-            <h1 className="max-w-2xl font-serif text-[29px] font-semibold leading-[1.15] tracking-[-0.035em] sm:text-[36px] lg:text-[40px]">
-              <span className="bg-gradient-to-br from-white via-[#EDE7FF] to-[#9F85FF] bg-clip-text text-transparent [text-wrap:balance]">
-                {course.title}
-              </span>
+            <h1 className="max-w-2xl font-['Manrope'] text-2xl font-medium leading-[1.25] tracking-[-0.04em] text-white sm:text-3xl lg:text-[34px]">
+              {course.title}
             </h1>
-
             {/* Course subtitle */}
             <p className="mt-5 max-w-xl text-[13px] font-medium leading-[1.85] tracking-[-0.012em] text-white/65 sm:text-[14px] sm:leading-[1.8]">
               {course.subtitle}
@@ -1307,7 +1291,7 @@ const CourseDetailsPage = () => {
             </div>
           </div>
 
-          {/* Image — now on the LEFT (order-1) */}
+          {/* Image — clean image with preview button */}
           <div className="relative isolate order-1 min-h-[220px] overflow-hidden bg-[#100821] sm:min-h-[270px] lg:order-1 lg:min-h-[360px]">
             <img
               src={course.image}
@@ -1321,49 +1305,24 @@ const CourseDetailsPage = () => {
               }`}
             />
 
-            {/* Dark veil that lifts on hover — reveals the image smoothly */}
-            <div
-              aria-hidden="true"
-              className="lp-hero-veil pointer-events-none absolute inset-0 bg-[#100821]/25"
-            />
-
-            {/* Cinematic blend into panel */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#100821] via-[#100821]/25 to-transparent lg:bg-gradient-to-l lg:from-[#100821] lg:via-[#100821]/25 lg:to-transparent"
-            />
-
-            {/* Subtle color wash */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-violet-900/30 via-transparent to-sky-900/20 mix-blend-soft-light"
-            />
-
-            {/* Play / preview — ultra-transparent glass control */}
+            {/* Preview button — no violet overlay */}
             <button
               type="button"
               onClick={scrollToCurriculum}
               aria-label="Preview this course"
               className="group/play absolute inset-0 flex cursor-pointer items-center justify-center"
             >
-              {/* Breathing outer rings — layered, see-through */}
               <span
                 aria-hidden="true"
                 className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
               />
+
               <span
                 aria-hidden="true"
                 className="lp-play-ring absolute h-[128px] w-[128px] rounded-full border border-white/10 [animation-delay:-1.5s]"
               />
 
-              {/* Fully transparent disc — the image stays visible underneath;
-                  springy, symmetric scale on hover and release */}
-              <span className="lp-hero-disc relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] group-hover/play:border-white/80 group-hover/play:bg-white/5 group-hover/play:shadow-[0_14px_52px_-6px_rgba(124,58,237,0.6)]">
-                {/* Faint glow that fades in on hover (kept see-through) */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-violet-400/20 via-transparent to-sky-400/10 opacity-0 transition-opacity duration-700 ease-out group-hover/play:opacity-100"
-                />
+              <span className="lp-hero-disc relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-colors duration-700 ease-out group-hover/play:border-white/80 group-hover/play:bg-white/5">
                 <Play
                   className="relative h-7 w-7 translate-x-[2px] fill-white text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out group-hover/play:scale-105"
                   strokeWidth={0}
@@ -1371,6 +1330,7 @@ const CourseDetailsPage = () => {
               </span>
             </button>
           </div>
+
           {/* Seam cover — removes the 1px sub-pixel hairline that shows
               between the image and the text panel on first paint (large
               screens only). Both sides are ~#0B0817 right at the boundary,
@@ -1592,52 +1552,36 @@ const CourseDetailsPage = () => {
                 return (
                   <div
                     key={module.title}
-                    className={`group relative isolate overflow-hidden rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] transition-all duration-500 ease-out ${
+                    className={`group relative isolate overflow-hidden rounded-3xl border bg-gradient-to-b from-[#130E24] to-[#0B0814] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-[border-color,box-shadow] duration-500 ease-out ${
                       expanded
-                        ? "border-violet-300/25 bg-[#100B1D] shadow-[0_16px_44px_-28px_rgba(124,58,237,0.30)]"
-                        : "border-violet-300/15 bg-[#0D0917] hover:border-violet-300/25"
+                        ? "border-violet-400/25 shadow-[0_8px_28px_-24px_rgba(124,58,237,0.20)]"
+                        : "border-violet-400/15 hover:border-violet-400/25"
                     }`}
                   >
-                    {/* Soft ambient sunlight from the upper-right corner.
-              Radial gradient removes the rectangular-box appearance. */}
+                    {/* Subtle upper-right ambient glow.
+            Keep it consistent whether expanded or collapsed. */}
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none absolute -right-24 -top-28 z-0 h-72 w-72 rounded-full blur-[85px] transition-opacity duration-500 ${
-                        expanded
-                          ? "bg-violet-400/[0.13] opacity-100"
-                          : "bg-violet-500/[0.09] opacity-75 group-hover:opacity-100"
-                      }`}
-                      style={{
-                        backgroundImage:
-                          "radial-gradient(circle, rgba(167,139,250,0.22) 0%, rgba(139,92,246,0.10) 35%, rgba(124,58,237,0.035) 58%, transparent 75%)",
-                      }}
-                    />
-
-                    {/* Gentle light spreading inward from the right.
-              This is a full-width fade rather than a rectangular highlight. */}
-                    <span
-                      aria-hidden="true"
-                      className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-500 ${
-                        expanded
-                          ? "opacity-100"
-                          : "opacity-60 group-hover:opacity-90"
-                      }`}
+                      className="pointer-events-none absolute -right-24 -top-28 z-0 h-72 w-72 rounded-full opacity-60 transition-opacity duration-500 group-hover:opacity-80"
                       style={{
                         background:
-                          "radial-gradient(ellipse 65% 90% at 100% 0%, rgba(139,92,246,0.075) 0%, rgba(124,58,237,0.035) 35%, transparent 75%)",
+                          "radial-gradient(circle, rgba(167,139,250,0.10) 0%, rgba(139,92,246,0.045) 38%, transparent 72%)",
+                        filter: "blur(75px)",
                       }}
                     />
 
-                    {/* Hover shimmer — remains inactive until hover */}
-                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
-
-                    {/* Left accent bar — visible when expanded */}
+                    {/* Very subtle surface lighting shared across both states. */}
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-[3px] bg-gradient-to-b from-violet-400/80 to-indigo-500/70 transition-opacity duration-300 ${
-                        expanded ? "opacity-100" : "opacity-0"
-                      }`}
+                      className="pointer-events-none absolute inset-0 z-0 opacity-50"
+                      style={{
+                        background:
+                          "radial-gradient(ellipse 65% 75% at 100% 0%, rgba(139,92,246,0.035) 0%, transparent 75%)",
+                      }}
                     />
+
+                    {/* Existing hover shimmer */}
+                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
 
                     {/* Module header */}
                     <button
@@ -1648,10 +1592,10 @@ const CourseDetailsPage = () => {
                     >
                       {/* Module number */}
                       <span
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-all duration-500 ease-out ${
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-colors duration-300 ${
                           expanded
-                            ? "border-violet-400/30 bg-gradient-to-br from-violet-500/25 via-violet-500/15 to-indigo-500/15 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                            : "border-violet-400/20 bg-gradient-to-br from-violet-500/15 via-violet-500/[0.10] to-indigo-500/[0.08] text-violet-200"
+                            ? "border-violet-400/25 bg-violet-500/[0.12] text-violet-100"
+                            : "border-violet-400/20 bg-violet-500/[0.08] text-violet-200"
                         }`}
                       >
                         {String(index + 1).padStart(2, "0")}
@@ -1690,14 +1634,14 @@ const CourseDetailsPage = () => {
 
                       {/* Expand / collapse icon */}
                       <span
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-colors duration-300 ${
                           expanded
-                            ? "border-violet-400/25 bg-violet-500/[0.08] text-violet-300"
+                            ? "border-violet-400/20 bg-violet-500/[0.07] text-violet-200"
                             : "border-white/[0.08] text-white/40"
                         }`}
                       >
                         <ChevronDown
-                          className={`h-4 w-4 transition-transform ${
+                          className={`h-4 w-4 transition-transform duration-300 ${
                             expanded ? "rotate-180" : ""
                           }`}
                         />
@@ -1706,67 +1650,69 @@ const CourseDetailsPage = () => {
 
                     {/* Expandable module content */}
                     <div
-                      className={`relative z-20 grid transition-all duration-300 ease-out ${
+                      className={`relative z-20 grid transition-[grid-template-rows,opacity] duration-500 ease-in-out ${
                         expanded
                           ? "grid-rows-[1fr] opacity-100"
                           : "grid-rows-[0fr] opacity-0"
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="space-y-1 border-t border-white/[0.06] px-3 py-2.5 sm:px-4">
-                          {module.lessons.map((lesson, lessonIndex) => {
-                            const type = lesson.type ?? "lesson";
-                            const meta = ITEM_META[type];
-                            const ItemIcon = meta.icon;
+                        <div className="mx-4 border-t border-white/[0.06] sm:mx-5">
+                          <div className="space-y-1 py-2.5">
+                            {module.lessons.map((lesson, lessonIndex) => {
+                              const type = lesson.type ?? "lesson";
+                              const meta = ITEM_META[type];
+                              const ItemIcon = meta.icon;
 
-                            if (type === "lesson") lessonNumber += 1;
+                              if (type === "lesson") lessonNumber += 1;
 
-                            const number =
-                              type === "lesson" ? lessonNumber : null;
+                              const number =
+                                type === "lesson" ? lessonNumber : null;
 
-                            return (
-                              <div
-                                key={`${lesson.title}-${lessonIndex}`}
-                                className="group/lesson flex items-center gap-3 rounded-2xl border border-transparent px-2.5 py-2.5 transition-all duration-300 ease-out hover:border-white/[0.08] hover:bg-white/[0.035] sm:px-3"
-                              >
-                                {/* Lesson, quiz, or assignment icon */}
-                                <span
-                                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${meta.bubble} ${meta.bubbleHover}`}
+                              return (
+                                <div
+                                  key={`${lesson.title}-${lessonIndex}`}
+                                  className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition-colors duration-300 hover:border-white/[0.06] hover:bg-white/[0.025] sm:px-3"
                                 >
-                                  <ItemIcon className="h-4 w-4" />
-                                </span>
-
-                                {/* Item title */}
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[13px] font-medium leading-5 text-white/80">
-                                    {number ? `${number}. ` : ""}
-                                    {lesson.title}
-                                  </p>
-                                </div>
-
-                                {/* Quiz / assignment badge */}
-                                {type !== "lesson" && (
+                                  {/* Lesson, quiz, or assignment icon */}
                                   <span
-                                    className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${
-                                      type === "quiz"
-                                        ? "border-amber-400/25 bg-gradient-to-r from-amber-400/15 via-yellow-300/10 to-amber-500/15 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.08)]"
-                                        : meta.badge
-                                    }`}
+                                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${meta.bubble} ${meta.bubbleHover}`}
                                   >
-                                    {meta.label}
+                                    <ItemIcon className="h-4 w-4" />
                                   </span>
-                                )}
 
-                                {/* Duration */}
-                                <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
-                                  {type === "lesson" && (
-                                    <Clock3 className="h-3 w-3 text-white/30" />
+                                  {/* Item title */}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-[13px] font-medium leading-5 text-white/80">
+                                      {number ? `${number}. ` : ""}
+                                      {lesson.title}
+                                    </p>
+                                  </div>
+
+                                  {/* Quiz / assignment badge */}
+                                  {type !== "lesson" && (
+                                    <span
+                                      className={`hidden shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${
+                                        type === "quiz"
+                                          ? "border-amber-400/20 bg-amber-500/[0.07] text-amber-200"
+                                          : meta.badge
+                                      }`}
+                                    >
+                                      {meta.label}
+                                    </span>
                                   )}
-                                  {lesson.duration}
-                                </span>
-                              </div>
-                            );
-                          })}
+
+                                  {/* Duration */}
+                                  <span className="inline-flex shrink-0 items-center gap-1 text-[11px] tabular-nums text-white/40">
+                                    {type === "lesson" && (
+                                      <Clock3 className="h-3 w-3 text-white/30" />
+                                    )}
+                                    {lesson.duration}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2031,70 +1977,38 @@ const CourseDetailsPage = () => {
             panel, a compact "Course details" block (published / updated
             dates and more), and the CTA.
             ────────────────────────────────────────────────────────── */}
-
+        
         <aside className="xl:sticky xl:top-6 xl:self-start xl:mt-5">
-          <div
-            onMouseMove={(event) => {
-              const rect = event.currentTarget.getBoundingClientRect();
-
-              event.currentTarget.style.setProperty(
-                "--mx",
-                `${event.clientX - rect.left}px`,
-              );
-
-              event.currentTarget.style.setProperty(
-                "--my",
-                `${event.clientY - rect.top}px`,
-              );
-            }}
-            className="group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/[0.14] bg-[#090611] font-['Manrope'] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-violet-400/25 hover:shadow-[0_30px_90px_-35px_rgba(76,29,149,0.22)]"
-          >
-            {/* Deep violet background */}
+          <div className="group group/sidebar relative isolate overflow-hidden rounded-[28px] border border-white/[0.09] bg-[#0D0718] font-['Inter'] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-white/[0.14] hover:shadow-[0_30px_90px_-35px_rgba(0,0,0,0.85)]">
+            {/* Clean dark background */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(120%_100%_at_0%_0%,#1A1030_0%,#10091D_42%,#090611_100%)]"
+              className="pointer-events-none absolute inset-0 z-0 bg-[#0D0718]"
             />
 
             {/* Subtle grid texture */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 opacity-[0.035] [background-image:linear-gradient(to_right,#C4B5FD_1px,transparent_1px),linear-gradient(to_bottom,#C4B5FD_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+              className="pointer-events-none absolute inset-0 z-0 opacity-[0.018] [background-image:linear-gradient(to_right,#FFFFFF_1px,transparent_1px),linear-gradient(to_bottom,#FFFFFF_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
             />
 
-            {/* Upper violet ambient light */}
+            {/* Neutral top highlight */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 z-0 h-72 w-72 rounded-full bg-violet-700/[0.16] blur-[110px]"
+              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
             />
 
-            {/* Lower purple ambient light */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-28 -left-20 z-0 h-72 w-72 rounded-full bg-purple-600/[0.10] blur-[110px]"
-            />
-
-            {/* Cursor-follow violet spotlight */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover/sidebar:opacity-100 [background:radial-gradient(380px_circle_at_var(--mx,50%)_var(--my,50%),rgba(139,92,246,0.09),transparent_70%)]"
-            />
-
-            {/* Fine top accent */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent"
-            />
-
-            {/* Hover sheen */}
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.035] to-transparent" />
+            {/* Soft neutral shimmer */}
+            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-white/[0.025] to-transparent" />
 
             {/* Sidebar content */}
             <div className="relative z-10 p-5">
               {/* Course title + plan */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="line-clamp-2 min-w-0 pt-2 font-['Manrope'] text-[19px] font-extrabold leading-[1.4] tracking-[-0.045em] text-white">
+                <h3 className="line-clamp-2 min-w-0 pt-2 font-['Inter'] text-[18px] font-medium leading-[1.45] tracking-[-0.025em] text-white sm:text-[19px]">
                   {course.title}
                 </h3>
+
                 <div className="shrink-0 pt-1">
                   <PlanBadge plan={course.plan} />
                 </div>
@@ -2102,7 +2016,7 @@ const CourseDetailsPage = () => {
 
               {/* Course includes */}
               <div className="mt-5">
-                <h4 className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-violet-300/80">
+                <h4 className="font-['Inter'] text-[11px] font-medium uppercase tracking-[0.08em] text-white/50">
                   This course includes
                 </h4>
 
@@ -2110,9 +2024,9 @@ const CourseDetailsPage = () => {
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-2.5 text-[12.5px] font-medium leading-5 tracking-[-0.012em] text-white/65 transition-colors duration-300 hover:text-white/90"
+                      className="flex items-center gap-2.5 font-['Inter'] text-[12.5px] font-normal leading-[1.7] tracking-normal text-white/65 transition-colors duration-300 hover:text-white/90"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-400/[0.12] bg-violet-500/[0.07] text-violet-300/90 transition-colors duration-300 hover:border-violet-400/25 hover:bg-violet-500/[0.12]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.035] text-white/70 transition-colors duration-300 hover:border-white/[0.14] hover:bg-white/[0.06]">
                         <Icon className="h-3.5 w-3.5" />
                       </span>
 
@@ -2128,13 +2042,13 @@ const CourseDetailsPage = () => {
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="min-w-0 rounded-xl border border-violet-300/[0.08] bg-white/[0.025] px-3 py-2.5 transition-colors duration-300 hover:border-violet-400/[0.18] hover:bg-violet-500/[0.045]"
+                      className="min-w-0 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 transition-colors duration-300 hover:border-white/[0.12] hover:bg-white/[0.035]"
                     >
-                      <dt className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/40">
+                      <dt className="font-['Inter'] text-[10px] font-medium uppercase tracking-[0.06em] text-white/40">
                         {label}
                       </dt>
 
-                      <dd className="mt-1 break-words text-[12px] font-bold leading-[1.6] tracking-[-0.02em] text-white/85">
+                      <dd className="mt-1 break-words font-['Inter'] text-[12px] font-medium leading-[1.65] tracking-normal text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -2147,7 +2061,7 @@ const CourseDetailsPage = () => {
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-[13px] font-bold tracking-[-0.015em] text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.65)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#090611]"
+                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 font-['Inter'] text-[13px] font-medium tracking-normal text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.5)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#0D0718]"
                 >
                   <span
                     aria-hidden="true"
@@ -2171,6 +2085,7 @@ const CourseDetailsPage = () => {
             </div>
           </div>
         </aside>
+        
       </div>
       {/* Related courses — presented like the Explore Courses listing */}
       <section className="space-y-6 pt-2">
