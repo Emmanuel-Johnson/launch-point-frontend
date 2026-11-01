@@ -1977,35 +1977,44 @@ const CourseDetailsPage = () => {
             panel, a compact "Course details" block (published / updated
             dates and more), and the CTA.
             ────────────────────────────────────────────────────────── */}
-        
+
         <aside className="xl:sticky xl:top-6 xl:self-start xl:mt-5">
-          <div className="group group/sidebar relative isolate overflow-hidden rounded-[28px] border border-white/[0.09] bg-[#0D0718] font-['Inter'] shadow-[0_25px_80px_-35px_rgba(0,0,0,0.95)] transition-[border-color,box-shadow] duration-700 ease-out hover:border-white/[0.14] hover:shadow-[0_30px_90px_-35px_rgba(0,0,0,0.85)]">
-            {/* Clean dark background */}
+          <div className="lp-hero-ease group group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] font-['Inter'] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
+            {/* Dark violet base — glow originates from top right */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 bg-[#0D0718]"
+              className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(100%_90%_at_100%_0%,#281044_0%,#160B27_35%,#100821_68%,#0C0719_100%)]"
             />
 
-            {/* Subtle grid texture */}
+            {/* Main violet glow — top right */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 opacity-[0.018] [background-image:linear-gradient(to_right,#FFFFFF_1px,transparent_1px),linear-gradient(to_bottom,#FFFFFF_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+              className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -right-16 -top-20 z-0 h-64 w-64 rounded-full bg-violet-600/25 blur-[110px]"
             />
 
-            {/* Neutral top highlight */}
+            {/* Very subtle secondary glow */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+              className="pointer-events-none absolute -bottom-24 left-1/4 z-0 h-40 w-40 rounded-full bg-sky-500/[0.06] blur-[100px]"
             />
 
-            {/* Soft neutral shimmer */}
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-white/[0.025] to-transparent" />
+            {/* Subtle top highlight */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-violet-200/20 to-transparent"
+            />
+
+            {/* Violet glass shimmer */}
+            <span
+              aria-hidden="true"
+              className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.06] to-transparent"
+            />
 
             {/* Sidebar content */}
             <div className="relative z-10 p-5">
               {/* Course title + plan */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="line-clamp-2 min-w-0 pt-2 font-['Inter'] text-[18px] font-medium leading-[1.45] tracking-[-0.025em] text-white sm:text-[19px]">
+                <h3 className="line-clamp-2 min-w-0 pt-1 font-['Manrope'] text-[18px] font-medium leading-[1.4] tracking-[-0.035em] text-white sm:text-[19px]">
                   {course.title}
                 </h3>
 
@@ -2015,18 +2024,18 @@ const CourseDetailsPage = () => {
               </div>
 
               {/* Course includes */}
-              <div className="mt-5">
-                <h4 className="font-['Inter'] text-[11px] font-medium uppercase tracking-[0.08em] text-white/50">
+              <div className="mt-4">
+                <h4 className="font-['Inter'] text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-200/60">
                   This course includes
                 </h4>
 
-                <ul className="mt-3 space-y-2">
+                <ul className="mt-3 space-y-1.5">
                   {courseIncludes.map(({ icon: Icon, label }) => (
                     <li
                       key={label}
-                      className="flex items-center gap-2.5 font-['Inter'] text-[12.5px] font-normal leading-[1.7] tracking-normal text-white/65 transition-colors duration-300 hover:text-white/90"
+                      className="flex items-center gap-2.5 font-['Inter'] text-[12px] font-normal leading-[1.6] text-white/65 transition-colors duration-300 hover:text-white/90"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.035] text-white/70 transition-colors duration-300 hover:border-white/[0.14] hover:bg-white/[0.06]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-300/[0.12] bg-violet-400/[0.045] text-violet-200/80 transition-colors duration-300 hover:border-violet-300/25 hover:bg-violet-400/[0.09]">
                         <Icon className="h-3.5 w-3.5" />
                       </span>
 
@@ -2037,18 +2046,18 @@ const CourseDetailsPage = () => {
               </div>
 
               {/* Course details */}
-              <div className="mt-5 border-t border-white/[0.07] pt-5">
-                <dl className="grid grid-cols-2 gap-2.5">
+              <div className="mt-4 border-t border-white/[0.08] pt-4">
+                <dl className="grid grid-cols-2 gap-2">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="min-w-0 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 transition-colors duration-300 hover:border-white/[0.12] hover:bg-white/[0.035]"
+                      className="min-w-0 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 transition-colors duration-300 hover:border-violet-300/[0.16] hover:bg-violet-400/[0.035]"
                     >
-                      <dt className="font-['Inter'] text-[10px] font-medium uppercase tracking-[0.06em] text-white/40">
+                      <dt className="font-['Inter'] text-[9px] font-medium uppercase tracking-[0.07em] text-white/40">
                         {label}
                       </dt>
 
-                      <dd className="mt-1 break-words font-['Inter'] text-[12px] font-medium leading-[1.65] tracking-normal text-white/85">
+                      <dd className="mt-1 break-words font-['Inter'] text-[12px] font-medium leading-[1.5] text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -2057,12 +2066,13 @@ const CourseDetailsPage = () => {
               </div>
 
               {/* Primary action */}
-              <div className="mt-5 border-t border-white/[0.07] pt-5">
+              <div className="mt-4 border-t border-white/[0.08] pt-4">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button relative inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-400/20 bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D4AFF] px-5 py-3 font-['Inter'] text-[13px] font-medium tracking-normal text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.5)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#0D0718]"
+                  className="group/button relative inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-300/20 bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 font-['Inter'] text-[13px] font-semibold text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.5)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#100821]"
                 >
+                  {/* Button shimmer */}
                   <span
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent transition-transform duration-700 group-hover/button:translate-x-[120%]"
@@ -2085,7 +2095,6 @@ const CourseDetailsPage = () => {
             </div>
           </div>
         </aside>
-        
       </div>
       {/* Related courses — presented like the Explore Courses listing */}
       <section className="space-y-6 pt-2">
