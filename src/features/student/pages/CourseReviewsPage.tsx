@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Star, ThumbsUp } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Star,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 type Review = {
   id: number;
@@ -11,6 +17,7 @@ type Review = {
   text: string;
   verified: boolean;
   helpful: number;
+  dislikes?: number;
 };
 
 type CourseSummary = {
@@ -131,6 +138,7 @@ const CourseReviewsPage = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const [helpfulReviews, setHelpfulReviews] = useState<number[]>([]);
+  const [dislikedReviews, setDislikedReviews] = useState<number[]>([]);
 
   const course = courseSummaries[courseId ?? "1"] ?? courseSummaries["1"];
   const averageRating = course.rating;
@@ -153,11 +161,33 @@ const CourseReviewsPage = () => {
     reviews.length > 0 ? (ratingCounts[rating] / reviews.length) * 100 : 0;
 
   const handleHelpful = (reviewId: number) => {
+    const isCurrentlyHelpful = helpfulReviews.includes(reviewId);
+
+    // A review cannot be marked Helpful and Disliked at the same time.
     setHelpfulReviews((current) =>
-      current.includes(reviewId)
+      isCurrentlyHelpful
         ? current.filter((id) => id !== reviewId)
         : [...current, reviewId],
     );
+
+    if (!isCurrentlyHelpful) {
+      setDislikedReviews((current) => current.filter((id) => id !== reviewId));
+    }
+  };
+
+  const handleDislike = (reviewId: number) => {
+    const isCurrentlyDisliked = dislikedReviews.includes(reviewId);
+
+    // A review cannot be marked Disliked and Helpful at the same time.
+    setDislikedReviews((current) =>
+      isCurrentlyDisliked
+        ? current.filter((id) => id !== reviewId)
+        : [...current, reviewId],
+    );
+
+    if (!isCurrentlyDisliked) {
+      setHelpfulReviews((current) => current.filter((id) => id !== reviewId));
+    }
   };
 
   return (
@@ -172,16 +202,16 @@ const CourseReviewsPage = () => {
           transform-origin: center center;
 
           transition:
-            transform 1200ms cubic-bezier(0.22, 1, 0.36, 1),
-            border-color 1000ms ease,
-            box-shadow 1200ms ease,
-            background-color 1000ms ease;
+            transform 1600ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 1200ms ease,
+            box-shadow 1600ms ease,
+            background-color 1200ms ease;
 
           will-change: transform;
         }
 
         .reviews-card:hover {
-          transform: translateY(-2px) scale(1.008);
+          transform: translateY(-2px) scale(1.01);
           box-shadow: 0 20px 48px -28px rgba(139, 92, 246, .48);
         }
 
@@ -255,16 +285,23 @@ const CourseReviewsPage = () => {
          * Its animation remains independent of the card animation.
          */
         .reviews-helpful-button {
+          transform: translateY(0) scale(1);
           transition:
-            transform 250ms ease,
-            border-color 250ms ease,
-            background-color 250ms ease,
-            color 250ms ease,
-            box-shadow 250ms ease;
+            transform 1400ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 900ms ease,
+            background-color 900ms ease,
+            color 900ms ease,
+            box-shadow 1100ms ease;
+          will-change: transform;
+        }
+
+        .reviews-helpful-button:hover {
+          transform: translateY(-2px) scale(1.015);
         }
 
         .reviews-helpful-button:active {
-          transform: scale(.97);
+          transform: translateY(0) scale(.985);
+          transition-duration: 250ms;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -434,6 +471,7 @@ const CourseReviewsPage = () => {
           <div className="space-y-5">
             {reviews.map((review) => {
               const isHelpful = helpfulReviews.includes(review.id);
+              const isDisliked = dislikedReviews.includes(review.id);
 
               return (
                 <article
@@ -484,31 +522,77 @@ const CourseReviewsPage = () => {
                         {review.date}
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={() => handleHelpful(review.id)}
-                        aria-pressed={isHelpful}
-                        aria-label={
-                          isHelpful
-                            ? "Remove helpful vote"
-                            : "Mark review as helpful"
-                        }
-                        className={`reviews-helpful-button inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 ${
-                          isHelpful
-                            ? "border-violet-300/30 bg-gradient-to-r from-violet-500/20 to-indigo-500/15 text-violet-100 shadow-[0_0_18px_-8px_rgba(167,139,250,0.7)]"
-                            : "border-white/[0.08] bg-white/[0.025] text-white/50 hover:-translate-y-0.5 hover:border-violet-300/25 hover:bg-gradient-to-r hover:from-violet-500/[0.12] hover:to-indigo-500/[0.08] hover:text-violet-100"
-                        }`}
-                      >
-                        <ThumbsUp
-                          className={`h-3.5 w-3.5 ${
-                            isHelpful ? "fill-current" : ""
+                      <div className="flex items-center gap-2">
+                        {/* Helpful Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleHelpful(review.id)}
+                          aria-pressed={isHelpful}
+                          aria-label={
+                            isHelpful
+                              ? "Remove helpful vote"
+                              : "Mark review as helpful"
+                          }
+                          className={`reviews-helpful-button group inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-[11px] font-semibold tracking-wide outline-none transition-colors duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-violet-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0715] ${
+                            isHelpful
+                              ? "border-violet-400/40 bg-violet-500/15 text-violet-100 shadow-[0_0_12px_-8px_rgba(139,92,246,0.5)]"
+                              : "border-violet-300/15 bg-white/[0.04] text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-violet-100"
                           }`}
-                        />
-                        Helpful
-                        <span className="tabular-nums">
-                          {review.helpful + (isHelpful ? 1 : 0)}
-                        </span>
-                      </button>
+                        >
+                          <ThumbsUp
+                            className={`h-3.5 w-3.5 shrink-0 transition-colors duration-300 ${
+                              isHelpful
+                                ? "fill-violet-300 text-violet-300"
+                                : "text-violet-300/70 group-hover:text-violet-300"
+                            }`}
+                          />
+
+                          <span>Helpful</span>
+
+                          <span
+                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                              isHelpful
+                                ? "bg-violet-400/15 text-violet-100"
+                                : "bg-white/[0.04] text-violet-200/65 group-hover:bg-violet-400/[0.08] group-hover:text-violet-100"
+                            }`}
+                          >
+                            {review.helpful + (isHelpful ? 1 : 0)}
+                          </span>
+                        </button>
+
+                        {/* Dislike Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleDislike(review.id)}
+                          aria-pressed={isDisliked}
+                          aria-label={
+                            isDisliked ? "Remove dislike" : "Dislike review"
+                          }
+                          className={`reviews-helpful-button group inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-[11px] font-semibold tracking-wide outline-none transition-colors duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-violet-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0715] ${
+                            isDisliked
+                              ? "border-violet-400/40 bg-violet-500/15 text-violet-100 shadow-[0_0_12px_-8px_rgba(139,92,246,0.5)]"
+                              : "border-violet-300/15 bg-white/[0.04] text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-violet-100"
+                          }`}
+                        >
+                          <ThumbsDown
+                            className={`h-3.5 w-3.5 shrink-0 transition-colors duration-300 ${
+                              isDisliked
+                                ? "fill-violet-300 text-violet-300"
+                                : "text-violet-300/70 group-hover:text-violet-300"
+                            }`}
+                          />
+
+                          <span
+                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                              isDisliked
+                                ? "bg-violet-400/15 text-violet-100"
+                                : "bg-white/[0.04] text-violet-200/65 group-hover:bg-violet-400/[0.08] group-hover:text-violet-100"
+                            }`}
+                          >
+                            {(review.dislikes ?? 0) + (isDisliked ? 1 : 0)}
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </article>
