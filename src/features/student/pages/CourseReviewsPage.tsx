@@ -236,6 +236,7 @@ const CourseReviewsPage = () => {
       </section>
 
       {/* Left: course rating summary. Right: review listing. No search or filter controls. */}
+
       <section
         aria-label="Course reviews"
         className="grid items-start gap-5 lg:grid-cols-[minmax(270px,0.72fr)_minmax(0,1.5fr)]"
@@ -243,15 +244,17 @@ const CourseReviewsPage = () => {
         <aside className="lg:sticky lg:top-6">
           <div className={`${CARD_BASE} rounded-3xl p-6 sm:p-7`}>
             <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-violet-600/15 blur-[65px]" />
+
             <div className="relative">
               <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-white/50">
                 Course rating
               </p>
 
               <div className="mt-4 text-center">
-                <p className="text-6xl font-semibold tracking-[-0.06em] text-violet-300">
+                <p className="text-6xl font-semibold tracking-[-0.06em] text-white">
                   {averageRating.toFixed(1)}
                 </p>
+
                 <div
                   className="mt-3 flex justify-center gap-1"
                   aria-label={`${averageRating} out of 5 stars`}
@@ -267,14 +270,16 @@ const CourseReviewsPage = () => {
                     />
                   ))}
                 </div>
+
                 <p className="mt-2 text-xs text-white/45">
-                  ({course.reviewCount} ratings)
+                  Based on {course.reviewCount} reviews
                 </p>
               </div>
 
               <div className="mt-7 space-y-3.5">
                 {ratingOptions.map((rating) => {
                   const percentage = getPercentage(rating);
+
                   return (
                     <div
                       key={rating}
@@ -283,13 +288,16 @@ const CourseReviewsPage = () => {
                       <span className="w-3 shrink-0 font-medium text-white/65">
                         {rating}
                       </span>
+
                       <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
+
                       <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-violet-300 transition-[width] duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-300 transition-[width] duration-500"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
+
                       <span className="w-8 shrink-0 text-right tabular-nums text-white/45">
                         {Math.round(percentage)}%
                       </span>
@@ -302,6 +310,7 @@ const CourseReviewsPage = () => {
                 <p className="text-xs font-medium text-white/65">
                   {course.title}
                 </p>
+
                 <p className="mt-1 text-[11px] text-white/35">
                   {course.students} learners · {course.reviewCount} reviews
                 </p>
@@ -321,6 +330,7 @@ const CourseReviewsPage = () => {
                   className={`${CARD_BASE} reviews-card group rounded-3xl p-5 transition-[border-color,transform] duration-500 hover:-translate-y-0.5 hover:border-violet-400/30 sm:p-6`}
                 >
                   <span className="reviews-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/[0.045] to-transparent" />
+
                   <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-violet-600/[0.07] blur-[65px] transition-opacity duration-500 group-hover:bg-violet-500/[0.12]" />
 
                   <div className="relative">
@@ -333,6 +343,7 @@ const CourseReviewsPage = () => {
                         <h3 className="text-sm font-semibold text-white/90 sm:text-base">
                           {review.name}
                         </h3>
+
                         <p className="mt-1 text-xs text-white/40">
                           {review.verified ? "Verified learner" : "Learner"}
                         </p>
@@ -361,8 +372,9 @@ const CourseReviewsPage = () => {
 
                     <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
                       <span className="text-[11px] font-medium tracking-wide text-white/35">
-                        Published {review.date}
+                        {review.date}
                       </span>
+
                       <button
                         type="button"
                         onClick={() => handleHelpful(review.id)}
@@ -379,7 +391,9 @@ const CourseReviewsPage = () => {
                         }`}
                       >
                         <ThumbsUp
-                          className={`h-3.5 w-3.5 ${isHelpful ? "fill-current" : ""}`}
+                          className={`h-3.5 w-3.5 ${
+                            isHelpful ? "fill-current" : ""
+                          }`}
                         />
                         Helpful
                         <span className="tabular-nums">
