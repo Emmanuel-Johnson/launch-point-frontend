@@ -123,7 +123,7 @@ const reviews: Review[] = [
 ];
 
 const CARD_BASE =
-  "relative overflow-hidden rounded-3xl border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814]";
+  "relative isolate overflow-hidden rounded-3xl border border-violet-300/[0.14] bg-[linear-gradient(145deg,rgba(30,20,52,0.96),rgba(15,10,27,0.98)_58%,rgba(11,8,20,0.99))] shadow-[0_12px_35px_-24px_rgba(139,92,246,0.45)]";
 
 const ratingOptions = [5, 4, 3, 2, 1] as const;
 
@@ -164,18 +164,46 @@ const CourseReviewsPage = () => {
     <div className="min-h-full space-y-6 pb-10 text-white">
       <style>{`
         @keyframes reviews-sheen {
-          0% { transform: translateX(-140%) skewX(-12deg); }
-          100% { transform: translateX(260%) skewX(-12deg); }
+          0% { transform: translateX(-150%) skewX(-12deg); opacity: 0; }
+          18% { opacity: 1; }
+          100% { transform: translateX(260%) skewX(-12deg); opacity: 0; }
         }
         .reviews-card-sheen {
           opacity: 0;
-          transform: translateX(-140%) skewX(-12deg);
+          transform: translateX(-150%) skewX(-12deg);
+          will-change: transform, opacity;
         }
         .reviews-card:hover .reviews-card-sheen {
-          animation: reviews-sheen 1.1s ease-out;
+          animation: reviews-sheen 1.15s cubic-bezier(.2,.65,.3,1);
+        }
+        .reviews-card {
+          transition:
+            transform 420ms cubic-bezier(.2,.7,.2,1),
+            border-color 420ms ease,
+            box-shadow 420ms ease,
+            background-color 420ms ease;
+        }
+        .reviews-summary-card {
+          transition:
+            transform 420ms cubic-bezier(.2,.7,.2,1),
+            border-color 420ms ease,
+            box-shadow 420ms ease;
+        }
+        .reviews-card:hover {
+          box-shadow: 0 20px 48px -28px rgba(139, 92, 246, .48);
+        }
+        .reviews-helpful-button:active {
+          transform: scale(.97);
         }
         @media (prefers-reduced-motion: reduce) {
-          .reviews-card-sheen { animation: none !important; }
+          .reviews-card,
+          .reviews-summary-card,
+          .reviews-card-sheen,
+          .reviews-helpful-button {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+          }
         }
       `}</style>
 
@@ -242,7 +270,9 @@ const CourseReviewsPage = () => {
         className="grid items-start gap-5 lg:grid-cols-[minmax(270px,0.72fr)_minmax(0,1.5fr)]"
       >
         <aside className="lg:sticky lg:top-6">
-          <div className={`${CARD_BASE} rounded-3xl p-6 sm:p-7`}>
+          <div
+            className={`${CARD_BASE} reviews-summary-card rounded-3xl p-6 shadow-[0_18px_45px_-30px_rgba(139,92,246,0.5)] transition-all duration-500 hover:-translate-y-1 hover:border-violet-300/25 hover:shadow-[0_24px_55px_-30px_rgba(139,92,246,0.5)] sm:p-7`}
+          >
             <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-violet-600/15 blur-[65px]" />
 
             <div className="relative">
@@ -327,7 +357,7 @@ const CourseReviewsPage = () => {
               return (
                 <article
                   key={review.id}
-                  className={`${CARD_BASE} reviews-card group rounded-3xl p-5 transition-[border-color,transform] duration-500 hover:-translate-y-0.5 hover:border-violet-400/30 sm:p-6`}
+                  className={`${CARD_BASE} reviews-card group rounded-3xl p-5 hover:-translate-y-1 hover:border-violet-300/30 hover:bg-[#171027] focus-within:border-violet-300/30 sm:p-6`}
                 >
                   <span className="reviews-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/[0.045] to-transparent" />
 
@@ -335,7 +365,7 @@ const CourseReviewsPage = () => {
 
                   <div className="relative">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-violet-400/25 bg-gradient-to-br from-violet-500/30 via-violet-500/10 to-indigo-500/[0.08] text-sm font-semibold tracking-wide text-violet-100">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-300/20 bg-gradient-to-br from-violet-400/25 via-violet-500/10 to-indigo-400/[0.12] text-sm font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-500 group-hover:rotate-[-3deg] group-hover:scale-105 group-hover:border-violet-300/35 group-hover:from-violet-400/35">
                         {review.initials}
                       </div>
 
@@ -384,10 +414,10 @@ const CourseReviewsPage = () => {
                             ? "Remove helpful vote"
                             : "Mark review as helpful"
                         }
-                        className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-[11px] font-medium transition-all duration-300 ${
+                        className={`reviews-helpful-button inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 ${
                           isHelpful
-                            ? "border-violet-400/30 bg-violet-500/[0.12] text-violet-200"
-                            : "border-white/[0.07] bg-white/[0.02] text-white/45 hover:border-violet-400/25 hover:bg-violet-500/[0.07] hover:text-violet-200"
+                            ? "border-violet-300/30 bg-gradient-to-r from-violet-500/20 to-indigo-500/15 text-violet-100 shadow-[0_0_18px_-8px_rgba(167,139,250,0.7)]"
+                            : "border-white/[0.08] bg-white/[0.025] text-white/50 hover:-translate-y-0.5 hover:border-violet-300/25 hover:bg-gradient-to-r hover:from-violet-500/[0.12] hover:to-indigo-500/[0.08] hover:text-violet-100"
                         }`}
                       >
                         <ThumbsUp
