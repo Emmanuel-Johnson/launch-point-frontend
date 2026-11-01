@@ -163,46 +163,122 @@ const CourseReviewsPage = () => {
   return (
     <div className="min-h-full space-y-6 pb-10 text-white">
       <style>{`
-        @keyframes reviews-sheen {
-          0% { transform: translateX(-150%) skewX(-12deg); opacity: 0; }
-          18% { opacity: 1; }
-          100% { transform: translateX(260%) skewX(-12deg); opacity: 0; }
-        }
-        .reviews-card-sheen {
-          opacity: 0;
-          transform: translateX(-150%) skewX(-12deg);
-          will-change: transform, opacity;
-        }
-        .reviews-card:hover .reviews-card-sheen {
-          animation: reviews-sheen 1.15s cubic-bezier(.2,.65,.3,1);
-        }
+        /*
+         * Review cards:
+         * Slowly expand on hover and slowly shrink on unhover.
+         */
         .reviews-card {
+          transform: translateY(0) scale(1);
+          transform-origin: center center;
+
           transition:
-            transform 420ms cubic-bezier(.2,.7,.2,1),
-            border-color 420ms ease,
-            box-shadow 420ms ease,
-            background-color 420ms ease;
+            transform 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 1000ms ease,
+            box-shadow 1200ms ease,
+            background-color 1000ms ease;
+
+          will-change: transform;
         }
-        .reviews-summary-card {
-          transition:
-            transform 420ms cubic-bezier(.2,.7,.2,1),
-            border-color 420ms ease,
-            box-shadow 420ms ease;
-        }
+
         .reviews-card:hover {
+          transform: translateY(-2px) scale(1.008);
           box-shadow: 0 20px 48px -28px rgba(139, 92, 246, .48);
         }
+
+        /*
+         * Course rating summary:
+         * Matches the same slow, subtle animation.
+         */
+        .reviews-summary-card {
+          transform: translateY(0) scale(1);
+          transform-origin: center center;
+
+          transition:
+            transform 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 1000ms ease,
+            box-shadow 1200ms ease;
+
+          will-change: transform;
+        }
+
+        .reviews-summary-card:hover {
+          transform: translateY(-2px) scale(1.008);
+          box-shadow: 0 24px 55px -30px rgba(139, 92, 246, 0.5);
+        }
+
+        /*
+         * Shimmer:
+         * Moves diagonally from the top-left to the bottom-right.
+         * Runs once on hover without continuously repeating.
+         */
+        .reviews-summary-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          border-radius: inherit;
+          opacity: 0;
+
+          background: linear-gradient(
+            135deg,
+            transparent 38%,
+            rgba(196, 181, 253, 0.025) 44%,
+            rgba(196, 181, 253, 0.12) 50%,
+            rgba(221, 214, 254, 0.045) 56%,
+            transparent 62%
+          );
+
+          background-size: 250% 250%;
+          background-position: 100% 100%;
+          transition: opacity 180ms ease;
+          animation: none;
+        }
+
+        .reviews-summary-card:hover::before {
+          opacity: 1;
+          animation: rating-card-shimmer 1.5s ease-out 1;
+        }
+
+        @keyframes rating-card-shimmer {
+          from {
+            background-position: 100% 100%;
+          }
+
+          to {
+            background-position: 0% 0%;
+          }
+        }
+
+        /*
+         * Keep the Helpful button responsive.
+         * Its animation remains independent of the card animation.
+         */
+        .reviews-helpful-button {
+          transition:
+            transform 250ms ease,
+            border-color 250ms ease,
+            background-color 250ms ease,
+            color 250ms ease,
+            box-shadow 250ms ease;
+        }
+
         .reviews-helpful-button:active {
           transform: scale(.97);
         }
+
         @media (prefers-reduced-motion: reduce) {
           .reviews-card,
           .reviews-summary-card,
-          .reviews-card-sheen,
           .reviews-helpful-button {
             animation: none !important;
             transition: none !important;
             transform: none !important;
+            will-change: auto !important;
+          }
+
+          .reviews-summary-card::before {
+            animation: none !important;
           }
         }
       `}</style>
@@ -219,6 +295,7 @@ const CourseReviewsPage = () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
           />
+
           <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
         </button>
 
@@ -233,7 +310,9 @@ const CourseReviewsPage = () => {
           >
             Explore Courses
           </button>
+
           <ChevronRight className="h-3.5 w-3.5 shrink-0 text-violet-300/50" />
+
           <button
             type="button"
             onClick={() => navigate(`/student/courses/${courseId ?? "1"}`)}
@@ -241,7 +320,9 @@ const CourseReviewsPage = () => {
           >
             {course.title}
           </button>
+
           <ChevronRight className="h-3.5 w-3.5 shrink-0 text-violet-300/50" />
+
           <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
             Reviews
           </span>
@@ -256,6 +337,7 @@ const CourseReviewsPage = () => {
               Reviews & Ratings
             </span>
           </h1>
+
           <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
             Explore learner feedback and discover what makes this course worth
             learning.
@@ -263,19 +345,18 @@ const CourseReviewsPage = () => {
         </div>
       </section>
 
-      {/* Left: course rating summary. Right: review listing. No search or filter controls. */}
-
+      {/* Left: course rating summary. Right: review listing. */}
       <section
         aria-label="Course reviews"
         className="grid items-start gap-5 lg:grid-cols-[minmax(270px,0.72fr)_minmax(0,1.5fr)]"
       >
         <aside className="lg:sticky lg:top-6">
           <div
-            className={`${CARD_BASE} reviews-summary-card rounded-3xl p-6 shadow-[0_18px_45px_-30px_rgba(139,92,246,0.5)] transition-all duration-500 hover:-translate-y-1 hover:border-violet-300/25 hover:shadow-[0_24px_55px_-30px_rgba(139,92,246,0.5)] sm:p-7`}
+            className={`${CARD_BASE} reviews-summary-card rounded-3xl p-6 shadow-[0_18px_45px_-30px_rgba(139,92,246,0.5)] hover:border-violet-300/25 sm:p-7`}
           >
             <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-violet-600/15 blur-[65px]" />
 
-            <div className="relative">
+            <div className="relative z-10">
               <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-white/50">
                 Course rating
               </p>
@@ -357,15 +438,13 @@ const CourseReviewsPage = () => {
               return (
                 <article
                   key={review.id}
-                  className={`${CARD_BASE} reviews-card group rounded-3xl p-5 hover:-translate-y-1 hover:border-violet-300/30 hover:bg-[#171027] focus-within:border-violet-300/30 sm:p-6`}
+                  className={`${CARD_BASE} reviews-card group rounded-3xl p-5 hover:border-violet-300/30 hover:bg-[#171027] focus-within:border-violet-300/30 sm:p-6`}
                 >
-                  <span className="reviews-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/[0.045] to-transparent" />
-
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-violet-600/[0.07] blur-[65px] transition-opacity duration-500 group-hover:bg-violet-500/[0.12]" />
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-violet-600/[0.07] blur-[65px] transition-colors duration-1000 group-hover:bg-violet-500/[0.12]" />
 
                   <div className="relative">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-300/20 bg-gradient-to-br from-violet-400/25 via-violet-500/10 to-indigo-400/[0.12] text-sm font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-500 group-hover:rotate-[-3deg] group-hover:scale-105 group-hover:border-violet-300/35 group-hover:from-violet-400/35">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-300/20 bg-gradient-to-br from-violet-400/25 via-violet-500/10 to-indigo-400/[0.12] text-sm font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-1000 ease-out group-hover:rotate-[-3deg] group-hover:scale-105 group-hover:border-violet-300/35 group-hover:from-violet-400/35">
                         {review.initials}
                       </div>
 
@@ -414,7 +493,7 @@ const CourseReviewsPage = () => {
                             ? "Remove helpful vote"
                             : "Mark review as helpful"
                         }
-                        className={`reviews-helpful-button inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 ${
+                        className={`reviews-helpful-button inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 ${
                           isHelpful
                             ? "border-violet-300/30 bg-gradient-to-r from-violet-500/20 to-indigo-500/15 text-violet-100 shadow-[0_0_18px_-8px_rgba(167,139,250,0.7)]"
                             : "border-white/[0.08] bg-white/[0.025] text-white/50 hover:-translate-y-0.5 hover:border-violet-300/25 hover:bg-gradient-to-r hover:from-violet-500/[0.12] hover:to-indigo-500/[0.08] hover:text-violet-100"
