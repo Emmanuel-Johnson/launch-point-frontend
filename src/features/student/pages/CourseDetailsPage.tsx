@@ -988,6 +988,60 @@ const CourseDetailsPage = () => {
         .group:hover .lp-card-sheen {
           animation: lp-card-sheen 1.1s ease-out;
         }
+        /* Hero-only diagonal shimmer: travels from the bottom-right to the top-left. */
+        @keyframes lp-hero-shimmer {
+          from {
+            background-position: 100% 100%;
+          }
+          to {
+            background-position: 0% 0%;
+          }
+        }
+        .lp-hero-shimmer {
+          opacity: 0;
+          background-image: linear-gradient(
+            135deg,
+            transparent 44%,
+            rgba(196, 181, 253, 0.025) 47%,
+            rgba(196, 181, 253, 0.12) 50%,
+            rgba(221, 214, 254, 0.045) 53%,
+            transparent 56%
+          );
+          background-size: 250% 250%;
+          background-position: 100% 100%;
+          transition: opacity 180ms ease;
+        }
+        .group\\/hero:hover .lp-hero-shimmer {
+          opacity: 1;
+          animation: lp-hero-shimmer 1.5s ease-out 1;
+        }
+        /* Sidebar-only diagonal shimmer: travels from bottom-right to top-left. */
+        @keyframes lp-sidebar-shimmer {
+          from {
+            background-position: 100% 100%;
+          }
+          to {
+            background-position: 0% 0%;
+          }
+        }
+        .lp-sidebar-shimmer {
+          opacity: 0;
+          background-image: linear-gradient(
+            135deg,
+            transparent 44%,
+            rgba(196, 181, 253, 0.025) 47%,
+            rgba(196, 181, 253, 0.12) 50%,
+            rgba(221, 214, 254, 0.045) 53%,
+            transparent 56%
+          );
+          background-size: 250% 250%;
+          background-position: 100% 100%;
+          transition: opacity 180ms ease;
+        }
+        .group\\/sidebar:hover .lp-sidebar-shimmer {
+          opacity: 1;
+          animation: lp-sidebar-shimmer 1.5s ease-out 1;
+        }
         @keyframes lp-aura {
           0%, 100% { opacity: 0.55; }
           50% { opacity: 1; }
@@ -1082,7 +1136,9 @@ const CourseDetailsPage = () => {
           transform: scale(1.1);
         }
         @media (prefers-reduced-motion: reduce) {
-          .lp-card-sheen { display: none; }
+          .lp-card-sheen,
+          .lp-hero-shimmer,
+          .lp-sidebar-shimmer { display: none; }
           .lp-aura { animation: none !important; }
           .lp-hero-bloom { animation: none !important; }
           .lp-play-ring { animation: none !important; }
@@ -1178,10 +1234,10 @@ const CourseDetailsPage = () => {
           className="lp-hero-bloom lp-hero-glow pointer-events-none absolute -bottom-32 left-1/4 z-0 h-72 w-72 rounded-full bg-sky-500/15 blur-[120px] [animation-delay:-4s]"
         />
 
-        {/* Violet glass shimmer — uses the same hover timing as the other cards. */}
+        {/* Diagonal violet shimmer — travels from the hero's top-left to bottom-right. */}
         <span
           aria-hidden="true"
-          className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.07] to-transparent"
+          className="lp-hero-shimmer pointer-events-none absolute inset-0 z-20"
         />
 
         <div className="relative z-10 grid lg:grid-cols-[0.92fr_1.08fr]">
@@ -2004,10 +2060,10 @@ const CourseDetailsPage = () => {
               className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-violet-200/20 to-transparent"
             />
 
-            {/* Violet glass shimmer */}
+            {/* Diagonal violet shimmer — travels from bottom-right to top-left. */}
             <span
               aria-hidden="true"
-              className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-violet-200/[0.06] to-transparent"
+              className="lp-sidebar-shimmer pointer-events-none absolute inset-0 z-20"
             />
 
             {/* Sidebar content */}
