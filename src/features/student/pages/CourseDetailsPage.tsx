@@ -935,14 +935,8 @@ const CourseDetailsPage = () => {
   ];
 
   const handleLearningAction = () => {
-    // UI-only: connect this action to your actual subscription,
-    // enrollment, and lesson-player routes when integrating the backend.
-    if (isPremium) {
-      navigate("/student/subscriptions");
-      return;
-    }
-
-    navigate("/student/courses");
+    // UI-only flow: open the Course Learning page for this course.
+    navigate(`/student/learning/${course.id}`);
   };
 
   const handleViewInstructor = () => {

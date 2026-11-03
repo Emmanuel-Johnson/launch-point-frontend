@@ -1,496 +1,845 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import type { ComponentType } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
-  BookOpen,
+  ArrowRight,
+  BadgeCheck,
   Check,
   CheckCircle2,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
-  Circle,
   Clock3,
+  Download,
+  FileArchive,
   FileText,
-  ListVideo,
-  Menu,
-  Play,
+  FileQuestion,
+  Lock,
+  MessageCircle,
   PlayCircle,
-  X,
+  RefreshCcw,
+  Send,
+  Sparkles,
+  ThumbsUp,
 } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { courses } from "../data/courses";
 
-type Lesson = {
+/* ──────────────────────────────────────────────────────────────────
+   UNIFIED SURFACE SYSTEM
+   The exact same violet-black card surface, pill surface and hover
+   sheen used on the Courses + Course Details pages, so the learning
+   player reads as one consistent system.
+   ────────────────────────────────────────────────────────────────── */
+
+/* Standard content card — same base gradient + border everywhere */
+const CARD_BASE =
+  "relative overflow-hidden border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814]";
+
+/* Pill / ghost control surface */
+const PILL =
+  "border border-white/[0.08] bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
+
+/* Reusable hover shimmer shared by every card */
+const CardSheen = () => (
+  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+);
+
+/* ──────────────────────────────────────────────────────────────────
+   TYPES + DATA (UI-only mock — wire to your real lesson API later)
+   ────────────────────────────────────────────────────────────────── */
+
+type LessonStatus = "completed" | "current" | "locked" | "available";
+type LessonKind = "lesson" | "quiz";
+
+type PathLesson = {
   id: string;
   title: string;
-  moduleTitle: string;
-  moduleIndex: number;
-  lessonIndex: number;
+  kind: LessonKind;
+  status: LessonStatus;
+  badge?: string;
 };
 
+type PathModule = {
+  id: string;
+  title: string;
+  locked?: boolean;
+  lessons: PathLesson[];
+};
+
+type Resource = {
+  name: string;
+  size: string;
+  type: "zip" | "pdf";
+};
+
+type Comment = {
+  id: number;
+  name: string;
+  avatar: string;
+  time: string;
+  text: string;
+  likes: number;
+  liked?: boolean;
+  instructor?: boolean;
+  replies?: Comment[];
+};
+
+const lesson = {
+  title: "Module 2: Master Design Tokens — Naming Conventions & Logic",
+  duration: "24 Minutes",
+  level: "Advanced Level",
+  updated: "Updated Jan 2024",
+  poster:
+    "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=1600&h=900&fit=crop",
+  description:
+    "In this lesson, we dive deep into the semantic structure of design tokens. You will learn how to bridge the gap between design and development by establishing a logic-based naming system that scales. We cover color primitives, semantic aliases, and component-specific tokens with real-world examples from industry-leading design systems.",
+};
+
+const resources: Resource[] = [
+  { name: "Course Assets.zip", size: "45.2 MB", type: "zip" },
+  { name: "Design-System-Cheat-Sheet.pdf", size: "2.1 MB", type: "pdf" },
+];
+
+const learningPath: PathModule[] = [
+  {
+    id: "m1",
+    title: "Module 1: Python Fundamentals",
+    lessons: [
+      {
+        id: "l1",
+        title: "Introduction to Hooks",
+        kind: "lesson",
+        status: "completed",
+      },
+      {
+        id: "l2",
+        title: "Variables & Data Types",
+        kind: "lesson",
+        status: "completed",
+      },
+      {
+        id: "l3",
+        title: "Control Flow Basics",
+        kind: "lesson",
+        status: "completed",
+      },
+      {
+        id: "l4",
+        title: "Python Fundamentals Quiz",
+        kind: "quiz",
+        status: "available",
+      },
+    ],
+  },
+  {
+    id: "m2",
+    title: "Module 2: React Masterclass",
+    lessons: [
+      {
+        id: "l5",
+        title: "Introduction to Hooks",
+        kind: "lesson",
+        status: "completed",
+      },
+      {
+        id: "l6",
+        title: "Custom Hooks in depth",
+        kind: "lesson",
+        status: "completed",
+      },
+      {
+        id: "l7",
+        title: "Advanced React Patterns",
+        kind: "lesson",
+        status: "current",
+        badge: "NOW",
+      },
+      {
+        id: "l8",
+        title: "Performance Optimization",
+        kind: "lesson",
+        status: "available",
+      },
+      {
+        id: "l9",
+        title: "Context API & Portals",
+        kind: "lesson",
+        status: "available",
+      },
+      {
+        id: "l10",
+        title: "React Masterclass Quiz",
+        kind: "quiz",
+        status: "available",
+      },
+    ],
+  },
+  { id: "m3", title: "Module 3: Django for Pros", locked: true, lessons: [] },
+  { id: "m4", title: "Module 4: Django Advanced", locked: true, lessons: [] },
+];
+
+const initialComments: Comment[] = [
+  {
+    id: 1,
+    name: "Marcus Chen",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+    time: "2 hours ago",
+    text: "Could someone clarify when we should prefer HOCs over Hooks for cross-cutting concerns?",
+    likes: 14,
+    replies: [
+      {
+        id: 2,
+        name: "Sarah Drasner",
+        avatar:
+          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+        time: "1 hour ago",
+        text: "Hooks are generally preferred now. HOCs remain powerful for wrapping components with dynamic behaviors without modifying original code.",
+        likes: 28,
+        instructor: true,
+      },
+    ],
+  },
+];
+
+const RESOURCE_META: Record<
+  Resource["type"],
+  { icon: ComponentType<{ className?: string }>; wrap: string; tint: string }
+> = {
+  zip: {
+    icon: FileArchive,
+    wrap: "border-violet-400/20 bg-violet-500/10",
+    tint: "text-violet-300",
+  },
+  pdf: {
+    icon: FileText,
+    wrap: "border-rose-400/20 bg-rose-500/10",
+    tint: "text-rose-300",
+  },
+};
+
+/* Small avatar + name + time header used in the discussion */
+const CommentHeader = ({
+  avatar,
+  name,
+  time,
+  instructor,
+  size = "md",
+}: {
+  avatar: string;
+  name: string;
+  time?: string;
+  instructor?: boolean;
+  size?: "sm" | "md";
+}) => (
+  <div className="flex items-center gap-3">
+    <img
+      src={avatar}
+      alt={name}
+      loading="lazy"
+      className={`shrink-0 rounded-full border border-white/10 object-cover ${
+        size === "sm" ? "h-8 w-8" : "h-10 w-10"
+      }`}
+    />
+    <div className="min-w-0">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="truncate text-sm font-semibold text-white">{name}</p>
+        {instructor && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-violet-400/25 bg-violet-500/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-200">
+            <BadgeCheck className="h-3 w-3" />
+            Instructor
+          </span>
+        )}
+        {time && <span className="text-[11px] text-white/35">{time}</span>}
+      </div>
+    </div>
+  </div>
+);
+
 export default function CourseLearningPage() {
-  const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
+  const { courseId, lessonId } = useParams<{
+    courseId: string;
+    lessonId: string;
+  }>();
 
-  const course = courses.find((item) => item.id === Number(courseId));
+  const [completed, setCompleted] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [comments, setComments] = useState<Comment[]>(initialComments);
+  const [expanded, setExpanded] = useState<string[]>(["m2"]);
+  const commentRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const lessons = useMemo<Lesson[]>(() => {
-    if (!course) return [];
+  const totalLessons = 10;
+  const completedLessons = 3;
+  const progress = Math.round((completedLessons / totalLessons) * 100);
 
-    return (course.curriculum ?? []).flatMap((module, moduleIndex) =>
-      module.lessons.map((title, lessonIndex) => ({
-        id: `${moduleIndex}-${lessonIndex}`,
-        title,
-        moduleTitle: module.title,
-        moduleIndex,
-        lessonIndex,
-      })),
-    );
-  }, [course]);
-
-  const [activeLessonId, setActiveLessonId] = useState("0-0");
-  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const activeIndex = lessons.findIndex(
-    (lesson) => lesson.id === activeLessonId,
+  const totalDoubts = useMemo(
+    () =>
+      comments.reduce(
+        (sum, comment) => sum + 1 + (comment.replies?.length ?? 0),
+        0,
+      ) + 126,
+    [comments],
   );
 
-  const activeLesson = lessons[activeIndex] ?? lessons[0];
-
-  const completedCount = completedLessonIds.length;
-  const progress =
-    lessons.length > 0
-      ? Math.round((completedCount / lessons.length) * 100)
-      : 0;
-
-  const isLessonComplete = (lessonId: string) =>
-    completedLessonIds.includes(lessonId);
-
-  const selectLesson = (lessonId: string) => {
-    setActiveLessonId(lessonId);
-    setSidebarOpen(false);
-  };
-
-  const markLessonComplete = () => {
-    if (!activeLesson) return;
-
-    setCompletedLessonIds((previous) =>
-      previous.includes(activeLesson.id)
-        ? previous
-        : [...previous, activeLesson.id],
+  const toggleModule = (id: string) =>
+    setExpanded((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
     );
-  };
 
-  const goToPreviousLesson = () => {
-    if (activeIndex > 0) {
-      setActiveLessonId(lessons[activeIndex - 1].id);
+  /* Open a specific lesson. Falls back gracefully when there is no
+     courseId in the URL (keeps the component usable in isolation). */
+  const openLesson = (lessonSlug: string) => {
+    if (courseId) {
+      navigate(`/student/learning/${courseId}/${lessonSlug}`);
     }
   };
 
-  const goToNextLesson = () => {
-    if (activeIndex < lessons.length - 1) {
-      setActiveLessonId(lessons[activeIndex + 1].id);
-    }
+  const toggleLike = (id: number) => {
+    const flip = (list: Comment[]): Comment[] =>
+      list.map((comment) => {
+        if (comment.id === id) {
+          return {
+            ...comment,
+            liked: !comment.liked,
+            likes: comment.liked ? comment.likes - 1 : comment.likes + 1,
+          };
+        }
+        if (comment.replies) {
+          return { ...comment, replies: flip(comment.replies) };
+        }
+        return comment;
+      });
+    setComments((current) => flip(current));
   };
 
-  if (!course) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#08080D] px-4 text-white">
-        <div className="max-w-md text-center">
-          <BookOpen size={44} className="mx-auto text-violet-400" />
+  const postComment = () => {
+    const value = draft.trim();
+    if (!value) {
+      commentRef.current?.focus();
+      return;
+    }
 
-          <h1 className="mt-5 text-2xl font-bold">Course not found</h1>
-
-          <p className="mt-3 text-sm leading-6 text-gray-400">
-            We couldn't find this course. Return to the course catalog and
-            select a course to continue.
-          </p>
-
-          <button
-            type="button"
-            onClick={() => navigate("/student/courses")}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold hover:bg-violet-500"
-          >
-            <ArrowLeft size={16} />
-            Explore courses
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (lessons.length === 0 || !activeLesson) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#08080D] px-4 text-white">
-        <div className="max-w-md text-center">
-          <ListVideo size={44} className="mx-auto text-violet-400" />
-
-          <h1 className="mt-5 text-2xl font-bold">
-            Lessons are not available yet
-          </h1>
-
-          <p className="mt-3 text-sm leading-6 text-gray-400">
-            This course doesn't have any lesson content yet.
-          </p>
-
-          <Link
-            to={`/student/courses/${course.id}`}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/[0.05]"
-          >
-            <ArrowLeft size={16} />
-            Back to course details
-          </Link>
-        </div>
-      </div>
-    );
-  }
+    setComments((current) => [
+      {
+        id: Date.now(),
+        name: "You",
+        avatar:
+          "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop&crop=faces",
+        time: "Just now",
+        text: value,
+        likes: 0,
+      },
+      ...current,
+    ]);
+    setDraft("");
+  };
 
   return (
-    <div className="min-h-screen bg-[#08080D] text-white">
-      {/* Top navigation */}
-      <header className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0D0D14]/95 backdrop-blur">
-        <div className="flex min-h-[68px] items-center justify-between gap-3 px-4 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen((current) => !current)}
-              aria-label="Toggle course curriculum"
-              className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 text-gray-300 transition hover:bg-white/[0.05]"
-            >
-              {sidebarOpen ? <X size={19} /> : <Menu size={19} />}
-            </button>
+    <div className="min-h-full space-y-8 pb-8 text-white">
+      {/* Glassy card sheen — plays only on hover (shared with the catalog) */}
+      <style>{`
+        @keyframes lp-card-sheen {
+          0% { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
+          40% { opacity: 1; }
+          100% { opacity: 0; transform: translateX(260%) skewX(-12deg); }
+        }
+        .lp-card-sheen { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
+        .group:hover .lp-card-sheen { animation: lp-card-sheen 1.1s ease-out; }
+        @keyframes lp-play-ring {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.12); opacity: 0.9; }
+        }
+        .lp-play-ring { animation: lp-play-ring 3s ease-in-out infinite; }
+        @keyframes lp-progress-shine {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(260%); }
+        }
+        .lp-progress-shine { animation: lp-progress-shine 2.4s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .lp-card-sheen, .lp-play-ring, .lp-progress-shine { animation: none !important; }
+        }
+      `}</style>
 
-            <div className="min-w-0">
-              <Link
-                to="/student/courses"
-                className="text-xs text-violet-400 hover:text-violet-300"
+      {/* Top bar — back button + breadcrumb */}
+      <div className="flex min-w-0 flex-wrap items-center gap-3.5">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
+        </button>
+
+        <nav
+          aria-label="Breadcrumb"
+          className="flex min-w-0 items-center gap-2 text-[11px] italic tracking-[-0.01em] sm:text-xs"
+        >
+          <span className="hidden shrink-0 font-semibold text-white/45 transition-colors duration-200 hover:text-white/75 sm:inline">
+            My Learning
+          </span>
+          <ChevronRight className="hidden h-3.5 w-3.5 shrink-0 text-violet-300/50 sm:block" />
+          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+            React Masterclass
+          </span>
+        </nav>
+      </div>
+
+      {/* Two-column layout: lesson on the left, learning path on the right */}
+      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_356px]">
+        {/* ── LEFT: lesson player + content ──────────────────────────── */}
+        <div className="min-w-0 space-y-8">
+          {/* Video player */}
+          <section className="group relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)]">
+            <div className="relative aspect-video w-full overflow-hidden bg-[#100821]">
+              <img
+                src={lesson.poster}
+                alt={lesson.title}
+                loading="eager"
+                decoding="async"
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-cover opacity-60"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D071C] via-[#0D071C]/30 to-transparent" />
+
+              {/* Play button */}
+              <button
+                type="button"
+                aria-label="Play lesson video"
+                className="group/play absolute inset-0 flex cursor-pointer items-center justify-center"
               >
-                Explore Courses
-              </Link>
-
-              <h1 className="mt-1 truncate text-sm font-semibold sm:text-base">
-                {course.title}
-              </h1>
-            </div>
-          </div>
-
-          <Link
-            to={`/student/courses/${course.id}`}
-            className="hidden shrink-0 items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/[0.05] sm:inline-flex"
-          >
-            <ArrowLeft size={16} />
-            Course details
-          </Link>
-        </div>
-      </header>
-
-      <div className="relative flex min-h-[calc(100vh-68px)]">
-        {/* Curriculum sidebar */}
-        {sidebarOpen && (
-          <aside className="absolute inset-y-0 left-0 z-20 w-[min(340px,88vw)] border-r border-white/[0.08] bg-[#0D0D14] lg:static lg:w-[320px] lg:shrink-0">
-            <div className="flex h-full flex-col">
-              <div className="border-b border-white/[0.07] p-5">
-                <p className="text-xs font-medium uppercase tracking-wider text-violet-400">
-                  Course curriculum
-                </p>
-
-                <h2 className="mt-2 text-lg font-semibold">
-                  Your learning path
-                </h2>
-
-                <div className="mt-5 flex items-center justify-between text-xs text-gray-400">
-                  <span>Course progress</span>
-                  <span className="font-semibold text-white">{progress}%</span>
-                </div>
-
-                <div
-                  className="mt-2 h-2 overflow-hidden rounded-full bg-white/[0.08]"
-                  role="progressbar"
-                  aria-label="Course progress"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={progress}
-                >
-                  <div
-                    className="h-full rounded-full bg-violet-500 transition-all duration-300"
-                    style={{ width: `${progress}%` }}
+                <span
+                  aria-hidden="true"
+                  className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
+                />
+                <span
+                  aria-hidden="true"
+                  className="lp-play-ring absolute h-[132px] w-[132px] rounded-full border border-white/10 [animation-delay:-1.5s]"
+                />
+                <span className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] shadow-[0_18px_50px_-10px_rgba(124,58,237,0.75)] transition-transform duration-500 ease-out group-hover/play:scale-110">
+                  <PlayCircle
+                    className="h-9 w-9 text-white"
+                    strokeWidth={1.6}
                   />
-                </div>
+                </span>
+              </button>
+            </div>
+          </section>
 
-                <p className="mt-2 text-xs text-gray-500">
-                  {completedCount} of {lessons.length} lessons completed
-                </p>
+          {/* Lesson title + meta + description */}
+          <section className="cursor-default">
+            <h1 className="text-[26px] font-semibold leading-[1.18] tracking-[-0.03em] sm:text-[30px]">
+              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                {lesson.title}
+              </span>
+            </h1>
+
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/50">
+              <span className="inline-flex items-center gap-1.5">
+                <Clock3 className="h-4 w-4 text-cyan-300" />
+                {lesson.duration}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4 text-violet-300" />
+                {lesson.level}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <RefreshCcw className="h-4 w-4 text-white/40" />
+                {lesson.updated}
+              </span>
+            </div>
+
+            <p className="mt-5 max-w-3xl text-sm leading-[1.9] text-white/60">
+              {lesson.description}
+            </p>
+          </section>
+
+          {/* Resources & downloads */}
+          <section className="space-y-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">
+              Resources &amp; Downloads
+            </p>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {resources.map((resource) => {
+                const meta = RESOURCE_META[resource.type];
+                const Icon = meta.icon;
+
+                return (
+                  <button
+                    key={resource.name}
+                    type="button"
+                    className={`${CARD_BASE} group flex cursor-pointer items-center gap-3.5 rounded-2xl p-4 text-left transition-transform duration-300 hover:-translate-y-0.5 hover:border-violet-400/30`}
+                  >
+                    <CardSheen />
+                    <span
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${meta.wrap}`}
+                    >
+                      <Icon className={`h-5 w-5 ${meta.tint}`} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-white">
+                        {resource.name}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-white/40">
+                        {resource.size}
+                      </p>
+                    </div>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-white/55 transition-colors duration-300 group-hover:border-violet-400/35 group-hover:bg-violet-500/[0.08] group-hover:text-violet-200">
+                      <Download className="h-4 w-4" />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Lesson navigation bar */}
+          <section className={`${CARD_BASE} rounded-3xl p-3 sm:p-4`}>
+            <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
+              <button
+                type="button"
+                className={`${PILL} flex cursor-pointer items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium`}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Previous Lesson
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCompleted((current) => !current)}
+                aria-pressed={completed}
+                className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 ${
+                  completed
+                    ? "bg-gradient-to-r from-emerald-600 to-teal-600"
+                    : "bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF]"
+                }`}
+              >
+                {completed ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Completed
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Mark as Completed
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={`${PILL} flex cursor-pointer items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-medium`}
+              >
+                Next Lesson
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </section>
+
+          {/* Questions & discussion */}
+          <section className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
+            <CardSheen />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+
+            <div className="relative">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/15 to-violet-500/0 text-violet-200">
+                    <MessageCircle className="h-5 w-5" />
+                  </span>
+                  <h2 className="text-xl font-semibold tracking-[-0.015em] text-white">
+                    Questions &amp; Discussion
+                  </h2>
+                </div>
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[11px] font-medium text-white/55">
+                  {totalDoubts} Doubts
+                </span>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-3">
-                {(course.curriculum ?? []).map((module, moduleIndex) => {
-                  const moduleLessons = lessons.filter(
-                    (lesson) => lesson.moduleIndex === moduleIndex,
-                  );
-
-                  const moduleCompleted = moduleLessons.filter((lesson) =>
-                    isLessonComplete(lesson.id),
-                  ).length;
-
-                  const hasActiveLesson = moduleLessons.some(
-                    (lesson) => lesson.id === activeLesson.id,
-                  );
-
-                  return (
-                    <details
-                      key={module.title}
-                      open={hasActiveLesson || moduleIndex === 0}
-                      className="mb-2 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02]"
+              {/* Composer */}
+              <div className="mt-6 flex items-start gap-3.5">
+                <img
+                  src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop&crop=faces"
+                  alt="Your avatar"
+                  loading="lazy"
+                  className="hidden h-10 w-10 shrink-0 rounded-full border border-white/10 object-cover sm:block"
+                />
+                <div className="min-w-0 flex-1">
+                  <textarea
+                    ref={commentRef}
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    rows={3}
+                    placeholder="Have a question or comment about this lesson?"
+                    className="w-full resize-none rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
+                  />
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={postComment}
+                      className="group/button inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     >
-                      <summary className="flex cursor-pointer list-none items-start gap-3 p-4 hover:bg-white/[0.03]">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-xs font-semibold text-violet-300">
-                          {moduleIndex + 1}
-                        </div>
+                      <Send className="h-4 w-4 transition-transform group-hover/button:translate-x-0.5" />
+                      Post Question
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium leading-5 text-gray-200">
-                            {module.title}
-                          </p>
-
-                          <p className="mt-1 text-xs text-gray-500">
-                            {moduleCompleted}/{moduleLessons.length} completed
-                          </p>
-                        </div>
-
-                        <ChevronDown
-                          size={16}
-                          className="mt-1 shrink-0 text-gray-500"
+              {/* Comment threads */}
+              <div className="mt-7 space-y-7">
+                {comments.map((comment) => (
+                  <div key={comment.id}>
+                    <CommentHeader
+                      avatar={comment.avatar}
+                      name={comment.name}
+                      time={comment.time}
+                    />
+                    <p className="mt-2.5 text-sm leading-relaxed text-white/70">
+                      {comment.text}
+                    </p>
+                    <div className="mt-3 flex items-center gap-4 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => toggleLike(comment.id)}
+                        className={`inline-flex cursor-pointer items-center gap-1.5 transition-colors ${
+                          comment.liked
+                            ? "text-violet-300"
+                            : "text-white/45 hover:text-white/80"
+                        }`}
+                      >
+                        <ThumbsUp
+                          className="h-3.5 w-3.5"
+                          fill={comment.liked ? "currentColor" : "none"}
                         />
-                      </summary>
+                        {comment.likes}
+                      </button>
+                      <button
+                        type="button"
+                        className="cursor-pointer text-white/45 transition-colors hover:text-white/80"
+                      >
+                        Reply
+                      </button>
+                    </div>
 
-                      <div className="border-t border-white/[0.06] p-2">
-                        {moduleLessons.map((lesson) => {
-                          const selected = lesson.id === activeLesson.id;
-                          const completed = isLessonComplete(lesson.id);
+                    {/* Replies */}
+                    {comment.replies && comment.replies.length > 0 && (
+                      <div className="mt-5 space-y-5 border-l border-white/[0.08] pl-5 sm:pl-6">
+                        {comment.replies.map((reply) => (
+                          <div key={reply.id}>
+                            <CommentHeader
+                              avatar={reply.avatar}
+                              name={reply.name}
+                              instructor={reply.instructor}
+                              size="sm"
+                            />
+                            <p className="mt-2.5 text-sm leading-relaxed text-white/70">
+                              {reply.text}
+                            </p>
+                            <div className="mt-3 flex items-center gap-4 text-xs">
+                              <button
+                                type="button"
+                                onClick={() => toggleLike(reply.id)}
+                                className={`inline-flex cursor-pointer items-center gap-1.5 transition-colors ${
+                                  reply.liked
+                                    ? "text-violet-300"
+                                    : "text-white/45 hover:text-white/80"
+                                }`}
+                              >
+                                <ThumbsUp
+                                  className="h-3.5 w-3.5"
+                                  fill={reply.liked ? "currentColor" : "none"}
+                                />
+                                {reply.likes}
+                              </button>
+                              <button
+                                type="button"
+                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-violet-400/20 bg-violet-500/10 px-2 py-0.5 text-violet-200 transition-colors hover:bg-violet-500/20"
+                              >
+                                Answer
+                              </button>
+                              <button
+                                type="button"
+                                className="cursor-pointer text-white/45 transition-colors hover:text-white/80"
+                              >
+                                Reply
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* ── RIGHT: progress + learning path + community ────────────── */}
+        <aside className="space-y-6 xl:sticky xl:top-6">
+          {/* Overall progress */}
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
+            <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+            <p className="relative text-[11px] font-semibold uppercase tracking-[0.16em] text-white/80">
+              Overall Progress
+            </p>
+            <div className="relative mt-3 flex items-end gap-3">
+              <span className="text-4xl font-bold leading-none tracking-tight text-white">
+                {progress}%
+              </span>
+              <span className="pb-0.5 text-xs leading-snug text-white/75">
+                {completedLessons} of {totalLessons} Lessons
+                <br />
+                Completed
+              </span>
+            </div>
+            <div className="relative mt-5 h-2 overflow-hidden rounded-full bg-white/20">
+              <div
+                className="relative h-full rounded-full bg-white"
+                style={{ width: `${progress}%` }}
+              >
+                <span className="lp-progress-shine absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+              </div>
+            </div>
+          </section>
+
+          {/* Learning path */}
+          <section className={`${CARD_BASE} rounded-3xl p-5`}>
+            <h2 className="mb-4 px-1 text-lg font-semibold tracking-tight text-white">
+              Learning Path
+            </h2>
+
+            <div className="space-y-1.5">
+              {learningPath.map((module) => {
+                const isOpen = expanded.includes(module.id);
+                const isActive = module.id === "m2";
+
+                if (module.locked) {
+                  return (
+                    <div
+                      key={module.id}
+                      className="flex items-center gap-3 rounded-xl border border-white/[0.05] bg-white/[0.015] px-3 py-3 text-white/35"
+                    >
+                      <Lock className="h-4 w-4 shrink-0" />
+                      <span className="truncate text-sm font-medium">
+                        {module.title}
+                      </span>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={module.id}>
+                    {/* Module header */}
+                    <button
+                      type="button"
+                      onClick={() => toggleModule(module.id)}
+                      aria-expanded={isOpen}
+                      className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors ${
+                        isActive
+                          ? "border-violet-400/30 bg-violet-500/[0.08]"
+                          : "border-transparent hover:bg-white/[0.03]"
+                      }`}
+                    >
+                      <span
+                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
+                          isActive
+                            ? "border-violet-400/40 bg-violet-500/20 text-violet-200"
+                            : "border-violet-500 bg-violet-600 text-white"
+                        }`}
+                      >
+                        {isActive ? (
+                          <span className="h-2 w-2 rounded-full bg-violet-300" />
+                        ) : (
+                          <Check className="h-3.5 w-3.5" />
+                        )}
+                      </span>
+                      <span
+                        className={`min-w-0 flex-1 truncate text-sm font-semibold ${
+                          isActive ? "text-violet-200" : "text-white/85"
+                        }`}
+                      >
+                        {module.title}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {/* Module lessons */}
+                    {isOpen && (
+                      <div className="mt-1 space-y-0.5 pl-2">
+                        {module.lessons.map((item) => {
+                          /* Highlight the lesson from the URL when present,
+                             otherwise fall back to the seeded "current" one. */
+                          const isCurrent = lessonId
+                            ? item.id === lessonId
+                            : item.status === "current";
+                          const isDone = item.status === "completed";
+                          const KindIcon =
+                            item.kind === "quiz" ? FileQuestion : PlayCircle;
 
                           return (
                             <button
-                              key={lesson.id}
+                              key={item.id}
                               type="button"
-                              onClick={() => selectLesson(lesson.id)}
-                              className={`flex w-full items-start gap-3 rounded-lg p-3 text-left transition ${
-                                selected
-                                  ? "bg-violet-500/10 text-white"
-                                  : "text-gray-400 hover:bg-white/[0.04] hover:text-gray-200"
+                              onClick={() => openLesson(item.id)}
+                              className={`flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                                isCurrent
+                                  ? "bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] shadow-lg shadow-violet-950/30"
+                                  : "hover:bg-white/[0.04]"
                               }`}
                             >
-                              <span className="mt-0.5 shrink-0">
-                                {completed ? (
-                                  <CheckCircle2
-                                    size={17}
-                                    className="text-emerald-400"
-                                  />
-                                ) : selected ? (
-                                  <PlayCircle
-                                    size={17}
-                                    className="text-violet-400"
-                                  />
-                                ) : (
-                                  <Circle size={17} className="text-gray-600" />
-                                )}
+                              <KindIcon
+                                className={`h-4 w-4 shrink-0 ${
+                                  isCurrent ? "text-white" : "text-white/45"
+                                }`}
+                              />
+                              <span
+                                className={`min-w-0 flex-1 truncate text-[13px] ${
+                                  isCurrent
+                                    ? "font-semibold text-white"
+                                    : isDone
+                                      ? "text-white/70"
+                                      : "text-white/55"
+                                }`}
+                              >
+                                {item.title}
                               </span>
 
-                              <span className="min-w-0 flex-1">
-                                <span className="block text-sm leading-5">
-                                  {lesson.title}
+                              {item.badge && (
+                                <span className="shrink-0 rounded-md bg-white/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+                                  {item.badge}
                                 </span>
-                                <span className="mt-1 block text-xs text-gray-600">
-                                  Lesson {lesson.lessonIndex + 1}
+                              )}
+
+                              {isDone && (
+                                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white">
+                                  <Check className="h-3 w-3" />
                                 </span>
-                              </span>
+                              )}
                             </button>
                           );
                         })}
                       </div>
-                    </details>
-                  );
-                })}
-              </div>
-
-              <div className="border-t border-white/[0.07] p-4">
-                <Link
-                  to={`/student/courses/${course.id}`}
-                  className="flex items-center gap-2 text-sm text-gray-400 transition hover:text-violet-300"
-                >
-                  <ArrowLeft size={16} />
-                  Back to course overview
-                </Link>
-              </div>
-            </div>
-          </aside>
-        )}
-
-        {/* Lesson content */}
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
-          <div className="mx-auto max-w-4xl">
-            {/* Breadcrumb */}
-            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 sm:text-sm">
-              <span>{activeLesson.moduleTitle}</span>
-              <ChevronRight size={15} />
-              <span className="text-gray-300">Lesson {activeIndex + 1}</span>
-            </div>
-
-            {/* Lesson heading */}
-            <div className="mt-5">
-              <h2 className="text-2xl font-bold leading-tight sm:text-3xl">
-                {activeLesson.title}
-              </h2>
-
-              <p className="mt-3 text-sm leading-6 text-gray-400">
-                Learn the key concepts in this lesson, then mark it complete
-                when you're ready to continue.
-              </p>
-            </div>
-
-            {/* Lesson player placeholder */}
-            <section className="mt-7 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101016]">
-              <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-[#21163B] via-[#151122] to-[#0B0B11]">
-                <div className="absolute -left-16 -top-16 size-64 rounded-full bg-violet-500/10 blur-3xl" />
-                <div className="absolute -bottom-24 -right-16 size-72 rounded-full bg-indigo-500/10 blur-3xl" />
-
-                <div className="relative z-10 max-w-md px-5 text-center">
-                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-violet-400/20 bg-violet-500/10 text-violet-300 sm:size-20">
-                    <Play size={34} fill="currentColor" />
+                    )}
                   </div>
-
-                  <h3 className="mt-5 text-lg font-semibold sm:text-xl">
-                    {activeLesson.title}
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-6 text-gray-400">
-                    Lesson content will appear here when video or reading
-                    materials are connected.
-                  </p>
-
-                  <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs text-gray-400">
-                    <FileText size={14} />
-                    Learning content placeholder
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-between gap-3 border-t border-white/[0.07] p-4 sm:flex-row sm:items-center sm:px-5">
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Clock3 size={16} />
-                  <span>Self-paced lesson</span>
-                </div>
-
-                {isLessonComplete(activeLesson.id) ? (
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400">
-                    <CheckCircle2 size={17} />
-                    Lesson completed
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={markLessonComplete}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
-                  >
-                    <Check size={16} />
-                    Mark as completed
-                  </button>
-                )}
-              </div>
-            </section>
-
-            {/* Lesson notes */}
-            <section className="mt-7 rounded-2xl border border-white/[0.07] bg-[#101016] p-5 sm:p-7">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400">
-                  <BookOpen size={20} />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">About this lesson</h3>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {activeLesson.moduleTitle}
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-5 text-sm leading-7 text-gray-400">
-                This lesson is part of the {course.title} course. Follow the
-                course material, practice the concepts, and review the lesson
-                before moving to the next topic.
-              </p>
-
-              <div className="mt-5 rounded-xl border border-violet-500/15 bg-violet-500/[0.05] p-4">
-                <p className="text-sm font-medium text-violet-200">
-                  Learning tip
-                </p>
-                <p className="mt-2 text-sm leading-6 text-gray-400">
-                  Try the examples yourself instead of only reading or watching.
-                  Practicing each concept helps you retain it.
-                </p>
-              </div>
-            </section>
-
-            {/* Lesson navigation */}
-            <div className="mt-7 flex flex-col justify-between gap-3 border-t border-white/[0.07] pt-6 sm:flex-row sm:items-center">
-              <button
-                type="button"
-                onClick={goToPreviousLesson}
-                disabled={activeIndex <= 0}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/[0.04] disabled:cursor-not-allowed disabled:opacity-35"
-              >
-                <ChevronLeft size={17} />
-                Previous lesson
-              </button>
-
-              <span className="text-center text-xs text-gray-500">
-                Lesson {activeIndex + 1} of {lessons.length}
-              </span>
-
-              {activeIndex < lessons.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={goToNextLesson}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
-                >
-                  Next lesson
-                  <ChevronRight size={17} />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => navigate("/student/courses")}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
-                >
-                  Finish course
-                  <CheckCircle2 size={17} />
-                </button>
-              )}
+                );
+              })}
             </div>
-
-            {/* Completion notice */}
-            {progress === 100 && (
-              <div className="mt-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-5">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2
-                    size={22}
-                    className="shrink-0 text-emerald-400"
-                  />
-
-                  <div>
-                    <h3 className="font-semibold text-emerald-300">
-                      All lessons completed!
-                    </h3>
-                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                      You've marked every lesson in this course as completed.
-                      Your backend should verify completion before issuing a
-                      certificate.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </main>
+          </section>
+        </aside>
       </div>
     </div>
   );
