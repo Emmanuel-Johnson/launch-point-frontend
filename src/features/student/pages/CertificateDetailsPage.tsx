@@ -1,472 +1,470 @@
-import { useState } from "react";
-import type { ReactNode } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Award,
-  BookOpen,
+  BadgeCheck,
   CalendarDays,
-  CheckCircle2,
+  Check,
+  Clock3,
   Copy,
   Download,
   GraduationCap,
+  Link2,
+  Printer,
+  Share2,
   ShieldCheck,
-  Clock3,
-  LockKeyhole,
+  Sparkles,
+  Star,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
-import { certificates } from "../data/certificateData";
 
-function formatDate(date: string | null): string {
-  if (!date) return "Not issued";
+/* ──────────────────────────────────────────────────────────────────
+   TYPES + DATA (UI-only mock — wire to your real certificate API later)
+   ────────────────────────────────────────────────────────────────── */
 
-  return new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
+type CertificateDetail = {
+  id: string;
+  serial: string;
+  courseTitle: string;
+  category: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
+  recipient: string;
+  issuedAt: string;
+  completedAt: string;
+  durationHours: number;
+  lessons: number;
+  grade: string;
+  finalScore: number;
+  credentialUrl: string;
+  instructor: string;
+  instructorRole: string;
+  instructorImage: string;
+  skills: string[];
+};
+
+// Replace with the student's certificate fetched by `certificateId`.
+const certificate: CertificateDetail = {
+  id: "cert-001",
+  serial: "LP-2026-FSWD-8842",
+  courseTitle: "Full Stack Web Development",
+  category: "Development",
+  level: "Intermediate",
+  recipient: "Theo Thiyophin",
+  issuedAt: "2026-10-28T12:00:00Z",
+  completedAt: "2026-10-27T12:00:00Z",
+  durationHours: 32,
+  lessons: 48,
+  grade: "Distinction",
+  finalScore: 94,
+  credentialUrl: "https://launchpoint.app/verify/LP-2026-FSWD-8842",
+  instructor: "Sarah Mitchell",
+  instructorRole: "Senior Full Stack Developer",
+  instructorImage:
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces",
+  skills: ["React", "Django", "PostgreSQL", "REST APIs", "Deployment"],
+};
+
+const formatLongDate = (value: string) =>
+  new Date(value).toLocaleDateString("en-US", {
     day: "numeric",
+    month: "long",
+    year: "numeric",
   });
-}
 
-export default function CertificateDetailsPage() {
+/* ──────────────────────────────────────────────────────────────────
+   COMPONENT
+   ────────────────────────────────────────────────────────────────── */
+
+const CertificateDetailsPage = () => {
   const navigate = useNavigate();
   const { certificateId } = useParams<{ certificateId: string }>();
-  const [copied, setCopied] = useState(false);
 
-  const certificate = certificates.find(
-    (item) => item.id === Number(certificateId),
+  const [copied, setCopied] = useState(false);
+  const copyTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep the page usable in isolation — fall back to the mock when the URL
+  // has no id. Wire this to a lookup by `certificateId` when the API lands.
+  const data = useMemo(
+    () => ({ ...certificate, id: certificateId ?? certificate.id }),
+    [certificateId],
   );
 
-  const isEarned = certificate?.status === "earned";
-
-  const handleCopy = async () => {
-    if (!certificate?.certificateNumber) return;
-
-    try {
-      await navigator.clipboard.writeText(certificate.certificateNumber);
+  const copyCredential = () => {
+    const done = () => {
       setCopied(true);
+      if (copyTimeout.current) clearTimeout(copyTimeout.current);
+      copyTimeout.current = setTimeout(() => setCopied(false), 1800);
+    };
 
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(data.credentialUrl).then(done).catch(done);
+    } else {
+      done();
     }
   };
 
-  const handleDownload = () => {
-    if (!certificate || !isEarned) return;
+  const stats = [
+    { icon: Clock3, label: "Duration", value: `${data.durationHours} hours` },
+    { icon: GraduationCap, label: "Lessons", value: `${data.lessons} lessons` },
+    { icon: Star, label: "Final score", value: `${data.finalScore}%` },
+    { icon: Award, label: "Result", value: data.grade },
+  ];
 
-    // TODO: Replace with your authenticated certificate download API.
-    console.info(`Download certificate: ${certificate.certificateNumber}`);
-  };
+  return (
+    <div className="min-h-full space-y-8 pb-8 text-white">
+      {/* Shared hover sheen + certificate shimmer */}
+      <style>{`
+        @keyframes lp-card-sheen {
+          0% { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
+          40% { opacity: 1; }
+          100% { opacity: 0; transform: translateX(260%) skewX(-12deg); }
+        }
+        .lp-card-sheen { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
+        .group:hover .lp-card-sheen { animation: lp-card-sheen 1.1s ease-out; }
+        @keyframes lp-cert-shine {
+          0% { transform: translateX(-130%) skewX(-18deg); }
+          100% { transform: translateX(320%) skewX(-18deg); }
+        }
+        .lp-cert-shine { animation: lp-cert-shine 6s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .lp-card-sheen, .lp-cert-shine { animation: none !important; }
+        }
+        @media print {
+          .lp-no-print { display: none !important; }
+        }
+      `}</style>
 
-  if (!certificate) {
-    return (
-      <div className="min-h-screen bg-[#08080D] px-4 py-16 text-white sm:px-6">
-        <div className="mx-auto max-w-lg rounded-2xl border border-white/[0.08] bg-[#101016] p-8 text-center">
-          <Award className="mx-auto mb-4 text-gray-500" size={42} />
+      {/* Top bar — back + breadcrumb */}
+      <div className="lp-no-print flex min-w-0 flex-wrap items-center gap-3.5">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_22px_-4px_rgba(167,139,250,0.9)] transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <ArrowLeft className="relative h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
+        </button>
 
-          <h1 className="text-xl font-bold">Certificate not found</h1>
-
-          <p className="mt-2 text-sm leading-6 text-gray-400">
-            This certificate does not exist or is no longer available.
-          </p>
-
+        <nav
+          aria-label="Breadcrumb"
+          className="flex min-w-0 items-center gap-2 text-[11px] italic tracking-[-0.01em] sm:text-xs"
+        >
           <button
             type="button"
             onClick={() => navigate("/student/certificates")}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold transition hover:bg-violet-500"
+            className="hidden shrink-0 cursor-pointer font-semibold text-white/45 transition-colors duration-200 hover:text-white/75 sm:inline"
           >
-            <ArrowLeft size={17} />
-            Back to certificates
+            Certificates
           </button>
-        </div>
+          <span className="hidden h-3.5 w-px shrink-0 bg-violet-300/30 sm:block" />
+          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+            {data.courseTitle}
+          </span>
+        </nav>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen bg-[#08080D] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-7">
-        {/* Back navigation */}
-        <button
-          type="button"
-          onClick={() => navigate("/student/certificates")}
-          className="inline-flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
-        >
-          <ArrowLeft size={18} />
-          Back to My Certificates
-        </button>
-
-        {/* Page heading */}
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
-          <div>
-            <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-violet-400">
-              <GraduationCap size={18} />
-              <span>Student Portal</span>
-              <span className="text-gray-600">/</span>
-              <span className="text-gray-400">Certificate Details</span>
-            </div>
-
-            <h1 className="max-w-3xl text-2xl font-bold tracking-tight sm:text-3xl">
-              {certificate.title}
-            </h1>
-
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-400">
-              View your certificate information, completion status, and
-              certificate identification details.
-            </p>
-          </div>
-
-          {isEarned && (
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold transition hover:bg-violet-500"
-            >
-              <Download size={18} />
-              Download certificate
-            </button>
-          )}
+      {/* Page heading */}
+      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div className="cursor-default">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
+            Verified Credential
+          </p>
+          <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
+            Certificate of{" "}
+            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+              Completion
+            </span>
+          </h1>
+          <p className="mt-2 max-w-xl text-[13px] italic leading-6 tracking-[0.01em] text-white/50 sm:text-sm">
+            A record of the skills you&apos;ve earned — ready to download,
+            share, or verify.
+          </p>
         </div>
 
-        {/* Status banner */}
-        {isEarned ? (
-          <div className="flex items-start gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.07] p-4 sm:p-5">
-            <CheckCircle2
-              size={22}
-              className="mt-0.5 shrink-0 text-emerald-400"
-            />
+        <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-2.5 text-xs font-semibold text-emerald-300 sm:self-auto">
+          <ShieldCheck className="h-4 w-4" />
+          Authenticity verified
+        </span>
+      </section>
 
-            <div>
-              <h2 className="font-semibold text-emerald-300">
-                Certificate earned
-              </h2>
+      {/* Two-column layout: certificate on the left, details on the right */}
+      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
+        {/* ── LEFT: the certificate artwork ──────────────────────────── */}
+        <div className="min-w-0 space-y-8">
+          <section className="group relative isolate overflow-hidden rounded-[28px] border border-violet-400/20 bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-6 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-8">
+            {/* Ambient glows */}
+            <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]" />
+            <div className="pointer-events-none absolute -bottom-28 left-1/4 h-64 w-64 rounded-full bg-indigo-500/10 blur-[100px]" />
+            {/* Moving shine */}
+            <span className="lp-cert-shine pointer-events-none absolute inset-y-0 left-0 z-0 w-1/3 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-              <p className="mt-1 text-sm leading-6 text-gray-400">
-                Congratulations! You have completed this course and earned your
-                certificate.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/[0.07] p-4 sm:p-5">
-            <LockKeyhole size={22} className="mt-0.5 shrink-0 text-amber-400" />
+            {/* Inner framed certificate */}
+            <div className="relative z-10 rounded-[22px] border border-violet-300/15 bg-[#0B0814]/60 p-6 ring-1 ring-white/[0.04] sm:p-9">
+              {/* Corner flourishes */}
+              <span className="pointer-events-none absolute left-4 top-4 h-8 w-8 rounded-tl-xl border-l-2 border-t-2 border-violet-400/40" />
+              <span className="pointer-events-none absolute right-4 top-4 h-8 w-8 rounded-tr-xl border-r-2 border-t-2 border-violet-400/40" />
+              <span className="pointer-events-none absolute bottom-4 left-4 h-8 w-8 rounded-bl-xl border-b-2 border-l-2 border-violet-400/40" />
+              <span className="pointer-events-none absolute bottom-4 right-4 h-8 w-8 rounded-br-xl border-b-2 border-r-2 border-violet-400/40" />
 
-            <div>
-              <h2 className="font-semibold text-amber-300">
-                Certificate not available yet
-              </h2>
+              {/* Header */}
+              <div className="flex flex-col items-center text-center">
+                <span className="flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-300/25 bg-gradient-to-br from-violet-500/25 to-violet-500/0 text-violet-200 shadow-inner shadow-violet-300/10">
+                  <Award className="h-8 w-8" />
+                </span>
 
-              <p className="mt-1 text-sm leading-6 text-gray-400">
-                Complete the remaining course content to become eligible for
-                your certificate.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Main content */}
-        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-5">
-          {/* Certificate preview */}
-          <div className="space-y-5 lg:col-span-3">
-            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101016]">
-              <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4">
-                <h2 className="font-semibold">Certificate preview</h2>
-
-                <span className="text-xs text-gray-500">Launch Point LMS</span>
-              </div>
-
-              <div className="bg-gradient-to-br from-violet-950/40 via-[#101016] to-[#0C0C12] p-4 sm:p-8">
-                {isEarned ? (
-                  <div className="relative border-2 border-violet-400/40 bg-[#11101B] p-5 text-center sm:p-10">
-                    <div className="absolute inset-2 border border-violet-400/15" />
-
-                    <div className="relative">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-full border border-violet-400/40 bg-violet-500/10">
-                        <Award size={34} className="text-violet-300" />
-                      </div>
-
-                      <p className="mt-5 text-xs font-semibold uppercase tracking-[0.3em] text-violet-300">
-                        Launch Point LMS
-                      </p>
-
-                      <h3 className="mt-5 font-serif text-2xl font-bold sm:text-3xl">
-                        Certificate
-                      </h3>
-
-                      <p className="mt-2 text-sm text-gray-300">
-                        of Completion
-                      </p>
-
-                      <div className="mx-auto my-5 h-px max-w-xs bg-violet-400/30" />
-
-                      <p className="text-xs text-gray-400">
-                        This certifies successful completion of
-                      </p>
-
-                      <p className="mt-3 text-lg font-semibold leading-snug text-white sm:text-xl">
-                        {certificate.title}
-                      </p>
-
-                      <p className="mt-5 text-xs text-gray-400">
-                        Course instructor
-                      </p>
-
-                      <p className="mt-1 font-medium text-violet-200">
-                        {certificate.instructor}
-                      </p>
-
-                      <div className="mt-8 flex flex-col justify-between gap-4 border-t border-white/10 pt-5 text-left sm:flex-row sm:items-end">
-                        <div>
-                          <p className="text-xs text-gray-500">Date of issue</p>
-
-                          <p className="mt-1 text-sm text-gray-200">
-                            {formatDate(certificate.issuedAt)}
-                          </p>
-                        </div>
-
-                        <div className="sm:text-right">
-                          <p className="text-xs text-gray-500">
-                            Certificate ID
-                          </p>
-
-                          <p className="mt-1 break-all font-mono text-xs text-violet-300">
-                            {certificate.certificateNumber}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex min-h-72 flex-col items-center justify-center rounded-xl border border-dashed border-white/10 bg-black/10 px-6 py-10 text-center">
-                    <div className="flex size-16 items-center justify-center rounded-2xl bg-white/[0.04]">
-                      <LockKeyhole size={32} className="text-gray-500" />
-                    </div>
-
-                    <h3 className="mt-5 text-lg font-semibold">
-                      Keep learning!
-                    </h3>
-
-                    <p className="mt-2 max-w-sm text-sm leading-6 text-gray-400">
-                      Your certificate preview will become available once you
-                      complete the course.
-                    </p>
-
-                    <div className="mt-6 w-full max-w-sm">
-                      <div className="mb-2 flex justify-between text-xs">
-                        <span className="text-gray-400">Course progress</span>
-
-                        <span className="font-semibold text-violet-300">
-                          {certificate.progress}%
-                        </span>
-                      </div>
-
-                      <div
-                        className="h-2 overflow-hidden rounded-full bg-white/10"
-                        role="progressbar"
-                        aria-label="Course progress"
-                        aria-valuenow={certificate.progress}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                      >
-                        <div
-                          className="h-full rounded-full bg-violet-500 transition-all"
-                          style={{
-                            width: `${certificate.progress}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Certificate identification */}
-            {isEarned && (
-              <section className="rounded-2xl border border-white/[0.08] bg-[#101016] p-5 sm:p-6">
-                <div className="flex items-start gap-3">
-                  <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-400">
-                    <ShieldCheck size={23} />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-semibold">
-                      Certificate identification
-                    </h2>
-
-                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                      Use this unique ID to identify this certificate.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-5 flex flex-col gap-3 rounded-xl border border-white/[0.07] bg-black/20 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0">
-                    <p className="text-xs text-gray-500">Certificate number</p>
-
-                    <p className="mt-2 break-all font-mono text-sm text-violet-300">
-                      {certificate.certificateNumber}
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-gray-300 transition hover:bg-white/[0.05] hover:text-white"
-                  >
-                    {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
-
-                    {copied ? "Copied" : "Copy ID"}
-                  </button>
-                </div>
-
-                <p className="mt-4 text-xs leading-5 text-gray-500">
-                  This sample page displays a certificate ID only. Connect a
-                  backend verification endpoint to confirm certificate
-                  authenticity.
+                <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.34em] text-violet-300/80">
+                  Launch Point
                 </p>
-              </section>
-            )}
-          </div>
+                <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/40">
+                  Certificate of Completion
+                </p>
 
-          {/* Details sidebar */}
-          <aside className="space-y-5 lg:col-span-2">
-            <section className="rounded-2xl border border-white/[0.08] bg-[#101016] p-5 sm:p-6">
-              <h2 className="font-semibold">Certificate information</h2>
+                <p className="mt-7 text-sm text-white/50">
+                  This certifies that
+                </p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {data.recipient}
+                </h2>
 
-              <div className="mt-5 space-y-5">
-                <InfoRow
-                  icon={<BookOpen size={18} />}
-                  label="Course"
-                  value={certificate.title}
-                />
+                <div className="mx-auto mt-5 h-px w-40 bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
 
-                <InfoRow
-                  icon={<GraduationCap size={18} />}
-                  label="Instructor"
-                  value={certificate.instructor}
-                />
+                <p className="mt-5 max-w-md text-sm leading-7 text-white/55">
+                  has successfully completed the{" "}
+                  <span className="font-semibold text-white/85">
+                    {data.level}
+                  </span>{" "}
+                  course
+                </p>
+                <h3 className="mt-2 max-w-lg bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-xl font-semibold leading-snug tracking-[-0.015em] text-transparent sm:text-2xl">
+                  {data.courseTitle}
+                </h3>
 
-                <InfoRow
-                  icon={<Award size={18} />}
-                  label="Category"
-                  value={certificate.category}
-                />
-
-                <InfoRow
-                  icon={<CalendarDays size={18} />}
-                  label="Date issued"
-                  value={formatDate(certificate.issuedAt)}
-                />
-
-                <InfoRow
-                  icon={<Clock3 size={18} />}
-                  label="Completion progress"
-                  value={`${certificate.progress}%`}
-                />
-
-                <div className="border-t border-white/[0.07] pt-5">
-                  <p className="text-xs text-gray-500">Status</p>
-
-                  <span
-                    className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${
-                      isEarned
-                        ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                        : "border border-amber-500/20 bg-amber-500/10 text-amber-400"
-                    }`}
-                  >
-                    {isEarned ? (
-                      <CheckCircle2 size={14} />
-                    ) : (
-                      <LockKeyhole size={14} />
-                    )}
-
-                    {isEarned ? "Earned" : "In progress"}
-                  </span>
+                {/* Skills */}
+                <div className="mt-6 flex flex-wrap justify-center gap-1.5">
+                  {data.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-[10px] text-white/60"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </section>
 
-            {/* Helpful information */}
-            <section className="rounded-2xl border border-violet-500/15 bg-violet-500/[0.05] p-5">
-              <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-violet-500/10 p-2 text-violet-300">
-                  <ShieldCheck size={20} />
-                </div>
-
-                <div>
-                  <h2 className="font-semibold">About your certificate</h2>
-
-                  <p className="mt-2 text-sm leading-6 text-gray-400">
-                    Your certificate records your achievement after successfully
-                    completing a course on Launch Point LMS.
-                  </p>
-
-                  <div className="mt-4 space-y-3 text-sm text-gray-300">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2
-                        size={16}
-                        className="mt-0.5 shrink-0 text-violet-400"
-                      />
-                      <span>Keep your certificate ID for reference.</span>
-                    </div>
-
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2
-                        size={16}
-                        className="mt-0.5 shrink-0 text-violet-400"
-                      />
-                      <span>
-                        Download your certificate when it is available.
-                      </span>
-                    </div>
-
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2
-                        size={16}
-                        className="mt-0.5 shrink-0 text-violet-400"
-                      />
-                      <span>
-                        Share your achievement with your professional network.
-                      </span>
-                    </div>
+              {/* Footer: signature + seal + dates */}
+              <div className="mt-9 grid grid-cols-1 items-end gap-6 border-t border-white/[0.07] pt-6 sm:grid-cols-3">
+                <div className="flex items-center gap-3 text-left">
+                  <img
+                    src={data.instructorImage}
+                    alt={data.instructor}
+                    loading="lazy"
+                    className="h-10 w-10 shrink-0 rounded-full border border-white/10 object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-semibold text-white/85">
+                      {data.instructor}
+                    </p>
+                    <p className="mt-0.5 truncate text-[10px] text-white/40">
+                      {data.instructorRole}
+                    </p>
                   </div>
                 </div>
+
+                <div className="flex flex-col items-center">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-amber-300/30 bg-gradient-to-br from-[#3A2A0B] to-[#17140B] text-amber-300 shadow-[0_4px_18px_rgba(245,158,11,0.18)]">
+                    <BadgeCheck className="h-6 w-6" />
+                  </span>
+                  <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-white/35">
+                    Official Seal
+                  </p>
+                </div>
+
+                <div className="text-left sm:text-right">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-white/40">
+                    Issued on
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-white/80">
+                    {formatLongDate(data.issuedAt)}
+                  </p>
+                  <p className="mt-2 text-[10px] text-white/35">
+                    Serial&nbsp;·&nbsp;
+                    <span className="font-medium tracking-wide text-violet-300/80">
+                      {data.serial}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </section>
+            </div>
+          </section>
+
+          {/* Actions */}
+          <section className="lp-no-print grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <button
+              type="button"
+              className="group/button inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+            >
+              <Download className="h-4 w-4 transition-transform group-hover/button:translate-y-0.5" />
+              Download PDF
+            </button>
 
             <button
               type="button"
-              onClick={() => navigate("/student/certificates")}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-medium text-gray-300 transition hover:border-violet-500/30 hover:bg-white/[0.03] hover:text-white"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
             >
-              <ArrowLeft size={17} />
-              Back to My Certificates
+              {/* <Linkedin className="h-4 w-4" /> */}
+              Add to LinkedIn
             </button>
-          </aside>
+
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
+            >
+              <Printer className="h-4 w-4" />
+              Print
+            </button>
+          </section>
         </div>
+
+        {/* ── RIGHT: meta + verification ─────────────────────────────── */}
+        <aside className="space-y-6 xl:sticky xl:top-6">
+          {/* Completion summary */}
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
+            <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+            <p className="relative text-[11px] font-semibold uppercase tracking-[0.16em] text-white/80">
+              Course Completed
+            </p>
+            <div className="relative mt-3 flex items-end gap-2.5">
+              <span className="text-4xl font-bold leading-none tracking-tight text-white">
+                {data.finalScore}%
+              </span>
+              <span className="pb-0.5 text-xs leading-snug text-white/75">
+                Final score
+                <br />
+                {data.grade}
+              </span>
+            </div>
+            <div className="relative mt-5 flex items-center gap-2 text-xs text-white/85">
+              <CalendarDays className="h-4 w-4 shrink-0" />
+              Completed {formatLongDate(data.completedAt)}
+            </div>
+          </section>
+
+          {/* Credential details */}
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] p-5">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+            <h2 className="mb-4 flex items-center gap-2 px-1 text-sm font-semibold tracking-tight text-white">
+              <Sparkles className="h-4 w-4 text-violet-300" />
+              Credential Details
+            </h2>
+
+            <dl className="space-y-0.5">
+              {[
+                { label: "Category", value: data.category },
+                { label: "Level", value: data.level },
+                { label: "Recipient", value: data.recipient },
+                { label: "Instructor", value: data.instructor },
+                { label: "Serial number", value: data.serial },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-center justify-between gap-4 rounded-xl px-2 py-2.5 transition-colors hover:bg-white/[0.025]"
+                >
+                  <dt className="shrink-0 text-xs text-white/45">
+                    {row.label}
+                  </dt>
+                  <dd className="min-w-0 truncate text-right text-xs font-medium text-white/85">
+                    {row.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            {/* Course quick stats */}
+            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/[0.07] pt-4">
+              {stats.map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5"
+                  >
+                    <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-white/40">
+                      <Icon className="h-3.5 w-3.5 text-violet-300" />
+                      {stat.label}
+                    </div>
+                    <p className="mt-1 text-sm font-semibold text-white/90">
+                      {stat.value}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Verification */}
+          <section className="relative overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-[#0B1A14] to-[#070D0B] p-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/10 text-emerald-300">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white">
+                  Verifiable credential
+                </p>
+                <p className="mt-1 text-[11px] leading-5 text-white/45">
+                  Anyone with the link below can confirm this certificate is
+                  authentic.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 py-2.5">
+              <Link2 className="h-4 w-4 shrink-0 text-emerald-300/80" />
+              <span className="min-w-0 flex-1 truncate text-[11px] text-white/60">
+                {data.credentialUrl}
+              </span>
+              <button
+                type="button"
+                onClick={copyCredential}
+                aria-label="Copy verification link"
+                className={`inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-colors ${
+                  copied
+                    ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
+                    : "border-white/[0.1] bg-white/[0.03] text-white/65 hover:border-emerald-400/35 hover:text-emerald-200"
+                }`}
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-2.5 text-xs font-semibold text-emerald-200 transition hover:border-emerald-400/45 hover:bg-emerald-500/[0.14] focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              Share certificate
+            </button>
+          </section>
+        </aside>
       </div>
     </div>
   );
-}
+};
 
-interface InfoRowProps {
-  icon: ReactNode;
-  label: string;
-  value: string;
-}
-
-function InfoRow({ icon, label, value }: InfoRowProps) {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="mt-0.5 shrink-0 text-gray-500">{icon}</div>
-
-      <div className="min-w-0 flex-1">
-        <p className="text-xs text-gray-500">{label}</p>
-
-        <p className="mt-1 break-words text-sm font-medium leading-6 text-gray-200">
-          {value}
-        </p>
-      </div>
-    </div>
-  );
-}
+export default CertificateDetailsPage;
