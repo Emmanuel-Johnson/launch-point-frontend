@@ -18,98 +18,20 @@ import {
   Trophy,
 } from "lucide-react";
 
+import {
+  certificates,
+  formatIssueDate,
+  type Certificate,
+  type CertificateGrade,
+} from "../data/certificateData";
+
 /* ──────────────────────────────────────────────────────────────────
-   TYPES + DATA (UI-only mock — wire to the student's earned
-   certificates from the API later). Card details + styling mirror
-   Explore Courses, My Learning and Saved so the whole student area
-   reads as one system.
+   My Certificates — the list. Reads the shared certificate records
+   from ../data/certificateData so every card deep-links into the
+   detail page (/student/certificates/:id) which reads the same data.
+   Card details + styling mirror Explore Courses, My Learning and Saved
+   so the whole student area reads as one system.
    ────────────────────────────────────────────────────────────────── */
-
-type Certificate = {
-  id: number;
-  courseId: number;
-  issuedAt: string;
-  title: string;
-  category: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  plan: "Free" | "Premium";
-  duration: string;
-  lessons: number;
-  score: number; // final score %
-  grade: "Distinction" | "Merit" | "Pass";
-  credentialId: string;
-  instructor: string;
-  instructorRole: string;
-  instructorImage: string;
-  image: string;
-  skills: string[];
-};
-
-const certificates: Certificate[] = [
-  {
-    id: 1,
-    courseId: 4,
-    issuedAt: "2026-10-21T12:00:00Z",
-    title: "Data Analytics with SQL",
-    category: "Data Science",
-    level: "Intermediate",
-    plan: "Premium",
-    duration: "21 hours",
-    lessons: 36,
-    score: 96,
-    grade: "Distinction",
-    credentialId: "LP-DA-2026-00482",
-    instructor: "Priya Sharma",
-    instructorRole: "Data Analyst",
-    instructorImage:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=520&fit=crop",
-    skills: ["SQL", "Analytics", "Reports"],
-  },
-  {
-    id: 2,
-    courseId: 3,
-    issuedAt: "2026-09-08T12:00:00Z",
-    title: "Python Programming",
-    category: "Development",
-    level: "Beginner",
-    plan: "Free",
-    duration: "24 hours",
-    lessons: 40,
-    score: 88,
-    grade: "Merit",
-    credentialId: "LP-PY-2026-00310",
-    instructor: "James Wilson",
-    instructorRole: "Software Engineer",
-    instructorImage:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
-    image:
-      "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=900&h=520&fit=crop",
-    skills: ["Python", "OOP", "Projects"],
-  },
-  {
-    id: 3,
-    courseId: 6,
-    issuedAt: "2026-06-30T12:00:00Z",
-    title: "Product & Business Strategy",
-    category: "Business",
-    level: "Beginner",
-    plan: "Premium",
-    duration: "14 hours",
-    lessons: 24,
-    score: 82,
-    grade: "Pass",
-    credentialId: "LP-BS-2026-00127",
-    instructor: "Olivia Bennett",
-    instructorRole: "Product Strategist",
-    instructorImage:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&h=520&fit=crop",
-    skills: ["Strategy", "Research", "Planning"],
-  },
-];
 
 type CertFilter =
   | "All"
@@ -127,7 +49,7 @@ const filters: { label: CertFilter; icon: typeof LayoutGrid }[] = [
 ];
 
 const GRADE_META: Record<
-  Certificate["grade"],
+  CertificateGrade,
   { wrap: string; tint: string; icon: typeof Medal }
 > = {
   Distinction: {
@@ -147,12 +69,10 @@ const GRADE_META: Record<
   },
 };
 
-const formatIssueDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+/* Only issued certificates belong on this page. */
+const earnedCertificates = certificates.filter(
+  (cert) => cert.status === "earned",
+);
 
 const CertificatePage = () => {
   const navigate = useNavigate();
@@ -165,36 +85,42 @@ const CertificatePage = () => {
 
   /* Overall certificate statistics. */
   const stats = useMemo(() => {
-    const total = certificates.length;
-    const distinctions = certificates.filter(
+    const total = earnedCertificates.length;
+    const distinctions = earnedCertificates.filter(
       (c) => c.grade === "Distinction",
     ).length;
-    const hours = certificates.reduce(
+    const hours = earnedCertificates.reduce(
       (sum, c) => sum + (Number.parseFloat(c.duration) || 0),
       0,
     );
     const avgScore =
       total === 0
         ? 0
-        : Math.round(certificates.reduce((sum, c) => sum + c.score, 0) / total);
+        : Math.round(
+            earnedCertificates.reduce((sum, c) => sum + (c.score ?? 0), 0) /
+              total,
+          );
 
     return { total, distinctions, hours, avgScore };
   }, []);
 
   /* Most recently earned certificate — the hero. */
   const latest = useMemo(() => {
-    return [...certificates].sort(
-      (a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime(),
+    return [...earnedCertificates].sort(
+      (a, b) =>
+        new Date(b.issuedAt ?? 0).getTime() -
+        new Date(a.issuedAt ?? 0).getTime(),
     )[0];
   }, []);
 
   const filteredCertificates = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
 
-    return [...certificates]
+    return [...earnedCertificates]
       .sort(
         (a, b) =>
-          new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime(),
+          new Date(b.issuedAt ?? 0).getTime() -
+          new Date(a.issuedAt ?? 0).getTime(),
       )
       .filter((cert) => {
         const matchesFilter =
@@ -204,7 +130,7 @@ const CertificatePage = () => {
           !query ||
           cert.title.toLowerCase().includes(query) ||
           cert.instructor.toLowerCase().includes(query) ||
-          cert.credentialId.toLowerCase().includes(query) ||
+          (cert.credentialId?.toLowerCase().includes(query) ?? false) ||
           cert.skills.some((skill) => skill.toLowerCase().includes(query));
 
         return matchesFilter && matchesSearch;
@@ -212,6 +138,8 @@ const CertificatePage = () => {
   }, [activeFilter, searchQuery]);
 
   const copyCredential = (cert: Certificate) => {
+    if (!cert.credentialId) return;
+
     navigator.clipboard?.writeText(cert.credentialId).then(
       () => {
         setCopiedId(cert.id);
@@ -354,48 +282,53 @@ const CertificatePage = () => {
               </h2>
 
               <div className="mt-5 flex flex-wrap items-center gap-2.5">
-                {(() => {
-                  const meta = GRADE_META[latest.grade];
-                  const GradeIcon = meta.icon;
-                  return (
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold ${meta.wrap} ${meta.tint}`}
-                    >
-                      <GradeIcon className="h-3.5 w-3.5" />
-                      {latest.grade}
-                    </span>
-                  );
-                })()}
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-medium text-white/65">
-                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                  {latest.score}% score
-                </span>
+                {latest.grade &&
+                  (() => {
+                    const meta = GRADE_META[latest.grade];
+                    const GradeIcon = meta.icon;
+                    return (
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold ${meta.wrap} ${meta.tint}`}
+                      >
+                        <GradeIcon className="h-3.5 w-3.5" />
+                        {latest.grade}
+                      </span>
+                    );
+                  })()}
+                {latest.score !== null && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-medium text-white/65">
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    {latest.score}% score
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-medium text-white/65">
                   <BadgeCheck className="h-3.5 w-3.5 text-violet-300" />
                   Issued {formatIssueDate(latest.issuedAt)}
                 </span>
               </div>
 
-              <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3.5 py-2.5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-white/35">
-                  Credential ID
-                </span>
-                <span className="font-mono text-xs font-semibold tracking-tight text-white/85">
-                  {latest.credentialId}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copyCredential(latest)}
-                  aria-label="Copy credential ID"
-                  className="ml-1 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] text-white/55 transition hover:border-violet-400/35 hover:bg-violet-500/[0.08] hover:text-violet-200"
-                >
-                  {copiedId === latest.id ? (
-                    <BadgeCheck className="h-3.5 w-3.5 text-emerald-300" />
-                  ) : (
-                    <Copy className="h-3.5 w-3.5" />
-                  )}
-                </button>
-              </div>
+              {latest.credentialId && (
+                <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3.5 py-2.5">
+                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-white/35">
+                    Credential ID
+                  </span>
+                  <span className="font-mono text-xs font-semibold tracking-tight text-white/85">
+                    {latest.credentialId}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => copyCredential(latest)}
+                    aria-label="Copy credential ID"
+                    className="ml-1 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] text-white/55 transition hover:border-violet-400/35 hover:bg-violet-500/[0.08] hover:text-violet-200"
+                  >
+                    {copiedId === latest.id ? (
+                      <BadgeCheck className="h-3.5 w-3.5 text-emerald-300" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                </div>
+              )}
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <button
@@ -513,8 +446,8 @@ const CertificatePage = () => {
         {filteredCertificates.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {filteredCertificates.map((cert) => {
-              const grade = GRADE_META[cert.grade];
-              const GradeIcon = grade.icon;
+              const grade = cert.grade ? GRADE_META[cert.grade] : null;
+              const GradeIcon = grade?.icon ?? BadgeCheck;
 
               return (
                 <article
@@ -535,14 +468,16 @@ const CertificatePage = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0D0C12] via-[#0D0C12]/45 to-transparent" />
 
                     {/* Grade badge */}
-                    <div className="absolute left-3 top-3 z-20">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold shadow-lg backdrop-blur-md ${grade.wrap} ${grade.tint}`}
-                      >
-                        <GradeIcon className="h-3.5 w-3.5" />
-                        {cert.grade}
-                      </span>
-                    </div>
+                    {grade && cert.grade && (
+                      <div className="absolute left-3 top-3 z-20">
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold shadow-lg backdrop-blur-md ${grade.wrap} ${grade.tint}`}
+                        >
+                          <GradeIcon className="h-3.5 w-3.5" />
+                          {cert.grade}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Verified seal */}
                     <div className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-amber-300/40 bg-gradient-to-br from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 shadow-[0_4px_18px_rgba(245,158,11,0.2)] backdrop-blur-md">
@@ -577,7 +512,8 @@ const CertificatePage = () => {
                     <div className="grid grid-cols-3 gap-2">
                       <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] px-2.5 py-2 text-center">
                         <p className="text-sm font-semibold tabular-nums text-white">
-                          {cert.score}%
+                          {cert.score ?? "—"}
+                          {cert.score !== null ? "%" : ""}
                         </p>
                         <p className="mt-0.5 text-[9px] uppercase tracking-wider text-white/40">
                           Score
@@ -602,24 +538,26 @@ const CertificatePage = () => {
                     </div>
 
                     {/* Credential ID */}
-                    <button
-                      type="button"
-                      onClick={() => copyCredential(cert)}
-                      aria-label={`Copy credential ID ${cert.credentialId}`}
-                      className="mt-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0B0B0F] px-3 py-2.5 text-left transition hover:border-violet-400/30 hover:bg-violet-500/[0.05]"
-                    >
-                      <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-white/35">
-                        ID
-                      </span>
-                      <span className="min-w-0 flex-1 truncate font-mono text-[11px] font-semibold text-white/80">
-                        {cert.credentialId}
-                      </span>
-                      {copiedId === cert.id ? (
-                        <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald-300" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5 shrink-0 text-white/40" />
-                      )}
-                    </button>
+                    {cert.credentialId && (
+                      <button
+                        type="button"
+                        onClick={() => copyCredential(cert)}
+                        aria-label={`Copy credential ID ${cert.credentialId}`}
+                        className="mt-4 flex w-full cursor-pointer items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0B0B0F] px-3 py-2.5 text-left transition hover:border-violet-400/30 hover:bg-violet-500/[0.05]"
+                      >
+                        <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-white/35">
+                          ID
+                        </span>
+                        <span className="min-w-0 flex-1 truncate font-mono text-[11px] font-semibold text-white/80">
+                          {cert.credentialId}
+                        </span>
+                        {copiedId === cert.id ? (
+                          <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald-300" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5 shrink-0 text-white/40" />
+                        )}
+                      </button>
+                    )}
 
                     {/* Instructor */}
                     <div className="mb-4 mt-4 flex items-center gap-3 border-t border-white/[0.07] pt-4">
