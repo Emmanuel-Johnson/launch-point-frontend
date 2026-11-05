@@ -106,6 +106,11 @@ const CertificateDetailsPage = () => {
     }
   };
 
+  // Download / Print the certificate. Uses the browser's native print pipeline
+  // (no external libraries): the print CSS below hides everything except the
+  // certificate paper, so "Save as PDF" in the dialog produces a clean file.
+  const printCertificate = () => window.print();
+
   const stats = [
     { icon: Clock3, label: "Duration", value: `${data.durationHours} hours` },
     { icon: GraduationCap, label: "Lessons", value: `${data.lessons} lessons` },
@@ -137,8 +142,12 @@ const CertificateDetailsPage = () => {
         @media (prefers-reduced-motion: reduce) {
           .lp-card-sheen, .lp-seal-ring { animation: none !important; }
         }
+
+        /* Print / Save-as-PDF = clean certificate only: no dark chrome, no sidebar. */
         @media print {
+          @page { size: A4 landscape; margin: 10mm; }
           .lp-no-print { display: none !important; }
+          .lp-cert-frame { background: none !important; box-shadow: none !important; padding: 0 !important; }
           .lp-cert-paper { box-shadow: none !important; }
         }
       `}</style>
@@ -177,7 +186,7 @@ const CertificateDetailsPage = () => {
       </div>
 
       {/* Page heading */}
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <section className="lp-no-print flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
         <div className="cursor-default">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
             Verified Credential
@@ -204,7 +213,7 @@ const CertificateDetailsPage = () => {
       <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
         {/* ── LEFT: the printed certificate ──────────────────────────── */}
         <div className="min-w-0 space-y-8">
-          <section className="group relative isolate overflow-hidden rounded-[22px] bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-4 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-6">
+          <section className="lp-cert-frame group relative isolate overflow-hidden rounded-[22px] bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-4 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-6">
             {/* Hover sheen over the frame */}
             <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
 
@@ -456,6 +465,7 @@ const CertificateDetailsPage = () => {
           <section className="lp-no-print grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button
               type="button"
+              onClick={printCertificate}
               className="group/button inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
             >
               <Download className="h-4 w-4 transition-transform group-hover/button:translate-y-0.5" />
@@ -472,7 +482,7 @@ const CertificateDetailsPage = () => {
 
             <button
               type="button"
-              onClick={() => window.print()}
+              onClick={printCertificate}
               className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
             >
               <Printer className="h-4 w-4" />
@@ -482,7 +492,7 @@ const CertificateDetailsPage = () => {
         </div>
 
         {/* ── RIGHT: meta + verification ─────────────────────────────── */}
-        <aside className="space-y-6 xl:sticky xl:top-6">
+        <aside className="lp-no-print space-y-6 xl:sticky xl:top-6">
           {/* Completion summary */}
           <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
             <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
