@@ -1,5 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
+import { toast } from "react-toastify";
+
 import { persistor, store } from "../../app/store/store";
 import {
   clearCredentials,
@@ -69,10 +71,24 @@ function processQueue(error: unknown, token: string | null = null) {
 }
 
 // -----------------------------------------------------------------------------
+// SESSION EXPIRATION STATE
+// -----------------------------------------------------------------------------
+
+let isSessionExpired = false;
+
+export function resetSessionExpired() {
+  isSessionExpired = false;
+}
+
+// -----------------------------------------------------------------------------
 // SESSION CLEANUP
 // -----------------------------------------------------------------------------
 
 async function clearSession() {
+  if (isSessionExpired) return;
+
+  isSessionExpired = true;
+
   store.dispatch(clearCredentials());
   await persistor.purge();
 }
@@ -116,10 +132,12 @@ api.interceptors.response.use(
       const data = error.response.data as { code?: string } | undefined;
 
       if (data?.code === "instructor_access_denied") {
-        await clearSession();
+        if (!isSessionExpired) {
+          await clearSession();
 
-        if (window.location.pathname !== "/login") {
-          window.location.replace("/login");
+          if (window.location.pathname !== "/login") {
+            window.location.replace("/login");
+          }
         }
       }
 
@@ -189,10 +207,17 @@ api.interceptors.response.use(
         console.error("Token refresh failed:", refreshError);
       }
 
-      await clearSession();
+      // Clean up session and show only one toast.
+      if (!isSessionExpired) {
+        await clearSession();
 
-      if (window.location.pathname !== "/login") {
-        window.location.replace("/login");
+        toast.error("Session expired. Please log in again.", {
+          toastId: "session-expired",
+        });
+
+        if (window.location.pathname !== "/login") {
+          window.location.replace("/login");
+        }
       }
 
       return Promise.reject(refreshError);

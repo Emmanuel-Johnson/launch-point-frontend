@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Award,
-  BadgeCheck,
   CalendarDays,
   Check,
   Clock3,
@@ -39,6 +38,8 @@ type CertificateDetail = {
   instructor: string;
   instructorRole: string;
   instructorImage: string;
+  director: string;
+  directorRole: string;
   skills: string[];
 };
 
@@ -58,9 +59,11 @@ const certificate: CertificateDetail = {
   finalScore: 94,
   credentialUrl: "https://launchpoint.app/verify/LP-2026-FSWD-8842",
   instructor: "Sarah Mitchell",
-  instructorRole: "Senior Full Stack Developer",
+  instructorRole: "Course Instructor",
   instructorImage:
     "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces",
+  director: "Daniel Pereira",
+  directorRole: "Program Director",
   skills: ["React", "Django", "PostgreSQL", "REST APIs", "Deployment"],
 };
 
@@ -103,6 +106,16 @@ const CertificateDetailsPage = () => {
     }
   };
 
+  // Download / Print the certificate. The print CSS below hides everything
+  // except the certificate paper and makes it fill a full A4 landscape page.
+  // We scroll to the top first because a `position: fixed` element otherwise
+  // prints clipped/half-size when the page is scrolled down (Chrome quirk).
+  const printCertificate = () => {
+    window.scrollTo(0, 0);
+    // Let layout settle at the top before the print dialog captures it.
+    window.setTimeout(() => window.print(), 60);
+  };
+
   const stats = [
     { icon: Clock3, label: "Duration", value: `${data.durationHours} hours` },
     { icon: GraduationCap, label: "Lessons", value: `${data.lessons} lessons` },
@@ -112,8 +125,14 @@ const CertificateDetailsPage = () => {
 
   return (
     <div className="min-h-full space-y-8 pb-8 text-white">
-      {/* Shared hover sheen + certificate shimmer */}
+      {/* Fonts + shared keyframes + print rules */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Pinyon+Script&family=EB+Garamond:wght@400;500;600&display=swap');
+
+        .lp-serif { font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, 'Times New Roman', serif; }
+        .lp-body  { font-family: 'EB Garamond', Georgia, 'Times New Roman', serif; }
+        .lp-script { font-family: 'Pinyon Script', 'Brush Script MT', cursive; }
+
         @keyframes lp-card-sheen {
           0% { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
           40% { opacity: 1; }
@@ -121,16 +140,49 @@ const CertificateDetailsPage = () => {
         }
         .lp-card-sheen { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
         .group:hover .lp-card-sheen { animation: lp-card-sheen 1.1s ease-out; }
-        @keyframes lp-cert-shine {
-          0% { transform: translateX(-130%) skewX(-18deg); }
-          100% { transform: translateX(320%) skewX(-18deg); }
-        }
-        .lp-cert-shine { animation: lp-cert-shine 6s ease-in-out infinite; }
+
+        @keyframes lp-seal-spin { to { transform: rotate(360deg); } }
+        .lp-seal-ring { animation: lp-seal-spin 26s linear infinite; transform-origin: center; }
+
         @media (prefers-reduced-motion: reduce) {
-          .lp-card-sheen, .lp-cert-shine { animation: none !important; }
+          .lp-card-sheen, .lp-seal-ring { animation: none !important; }
         }
+
+        /* Print / Save-as-PDF = ONLY the certificate, filling the whole page.
+           - body * hidden, print area shown → sidebar/header/frame excluded.
+           - position: fixed + inset:0 + 100vw/100vh → edge-to-edge, no white.
+           - scroll-to-top in printCertificate() avoids the half-size clip. */
         @media print {
-          .lp-no-print { display: none !important; }
+          @page { size: A4 landscape; margin: 0; }
+
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #f3ead3 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          body * { visibility: hidden !important; }
+
+          #lp-print-area,
+          #lp-print-area * { visibility: visible !important; }
+
+          #lp-print-area {
+            position: fixed !important;
+            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            aspect-ratio: auto !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
         }
       `}</style>
 
@@ -168,7 +220,7 @@ const CertificateDetailsPage = () => {
       </div>
 
       {/* Page heading */}
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <section className="lp-no-print flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
         <div className="cursor-default">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-400/90">
             Verified Credential
@@ -193,119 +245,262 @@ const CertificateDetailsPage = () => {
 
       {/* Two-column layout: certificate on the left, details on the right */}
       <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
-        {/* ── LEFT: the certificate artwork ──────────────────────────── */}
+        {/* ── LEFT: the printed certificate ──────────────────────────── */}
         <div className="min-w-0 space-y-8">
-          <section className="group relative isolate overflow-hidden rounded-[28px] border border-violet-400/20 bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-6 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-8">
-            {/* Ambient glows */}
-            <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-violet-600/20 blur-[100px]" />
-            <div className="pointer-events-none absolute -bottom-28 left-1/4 h-64 w-64 rounded-full bg-indigo-500/10 blur-[100px]" />
-            {/* Moving shine */}
-            <span className="lp-cert-shine pointer-events-none absolute inset-y-0 left-0 z-0 w-1/3 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+          <section className="lp-cert-frame group relative isolate overflow-hidden rounded-[22px] bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-4 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-6">
+            {/* Hover sheen over the frame */}
+            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
 
-            {/* Inner framed certificate */}
-            <div className="relative z-10 rounded-[22px] border border-violet-300/15 bg-[#0B0814]/60 p-6 ring-1 ring-white/[0.04] sm:p-9">
-              {/* Corner flourishes */}
-              <span className="pointer-events-none absolute left-4 top-4 h-8 w-8 rounded-tl-xl border-l-2 border-t-2 border-violet-400/40" />
-              <span className="pointer-events-none absolute right-4 top-4 h-8 w-8 rounded-tr-xl border-r-2 border-t-2 border-violet-400/40" />
-              <span className="pointer-events-none absolute bottom-4 left-4 h-8 w-8 rounded-bl-xl border-b-2 border-l-2 border-violet-400/40" />
-              <span className="pointer-events-none absolute bottom-4 right-4 h-8 w-8 rounded-br-xl border-b-2 border-r-2 border-violet-400/40" />
+            {/* ── The paper ──────────────────────────────────────────── */}
+            <article
+              id="lp-print-area"
+              className="lp-cert-paper lp-body relative mx-auto aspect-[1.414/1] w-full overflow-hidden rounded-[6px] text-[#2c2416] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.65)]"
+              style={{
+                background:
+                  "radial-gradient(120% 120% at 50% 0%, #fffdf6 0%, #faf5e6 45%, #f3ead3 100%)",
+              }}
+              aria-label={`Certificate of completion for ${data.recipient}`}
+            >
+              {/* Guilloché / engraved background texture */}
+              <svg
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                aria-hidden="true"
+                preserveAspectRatio="xMidYMid slice"
+              >
+                <defs>
+                  <pattern
+                    id="lp-guilloche"
+                    width="28"
+                    height="28"
+                    patternUnits="userSpaceOnUse"
+                    patternTransform="rotate(45)"
+                  >
+                    <circle
+                      cx="14"
+                      cy="14"
+                      r="11"
+                      fill="none"
+                      stroke="#b9972f"
+                      strokeWidth="0.4"
+                    />
+                  </pattern>
+                  <radialGradient id="lp-vignette" cx="50%" cy="42%" r="75%">
+                    <stop offset="60%" stopColor="#000000" stopOpacity="0" />
+                    <stop
+                      offset="100%"
+                      stopColor="#7a5a10"
+                      stopOpacity="0.10"
+                    />
+                  </radialGradient>
+                </defs>
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="url(#lp-guilloche)"
+                  opacity="0.06"
+                />
+                <rect width="100%" height="100%" fill="url(#lp-vignette)" />
+              </svg>
 
-              {/* Header */}
-              <div className="flex flex-col items-center text-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-300/25 bg-gradient-to-br from-violet-500/25 to-violet-500/0 text-violet-200 shadow-inner shadow-violet-300/10">
-                  <Award className="h-8 w-8" />
-                </span>
-
-                <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.34em] text-violet-300/80">
-                  Launch Point
-                </p>
-                <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/40">
-                  Certificate of Completion
-                </p>
-
-                <p className="mt-7 text-sm text-white/50">
-                  This certifies that
-                </p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                  {data.recipient}
-                </h2>
-
-                <div className="mx-auto mt-5 h-px w-40 bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
-
-                <p className="mt-5 max-w-md text-sm leading-7 text-white/55">
-                  has successfully completed the{" "}
-                  <span className="font-semibold text-white/85">
-                    {data.level}
-                  </span>{" "}
-                  course
-                </p>
-                <h3 className="mt-2 max-w-lg bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-xl font-semibold leading-snug tracking-[-0.015em] text-transparent sm:text-2xl">
-                  {data.courseTitle}
-                </h3>
-
-                {/* Skills */}
-                <div className="mt-6 flex flex-wrap justify-center gap-1.5">
-                  {data.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-[10px] text-white/60"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+              {/* Large faint watermark monogram */}
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <Award
+                  className="h-[46%] w-[46%] text-[#c9a227]"
+                  style={{ opacity: 0.06 }}
+                  strokeWidth={1}
+                />
               </div>
 
-              {/* Footer: signature + seal + dates */}
-              <div className="mt-9 grid grid-cols-1 items-end gap-6 border-t border-white/[0.07] pt-6 sm:grid-cols-3">
-                <div className="flex items-center gap-3 text-left">
-                  <img
-                    src={data.instructorImage}
-                    alt={data.instructor}
-                    loading="lazy"
-                    className="h-10 w-10 shrink-0 rounded-full border border-white/10 object-cover"
+              {/* Ornamental gold double border */}
+              <div className="pointer-events-none absolute inset-[3%] rounded-[4px] border-[3px] border-[#c9a227]" />
+              <div className="pointer-events-none absolute inset-[3%] rounded-[4px] border border-[#8a6d1a]/60" />
+              <div className="pointer-events-none absolute inset-[5.2%] rounded-[2px] border border-[#c9a227]/50" />
+
+              {/* Corner flourishes */}
+              {(
+                [
+                  "left-[3%] top-[3%]",
+                  "right-[3%] top-[3%] -scale-x-100",
+                  "left-[3%] bottom-[3%] -scale-y-100",
+                  "right-[3%] bottom-[3%] -scale-x-100 -scale-y-100",
+                ] as const
+              ).map((pos) => (
+                <svg
+                  key={pos}
+                  className={`pointer-events-none absolute ${pos} h-[12%] w-[12%] text-[#b9972f]`}
+                  viewBox="0 0 60 60"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 6 L30 6 M6 6 L6 30 M6 6 Q26 10 22 26 Q12 22 6 22 M14 14 Q24 16 22 24"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
                   />
-                  <div className="min-w-0">
-                    <p className="truncate text-xs font-semibold text-white/85">
-                      {data.instructor}
-                    </p>
-                    <p className="mt-0.5 truncate text-[10px] text-white/40">
-                      {data.instructorRole}
-                    </p>
+                  <circle cx="6" cy="6" r="2.4" fill="currentColor" />
+                </svg>
+              ))}
+
+              {/* ── Certificate content ──────────────────────────────── */}
+              <div className="relative z-10 flex h-full flex-col items-center justify-between px-[9%] py-[6.5%] text-center">
+                {/* Header */}
+                <div className="flex flex-col items-center">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#c9a227] bg-[#fdf6e3] text-[#9a7b16] shadow-sm sm:h-14 sm:w-14">
+                    <Award className="h-5 w-5 sm:h-7 sm:w-7" />
+                  </span>
+                  <p className="lp-serif mt-2.5 text-[11px] font-semibold uppercase tracking-[0.38em] text-[#9a7b16] sm:text-sm">
+                    Launch Point
+                  </p>
+                  <h2 className="lp-serif mt-1 text-xl font-bold uppercase tracking-[0.18em] text-[#2c2416] sm:text-3xl">
+                    Certificate of Completion
+                  </h2>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="h-px w-8 bg-[#c9a227] sm:w-12" />
+                    <span className="h-1.5 w-1.5 rotate-45 bg-[#c9a227]" />
+                    <span className="h-px w-8 bg-[#c9a227] sm:w-12" />
                   </div>
                 </div>
 
+                {/* Recipient */}
                 <div className="flex flex-col items-center">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-amber-300/30 bg-gradient-to-br from-[#3A2A0B] to-[#17140B] text-amber-300 shadow-[0_4px_18px_rgba(245,158,11,0.18)]">
-                    <BadgeCheck className="h-6 w-6" />
-                  </span>
-                  <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-white/35">
-                    Official Seal
+                  <p className="lp-serif text-[11px] italic tracking-wide text-[#5c5240] sm:text-sm">
+                    This certificate is proudly presented to
                   </p>
+                  <p className="lp-script mt-1 text-4xl leading-tight text-[#1f1a0f] sm:mt-2 sm:text-6xl">
+                    {data.recipient}
+                  </p>
+                  <div className="mt-1 h-px w-48 bg-gradient-to-r from-transparent via-[#9a7b16]/60 to-transparent sm:w-72" />
                 </div>
 
-                <div className="text-left sm:text-right">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-white/40">
-                    Issued on
+                {/* Body */}
+                <div className="flex flex-col items-center">
+                  <p className="lp-body max-w-md text-[11px] leading-relaxed text-[#4a4332] sm:text-[15px]">
+                    for successfully completing the{" "}
+                    <span className="font-semibold text-[#2c2416]">
+                      {data.level.toLowerCase()}
+                    </span>{" "}
+                    course
                   </p>
-                  <p className="mt-1 text-xs font-medium text-white/80">
-                    {formatLongDate(data.issuedAt)}
+                  <h3 className="lp-serif mt-1 max-w-lg text-lg font-bold leading-snug text-[#7c3a0e] sm:text-2xl">
+                    {data.courseTitle}
+                  </h3>
+                  <p className="lp-body mt-1 text-[10px] text-[#5c5240] sm:text-xs">
+                    Completed {formatLongDate(data.completedAt)} · Final score{" "}
+                    {data.finalScore}% · {data.grade}
                   </p>
-                  <p className="mt-2 text-[10px] text-white/35">
-                    Serial&nbsp;·&nbsp;
-                    <span className="font-medium tracking-wide text-violet-300/80">
-                      {data.serial}
+
+                  {/* Skills */}
+                  <div className="mt-2 hidden flex-wrap justify-center gap-1.5 sm:flex">
+                    {data.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="lp-body rounded-full border border-[#c9a227]/50 bg-[#fdf6e3] px-2.5 py-0.5 text-[10px] text-[#6b5a1e]"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer: signatures + seal */}
+                <div className="grid w-full grid-cols-3 items-end gap-2">
+                  {/* Instructor signature */}
+                  <div className="flex flex-col items-center">
+                    <span className="lp-script text-xl leading-none text-[#1f1a0f] sm:text-3xl">
+                      {data.instructor}
                     </span>
-                  </p>
+                    <span className="mt-1 h-px w-full max-w-[9rem] bg-[#2c2416]/70" />
+                    <span className="lp-serif mt-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#4a4332] sm:text-[10px]">
+                      {data.instructor}
+                    </span>
+                    <span className="lp-body text-[7px] text-[#7a6f58] sm:text-[9px]">
+                      {data.instructorRole}
+                    </span>
+                  </div>
+
+                  {/* Gold seal */}
+                  <div className="flex flex-col items-center">
+                    <div className="relative flex h-14 w-14 items-center justify-center sm:h-20 sm:w-20">
+                      {/* ribbon tails */}
+                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 -translate-x-[140%] rotate-[14deg] bg-gradient-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
+                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 -translate-x-[-40%] -rotate-[14deg] bg-gradient-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
+                      {/* medallion */}
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="relative h-full w-full drop-shadow-[0_2px_4px_rgba(122,90,16,0.4)]"
+                        aria-hidden="true"
+                      >
+                        <circle cx="50" cy="50" r="46" fill="#d9b63a" />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="46"
+                          fill="none"
+                          stroke="#9a7b16"
+                          strokeWidth="2"
+                        />
+                        <g className="lp-seal-ring">
+                          {Array.from({ length: 40 }).map((_, i) => {
+                            const a = (i / 40) * Math.PI * 2;
+                            return (
+                              <circle
+                                key={i}
+                                cx={50 + 41 * Math.cos(a)}
+                                cy={50 + 41 * Math.sin(a)}
+                                r="1.5"
+                                fill="#9a7b16"
+                              />
+                            );
+                          })}
+                        </g>
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="33"
+                          fill="none"
+                          stroke="#9a7b16"
+                          strokeWidth="1.4"
+                        />
+                        <circle cx="50" cy="50" r="30" fill="#e7c84f" />
+                      </svg>
+                      <Award className="absolute h-5 w-5 text-[#7a5a10] sm:h-8 sm:w-8" />
+                    </div>
+                    <span className="lp-serif mt-3 text-[7px] font-semibold uppercase tracking-[0.2em] text-[#9a7b16] sm:text-[9px]">
+                      Official Seal
+                    </span>
+                  </div>
+
+                  {/* Director signature */}
+                  <div className="flex flex-col items-center">
+                    <span className="lp-script text-xl leading-none text-[#1f1a0f] sm:text-3xl">
+                      {data.director}
+                    </span>
+                    <span className="mt-1 h-px w-full max-w-[9rem] bg-[#2c2416]/70" />
+                    <span className="lp-serif mt-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#4a4332] sm:text-[10px]">
+                      {data.director}
+                    </span>
+                    <span className="lp-body text-[7px] text-[#7a6f58] sm:text-[9px]">
+                      {data.directorRole}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              {/* Serial strip */}
+              <div className="lp-body absolute inset-x-0 bottom-[3.4%] z-10 text-center text-[7px] tracking-[0.14em] text-[#9a7b16] sm:text-[9px]">
+                Serial&nbsp;·&nbsp;{data.serial}&nbsp;&nbsp;|&nbsp;&nbsp;Issued{" "}
+                {formatLongDate(data.issuedAt)}&nbsp;&nbsp;|&nbsp;&nbsp;Verify
+                at launchpoint.app/verify
+              </div>
+            </article>
           </section>
 
           {/* Actions */}
           <section className="lp-no-print grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button
               type="button"
+              onClick={printCertificate}
               className="group/button inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
             >
               <Download className="h-4 w-4 transition-transform group-hover/button:translate-y-0.5" />
@@ -322,7 +517,7 @@ const CertificateDetailsPage = () => {
 
             <button
               type="button"
-              onClick={() => window.print()}
+              onClick={printCertificate}
               className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
             >
               <Printer className="h-4 w-4" />
@@ -332,7 +527,7 @@ const CertificateDetailsPage = () => {
         </div>
 
         {/* ── RIGHT: meta + verification ─────────────────────────────── */}
-        <aside className="space-y-6 xl:sticky xl:top-6">
+        <aside className="lp-no-print space-y-6 xl:sticky xl:top-6">
           {/* Completion summary */}
           <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
             <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
