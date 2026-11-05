@@ -106,10 +106,15 @@ const CertificateDetailsPage = () => {
     }
   };
 
-  // Download / Print the certificate. Uses the browser's native print pipeline
-  // (no external libraries): the print CSS below hides everything except the
-  // certificate paper, so "Save as PDF" in the dialog produces a clean file.
-  const printCertificate = () => window.print();
+  // Download / Print the certificate. The print CSS below hides everything
+  // except the certificate paper and makes it fill a full A4 landscape page.
+  // We scroll to the top first because a `position: fixed` element otherwise
+  // prints clipped/half-size when the page is scrolled down (Chrome quirk).
+  const printCertificate = () => {
+    window.scrollTo(0, 0);
+    // Let layout settle at the top before the print dialog captures it.
+    window.setTimeout(() => window.print(), 60);
+  };
 
   const stats = [
     { icon: Clock3, label: "Duration", value: `${data.durationHours} hours` },
@@ -143,12 +148,41 @@ const CertificateDetailsPage = () => {
           .lp-card-sheen, .lp-seal-ring { animation: none !important; }
         }
 
-        /* Print / Save-as-PDF = clean certificate only: no dark chrome, no sidebar. */
+        /* Print / Save-as-PDF = ONLY the certificate, filling the whole page.
+           - body * hidden, print area shown → sidebar/header/frame excluded.
+           - position: fixed + inset:0 + 100vw/100vh → edge-to-edge, no white.
+           - scroll-to-top in printCertificate() avoids the half-size clip. */
         @media print {
-          @page { size: A4 landscape; margin: 10mm; }
-          .lp-no-print { display: none !important; }
-          .lp-cert-frame { background: none !important; box-shadow: none !important; padding: 0 !important; }
-          .lp-cert-paper { box-shadow: none !important; }
+          @page { size: A4 landscape; margin: 0; }
+
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #f3ead3 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          body * { visibility: hidden !important; }
+
+          #lp-print-area,
+          #lp-print-area * { visibility: visible !important; }
+
+          #lp-print-area {
+            position: fixed !important;
+            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            aspect-ratio: auto !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
         }
       `}</style>
 
@@ -219,6 +253,7 @@ const CertificateDetailsPage = () => {
 
             {/* ── The paper ──────────────────────────────────────────── */}
             <article
+              id="lp-print-area"
               className="lp-cert-paper lp-body relative mx-auto aspect-[1.414/1] w-full overflow-hidden rounded-[6px] text-[#2c2416] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.65)]"
               style={{
                 background:
