@@ -18,7 +18,6 @@ import {
   FileText,
   UploadCloud,
   CheckCircle2,
-  ChevronDown,
   Plus,
   Check,
   Eye,
@@ -779,7 +778,9 @@ const InstructorApplicationModal = ({
             education:
               initialApplication.education ?? profileDefaults.education,
             experience_years: String(initialApplication.experience_years ?? 0),
-            experience_months: String(initialApplication.experience_months ?? 0),
+            experience_months: String(
+              initialApplication.experience_months ?? 0,
+            ),
             categories_to_teach: selectedCategoryIds,
             professional_bio: initialApplication.professional_bio ?? "",
             phone_number: initialApplication.phone_number ?? "",
@@ -1585,51 +1586,6 @@ const InstructorApplicationModal = ({
                   </label>
 
                   <label className={labelClass}>
-                    Experience years
-                    <input
-                      type="number"
-                      min={0}
-                      max={32767}
-                      step={1}
-                      className={getInputClass("experience_years")}
-                      value={form.experience_years}
-                      onChange={(e) =>
-                        updateField("experience_years", e.target.value)
-                      }
-                      placeholder="Enter years"
-                    />
-                    {fieldError("experience_years")}
-                  </label>
-
-                  <label className={labelClass}>
-                    Experience months
-                    <div className="relative">
-                      <select
-                        className={`${getInputClass("experience_months")} appearance-none pr-10`}
-                        value={form.experience_months}
-                        onChange={(e) =>
-                          updateField("experience_months", e.target.value)
-                        }
-                      >
-                        <option value="" disabled>
-                          Select months
-                        </option>
-                        {Array.from({ length: 12 }, (_, index) => (
-                          <option
-                            key={index}
-                            value={String(index)}
-                            className="bg-[#0D0F15]"
-                          >
-                            {index} {index === 1 ? "Month" : "Months"}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-300/70" />
-                    </div>
-                    {fieldError("experience_months")}
-                  </label>
-
-                  <label className={labelClass}>
                     Phone number
                     <input
                       className={getInputClass("phone_number")}
@@ -1644,9 +1600,53 @@ const InstructorApplicationModal = ({
                     {fieldError("phone_number")}
                   </label>
 
-                  <label
-                    className={`${labelClass} sm:col-span-2 lg:col-span-2`}
-                  >
+                  <label className={labelClass}>
+                    Experience
+                    <div className="relative mt-2">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        autoComplete="off"
+                        className={`${getInputClass("experience_years")} !mt-0 pr-16`}
+                        value={form.experience_years}
+                        onChange={(e) =>
+                          updateField("experience_years", e.target.value)
+                        }
+                        placeholder="0"
+                      />
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-400">
+                        Years
+                      </span>
+                    </div>
+                    {fieldError("experience_years")}
+                  </label>
+
+                  <label className={labelClass}>
+                    <span className="invisible" aria-hidden="true">
+                      Experience
+                    </span>
+                    <div className="relative mt-2">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        autoComplete="off"
+                        className={`${getInputClass("experience_months")} !mt-0 pr-20`}
+                        value={form.experience_months}
+                        onChange={(e) =>
+                          updateField("experience_months", e.target.value)
+                        }
+                        placeholder="0–11"
+                      />
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-zinc-400">
+                        Months
+                      </span>
+                    </div>
+                    {fieldError("experience_months")}
+                  </label>
+
+                  <label className={labelClass}>
                     Location
                     <input
                       className={getInputClass("location")}
