@@ -595,6 +595,7 @@ const EditInstructorProfileModal = ({
           onSubmit={handleSubmit}
           className="relative flex min-h-0 flex-1 flex-col"
           noValidate
+          autoComplete="off"
         >
           <div className="relative space-y-7 overflow-y-auto px-6 py-6 sm:px-7">
             {/* Profile photo */}
@@ -759,45 +760,71 @@ const EditInstructorProfileModal = ({
                   <FieldError message={validationErrors.location} />
                 </label>
 
-                <label className={labelClassName}>
-                  Years of Experience
-                  <input
-                    type="number"
-                    name="experience_years"
-                    value={form.experience_years}
-                    onChange={handleChange}
-                    min={0}
-                    max={32767}
-                    step={1}
-                    disabled={isSaving}
-                    aria-invalid={Boolean(validationErrors.experience_years)}
-                    className={getFieldClassName(
-                      Boolean(validationErrors.experience_years),
-                    )}
-                    placeholder="Years"
-                  />
-                  <FieldError message={validationErrors.experience_years} />
-                </label>
+                <div className="sm:col-span-2">
+                  <p className={labelClassName}>Experience</p>
 
-                <label className={labelClassName}>
-                  Months of Experience
-                  <input
-                    type="number"
-                    name="experience_months"
-                    value={form.experience_months}
-                    onChange={handleChange}
-                    min={0}
-                    max={11}
-                    step={1}
-                    disabled={isSaving}
-                    aria-invalid={Boolean(validationErrors.experience_months)}
-                    className={getFieldClassName(
-                      Boolean(validationErrors.experience_months),
-                    )}
-                    placeholder="Months (0–11)"
-                  />
-                  <FieldError message={validationErrors.experience_months} />
-                </label>
+                  <div className="mt-2 grid gap-5 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="sr-only">Years of Experience</span>
+                      <span className="relative block">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          autoComplete="off"
+                          name="experience_years"
+                          value={form.experience_years}
+                          onChange={handleChange}
+                          disabled={isSaving}
+                          aria-label="Years of experience"
+                          aria-invalid={Boolean(
+                            validationErrors.experience_years,
+                          )}
+                          className={getFieldClassName(
+                            Boolean(validationErrors.experience_years),
+                            "mt-0 pr-16",
+                          )}
+                          placeholder="0"
+                        />
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-white/45">
+                          Years
+                        </span>
+                      </span>
+                      <FieldError message={validationErrors.experience_years} />
+                    </label>
+
+                    <label className="block">
+                      <span className="sr-only">Months of Experience</span>
+                      <span className="relative block">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          autoComplete="off"
+                          name="experience_months"
+                          value={form.experience_months}
+                          onChange={handleChange}
+                          disabled={isSaving}
+                          aria-label="Months of experience"
+                          aria-invalid={Boolean(
+                            validationErrors.experience_months,
+                          )}
+                          className={getFieldClassName(
+                            Boolean(validationErrors.experience_months),
+                            "mt-0 pr-16",
+                          )}
+                          placeholder="0–11"
+                        />
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-white/45">
+                          Months
+                        </span>
+                      </span>
+                      <FieldError
+                        message={validationErrors.experience_months}
+                      />
+                    </label>
+                  </div>
+                </div>
 
                 <label className={labelClassName}>
                   Email Address
