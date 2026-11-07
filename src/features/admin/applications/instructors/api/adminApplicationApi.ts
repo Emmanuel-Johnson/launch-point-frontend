@@ -8,7 +8,8 @@ export interface InstructorApplication {
   email: string;
   profile_image: string | null;
   occupation: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   status: ApplicationStatus;
   submitted_at: string;
   categories: string[];
@@ -33,7 +34,8 @@ export interface AdminInstructorApplicationDetail {
   location: string;
   occupation: string;
   education: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   professional_bio: string;
   motivation: string;
   categories: string[];

@@ -45,7 +45,8 @@ type PublicInstructor = {
   location: string;
   education: string;
   occupation: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   email: string;
   became_instructor_at: string | null;
   updated_at: string;
@@ -66,7 +67,8 @@ const instructors: PublicInstructor[] = [
     location: "San Francisco, CA",
     education: "B.Sc. Computer Science",
     occupation: "Senior Full Stack Developer",
-    years_of_experience: "8+ years",
+    experience_years: 8,
+    experience_months: 0,
     email: "sarah.mitchell@example.com",
     became_instructor_at: "2018-03-15T00:00:00Z",
     updated_at: "2026-10-20T00:00:00Z",
@@ -909,8 +911,12 @@ const InstructorPublicProfilePage = () => {
 
                 <DetailField
                   icon={Award}
-                  label="Years of Experience"
-                  value={instructor.years_of_experience}
+                  label="Experience"
+                  value={`${instructor.experience_years} ${
+                    instructor.experience_years === 1 ? "year" : "years"
+                  }, ${instructor.experience_months} ${
+                    instructor.experience_months === 1 ? "month" : "months"
+                  }`}
                 />
 
                 <DetailField

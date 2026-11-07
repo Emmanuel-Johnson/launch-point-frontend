@@ -8,7 +8,8 @@ export interface AdminInstructor {
   profile_image: string | null;
   occupation: string | null;
   location: string | null;
-  years_of_experience: string | null;
+  experience_years: number;
+  experience_months: number;
   categories: string[];
   became_instructor_at?: string | null;
   is_active: boolean;

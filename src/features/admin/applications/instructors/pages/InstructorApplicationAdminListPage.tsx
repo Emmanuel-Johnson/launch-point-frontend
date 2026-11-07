@@ -241,6 +241,20 @@ const InstructorApplicationAdminListPage = () => {
       year: "numeric",
     });
 
+  const formatExperience = (years: number, months: number): string => {
+    const parts: string[] = [];
+
+    if (years > 0) {
+      parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+    }
+
+    if (months > 0 || parts.length === 0) {
+      parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+    }
+
+    return parts.join(", ");
+  };
+
   const getInitials = (name: string) =>
     name
       .split(" ")
@@ -628,7 +642,10 @@ const InstructorApplicationAdminListPage = () => {
                         {/* Experience */}
                         <td className="px-6 py-4">
                           <span className="text-sm text-white/55">
-                            {application.years_of_experience}
+                            {formatExperience(
+                              application.experience_years,
+                              application.experience_months,
+                            )}
                           </span>
                         </td>
 

@@ -75,6 +75,7 @@ import RevenuePage from "../../features/admin/pages/RevenuePage";
 import FinancialsPage from "../../features/admin/pages/FinancialsPage";
 import AdminNotificationsPage from "../../features/admin/pages/NotificationsPage";
 import CourseReviewsPage from "../../features/student/pages/CourseReviewsPage";
+import PublicCoursesPage from "../../features/marketing/pages/PublicCoursesPage";
 
 export const routeConfig: RouteObject[] = [
   {
@@ -86,6 +87,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "/",
             element: <LandingPage />,
+          },
+          {
+            path: "/courses",
+            element: <PublicCoursesPage />,
           },
           {
             path: "/about",

@@ -78,7 +78,8 @@ export interface InstructorApplicationDetail {
   profile_image: string | null;
   occupation: string;
   education: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   categories_to_teach: string[];
   professional_bio: string;
   motivation: string;

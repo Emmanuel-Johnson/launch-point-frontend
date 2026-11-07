@@ -9,12 +9,14 @@ export interface InstructorProfile {
   professional_bio: string;
   education: string;
   location: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   categories: string[];
   linkedin_url: string;
   github_url: string;
   portfolio_url: string;
   became_instructor_at: string | null;
+  application_submitted_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -25,7 +27,8 @@ export interface UpdateInstructorProfileData {
   professional_bio: string;
   education: string;
   location: string;
-  years_of_experience: string;
+  experience_years: number;
+  experience_months: number;
   linkedin_url: string;
   github_url: string;
   portfolio_url: string;
@@ -52,7 +55,8 @@ export const updateInstructorProfile = async (
   formData.append("professional_bio", data.professional_bio);
   formData.append("education", data.education);
   formData.append("location", data.location);
-  formData.append("years_of_experience", data.years_of_experience);
+  formData.append("experience_years", String(data.experience_years));
+  formData.append("experience_months", String(data.experience_months));
   formData.append("linkedin_url", data.linkedin_url);
   formData.append("github_url", data.github_url);
   formData.append("portfolio_url", data.portfolio_url);
