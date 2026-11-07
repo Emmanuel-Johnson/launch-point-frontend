@@ -16,7 +16,6 @@ import {
   PencilLine,
   PlusCircle,
   Search,
-  Sparkles,
   Star,
   Trash2,
   Upload,
@@ -34,9 +33,6 @@ import {
    ────────────────────────────────────────────────────────────────── */
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
-
-const GRAIN_URL =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
 
 /* ──────────────────────────────────── types + mock data */
 
@@ -260,36 +256,6 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Top rated" },
   { value: "title", label: "Title (A–Z)" },
 ];
-
-/* ──────────────────────────────────── stat tile */
-
-const StatTile = ({
-  icon: Icon,
-  label,
-  value,
-  accent = "text-[#60A5FA]",
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  accent?: string;
-}) => (
-  <div className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0A0A0A] px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#3B82F6]/25 hover:shadow-[0_10px_30px_-18px_rgba(59,130,246,0.6)]">
-    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/[0.07] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-    <div className="relative flex items-center justify-between gap-3">
-      <span className="text-xs font-medium text-white/55">{label}</span>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#3B82F6]/15 bg-[#3B82F6]/[0.10] transition-colors duration-300 group-hover:bg-[#3B82F6]/[0.18]">
-        <Icon className={`h-4 w-4 ${accent}`} strokeWidth={1.8} />
-      </span>
-    </div>
-    <p
-      className="relative mt-2 text-2xl font-semibold tracking-tight text-white"
-      style={{ fontFamily: DISPLAY_FONT }}
-    >
-      {value}
-    </p>
-  </div>
-);
 
 /* ──────────────────────────────────── course card */
 
@@ -675,88 +641,194 @@ const InstructorCoursesPage = () => {
         }
       `}</style>
 
-      {/* ───────── Page header */}
-      <section>
-        <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
-          <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#3B82F6]/20 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-28 left-1/3 h-52 w-52 rounded-full bg-[#3B82F6]/[0.07] blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/50 to-transparent"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
-              style={{ backgroundImage: `url("${GRAIN_URL}")` }}
-            />
+      {/* ───────── Page header ───────── */}
+      <section className="animate-page-item" style={{ animationDelay: "80ms" }}>
+        <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
+          {/* Blue ambient glow */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#3B82F6]/15 blur-3xl"
+          />
 
-            <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#3B82F6]/[0.06] blur-3xl"
+          />
+
+          {/* Top accent line */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#60A5FA]/60 to-transparent"
+          />
+
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            {/* Header content */}
+            <div className="flex items-center gap-4 cursor-default">
+              {/* Course icon */}
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3B82F6]/20 to-[#3B82F6]/[0.04] text-[#60A5FA] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#3B82F6]/25">
+                <BookOpen className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+
+              {/* Title and description */}
               <div>
-                <p className="mb-2 flex items-center gap-2 text-sm font-medium text-[#60A5FA]">
-                  <Sparkles className="h-4 w-4" />
-                  Course Management
-                </p>
-
-                <h1
-                  className="text-3xl font-bold tracking-tight sm:text-4xl"
-                  style={{
-                    fontFamily: DISPLAY_FONT,
-                    backgroundImage:
-                      "linear-gradient(90deg, #FFFFFF 0%, #DBEAFE 45%, #60A5FA 100%)",
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "inline-block",
-                  }}
-                >
+                <h1 className="text-2xl font-semibold tracking-tight">
                   My Courses
                 </h1>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-white/55">
-                  Create, manage, and track every course you teach on Launch
-                  Point — all in one place.
+                <p className="mt-1 text-sm text-white/50">
+                  Build, organize, and manage all your courses in one place.
                 </p>
               </div>
-
-              <button
-                type="button"
-                onClick={handleCreate}
-                className="group relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 self-start overflow-hidden rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/60 lg:self-center"
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <PlusCircle className="relative h-[18px] w-[18px]" />
-                <span className="relative">Create Course</span>
-              </button>
             </div>
+
+            {/* Create Course */}
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#3B82F6]/25 bg-[#3B82F6]/10 px-5 text-sm font-medium text-[#60A5FA] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3B82F6]/15 hover:shadow-[0_8px_24px_-6px_rgba(59,130,246,0.35)]"
+            >
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#60A5FA]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+              <PlusCircle
+                className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
+                strokeWidth={2}
+              />
+
+              <span className="relative z-10">Create Course</span>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* ───────── Stats */}
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatTile
-          icon={LayoutGrid}
-          label="Total courses"
-          value={String(myCourses.length)}
-        />
-        <StatTile
-          icon={CheckCircle2}
-          label="Published"
-          value={String(stats.published)}
-          accent="text-emerald-300"
-        />
-        <StatTile
-          icon={Users}
-          label="Total students"
-          value={formatCompact(stats.totalStudents)}
-        />
+      {/* ───────── Course Stats ───────── */}
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {/* Total Courses */}
+        <div
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#93C5FD]/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#93C5FD]/40"
+          style={{ animationDelay: "160ms" }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#93C5FD]/50 to-transparent"
+          />
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#93C5FD]/[0.07] blur-3xl"
+          />
+
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                Total Courses
+              </p>
+
+              <p className="mt-3 text-3xl font-semibold tabular-nums text-[#BFDBFE]">
+                {myCourses.length}
+              </p>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#93C5FD]/10 text-[#93C5FD] ring-1 ring-inset ring-[#93C5FD]/20">
+              <LayoutGrid className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+          </div>
+        </div>
+
+        {/* Published */}
+        <div
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-emerald-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-emerald-400/40"
+          style={{ animationDelay: "220ms" }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"
+          />
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-400/[0.08] blur-3xl"
+          />
+
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                Published
+              </p>
+
+              <p className="mt-3 text-3xl font-semibold tabular-nums text-emerald-300">
+                {stats.published}
+              </p>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">
+              <CheckCircle2 className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+          </div>
+        </div>
+
+        {/* Unpublished */}
+        <div
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
+          style={{ animationDelay: "280ms" }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent"
+          />
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/[0.06] blur-3xl"
+          />
+
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                Unpublished
+              </p>
+
+              <p className="mt-3 text-3xl font-semibold tabular-nums text-amber-300">
+                {myCourses.length - stats.published}
+              </p>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300 ring-1 ring-inset ring-amber-400/20">
+              <FileEdit className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+          </div>
+        </div>
+
+        {/* Total Students */}
+        <div
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-violet-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-violet-400/35"
+          style={{ animationDelay: "340ms" }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent"
+          />
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-violet-400/[0.06] blur-3xl"
+          />
+
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                Total Students
+              </p>
+
+              <p className="mt-3 text-3xl font-semibold tabular-nums text-violet-300">
+                {formatCompact(stats.totalStudents)}
+              </p>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-400/10 text-violet-300 ring-1 ring-inset ring-violet-400/20">
+              <Users className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ───────── Controls: search + sort */}
