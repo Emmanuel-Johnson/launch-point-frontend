@@ -40,16 +40,18 @@ import { toast } from "react-toastify";
 
 type ApplicationStatus = "pending" | "approved" | "rejected";
 
-const experienceLabels: Record<string, string> = {
-  less_than_one: "Less than 1 year",
+const formatExperience = (years: number, months: number): string => {
+  const parts: string[] = [];
 
-  one_to_three: "1–3 years",
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+  }
 
-  three_to_five: "3–5 years",
+  if (months > 0 || parts.length === 0) {
+    parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+  }
 
-  five_to_ten: "5–10 years",
-
-  ten_plus: "10+ years",
+  return parts.join(", ");
 };
 
 /* ================================================================
@@ -820,10 +822,10 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                   <InfoRow
                     icon={<Clock3 className="h-4 w-4" />}
                     label="Experience"
-                    value={
-                      experienceLabels[application.years_of_experience] ??
-                      application.years_of_experience
-                    }
+                    value={formatExperience(
+                      application.experience_years,
+                      application.experience_months,
+                    )}
                   />
                 </div>
               </Panel>

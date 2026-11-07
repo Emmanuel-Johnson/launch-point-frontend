@@ -91,9 +91,21 @@ const applicationSchema = z.object({
       "The same special character cannot be repeated 3 or more times consecutively",
     ),
 
-  years_of_experience: z
+  experience_years: z
     .string()
-    .min(1, "Please select your years of experience"),
+    .regex(/^\d+$/, "Please enter your years of experience")
+    .refine(
+      (value) => Number(value) >= 0 && Number(value) <= 32767,
+      "Years must be between 0 and 32767",
+    ),
+
+  experience_months: z
+    .string()
+    .regex(/^\d+$/, "Please select your experience months")
+    .refine(
+      (value) => Number(value) >= 0 && Number(value) <= 11,
+      "Months must be between 0 and 11",
+    ),
 
   professional_bio: z
     .string()
@@ -198,14 +210,6 @@ type ValidationErrors = Partial<
     string
   >
 >;
-
-const experienceOptions = [
-  { value: "less_than_one", label: "Less than 1 year" },
-  { value: "one_to_three", label: "1–3 years" },
-  { value: "three_to_five", label: "3–5 years" },
-  { value: "five_to_ten", label: "5–10 years" },
-  { value: "ten_plus", label: "10+ years" },
-];
 
 /* ================================================================
    FILE-TYPE META + LOGO
@@ -564,7 +568,8 @@ type ApplicationForm = {
 
   occupation: string;
   education: string;
-  years_of_experience: string;
+  experience_years: string;
+  experience_months: string;
   categories_to_teach: number[];
   professional_bio: string;
   phone_number: string;
@@ -585,7 +590,8 @@ const initialApplicationForm: ApplicationForm = {
 
   occupation: "",
   education: "",
-  years_of_experience: "",
+  experience_years: "",
+  experience_months: "",
   categories_to_teach: [],
   professional_bio: "",
   phone_number: "",
@@ -772,7 +778,8 @@ const InstructorApplicationModal = ({
               initialApplication.occupation ?? profileDefaults.occupation,
             education:
               initialApplication.education ?? profileDefaults.education,
-            years_of_experience: initialApplication.years_of_experience ?? "",
+            experience_years: String(initialApplication.experience_years ?? 0),
+            experience_months: String(initialApplication.experience_months ?? 0),
             categories_to_teach: selectedCategoryIds,
             professional_bio: initialApplication.professional_bio ?? "",
             phone_number: initialApplication.phone_number ?? "",
@@ -1142,7 +1149,8 @@ const InstructorApplicationModal = ({
       formData.append("full_name", form.full_name.trim());
       formData.append("occupation", form.occupation.trim());
       formData.append("education", form.education.trim());
-      formData.append("years_of_experience", form.years_of_experience);
+      formData.append("experience_years", form.experience_years);
+      formData.append("experience_months", form.experience_months);
 
       form.categories_to_teach.forEach((categoryId) => {
         formData.append("categories_to_teach", String(categoryId));
@@ -1383,8 +1391,12 @@ const InstructorApplicationModal = ({
                           education:
                             initialApplication.education ??
                             profileDefaults.education,
-                          years_of_experience:
-                            initialApplication.years_of_experience ?? "",
+                          experience_years: String(
+                            initialApplication.experience_years ?? 0,
+                          ),
+                          experience_months: String(
+                            initialApplication.experience_months ?? 0,
+                          ),
                           categories_to_teach: data.categories
                             .filter((category) =>
                               initialApplication.categories_to_teach.includes(
@@ -1573,33 +1585,48 @@ const InstructorApplicationModal = ({
                   </label>
 
                   <label className={labelClass}>
-                    Years of experience
+                    Experience years
+                    <input
+                      type="number"
+                      min={0}
+                      max={32767}
+                      step={1}
+                      className={getInputClass("experience_years")}
+                      value={form.experience_years}
+                      onChange={(e) =>
+                        updateField("experience_years", e.target.value)
+                      }
+                      placeholder="Enter years"
+                    />
+                    {fieldError("experience_years")}
+                  </label>
+
+                  <label className={labelClass}>
+                    Experience months
                     <div className="relative">
                       <select
-                        className={`${inputClass} appearance-none pr-10`}
-                        value={form.years_of_experience}
+                        className={`${getInputClass("experience_months")} appearance-none pr-10`}
+                        value={form.experience_months}
                         onChange={(e) =>
-                          updateField("years_of_experience", e.target.value)
+                          updateField("experience_months", e.target.value)
                         }
                       >
                         <option value="" disabled>
-                          Select your experience
+                          Select months
                         </option>
-
-                        {experienceOptions.map((option) => (
+                        {Array.from({ length: 12 }, (_, index) => (
                           <option
-                            key={option.value}
-                            value={option.value}
+                            key={index}
+                            value={String(index)}
                             className="bg-[#0D0F15]"
                           >
-                            {option.label}
+                            {index} {index === 1 ? "Month" : "Months"}
                           </option>
                         ))}
                       </select>
-
                       <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-300/70" />
                     </div>
-                    {fieldError("years_of_experience")}
+                    {fieldError("experience_months")}
                   </label>
 
                   <label className={labelClass}>

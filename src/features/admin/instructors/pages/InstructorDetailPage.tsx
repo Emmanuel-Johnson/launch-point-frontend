@@ -53,6 +53,20 @@ const formatDate = (date: string) => {
   });
 };
 
+const formatExperience = (years: number, months: number): string => {
+  const parts: string[] = [];
+
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+  }
+
+  if (months > 0 || parts.length === 0) {
+    parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+  }
+
+  return parts.join(", ");
+};
+
 const DetailSectionHeading = ({
   title,
   description,
@@ -669,7 +683,10 @@ const InstructorDetailPage = () => {
             <InfoCard
               icon={<Clock3 size={18} strokeWidth={1.8} />}
               label="Experience"
-              value={instructor.years_of_experience || ""}
+              value={formatExperience(
+                instructor.experience_years,
+                instructor.experience_months,
+              )}
             />
           </div>
         </section>

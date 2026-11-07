@@ -272,6 +272,20 @@ const FileTypeIcon = ({
 
  */
 
+const formatExperience = (years: number, months: number): string => {
+  const parts: string[] = [];
+
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+  }
+
+  if (months > 0 || parts.length === 0) {
+    parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+  }
+
+  return parts.join(", ");
+};
+
 const InfoItem = ({
   icon: Icon,
 
@@ -999,7 +1013,10 @@ const InstructorApplicationAdminDetailPage = () => {
               <InfoItem
                 icon={Clock3}
                 label="Industry experience"
-                value={application.years_of_experience}
+                value={formatExperience(
+                  application.experience_years,
+                  application.experience_months,
+                )}
               />
 
               <InfoItem

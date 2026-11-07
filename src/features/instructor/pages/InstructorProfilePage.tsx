@@ -823,7 +823,11 @@ const InstructorProfilePage = () => {
                 <DetailField
                   icon={Award}
                   label="Years of Experience"
-                  value={profile.years_of_experience}
+                  value={`${profile.experience_years} ${
+                    profile.experience_years === 1 ? "year" : "years"
+                  }, ${profile.experience_months} ${
+                    profile.experience_months === 1 ? "month" : "months"
+                  }`}
                 />
 
                 <DetailField

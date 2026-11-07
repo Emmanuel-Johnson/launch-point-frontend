@@ -34,14 +34,6 @@ import { updateUser } from "../../auth/slices/authSlice";
 const MEDIA_BASE_URL = "http://localhost:8000";
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
-const EXPERIENCE_OPTIONS = [
-  { value: "less_than_one", label: "Less than 1 year" },
-  { value: "one_to_three", label: "1–3 years" },
-  { value: "three_to_five", label: "3–5 years" },
-  { value: "five_to_ten", label: "5–10 years" },
-  { value: "ten_plus", label: "10+ years" },
-] as const;
-
 const hasRepeatedSpecialCharacter = (value: string): boolean => {
   return /[^\p{L}\p{N}\s]{3,}/u.test(value);
 };
@@ -86,9 +78,21 @@ const instructorProfileSchema = z.object({
       "The same special character cannot be repeated 3 or more times consecutively.",
     ),
 
-  years_of_experience: z
+  experience_years: z
     .string()
-    .min(1, "Please select your years of experience."),
+    .regex(/^\d+$/, "Enter a valid number of years.")
+    .refine(
+      (value) => Number(value) >= 0 && Number(value) <= 32767,
+      "Years of experience must be between 0 and 32767.",
+    ),
+
+  experience_months: z
+    .string()
+    .regex(/^\d+$/, "Enter a valid number of months.")
+    .refine(
+      (value) => Number(value) >= 0 && Number(value) <= 11,
+      "Months of experience must be between 0 and 11.",
+    ),
 
   professional_bio: z
     .string()
@@ -179,7 +183,8 @@ interface FormValues {
   professional_bio: string;
   education: string;
   location: string;
-  years_of_experience: string;
+  experience_years: string;
+  experience_months: string;
   linkedin_url: string;
   github_url: string;
   portfolio_url: string;
@@ -211,14 +216,6 @@ const getInitials = (name: string): string => {
   }
 
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
-
-const getExperienceValue = (experience: string): string => {
-  const matchingOption = EXPERIENCE_OPTIONS.find(
-    (option) => option.value === experience || option.label === experience,
-  );
-
-  return matchingOption?.value ?? "";
 };
 
 const inputClassName =
@@ -255,7 +252,8 @@ const EditInstructorProfileModal = ({
     professional_bio: profile.professional_bio ?? "",
     education: profile.education ?? "",
     location: profile.location ?? "",
-    years_of_experience: getExperienceValue(profile.years_of_experience ?? ""),
+    experience_years: String(profile.experience_years ?? 0),
+    experience_months: String(profile.experience_months ?? 0),
     linkedin_url: profile.linkedin_url ?? "",
     github_url: profile.github_url ?? "",
     portfolio_url: profile.portfolio_url ?? "",
@@ -512,7 +510,8 @@ const EditInstructorProfileModal = ({
         professional_bio: validationResult.data.professional_bio,
         education: validationResult.data.education,
         location: validationResult.data.location,
-        years_of_experience: validationResult.data.years_of_experience,
+        experience_years: Number(validationResult.data.experience_years),
+        experience_months: Number(validationResult.data.experience_months),
         linkedin_url: validationResult.data.linkedin_url,
         github_url: validationResult.data.github_url,
         portfolio_url: validationResult.data.portfolio_url,
@@ -762,27 +761,42 @@ const EditInstructorProfileModal = ({
 
                 <label className={labelClassName}>
                   Years of Experience
-                  <select
-                    name="years_of_experience"
-                    value={form.years_of_experience}
+                  <input
+                    type="number"
+                    name="experience_years"
+                    value={form.experience_years}
                     onChange={handleChange}
+                    min={0}
+                    max={32767}
+                    step={1}
                     disabled={isSaving}
-                    aria-invalid={Boolean(validationErrors.years_of_experience)}
+                    aria-invalid={Boolean(validationErrors.experience_years)}
                     className={getFieldClassName(
-                      Boolean(validationErrors.years_of_experience),
+                      Boolean(validationErrors.experience_years),
                     )}
-                  >
-                    {EXPERIENCE_OPTIONS.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        className="bg-[#0A0A0A]"
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <FieldError message={validationErrors.years_of_experience} />
+                    placeholder="Years"
+                  />
+                  <FieldError message={validationErrors.experience_years} />
+                </label>
+
+                <label className={labelClassName}>
+                  Months of Experience
+                  <input
+                    type="number"
+                    name="experience_months"
+                    value={form.experience_months}
+                    onChange={handleChange}
+                    min={0}
+                    max={11}
+                    step={1}
+                    disabled={isSaving}
+                    aria-invalid={Boolean(validationErrors.experience_months)}
+                    className={getFieldClassName(
+                      Boolean(validationErrors.experience_months),
+                    )}
+                    placeholder="Months (0–11)"
+                  />
+                  <FieldError message={validationErrors.experience_months} />
                 </label>
 
                 <label className={labelClassName}>
