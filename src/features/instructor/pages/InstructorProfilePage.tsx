@@ -69,6 +69,75 @@ const formatMonthYear = (iso: string | null): string => {
   });
 };
 
+/*
+ * Calculates the instructor's current experience by adding the
+ * completed months since the application was submitted.
+ */
+const formatExperience = (
+  years: number,
+  months: number,
+  submittedAt: string | null,
+): string => {
+  let totalMonths = years * 12 + months;
+
+  if (submittedAt) {
+    const startDate = new Date(submittedAt);
+
+    if (!Number.isNaN(startDate.getTime())) {
+      const now = new Date();
+
+      let elapsedMonths =
+        (now.getFullYear() - startDate.getFullYear()) * 12 +
+        (now.getMonth() - startDate.getMonth());
+
+      // Clamp the anniversary day to the last day of the target month.
+      // This avoids JavaScript's end-of-month rollover (for example, Jan 31).
+      const anniversaryYear =
+        startDate.getFullYear() +
+        Math.floor((startDate.getMonth() + elapsedMonths) / 12);
+      const anniversaryMonth = (startDate.getMonth() + elapsedMonths) % 12;
+      const lastDayOfAnniversaryMonth = new Date(
+        anniversaryYear,
+        anniversaryMonth + 1,
+        0,
+      ).getDate();
+
+      const anniversary = new Date(
+        anniversaryYear,
+        anniversaryMonth,
+        Math.min(startDate.getDate(), lastDayOfAnniversaryMonth),
+        startDate.getHours(),
+        startDate.getMinutes(),
+        startDate.getSeconds(),
+        startDate.getMilliseconds(),
+      );
+
+      if (now < anniversary) {
+        elapsedMonths--;
+      }
+
+      totalMonths += Math.max(0, elapsedMonths);
+    }
+  }
+
+  const totalYears = Math.floor(totalMonths / 12);
+  const remainingMonths = totalMonths % 12;
+
+  const parts: string[] = [];
+
+  if (totalYears > 0) {
+    parts.push(`${totalYears} ${totalYears === 1 ? "year" : "years"}`);
+  }
+
+  if (remainingMonths > 0 || parts.length === 0) {
+    parts.push(
+      `${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`,
+    );
+  }
+
+  return parts.join(", ");
+};
+
 const formatFullDate = (iso: string): string => {
   const date = new Date(iso);
 
@@ -823,11 +892,11 @@ const InstructorProfilePage = () => {
                 <DetailField
                   icon={Award}
                   label="Years of Experience"
-                  value={`${profile.experience_years} ${
-                    profile.experience_years === 1 ? "year" : "years"
-                  }, ${profile.experience_months} ${
-                    profile.experience_months === 1 ? "month" : "months"
-                  }`}
+                  value={formatExperience(
+                    profile.experience_years,
+                    profile.experience_months,
+                    profile.application_submitted_at,
+                  )}
                 />
 
                 <DetailField

@@ -16,6 +16,7 @@ export interface InstructorProfile {
   github_url: string;
   portfolio_url: string;
   became_instructor_at: string | null;
+  application_submitted_at: string | null;
   created_at: string;
   updated_at: string;
 }
