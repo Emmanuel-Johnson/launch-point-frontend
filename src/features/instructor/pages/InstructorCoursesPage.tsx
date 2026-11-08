@@ -730,6 +730,9 @@ const InstructorCoursesPage = () => {
   // touch events, which is what was blocking page scroll while open).
   const sortRef = useRef<HTMLDivElement>(null);
 
+  // Ref to the top of the course listing — used to scroll back up on page change.
+  const listTopRef = useRef<HTMLDivElement>(null);
+
   // Pagination — current page for the course grid.
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -856,6 +859,8 @@ const InstructorCoursesPage = () => {
   const goToPage = (page: number) => {
     setOpenMenuId(null);
     setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+    // Scroll back up to the course listing whenever the page changes.
+    listTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const activeSort =
@@ -1284,6 +1289,7 @@ const InstructorCoursesPage = () => {
 
       {/* ───────── Course grid */}
       <section
+        ref={listTopRef}
         className="animate-page-item space-y-5"
         style={{ animationDelay: "520ms" }}
       >
