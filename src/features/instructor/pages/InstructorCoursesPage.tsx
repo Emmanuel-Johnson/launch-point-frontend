@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowUpDown,
@@ -709,8 +709,28 @@ const InstructorCoursesPage = () => {
   const [sortOpen, setSortOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
+  // Ref to the sort control so we can close the menu on an outside click
+  // WITHOUT a full-screen fixed backdrop (a fixed overlay swallows wheel /
+  // touch events, which is what was blocking page scroll while open).
+  const sortRef = useRef<HTMLDivElement>(null);
+
   // Pagination — current page for the course grid.
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Close the sort menu when clicking anywhere outside it. The page stays
+  // scrollable while the menu is open because there is no overlay in the way.
+  useEffect(() => {
+    if (!sortOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [sortOpen]);
 
   const stats = useMemo(() => {
     const published = myCourses.filter((c) => c.status === "published").length;
@@ -1124,7 +1144,7 @@ const InstructorCoursesPage = () => {
               Sort by
             </span>
 
-            <div className="relative min-w-0 flex-1">
+            <div ref={sortRef} className="relative min-w-0 flex-1">
               <button
                 type="button"
                 onClick={() => setSortOpen((open) => !open)}
@@ -1151,53 +1171,44 @@ const InstructorCoursesPage = () => {
               </button>
 
               {sortOpen && (
-                <>
-                  <button
-                    type="button"
-                    aria-label="Close sort menu"
-                    onClick={() => setSortOpen(false)}
-                    className="fixed inset-0 z-40 cursor-default"
-                  />
+                <div
+                  role="listbox"
+                  aria-label="Sort courses by"
+                  className="absolute right-0 top-[calc(100%+8px)] z-40 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
+                >
+                  <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
+                    Sort courses
+                  </p>
 
-                  <div
-                    role="listbox"
-                    aria-label="Sort courses by"
-                    className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
-                  >
-                    <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
-                      Sort courses
-                    </p>
+                  {sortOptions.map((option) => {
+                    const isActive = option.value === sortBy;
 
-                    {sortOptions.map((option) => {
-                      const isActive = option.value === sortBy;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => {
+                          setSortBy(option.value);
+                          setSortOpen(false);
+                          setCurrentPage(1);
+                        }}
+                        className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-xs transition-colors ${
+                          isActive
+                            ? "bg-[#3B82F6]/[0.12] font-medium text-[#8FBAFF]"
+                            : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                        }`}
+                      >
+                        {option.label}
 
-                      return (
-                        <button
-                          key={option.value}
-                          type="button"
-                          role="option"
-                          aria-selected={isActive}
-                          onClick={() => {
-                            setSortBy(option.value);
-                            setSortOpen(false);
-                            setCurrentPage(1);
-                          }}
-                          className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-xs transition-colors ${
-                            isActive
-                              ? "bg-[#3B82F6]/[0.12] font-medium text-[#8FBAFF]"
-                              : "text-white/60 hover:bg-white/[0.05] hover:text-white"
-                          }`}
-                        >
-                          {option.label}
-
-                          {isActive && (
-                            <CheckCircle2 className="h-3.5 w-3.5 text-[#60A5FA]" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
+                        {isActive && (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-[#60A5FA]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
