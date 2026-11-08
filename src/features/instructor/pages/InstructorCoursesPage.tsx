@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Clock3,
   Crown,
+  Eye,
   EyeOff,
   FileEdit,
   LayoutGrid,
@@ -366,26 +367,27 @@ const STATUS_META: Record<
 > = {
   published: {
     label: "Published",
+    // Solid-dark base so the pill stays readable over light/white cover images.
     icon: CheckCircle2,
-    className: "border-emerald-400/25 bg-emerald-500/10 text-emerald-300",
+    className: "border-emerald-400/40 bg-emerald-950/85 text-emerald-200",
     dot: "bg-emerald-400",
   },
   draft: {
     label: "Draft",
     icon: FileEdit,
-    className: "border-white/15 bg-white/[0.04] text-white/60",
+    className: "border-white/25 bg-black/75 text-white/85",
     dot: "bg-white/50",
   },
   under_review: {
     label: "Under Review",
     icon: Clock3,
-    className: "border-amber-400/25 bg-amber-500/10 text-amber-300",
+    className: "border-amber-400/40 bg-amber-950/85 text-amber-200",
     dot: "bg-amber-400",
   },
   rejected: {
     label: "Rejected",
     icon: XCircle,
-    className: "border-red-400/25 bg-red-500/10 text-red-300",
+    className: "border-red-400/40 bg-red-950/85 text-red-200",
     dot: "bg-red-400",
   },
 };
@@ -445,6 +447,7 @@ const buildPageItems = (
 
 const CourseCard = ({
   course,
+  delay,
   menuOpen,
   onToggleMenu,
   onEdit,
@@ -456,6 +459,7 @@ const CourseCard = ({
   onTogglePublish,
 }: {
   course: InstructorCourse;
+  delay: number;
   menuOpen: boolean;
   onToggleMenu: () => void;
   onEdit: () => void;
@@ -471,12 +475,19 @@ const CourseCard = ({
   const isPublished = course.status === "published";
 
   return (
-    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0D0D] transition-transform duration-500 ease-in-out hover:-translate-y-1 hover:border-[#3B82F6]/25">
+    <article
+      /* `animate-page-item` + staggered `animationDelay` gives the cards the
+         same load-in entrance the stat tiles use. `transform-gpu` +
+         backface-visibility keep the rounded corners crisp during the
+         translate so no 1px light seam appears while the card animates. */
+      className="group animate-page-item relative flex min-w-0 transform-gpu flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0D0D] [backface-visibility:hidden] transition-transform duration-500 ease-in-out hover:-translate-y-1 hover:border-[#3B82F6]/25"
+      style={{ animationDelay: `${delay}ms` }}
+    >
       {/* Glassy sheen on hover */}
       <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       {/* Cover image */}
-      <div className="relative h-40 overflow-hidden bg-[#111]">
+      <div className="relative h-40 overflow-hidden bg-[#0D0D0D]">
         <img
           src={course.image}
           alt={course.title}
@@ -503,19 +514,23 @@ const CourseCard = ({
         {/* Status pill */}
         <div className="absolute right-3 top-3 z-20">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-semibold backdrop-blur-md ${status.className}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-semibold shadow-lg shadow-black/30 backdrop-blur-md ${status.className}`}
           >
             <StatusIcon className="h-3.5 w-3.5" />
             {status.label}
           </span>
         </div>
 
-        {/* Lessons + duration */}
-        <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2">
+        {/* Lessons — bottom-left */}
+        <div className="absolute bottom-3 left-3 z-20">
           <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/60 px-2.5 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-md">
             <BookOpen className="h-3.5 w-3.5 text-[#60A5FA]" />
             {course.lessons} lessons
           </span>
+        </div>
+
+        {/* Duration — bottom-right corner */}
+        <div className="absolute bottom-3 right-3 z-20">
           <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/60 px-2.5 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-md">
             <Clock3 className="h-3.5 w-3.5 text-[#60A5FA]" />
             {course.duration}
@@ -523,8 +538,9 @@ const CourseCard = ({
         </div>
       </div>
 
-      {/* Body */}
-      <div className="flex flex-1 flex-col p-5">
+      {/* Body — pulled up 1px over its own solid background so the image/body
+          junction never shows a light seam line on load. */}
+      <div className="relative z-[1] -mt-px flex flex-1 flex-col bg-[#0D0D0D] p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
           <span className="rounded-full border border-[#3B82F6]/20 bg-[#3B82F6]/[0.08] px-3 py-1 text-[10px] font-medium text-[#8FBAFF]">
             {course.category}
@@ -634,8 +650,8 @@ const CourseCard = ({
                       onClick={onView}
                       className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
                     >
-                      <BookOpen className="h-3.5 w-3.5 text-[#60A5FA]" />
-                      View as student
+                      <Eye className="h-3.5 w-3.5 text-[#60A5FA]" />
+                      Preview
                     </button>
                     <button
                       type="button"
@@ -892,7 +908,7 @@ const InstructorCoursesPage = () => {
 
   return (
     <div className="min-h-full space-y-8 pb-8 text-white">
-      {/* Hover sheen keyframes (shared pattern) */}
+      {/* Hover sheen + card entrance keyframes (shared pattern) */}
       <style>{`
         @keyframes lp-card-sheen {
           0% { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
@@ -901,8 +917,25 @@ const InstructorCoursesPage = () => {
         }
         .lp-card-sheen { opacity: 0; transform: translateX(-150%) skewX(-12deg); }
         .group:hover .lp-card-sheen { animation: lp-card-sheen 1.1s ease-out; }
+
+        /* Load-in entrance for the course cards. Falls back to a defined
+           class if the project already ships one; this local copy guarantees
+           the animation works even if the global utility isn't present. */
+        @keyframes lp-course-in {
+          0% { opacity: 0; transform: translateY(14px) scale(0.985); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-page-item {
+          opacity: 0;
+          animation: lp-course-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .lp-card-sheen { display: none; }
+          .animate-page-item {
+            opacity: 1;
+            animation: none;
+          }
         }
       `}</style>
 
@@ -964,8 +997,6 @@ const InstructorCoursesPage = () => {
           </div>
         </div>
       </section>
-
-      {/* ───────── Course Stats ───────── */}
 
       {/* ───────── Course Stats ───────── */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -1119,7 +1150,10 @@ const InstructorCoursesPage = () => {
       </section>
 
       {/* ───────── Controls: search + sort */}
-      <section className="space-y-5">
+      <section
+        className="animate-page-item space-y-5"
+        style={{ animationDelay: "460ms" }}
+      >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           {/* Search */}
           <div className="group relative min-w-0 flex-1 lg:flex-[1.5]">
@@ -1249,7 +1283,10 @@ const InstructorCoursesPage = () => {
       </section>
 
       {/* ───────── Course grid */}
-      <section className="space-y-5">
+      <section
+        className="animate-page-item space-y-5"
+        style={{ animationDelay: "520ms" }}
+      >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           {/* Left content */}
           <div>
@@ -1287,6 +1324,9 @@ const InstructorCoursesPage = () => {
                   <CourseCard
                     key={itemKey}
                     course={course}
+                    // Staggered entrance: each card fades/rises in a beat
+                    // after the one before it when the grid (re)mounts.
+                    delay={120 + index * 60}
                     menuOpen={openMenuId === itemKey}
                     onToggleMenu={() =>
                       setOpenMenuId((current) =>
