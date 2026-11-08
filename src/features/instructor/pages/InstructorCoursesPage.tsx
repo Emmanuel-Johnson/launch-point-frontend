@@ -6,6 +6,8 @@ import {
   BookOpen,
   CheckCircle2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   Crown,
   EyeOff,
@@ -34,6 +36,9 @@ import {
 
 const DISPLAY_FONT = '"Space Grotesk", ui-sans-serif, system-ui, sans-serif';
 
+// Number of courses shown per page in the grid.
+const COURSES_PER_PAGE = 8;
+
 /* ──────────────────────────────────── types + mock data */
 
 type CourseStatus = "published" | "draft" | "under_review" | "rejected";
@@ -52,6 +57,8 @@ type InstructorCourse = {
   reviews: string;
   lessons: number;
   duration: string;
+  createdAt: string;
+  publishedAt: string | null;
   updatedAt: string;
   image: string;
   skills: string[];
@@ -74,6 +81,8 @@ const myCourses: InstructorCourse[] = [
     reviews: "1.2k",
     lessons: 32,
     duration: "12 hours",
+    createdAt: "2026-09-10T12:00:00Z",
+    publishedAt: "2026-10-20T12:00:00Z",
     updatedAt: "2026-10-28T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=900&h=520&fit=crop",
@@ -94,6 +103,8 @@ const myCourses: InstructorCourse[] = [
     reviews: "980",
     lessons: 40,
     duration: "16 hours",
+    createdAt: "2026-08-20T12:00:00Z",
+    publishedAt: "2026-09-10T12:00:00Z",
     updatedAt: "2026-09-15T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=900&h=520&fit=crop",
@@ -114,6 +125,8 @@ const myCourses: InstructorCourse[] = [
     reviews: "760",
     lessons: 24,
     duration: "9 hours",
+    createdAt: "2026-07-05T12:00:00Z",
+    publishedAt: "2026-08-01T12:00:00Z",
     updatedAt: "2026-08-02T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=900&h=520&fit=crop",
@@ -134,6 +147,8 @@ const myCourses: InstructorCourse[] = [
     reviews: "0",
     lessons: 28,
     duration: "14 hours",
+    createdAt: "2026-10-25T12:00:00Z",
+    publishedAt: null,
     updatedAt: "2026-11-04T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&h=520&fit=crop",
@@ -154,6 +169,8 @@ const myCourses: InstructorCourse[] = [
     reviews: "0",
     lessons: 18,
     duration: "7 hours",
+    createdAt: "2026-11-01T12:00:00Z",
+    publishedAt: null,
     updatedAt: "2026-11-06T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=520&fit=crop",
@@ -174,6 +191,140 @@ const myCourses: InstructorCourse[] = [
     reviews: "0",
     lessons: 30,
     duration: "13 hours",
+    createdAt: "2026-10-01T12:00:00Z",
+    publishedAt: null,
+    updatedAt: "2026-10-18T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=900&h=520&fit=crop",
+    skills: ["Docker", "Kubernetes", "CI/CD"],
+  },
+  {
+    id: 1,
+    title: "Modern React & TypeScript",
+    description:
+      "Build polished, scalable interfaces with React, TypeScript, and modern frontend patterns.",
+    category: "Frontend Development",
+    level: "Intermediate",
+    plan: "Premium",
+    status: "published",
+    price: 1499,
+    students: 1240,
+    rating: 4.9,
+    reviews: "1.2k",
+    lessons: 32,
+    duration: "12 hours",
+    createdAt: "2026-09-10T12:00:00Z",
+    publishedAt: "2026-10-20T12:00:00Z",
+    updatedAt: "2026-10-28T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=900&h=520&fit=crop",
+    skills: ["React", "TypeScript", "UI Patterns"],
+  },
+  {
+    id: 2,
+    title: "Django REST Framework Masterclass",
+    description:
+      "Design secure, maintainable APIs and connect them to real-world applications.",
+    category: "Backend Development",
+    level: "Intermediate",
+    plan: "Premium",
+    status: "published",
+    price: 1799,
+    students: 980,
+    rating: 4.8,
+    reviews: "980",
+    lessons: 40,
+    duration: "16 hours",
+    createdAt: "2026-08-20T12:00:00Z",
+    publishedAt: "2026-09-10T12:00:00Z",
+    updatedAt: "2026-09-15T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=900&h=520&fit=crop",
+    skills: ["Django", "REST APIs", "Python"],
+  },
+  {
+    id: 3,
+    title: "PostgreSQL & Database Design",
+    description:
+      "Learn relational data modeling, SQL fundamentals, and practical query optimization.",
+    category: "Database",
+    level: "Beginner",
+    plan: "Free",
+    status: "published",
+    price: 0,
+    students: 760,
+    rating: 4.9,
+    reviews: "760",
+    lessons: 24,
+    duration: "9 hours",
+    createdAt: "2026-07-05T12:00:00Z",
+    publishedAt: "2026-08-01T12:00:00Z",
+    updatedAt: "2026-08-02T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=900&h=520&fit=crop",
+    skills: ["PostgreSQL", "SQL", "Data Modeling"],
+  },
+  {
+    id: 4,
+    title: "Advanced System Design",
+    description:
+      "Architect resilient, distributed systems with caching, queues, and scaling strategies.",
+    category: "Architecture",
+    level: "Advanced",
+    plan: "Premium",
+    status: "under_review",
+    price: 2499,
+    students: 0,
+    rating: 0,
+    reviews: "0",
+    lessons: 28,
+    duration: "14 hours",
+    createdAt: "2026-10-25T12:00:00Z",
+    publishedAt: null,
+    updatedAt: "2026-11-04T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&h=520&fit=crop",
+    skills: ["Scaling", "Caching", "Queues"],
+  },
+  {
+    id: 5,
+    title: "Tailwind CSS from Scratch",
+    description:
+      "Design beautiful, responsive interfaces fast with a utility-first workflow.",
+    category: "Frontend Development",
+    level: "Beginner",
+    plan: "Free",
+    status: "draft",
+    price: 0,
+    students: 0,
+    rating: 0,
+    reviews: "0",
+    lessons: 18,
+    duration: "7 hours",
+    createdAt: "2026-11-01T12:00:00Z",
+    publishedAt: null,
+    updatedAt: "2026-11-06T12:00:00Z",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=520&fit=crop",
+    skills: ["Tailwind", "CSS", "Responsive"],
+  },
+  {
+    id: 6,
+    title: "Docker & Kubernetes Essentials",
+    description:
+      "Containerize apps and orchestrate them confidently from local dev to production.",
+    category: "DevOps",
+    level: "Intermediate",
+    plan: "Premium",
+    status: "rejected",
+    price: 1999,
+    students: 0,
+    rating: 0,
+    reviews: "0",
+    lessons: 30,
+    duration: "13 hours",
+    createdAt: "2026-10-01T12:00:00Z",
+    publishedAt: null,
     updatedAt: "2026-10-18T12:00:00Z",
     image:
       "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=900&h=520&fit=crop",
@@ -240,7 +391,14 @@ const STATUS_META: Record<
 };
 
 type StatusFilter = "all" | CourseStatus;
-type SortOption = "recent" | "students" | "rating" | "title";
+type SortOption =
+  | "recently_published"
+  | "top_rated"
+  | "lowest_rated"
+  | "most_students"
+  | "least_students"
+  | "title_asc"
+  | "title_desc";
 
 const statusTabs: { value: StatusFilter; label: string }[] = [
   { value: "all", label: "All" },
@@ -251,11 +409,37 @@ const statusTabs: { value: StatusFilter; label: string }[] = [
 ];
 
 const sortOptions: { value: SortOption; label: string }[] = [
-  { value: "recent", label: "Recently updated" },
-  { value: "students", label: "Most students" },
-  { value: "rating", label: "Top rated" },
-  { value: "title", label: "Title (A–Z)" },
+  { value: "recently_published", label: "Recently published" },
+  { value: "top_rated", label: "Top rated" },
+  { value: "lowest_rated", label: "Lowest rated" },
+  { value: "most_students", label: "Most students" },
+  { value: "least_students", label: "Least students" },
+  { value: "title_asc", label: "Title (A–Z)" },
+  { value: "title_desc", label: "Title (Z–A)" },
 ];
+
+/* ──────────────────────────────────── pagination helper */
+
+// Builds a compact page list with "…" gaps, e.g. [1, "…", 4, 5, 6, "…", 12].
+const buildPageItems = (
+  current: number,
+  total: number,
+): (number | "ellipsis")[] => {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
+
+  const items: (number | "ellipsis")[] = [1];
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  if (start > 2) items.push("ellipsis");
+  for (let page = start; page <= end; page += 1) items.push(page);
+  if (end < total - 1) items.push("ellipsis");
+
+  items.push(total);
+  return items;
+};
 
 /* ──────────────────────────────────── course card */
 
@@ -521,9 +705,12 @@ const InstructorCoursesPage = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [sortBy, setSortBy] = useState<SortOption>("recently_published");
   const [sortOpen, setSortOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  // Pagination — current page for the course grid.
+  const [currentPage, setCurrentPage] = useState(1);
 
   const stats = useMemo(() => {
     const published = myCourses.filter((c) => c.status === "published").length;
@@ -561,22 +748,79 @@ const InstructorCoursesPage = () => {
 
     result = [...result].sort((a, b) => {
       switch (sortBy) {
-        case "students":
-          return b.students - a.students;
-        case "rating":
-          return b.rating - a.rating;
-        case "title":
-          return a.title.localeCompare(b.title);
-        case "recent":
-        default:
+        case "recently_published": {
+          const aPublished = a.publishedAt
+            ? new Date(a.publishedAt).getTime()
+            : 0;
+          const bPublished = b.publishedAt
+            ? new Date(b.publishedAt).getTime()
+            : 0;
+          return bPublished - aPublished;
+        }
+        case "top_rated":
+          // Courses without ratings stay after rated courses.
           return (
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+            (b.rating > 0 ? b.rating : -1) - (a.rating > 0 ? a.rating : -1)
           );
+        case "lowest_rated": {
+          // Ignore zero ratings when ordering; unrated courses stay last.
+          const aRating = a.rating > 0 ? a.rating : Number.POSITIVE_INFINITY;
+          const bRating = b.rating > 0 ? b.rating : Number.POSITIVE_INFINITY;
+          return aRating - bRating;
+        }
+        case "most_students":
+          return b.students - a.students;
+        case "least_students":
+          return a.students - b.students;
+        case "title_asc":
+          return a.title.localeCompare(b.title);
+        case "title_desc":
+          return b.title.localeCompare(a.title);
+        default:
+          return 0;
       }
     });
 
     return result;
   }, [searchQuery, statusFilter, sortBy]);
+
+  // Total pages for the current filtered/sorted set (never below 1).
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCourses.length / COURSES_PER_PAGE),
+  );
+
+  // Page resets happen in the event handlers that change the filters (search,
+  // status tabs, sort, clear) — no effect and no setState during render, so no
+  // cascading-render warning.
+
+  // Keep the page in range by *deriving* a safe value rather than storing a
+  // corrected one, so the page stays valid even if the result set shrinks.
+  const safePage = Math.min(currentPage, totalPages);
+
+  // The slice of courses shown on the current page.
+  const paginatedCourses = useMemo(() => {
+    const start = (safePage - 1) * COURSES_PER_PAGE;
+    return filteredCourses.slice(start, start + COURSES_PER_PAGE);
+  }, [filteredCourses, safePage]);
+
+  const pageItems = useMemo(
+    () => buildPageItems(safePage, totalPages),
+    [safePage, totalPages],
+  );
+
+  // Index range shown, for the "X–Y of N" label.
+  const rangeStart =
+    filteredCourses.length === 0 ? 0 : (safePage - 1) * COURSES_PER_PAGE + 1;
+  const rangeEnd = Math.min(
+    safePage * COURSES_PER_PAGE,
+    filteredCourses.length,
+  );
+
+  const goToPage = (page: number) => {
+    setOpenMenuId(null);
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+  };
 
   const activeSort =
     sortOptions.find((option) => option.value === sortBy) ?? sortOptions[0];
@@ -621,8 +865,9 @@ const InstructorCoursesPage = () => {
   const clearFilters = () => {
     setSearchQuery("");
     setStatusFilter("all");
-    setSortBy("recent");
+    setSortBy("recently_published");
     setSortOpen(false);
+    setCurrentPage(1);
   };
 
   return (
@@ -701,7 +946,9 @@ const InstructorCoursesPage = () => {
       </section>
 
       {/* ───────── Course Stats ───────── */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+      {/* ───────── Course Stats ───────── */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {/* Total Courses */}
         <div
           className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#93C5FD]/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#93C5FD]/40"
@@ -711,7 +958,6 @@ const InstructorCoursesPage = () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#93C5FD]/50 to-transparent"
           />
-
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#93C5FD]/[0.07] blur-3xl"
@@ -722,12 +968,10 @@ const InstructorCoursesPage = () => {
               <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                 Total Courses
               </p>
-
               <p className="mt-3 text-3xl font-semibold tabular-nums text-[#BFDBFE]">
                 {myCourses.length}
               </p>
             </div>
-
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#93C5FD]/10 text-[#93C5FD] ring-1 ring-inset ring-[#93C5FD]/20">
               <LayoutGrid className="h-5 w-5" strokeWidth={1.8} />
             </div>
@@ -743,7 +987,6 @@ const InstructorCoursesPage = () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"
           />
-
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-400/[0.08] blur-3xl"
@@ -754,28 +997,54 @@ const InstructorCoursesPage = () => {
               <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                 Published
               </p>
-
               <p className="mt-3 text-3xl font-semibold tabular-nums text-emerald-300">
                 {stats.published}
               </p>
             </div>
-
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">
               <CheckCircle2 className="h-5 w-5" strokeWidth={1.8} />
             </div>
           </div>
         </div>
 
-        {/* Unpublished */}
+        {/* Drafts */}
+        <div
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/30"
+          style={{ animationDelay: "280ms" }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/[0.04] blur-3xl"
+          />
+
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/45">
+                Drafts
+              </p>
+              <p className="mt-3 text-3xl font-semibold tabular-nums text-white/80">
+                {stats.drafts}
+              </p>
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] text-white/65 ring-1 ring-inset ring-white/10">
+              <FileEdit className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+          </div>
+        </div>
+
+        {/* Under Review */}
         <div
           className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
-          style={{ animationDelay: "280ms" }}
+          style={{ animationDelay: "340ms" }}
         >
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent"
           />
-
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/[0.06] blur-3xl"
@@ -784,16 +1053,17 @@ const InstructorCoursesPage = () => {
           <div className="relative flex items-center justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-white/45">
-                Unpublished
+                Under Review
               </p>
-
               <p className="mt-3 text-3xl font-semibold tabular-nums text-amber-300">
-                {myCourses.length - stats.published}
+                {
+                  myCourses.filter((course) => course.status === "under_review")
+                    .length
+                }
               </p>
             </div>
-
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300 ring-1 ring-inset ring-amber-400/20">
-              <FileEdit className="h-5 w-5" strokeWidth={1.8} />
+              <Clock3 className="h-5 w-5" strokeWidth={1.8} />
             </div>
           </div>
         </div>
@@ -801,13 +1071,12 @@ const InstructorCoursesPage = () => {
         {/* Total Students */}
         <div
           className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-violet-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-violet-400/35"
-          style={{ animationDelay: "340ms" }}
+          style={{ animationDelay: "400ms" }}
         >
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent"
           />
-
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-violet-400/[0.06] blur-3xl"
@@ -818,12 +1087,10 @@ const InstructorCoursesPage = () => {
               <p className="text-xs font-medium uppercase tracking-wider text-white/45">
                 Total Students
               </p>
-
               <p className="mt-3 text-3xl font-semibold tabular-nums text-violet-300">
                 {formatCompact(stats.totalStudents)}
               </p>
             </div>
-
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-400/10 text-violet-300 ring-1 ring-inset ring-violet-400/20">
               <Users className="h-5 w-5" strokeWidth={1.8} />
             </div>
@@ -834,87 +1101,105 @@ const InstructorCoursesPage = () => {
       {/* ───────── Controls: search + sort */}
       <section className="space-y-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="group relative min-w-0 flex-1">
-            <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/35 transition-colors group-focus-within:text-[#60A5FA]" />
+          {/* Search */}
+          <div className="group relative min-w-0 flex-1 lg:flex-[1.5]">
+            <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/35 transition-colors group-focus-within:text-[#60A5FA]" />
+
             <input
               type="search"
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setCurrentPage(1);
+              }}
               placeholder="Search your courses, categories, or skills..."
               aria-label="Search courses"
-              className="h-14 w-full rounded-2xl border border-white/[0.08] bg-[#0A0A0A] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-[#3B82F6]/40 focus:ring-2 focus:ring-[#3B82F6]/10"
+              className="h-11 w-full rounded-2xl border border-white/[0.08] bg-[#0A0A0A] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-[#3B82F6]/40 focus:ring-2 focus:ring-[#3B82F6]/10"
             />
           </div>
 
-          {/* Sort dropdown */}
-          <div className="relative min-w-0 lg:w-56">
-            <button
-              type="button"
-              onClick={() => setSortOpen((open) => !open)}
-              aria-label="Sort courses"
-              aria-haspopup="listbox"
-              aria-expanded={sortOpen}
-              className={`flex h-14 w-full cursor-pointer items-center gap-3 rounded-2xl border bg-[#0A0A0A] px-4 text-left transition-all duration-200 ${
-                sortOpen
-                  ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.06] shadow-lg shadow-blue-950/10"
-                  : "border-white/[0.08] hover:border-[#3B82F6]/30"
-              }`}
-            >
-              <ArrowUpDown className="h-4 w-4 shrink-0 text-[#60A5FA]" />
-              <div className="min-w-0 flex-1">
-                <span className="block text-[10px] text-white/40">Sort by</span>
-                <span className="mt-0.5 block truncate text-xs font-medium text-white/85">
+          {/* Sort by */}
+          <div className="flex min-w-0 items-center gap-3 lg:w-[280px] lg:shrink-0">
+            <span className="shrink-0 text-xs font-medium text-white/45">
+              Sort by
+            </span>
+
+            <div className="relative min-w-0 flex-1">
+              <button
+                type="button"
+                onClick={() => setSortOpen((open) => !open)}
+                aria-label="Sort courses"
+                aria-haspopup="listbox"
+                aria-expanded={sortOpen}
+                className={`flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 text-left transition-all duration-200 ${
+                  sortOpen
+                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.08]"
+                    : "border-white/[0.08] bg-[#0A0A0A] hover:border-white/[0.16]"
+                }`}
+              >
+                <ArrowUpDown className="h-4 w-4 shrink-0 text-[#60A5FA]" />
+
+                <span className="min-w-0 flex-1 truncate text-xs font-medium text-white/85">
                   {activeSort.label}
                 </span>
-              </div>
-              <ChevronDown
-                className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${
-                  sortOpen ? "rotate-180 text-[#60A5FA]" : ""
-                }`}
-              />
-            </button>
 
-            {sortOpen && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Close sort menu"
-                  onClick={() => setSortOpen(false)}
-                  className="fixed inset-0 z-40 cursor-default"
+                <ChevronDown
+                  className={`h-3.5 w-3.5 shrink-0 text-white/40 transition-transform duration-200 ${
+                    sortOpen ? "rotate-180 text-[#60A5FA]" : ""
+                  }`}
                 />
-                <div
-                  role="listbox"
-                  aria-label="Sort courses by"
-                  className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(260px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] p-2 shadow-2xl shadow-black/60 ring-1 ring-white/[0.04]"
-                >
-                  {sortOptions.map((option) => {
-                    const isActive = option.value === sortBy;
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        role="option"
-                        aria-selected={isActive}
-                        onClick={() => {
-                          setSortBy(option.value);
-                          setSortOpen(false);
-                        }}
-                        className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left text-xs transition-colors ${
-                          isActive
-                            ? "bg-[#3B82F6]/15 font-medium text-[#8FBAFF]"
-                            : "text-white/65 hover:bg-white/[0.04] hover:text-white"
-                        }`}
-                      >
-                        {option.label}
-                        {isActive && (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-[#60A5FA]" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+              </button>
+
+              {sortOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Close sort menu"
+                    onClick={() => setSortOpen(false)}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+
+                  <div
+                    role="listbox"
+                    aria-label="Sort courses by"
+                    className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
+                  >
+                    <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
+                      Sort courses
+                    </p>
+
+                    {sortOptions.map((option) => {
+                      const isActive = option.value === sortBy;
+
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => {
+                            setSortBy(option.value);
+                            setSortOpen(false);
+                            setCurrentPage(1);
+                          }}
+                          className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-xs transition-colors ${
+                            isActive
+                              ? "bg-[#3B82F6]/[0.12] font-medium text-[#8FBAFF]"
+                              : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                          }`}
+                        >
+                          {option.label}
+
+                          {isActive && (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-[#60A5FA]" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -926,8 +1211,11 @@ const InstructorCoursesPage = () => {
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setStatusFilter(tab.value)}
-                className={`inline-flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium transition-all ${
+                onClick={() => {
+                  setStatusFilter(tab.value);
+                  setCurrentPage(1);
+                }}
+                className={`inline-flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all ${
                   isActive
                     ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.12] text-white ring-1 ring-inset ring-[#3B82F6]/20"
                     : "border-white/[0.07] bg-[#0A0A0A] text-white/55 hover:border-white/15 hover:text-white/85"
@@ -935,7 +1223,7 @@ const InstructorCoursesPage = () => {
               >
                 {tab.label}
                 <span
-                  className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
+                  className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-[3px] text-[10px] font-semibold tabular-nums ${
                     isActive
                       ? "bg-[#3B82F6]/20 text-[#8FBAFF]"
                       : "bg-white/[0.06] text-white/45"
@@ -951,8 +1239,19 @@ const InstructorCoursesPage = () => {
 
       {/* ───────── Course grid */}
       <section className="space-y-5">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <p className="text-[10px] uppercase tracking-wider text-white/45">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          {/* Left content */}
+          <div>
+            <h3 className="text-lg font-medium tracking-tight text-white">
+              Your Teaching Space
+            </h3>
+            <p className="mt-1 text-sm text-white/45">
+              Manage your courses and keep your learning community growing.
+            </p>
+          </div>
+
+          {/* Right content */}
+          <p className="text-left text-[11px] uppercase tracking-wider text-white/45 sm:text-right">
             <span className="mr-1">Showing</span>
             <span className="font-semibold tabular-nums text-white/80">
               {filteredCourses.length}
@@ -966,27 +1265,108 @@ const InstructorCoursesPage = () => {
         </div>
 
         {filteredCourses.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {filteredCourses.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                menuOpen={openMenuId === course.id}
-                onToggleMenu={() =>
-                  setOpenMenuId((current) =>
-                    current === course.id ? null : course.id,
-                  )
-                }
-                onEdit={() => handleEdit(course.id)}
-                onView={() => handleView(course.id)}
-                onAnalytics={() => handleAnalytics(course.id)}
-                onReviews={() => handleReviews(course.id)}
-                onCommunity={() => handleCommunity(course.id)}
-                onDelete={() => handleDelete(course.id)}
-                onTogglePublish={() => handleTogglePublish(course.id)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {paginatedCourses.map((course, index) => {
+                // Absolute position in the filtered list — a stable, unique key
+                // even if two courses share the same id (e.g. duplicated data),
+                // which is what keeps the grid updating correctly across pages.
+                const itemKey = (safePage - 1) * COURSES_PER_PAGE + index;
+                return (
+                  <CourseCard
+                    key={itemKey}
+                    course={course}
+                    menuOpen={openMenuId === itemKey}
+                    onToggleMenu={() =>
+                      setOpenMenuId((current) =>
+                        current === itemKey ? null : itemKey,
+                      )
+                    }
+                    onEdit={() => handleEdit(course.id)}
+                    onView={() => handleView(course.id)}
+                    onAnalytics={() => handleAnalytics(course.id)}
+                    onReviews={() => handleReviews(course.id)}
+                    onCommunity={() => handleCommunity(course.id)}
+                    onDelete={() => handleDelete(course.id)}
+                    onTogglePublish={() => handleTogglePublish(course.id)}
+                  />
+                );
+              })}
+            </div>
+
+            {/* ───────── Pagination */}
+            {totalPages > 1 && (
+              <nav
+                aria-label="Course pagination"
+                className="flex flex-col items-center justify-between gap-4 border-t border-white/[0.07] pt-6 sm:flex-row"
+              >
+                {/* Range label */}
+                <p className="text-[11px] uppercase tracking-wider text-white/45">
+                  <span className="mr-1">Showing</span>
+                  <span className="font-semibold tabular-nums text-white/80">
+                    {rangeStart}–{rangeEnd}
+                  </span>
+                  <span className="mx-1 text-white/25">of</span>
+                  <span className="font-medium tabular-nums text-[#60A5FA]">
+                    {filteredCourses.length}
+                  </span>
+                </p>
+
+                {/* Page controls */}
+                <div className="flex items-center gap-1.5">
+                  {/* Previous */}
+                  <button
+                    type="button"
+                    onClick={() => goToPage(safePage - 1)}
+                    disabled={safePage === 1}
+                    aria-label="Previous page"
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/[0.08] disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+
+                  {/* Numbered pages */}
+                  {pageItems.map((item, index) =>
+                    item === "ellipsis" ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="inline-flex h-9 w-9 items-center justify-center text-white/30"
+                        aria-hidden="true"
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => goToPage(item)}
+                        aria-label={`Page ${item}`}
+                        aria-current={item === safePage ? "page" : undefined}
+                        className={`inline-flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg border px-2 text-xs font-semibold tabular-nums transition-all ${
+                          item === safePage
+                            ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.14] text-white ring-1 ring-inset ring-[#3B82F6]/20"
+                            : "border-white/[0.08] bg-[#0A0A0A] text-white/60 hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF]"
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    ),
+                  )}
+
+                  {/* Next */}
+                  <button
+                    type="button"
+                    onClick={() => goToPage(safePage + 1)}
+                    disabled={safePage === totalPages}
+                    aria-label="Next page"
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/[0.08] disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </nav>
+            )}
+          </>
         ) : (
           /* Empty state */
           <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/15 bg-gradient-to-b from-[#3B82F6]/[0.06] to-transparent px-6 py-16 text-center">
