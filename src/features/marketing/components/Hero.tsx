@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Reveal from "../../../shared/components/Reveal";
+import { useAppSelector } from "../../../app/store/hooks";
 
 const techLogos = [
   {
@@ -101,8 +102,9 @@ const techLogos = [
 ];
 
 const Hero = () => {
-  const accessToken = localStorage.getItem("access");
-  const isLoggedIn = !!accessToken;
+  const accessToken = useAppSelector((state) => state.auth?.accessToken);
+
+  const isLoggedIn = Boolean(accessToken);
 
   return (
     <section className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[#09090B]">

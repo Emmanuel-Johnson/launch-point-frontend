@@ -1,5 +1,15 @@
+import { useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
+
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+
+import { setAccessToken, clearCredentials } from "../../auth/slices/authSlice";
+
+import { refreshAccessToken } from "../../auth/api/authApi";
+
+import { persistor } from "../../../app/store/store";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -9,8 +19,50 @@ const navItems = [
 ];
 
 const PublicNavbar = () => {
-  const accessToken = localStorage.getItem("access");
-  const isLoggedIn = !!accessToken;
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector((state) => state.auth?.user);
+  const accessToken = useAppSelector((state) => state.auth?.accessToken);
+
+  // Extract primitive dependency instead of using the entire user object
+  const userId = user?.id;
+
+  // Restore access token after browser refresh
+  useEffect(() => {
+    if (!userId || accessToken) return;
+
+    let isMounted = true;
+
+    const restoreAuthentication = async () => {
+      try {
+        const newAccessToken = await refreshAccessToken();
+
+        if (isMounted) {
+          dispatch(setAccessToken(newAccessToken));
+        }
+      } catch (error) {
+        console.error("Failed to restore authentication:", error);
+
+        if (
+          isMounted &&
+          axios.isAxiosError(error) &&
+          error.response?.status === 401
+        ) {
+          dispatch(clearCredentials());
+          await persistor.flush();
+        }
+      }
+    };
+
+    restoreAuthentication();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, accessToken, dispatch]);
+
+  // Use persisted user while the access token is being restored
+  const isLoggedIn = Boolean(user);
 
   return (
     <nav className="sticky top-0 z-50 bg-[#050505]">

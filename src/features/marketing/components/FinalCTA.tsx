@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import Reveal from "../../../shared/components/Reveal";
+import { useAppSelector } from "../../../app/store/hooks";
 
 const FinalCTA = () => {
-  const accessToken = localStorage.getItem("access");
-  const isLoggedIn = !!accessToken;
+  const accessToken = useAppSelector((state) => state.auth?.accessToken);
+
+  const isLoggedIn = Boolean(accessToken);
   return (
     <section className="relative overflow-hidden border-t border-white/10 bg-[#0F0F12] py-24">
       {/* Background Glow */}
