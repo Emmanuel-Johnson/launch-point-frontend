@@ -61,7 +61,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
   const handleSwitchToStudent = async () => {
     setIsProfileOpen(false);
 
@@ -87,22 +87,18 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
   };
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refresh");
-
     setIsLoggingOut(true);
 
     try {
-      if (refreshToken) {
-        await logoutUser(refreshToken);
-      }
+      // Browser automatically sends the HttpOnly refresh-token cookie.
+      await logoutUser();
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Instructor logout failed:", error);
     } finally {
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-
+      // Clear authentication state from Redux.
       dispatch(clearCredentials());
 
+      // Persist the cleared authentication state.
       try {
         await persistor.flush();
       } catch (error) {
@@ -110,6 +106,7 @@ const InstructorHeader = ({ isSidebarCollapsed }: InstructorHeaderProps) => {
       } finally {
         setShowLogoutConfirm(false);
         setIsProfileOpen(false);
+        setIsLoggingOut(false);
 
         navigate("/login", { replace: true });
       }
