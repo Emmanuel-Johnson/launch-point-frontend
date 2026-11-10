@@ -730,7 +730,12 @@ const InstructorCoursesPage = () => {
   // touch events, which is what was blocking page scroll while open).
   const sortRef = useRef<HTMLDivElement>(null);
 
-  // Ref to the top of the course listing — used to scroll back up on page change.
+  // Ref to the CONTROLS section (search + sort + status tabs) — the scroll
+  // target on page change, so paging always lands with the search and filter
+  // controls visible at the top of the viewport (not scrolled past them).
+  const controlsTopRef = useRef<HTMLDivElement>(null);
+
+  // Ref to the top of the course listing — kept for reference/anchoring.
   const listTopRef = useRef<HTMLDivElement>(null);
 
   // Pagination — current page for the course grid.
@@ -859,8 +864,13 @@ const InstructorCoursesPage = () => {
   const goToPage = (page: number) => {
     setOpenMenuId(null);
     setCurrentPage(Math.min(Math.max(page, 1), totalPages));
-    // Scroll back up to the course listing whenever the page changes.
-    listTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Scroll back up to the CONTROLS section whenever the page changes, so the
+    // search bar and filter tabs stay visible after paging (instead of landing
+    // below them at the grid's top).
+    controlsTopRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const activeSort =
@@ -1158,9 +1168,12 @@ const InstructorCoursesPage = () => {
           `relative z-30` lifts this section's stacking context ABOVE the
           course-grid section below it (which also forms a stacking context via
           its entrance `transform`). Without this, the sort dropdown — however
-          high its own z-index — paints behind the later grid section. */}
+          high its own z-index — paints behind the later grid section.
+          `controlsTopRef` is the scroll anchor used on page change so the
+          search + filters stay visible after pressing a pagination button. */}
       <section
-        className="animate-page-item relative z-30 space-y-5"
+        ref={controlsTopRef}
+        className="animate-page-item relative z-30 space-y-5 scroll-mt-4"
         style={{ animationDelay: "460ms" }}
       >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
