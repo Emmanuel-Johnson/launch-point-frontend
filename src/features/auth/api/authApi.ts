@@ -243,3 +243,19 @@ export const logoutUser = async (): Promise<LogoutResponse> => {
 
   return response.data;
 };
+
+// =========================================================
+// Refresh Access Token
+// =========================================================
+
+type RefreshTokenResponse = {
+  access: string;
+};
+
+export const refreshAccessToken = async (): Promise<string> => {
+  const response = await api.post<RefreshTokenResponse>(
+    "/auth/token/refresh/"
+  );
+
+  return response.data.access;
+};
