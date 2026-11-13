@@ -28,3 +28,4 @@ dist-ssr
 !.env.example
 
 CLAUDE.md
+AGENTS.md
