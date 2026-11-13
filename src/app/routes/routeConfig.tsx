@@ -70,6 +70,7 @@ import InstructorDoubtsPage from "../../features/instructor/pages/InstructorDoub
 import InstructorStudentsPage from "../../features/instructor/pages/InstructorStudentsPage";
 import InstructorSubmissionsPage from "../../features/instructor/pages/InstructorSubmissionsPage";
 import InstructorCoursesPage from "../../features/instructor/pages/InstructorCoursesPage";
+import InstructorCreateCoursePage from "../../features/instructor/pages/InstructorCreateCoursePage";
 import AnalyticsReportsPage from "../../features/admin/pages/AnalyticsReportsPage";
 import RevenuePage from "../../features/admin/pages/RevenuePage";
 import FinancialsPage from "../../features/admin/pages/FinancialsPage";
@@ -266,6 +267,10 @@ export const routeConfig: RouteObject[] = [
           {
             path: "courses",
             element: <InstructorCoursesPage />,
+          },
+          {
+            path: "courses/create-new-course",
+            element: <InstructorCreateCoursePage />,
           },
           {
             path: "submissions",

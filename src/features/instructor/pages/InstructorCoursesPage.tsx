@@ -878,8 +878,7 @@ const InstructorCoursesPage = () => {
 
   // Stubbed handlers — wire to real routes / API later.
   const handleCreate = () => {
-    console.log("Create new course");
-    // navigate("/instructor/courses/new");
+    navigate("/instructor/courses/create-new-course");
   };
   const handleEdit = (id: number) => {
     console.log("Edit course", id);
