@@ -335,7 +335,7 @@ export default function InstructorCreateCoursePage() {
   };
 
   // Stubbed submit — replace with the create-course API call. "builder" should
-  // navigate to the course builder once that route exists.
+  // navigate to the course builder with the new course id.
   const saveCourse = async (
     values: CourseFormValues,
     action: "draft" | "builder",
@@ -343,11 +343,13 @@ export default function InstructorCreateCoursePage() {
     setSubmitAction(action);
     await new Promise((resolve) => setTimeout(resolve, 600));
     console.log("Create course (UI only)", action, values, thumbnail);
-    toast.success(
-      action === "draft"
-        ? "Course saved as draft (UI only)."
-        : "Course saved. Course builder is coming soon (UI only).",
-    );
+    if (action === "builder") {
+      toast.success("Course details saved (UI only).");
+      // TODO: include the new course id in the route once the API returns one.
+      navigate("/instructor/courses/course-builder");
+      return;
+    }
+    toast.success("Course saved as draft (UI only).");
   };
 
   const onSaveDraft = handleSubmit((values) => saveCourse(values, "draft"));
