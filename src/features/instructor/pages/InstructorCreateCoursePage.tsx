@@ -21,9 +21,11 @@ import {
   Lightbulb,
   LoaderCircle,
   Plus,
+  RefreshCw,
   Info,
   Trash2,
   Type,
+  Upload,
   type LucideIcon,
 } from "lucide-react";
 
@@ -84,10 +86,7 @@ const inputClassName =
   "mt-2 w-full rounded-xl border border-white/[0.12] bg-white/[0.045] px-4 py-3 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] outline-none transition-all duration-200 placeholder:text-white/30 hover:border-white/20 hover:bg-white/[0.06] focus:border-[#3B82F6]/70 focus:bg-[#3B82F6]/[0.05] focus:ring-4 focus:ring-[#3B82F6]/10 disabled:opacity-50";
 const labelClassName = "block text-sm font-medium text-white/75";
 
-const fieldClassName = (hasError: boolean) =>
-  `${inputClassName} ${
-    hasError ? "border-red-500 focus:border-red-500 focus:ring-red-500/10" : ""
-  }`;
+const fieldClassName = () => inputClassName;
 
 function Required() {
   return (
@@ -100,7 +99,7 @@ function Required() {
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p className="mt-1.5 text-xs text-red-400" role="alert">
+    <p className="mt-1 text-xs text-rose-400" role="alert">
       {message}
     </p>
   );
@@ -147,6 +146,7 @@ function FormSelect({
   options,
   placeholder,
   icon: Icon,
+  onBlur,
   hasError,
 }: {
   id: string;
@@ -155,6 +155,7 @@ function FormSelect({
   options: string[];
   placeholder: string;
   icon: LucideIcon;
+  onBlur: () => void;
   hasError: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -165,10 +166,14 @@ function FormSelect({
     const handlePointerDown = (event: MouseEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) {
         setOpen(false);
+        onBlur();
       }
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        onBlur();
+      }
     };
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
@@ -176,7 +181,7 @@ function FormSelect({
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [open, onBlur]);
 
   return (
     <div ref={containerRef} className="relative mt-2">
@@ -188,11 +193,9 @@ function FormSelect({
         aria-expanded={open}
         aria-invalid={hasError}
         className={`flex h-12 w-full cursor-pointer items-center gap-3 rounded-xl border px-4 text-left text-sm transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3B82F6]/10 ${
-          hasError
-            ? "border-red-500"
-            : open
-              ? "border-[#3B82F6]/70 bg-[#3B82F6]/[0.05] ring-4 ring-[#3B82F6]/10"
-              : "border-white/[0.12] bg-white/[0.045] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] hover:border-white/20 hover:bg-white/[0.06]"
+          open
+            ? "border-[#3B82F6]/70 bg-[#3B82F6]/[0.05] ring-4 ring-[#3B82F6]/10"
+            : "border-white/[0.12] bg-white/[0.045] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] hover:border-white/20 hover:bg-white/[0.06]"
         }`}
       >
         <Icon
@@ -218,6 +221,23 @@ function FormSelect({
           aria-label={placeholder}
           className="absolute left-0 top-[calc(100%+8px)] z-50 max-h-64 w-full overflow-y-auto rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/60"
         >
+          <button
+            type="button"
+            role="option"
+            aria-selected={!value}
+            onClick={() => {
+              onChange("");
+              setOpen(false);
+            }}
+            className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-xs transition-colors ${
+              !value
+                ? "bg-white/[0.05] font-medium text-white/60"
+                : "text-white/35 hover:bg-white/[0.05] hover:text-white/70"
+            }`}
+          >
+            {placeholder}
+          </button>
+          <div aria-hidden="true" className="mx-2 my-1 h-px bg-white/[0.06]" />
           {options.map((option) => {
             const isActive = option === value;
             return (
@@ -269,6 +289,7 @@ export default function InstructorCreateCoursePage() {
     formState: { errors, isSubmitting, isDirty },
   } = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
+    mode: "onTouched",
     defaultValues: {
       title: "",
       description: "",
@@ -352,8 +373,26 @@ export default function InstructorCreateCoursePage() {
     toast.success("Course saved as draft (UI only).");
   };
 
-  const onSaveDraft = handleSubmit((values) => saveCourse(values, "draft"));
-  const onContinue = handleSubmit((values) => saveCourse(values, "builder"));
+  // The thumbnail lives outside React Hook Form, so it is validated here and
+  // also when other fields are invalid, so every error shows at once.
+  const validateThumbnail = (): boolean => {
+    if (thumbnail) return true;
+    setThumbnailError("Please upload a course thumbnail.");
+    return false;
+  };
+
+  const submitWith = (action: "draft" | "builder") =>
+    handleSubmit(
+      (values) => {
+        if (validateThumbnail()) return saveCourse(values, action);
+      },
+      () => {
+        validateThumbnail();
+      },
+    );
+
+  const onSaveDraft = submitWith("draft");
+  const onContinue = submitWith("builder");
 
   return (
     <section className="relative w-full text-white">
@@ -449,7 +488,7 @@ export default function InstructorCreateCoursePage() {
                     maxLength={100}
                     placeholder="e.g. Modern React & TypeScript"
                     aria-invalid={Boolean(errors.title)}
-                    className={`${fieldClassName(Boolean(errors.title))} h-12 pl-11`}
+                    className={`${fieldClassName()} h-12 pl-11`}
                     {...register("title")}
                   />
                 </div>
@@ -467,7 +506,7 @@ export default function InstructorCreateCoursePage() {
                   maxLength={500}
                   placeholder="What will students learn in this course?"
                   aria-invalid={Boolean(errors.description)}
-                  className={`${fieldClassName(Boolean(errors.description))} resize-none`}
+                  className={`${fieldClassName()} resize-none`}
                   {...register("description")}
                 />
                 <div className="mt-1.5 flex items-start justify-between gap-3">
@@ -495,6 +534,7 @@ export default function InstructorCreateCoursePage() {
                         options={CATEGORY_OPTIONS}
                         placeholder="Select category"
                         icon={LayoutGrid}
+                        onBlur={field.onBlur}
                         hasError={Boolean(errors.category)}
                       />
                     )}
@@ -518,6 +558,7 @@ export default function InstructorCreateCoursePage() {
                         options={LEVEL_OPTIONS}
                         placeholder="Select level"
                         icon={BarChart3}
+                        onBlur={field.onBlur}
                         hasError={Boolean(errors.level)}
                       />
                     )}
@@ -597,51 +638,59 @@ export default function InstructorCreateCoursePage() {
               title="Thumbnail"
               hint={`JPG, PNG or WebP, up to ${THUMBNAIL_MAX_SIZE_MB} MB.`}
             >
-              {thumbnailPreview ? (
-                <div className="overflow-hidden rounded-xl border border-white/[0.12]">
+              <div className="flex flex-col items-center gap-3">
+                {thumbnailPreview ? (
                   <img
                     src={thumbnailPreview}
                     alt="Course thumbnail preview"
-                    className="aspect-video w-full object-cover"
+                    className="aspect-video w-full rounded-2xl border border-blue-400/20 object-cover shadow-lg shadow-blue-950/40 ring-2 ring-blue-500/10"
                   />
-                </div>
-              ) : (
-                <label
-                  htmlFor="thumbnail"
-                  className="group flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[#3B82F6]/60 bg-[#3B82F6]/[0.05] text-[#93C5FD] shadow-[0_0_30px_-12px_rgba(59,130,246,0.6)] transition-all duration-200 hover:bg-[#3B82F6]/[0.09] has-[:focus-visible]:ring-2"
+                ) : (
+                  <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-2xl border border-blue-400/20 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-200 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+                    <ImagePlus className="h-8 w-8" aria-hidden="true" />
+                    <span className="text-xs text-blue-200/70">
+                      No thumbnail selected
+                    </span>
+                  </div>
+                )}
+
+                <div
+                  className={`grid w-full gap-2 ${thumbnailPreview ? "grid-cols-2" : "grid-cols-1"}`}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#3B82F6]/15 ring-1 ring-inset ring-[#3B82F6]/30 transition group-hover:scale-105">
-                    <ImagePlus className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="text-xs">Click to upload thumbnail</span>
-                </label>
-              )}
-              <input
-                id="thumbnail"
-                type="file"
-                accept={THUMBNAIL_TYPES.join(",")}
-                onChange={handleThumbnailChange}
-                className="sr-only"
-              />
-              {thumbnailPreview && (
-                <div className="flex gap-2">
                   <label
                     htmlFor="thumbnail"
-                    className="inline-flex h-10 cursor-pointer items-center rounded-xl border border-[#3B82F6]/25 bg-[#3B82F6]/10 px-4 text-xs font-semibold text-[#93C5FD] transition hover:border-[#3B82F6]/45 hover:text-white has-[:focus-visible]:ring-2"
+                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#3B82F6]/30 bg-[#3B82F6]/10 px-4 text-xs font-semibold text-[#93C5FD] transition-all hover:border-[#3B82F6]/55 hover:bg-[#3B82F6]/20 hover:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#3B82F6]/40"
                   >
-                    Change
+                    {thumbnailPreview ? (
+                      <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+                    ) : (
+                      <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                    )}
+                    {thumbnailPreview ? "Change" : "Upload"}
                   </label>
-                  <button
-                    type="button"
-                    onClick={removeThumbnail}
-                    className="inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-xl border border-white/[0.12] px-4 text-xs font-semibold text-white/60 transition hover:border-red-400/40 hover:text-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Remove
-                  </button>
+                  {thumbnailPreview && (
+                    <button
+                      type="button"
+                      onClick={removeThumbnail}
+                      className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/25 bg-red-500/[0.06] px-4 text-xs font-semibold text-red-300/90 transition-all hover:border-red-400/45 hover:bg-red-500/[0.12] hover:text-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      Remove
+                    </button>
+                  )}
                 </div>
-              )}
-              <FieldError message={thumbnailError} />
+
+                <input
+                  id="thumbnail"
+                  type="file"
+                  accept={THUMBNAIL_TYPES.join(",")}
+                  onChange={handleThumbnailChange}
+                  className="sr-only"
+                />
+              </div>
+              <div className="text-center">
+                <FieldError message={thumbnailError} />
+              </div>
             </FormCard>
 
             <FormCard icon={Crown} title="Access">
