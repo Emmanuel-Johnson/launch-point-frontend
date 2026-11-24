@@ -251,12 +251,12 @@ const CourseApplicationAdminListPage = () => {
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* Total Applications */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
             style={{ animationDelay: "160ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/12 to-transparent"
             />
 
             <div className="flex items-center justify-between">
@@ -278,17 +278,17 @@ const CourseApplicationAdminListPage = () => {
 
           {/* Pending */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
             style={{ animationDelay: "220ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-400/40 to-transparent"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/[0.06] blur-3xl"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/6 blur-3xl"
             />
 
             <div className="relative flex items-center justify-between">
@@ -310,17 +310,17 @@ const CourseApplicationAdminListPage = () => {
 
           {/* Approved */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40"
             style={{ animationDelay: "280ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/50 to-transparent"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#34D399]/[0.08] blur-3xl"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#34D399]/8 blur-3xl"
             />
 
             <div className="relative flex items-center justify-between">
@@ -342,17 +342,17 @@ const CourseApplicationAdminListPage = () => {
 
           {/* Rejected */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35"
             style={{ animationDelay: "340ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-400/40 to-transparent"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-red-400/[0.06] blur-3xl"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-red-400/6 blur-3xl"
             />
 
             <div className="relative flex items-center justify-between">
@@ -376,11 +376,11 @@ const CourseApplicationAdminListPage = () => {
         {/* Course Applications Table */}
         <section
           ref={applicationsListRef}
-          className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
+          className="animate-page-item overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
           style={{ animationDelay: "420ms" }}
         >
           {/* Table Header */}
-          <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4 border-b border-white/8 p-5 md:flex-row md:items-center md:justify-between">
             <div className="cursor-default">
               <h2 className="text-lg font-semibold tracking-tight">
                 All Course Applications
@@ -394,7 +394,7 @@ const CourseApplicationAdminListPage = () => {
 
             <div className="flex w-full min-w-0 flex-col gap-3 md:ml-6 md:flex-1 md:flex-row">
               {/* Status Filter */}
-              <div className="flex h-10 shrink-0 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
+              <div className="flex h-10 shrink-0 items-center rounded-xl border border-white/8 bg-white/3 p-1">
                 {STATUS_FILTERS.map((filter) => (
                   <button
                     key={filter}
@@ -408,8 +408,8 @@ const CourseApplicationAdminListPage = () => {
                             ? "bg-amber-400/10 text-amber-400 ring-1 ring-inset ring-amber-400/20"
                             : filter === "rejected"
                               ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
-                              : "bg-white/[0.08] text-white"
-                        : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                              : "bg-white/8 text-white"
+                        : "text-white/40 hover:bg-white/4 hover:text-white/70"
                     }`}
                   >
                     {filter}
@@ -429,7 +429,7 @@ const CourseApplicationAdminListPage = () => {
                   value={searchQuery}
                   onChange={(event) => handleSearchChange(event.target.value)}
                   placeholder="Search courses or instructors..."
-                  className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
+                  className="h-10 w-full rounded-xl border border-white/8 bg-white/3 pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/15"
                 />
               </div>
             </div>
@@ -439,7 +439,7 @@ const CourseApplicationAdminListPage = () => {
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full table-fixed">
               <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                <tr className="border-b border-white/6 bg-white/1.5 text-left">
                   <th className="w-[26%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Course
                   </th>
@@ -478,7 +478,7 @@ const CourseApplicationAdminListPage = () => {
                     <tr
                       key={`${application.id}-${index}`}
                       onClick={() => openApplication(application.id)}
-                      className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04] hover:shadow-[inset_2px_0_0_0_#34D399]"
+                      className="group cursor-pointer border-b border-white/6 transition-colors duration-200 hover:bg-[#34D399]/4 hover:shadow-[inset_2px_0_0_0_#34D399]"
                     >
                       {/* Course */}
                       <td className="px-6 py-4">
@@ -508,7 +508,7 @@ const CourseApplicationAdminListPage = () => {
                       {/* Instructor */}
                       <td className="px-6 py-4">
                         <div className="flex min-w-0 items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.05] text-xs font-semibold text-white/65 ring-1 ring-inset ring-white/[0.08]">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-xs font-semibold text-white/65 ring-1 ring-inset ring-white/8">
                             {getInitials(application.instructor_name)}
                           </div>
 
@@ -532,7 +532,7 @@ const CourseApplicationAdminListPage = () => {
 
                       {/* Level */}
                       <td className="px-6 py-4">
-                        <span className="inline-flex rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-white/60">
+                        <span className="inline-flex rounded-lg border border-white/8 bg-white/3 px-2.5 py-1 text-xs text-white/60">
                           {application.level}
                         </span>
                       </td>
@@ -571,7 +571,7 @@ const CourseApplicationAdminListPage = () => {
                               openApplication(application.id);
                             }}
                             aria-label={`View ${application.course_title} application`}
-                            className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 text-xs font-medium text-white/60 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                            className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border border-white/8 bg-white/2 px-3 text-xs font-medium text-white/60 transition-all duration-300 hover:scale-[1.03] hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                           >
                             <Eye className="h-4 w-4" strokeWidth={1.8} />
                             View
@@ -591,7 +591,7 @@ const CourseApplicationAdminListPage = () => {
                   <tr
                     key={`placeholder-${index}`}
                     aria-hidden="true"
-                    className="border-b border-white/[0.03]"
+                    className="border-b border-white/3"
                   >
                     <td className="px-6 py-4">
                       <div className="h-11" />
@@ -608,14 +608,14 @@ const CourseApplicationAdminListPage = () => {
           </div>
 
           {/* Mobile Cards */}
-          <div className="divide-y divide-white/[0.06] md:hidden">
+          <div className="divide-y divide-white/6 md:hidden">
             {paginatedApplications.map((application) => {
               const status = statusConfig[application.status];
 
               return (
                 <article
                   key={application.id}
-                  className="p-4 transition-colors hover:bg-[#34D399]/[0.03]"
+                  className="p-4 transition-colors hover:bg-[#34D399]/3"
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
@@ -632,7 +632,7 @@ const CourseApplicationAdminListPage = () => {
                       </p>
 
                       <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <span className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-white/55">
+                        <span className="rounded-lg border border-white/8 bg-white/3 px-2.5 py-1 text-xs text-white/55">
                           {application.level}
                         </span>
 
@@ -656,7 +656,7 @@ const CourseApplicationAdminListPage = () => {
                         <button
                           type="button"
                           onClick={() => openApplication(application.id)}
-                          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 text-xs font-medium text-white/65 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
+                          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-white/8 bg-white/2 px-3 text-xs font-medium text-white/65 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399]"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           View
@@ -673,7 +673,7 @@ const CourseApplicationAdminListPage = () => {
           {/* Empty State */}
           {filteredApplications.length === 0 && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/4 text-white/30">
                 <GraduationCap className="h-6 w-6" />
               </div>
 
@@ -693,7 +693,7 @@ const CourseApplicationAdminListPage = () => {
 
           {/* Pagination */}
           {filteredApplications.length > 0 && totalPages > 1 && (
-            <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex cursor-default flex-col gap-4 border-t border-white/6 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-white/40">
                 Showing{" "}
                 <span className="font-medium tabular-nums text-white/70">
@@ -716,7 +716,7 @@ const CourseApplicationAdminListPage = () => {
                   type="button"
                   onClick={() => handlePageChange(Math.max(safePage - 1, 1))}
                   disabled={safePage === 1}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/8 disabled:hover:bg-white/2 disabled:hover:text-white/50"
                   aria-label="Previous page"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -731,7 +731,7 @@ const CourseApplicationAdminListPage = () => {
                     className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
                       safePage === page
                         ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
+                        : "text-white/45 hover:bg-white/4 hover:text-white"
                     }`}
                   >
                     {page}
@@ -745,7 +745,7 @@ const CourseApplicationAdminListPage = () => {
                     handlePageChange(Math.min(safePage + 1, totalPages))
                   }
                   disabled={safePage === totalPages}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/8 disabled:hover:bg-white/2 disabled:hover:text-white/50"
                   aria-label="Next page"
                 >
                   <ChevronRight className="h-4 w-4" />

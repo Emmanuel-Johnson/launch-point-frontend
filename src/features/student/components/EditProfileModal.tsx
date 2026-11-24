@@ -437,7 +437,7 @@ const EditProfileForm = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 flex h-[100dvh] w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md"
+      className="fixed inset-0 flex h-dvh w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md"
       style={{
         position: "fixed",
         inset: 0,
@@ -445,7 +445,7 @@ const EditProfileForm = ({
       }}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
+        className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/8 bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-profile-title"
@@ -463,7 +463,7 @@ const EditProfileForm = ({
             HEADER
         ======================================================== */}
 
-        <div className="relative flex shrink-0 items-center justify-between border-b border-white/[0.06] px-6 py-5 sm:px-7">
+        <div className="relative flex shrink-0 items-center justify-between border-b border-white/6 px-6 py-5 sm:px-7">
           <div>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.16em] text-[#7C5CFF]">
               Account
@@ -488,7 +488,7 @@ const EditProfileForm = ({
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] text-white/50 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/3 text-white/50 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Close edit profile"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
@@ -531,15 +531,15 @@ const EditProfileForm = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
+                <div className="flex items-center gap-5 rounded-2xl border border-white/6 bg-white/2 p-4">
                   {/* Avatar */}
 
                   <div className="relative shrink-0">
-                    <div className="rounded-full bg-gradient-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
+                    <div className="rounded-full bg-linear-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
                       <div className="rounded-full bg-[#0A0A0A] p-[3px]">
                         <div className="relative h-20 w-20 overflow-hidden rounded-full">
                           <div
-                            className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"
+                            className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"
                             style={{
                               fontFamily: DISPLAY_FONT,
                             }}
@@ -596,7 +596,7 @@ const EditProfileForm = ({
                           type="button"
                           onClick={handleRemoveImage}
                           disabled={isSaving}
-                          className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/45 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
+                          className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/3 px-4 py-2 text-xs font-medium text-white/45 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/6 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
                         >
                           Remove
                         </button>
@@ -688,7 +688,7 @@ const EditProfileForm = ({
                   maxLength={500}
                   rows={4}
                   placeholder="Tell something about yourself..."
-                  className={`w-full resize-none rounded-xl border bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/[0.04] focus:ring-1 ${
+                  className={`w-full resize-none rounded-xl border bg-white/3 px-4 py-3 text-sm leading-relaxed text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/4 focus:ring-1 ${
                     errors.bio
                       ? "border-red-500/40 focus:border-red-500/50 focus:ring-red-500/20"
                       : "border-white/[0.07] focus:border-[#7C5CFF]/40 focus:ring-[#7C5CFF]/20"
@@ -773,7 +773,7 @@ const EditProfileForm = ({
                   Email Address
                 </label>
 
-                <div className="rounded-xl border border-white/[0.05] bg-white/[0.015] px-4 py-3 text-sm text-white/35">
+                <div className="rounded-xl border border-white/5 bg-white/1.5 px-4 py-3 text-sm text-white/35">
                   {profile.email}
                 </div>
 
@@ -788,12 +788,12 @@ const EditProfileForm = ({
               FOOTER
           ======================================================== */}
 
-          <div className="relative flex shrink-0 items-center justify-end gap-3 border-t border-white/[0.06] bg-[#0A0A0A] px-6 py-4 sm:px-7">
+          <div className="relative flex shrink-0 items-center justify-end gap-3 border-t border-white/6 bg-[#0A0A0A] px-6 py-4 sm:px-7">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="cursor-pointer rounded-xl border border-white/[0.07] bg-white/3 px-5 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               Cancel
             </button>
@@ -857,7 +857,7 @@ const FormField = ({
           type="text"
           {...registration}
           placeholder={placeholder}
-          className={`h-12 w-full rounded-xl border bg-white/[0.03] text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/[0.04] focus:ring-1 ${
+          className={`h-12 w-full rounded-xl border bg-white/3 text-sm text-white outline-none transition-all duration-200 placeholder:text-white/20 focus:bg-white/4 focus:ring-1 ${
             Icon ? "pl-11 pr-4" : "px-4"
           } ${
             error

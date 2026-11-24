@@ -47,7 +47,7 @@ const InstructorStatusConfirmModal = ({
       aria-modal="true"
       aria-labelledby="instructor-status-modal-title"
       aria-describedby="instructor-status-modal-description"
-      className="status-modal-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 px-4"
+      className="status-modal-overlay fixed inset-0 z-9999 flex items-center justify-center bg-black/75 px-4"
       onClick={() => {
         if (!isLoading) onCancel();
       }}
@@ -62,15 +62,15 @@ const InstructorStatusConfirmModal = ({
 
       <div
         onClick={(event) => event.stopPropagation()}
-        className="status-modal-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]"
+        className="status-modal-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]"
       >
         <div
           className={`h-1 w-full ${isActive ? "bg-red-500" : "bg-[#34D399]"}`}
         />
 
-        <div className="flex items-start gap-4 border-b border-white/[0.06] px-6 py-5">
+        <div className="flex items-start gap-4 border-b border-white/6 px-6 py-5">
           <div
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${isActive ? "bg-red-500/[0.08] text-red-400" : "bg-[#34D399]/[0.08] text-[#34D399]"}`}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${isActive ? "bg-red-500/8 text-red-400" : "bg-[#34D399]/8 text-[#34D399]"}`}
           >
             <ActionIcon className="h-5 w-5" strokeWidth={1.8} />
           </div>
@@ -88,7 +88,7 @@ const InstructorStatusConfirmModal = ({
         </div>
 
         <div className="px-6 py-6">
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+          <div className="rounded-xl border border-white/6 bg-white/2.5 px-4 py-3">
             <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">
               Instructor
             </p>
@@ -98,7 +98,7 @@ const InstructorStatusConfirmModal = ({
           </div>
 
           <div
-            className={`mt-4 flex gap-3 rounded-xl border px-4 py-3 ${isActive ? "border-red-400/10 bg-red-500/[0.04]" : "border-[#34D399]/10 bg-[#34D399]/[0.04]"}`}
+            className={`mt-4 flex gap-3 rounded-xl border px-4 py-3 ${isActive ? "border-red-400/10 bg-red-500/4" : "border-[#34D399]/10 bg-[#34D399]/4"}`}
           >
             <AlertTriangle
               className={`mt-0.5 h-4 w-4 shrink-0 ${isActive ? "text-red-400/80" : "text-[#34D399]/80"}`}
@@ -119,7 +119,7 @@ const InstructorStatusConfirmModal = ({
               type="button"
               disabled={isLoading}
               onClick={onCancel}
-              className="flex-1 cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex-1 cursor-pointer rounded-xl border border-white/8 bg-white/2.5 px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               Cancel
             </button>

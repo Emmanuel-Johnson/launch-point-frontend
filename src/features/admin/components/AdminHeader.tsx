@@ -82,7 +82,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   return (
     <>
       <header
-        className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/[0.08] bg-[#0A0A0A] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/8 bg-[#0A0A0A] px-8 transition-[left] duration-500 ease-in-out ${
           isSidebarCollapsed ? "left-20" : "left-[280px]"
         }`}
       >
@@ -91,9 +91,9 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       ========================================================== */}
         <div className="mx-8 flex max-w-lg flex-1">
           <div className="group relative w-full">
-            <div className="relative overflow-hidden rounded-full border border-white/[0.08] bg-[#0F0F12] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#121216] hover:shadow-[0_8px_30px_rgba(52,211,153,0.1)] focus-within:border-[#34D399]/50 focus-within:bg-[#121216] focus-within:shadow-[0_0_0_4px_rgba(52,211,153,0.08)]">
+            <div className="relative overflow-hidden rounded-full border border-white/8 bg-[#0F0F12] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#121216] hover:shadow-[0_8px_30px_rgba(52,211,153,0.1)] focus-within:border-[#34D399]/50 focus-within:bg-[#121216] focus-within:shadow-[0_0_0_4px_rgba(52,211,153,0.08)]">
               {/* Green shine */}
-              <span className="pointer-events-none absolute inset-0 z-20 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 z-20 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Search Icon */}
               <Search
@@ -121,10 +121,10 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
           <button
             type="button"
             aria-label="Notifications"
-            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:text-white hover:shadow-[0_6px_20px_rgba(52,211,153,0.1)]"
+            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 hover:text-white hover:shadow-[0_6px_20px_rgba(52,211,153,0.1)]"
           >
             {/* Green shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Notification Icon */}
             <Bell
@@ -137,7 +137,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
           </button>
 
           {/* Divider */}
-          <div className="mx-1 h-8 w-px bg-white/[0.08]" />
+          <div className="mx-1 h-8 w-px bg-white/8" />
 
           {/* =========================================================
             Admin Profile
@@ -148,10 +148,10 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
               type="button"
               onClick={() => setIsProfileOpen((prev) => !prev)}
               aria-expanded={isProfileOpen}
-              className="group relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-2 py-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:shadow-[0_6px_20px_rgba(52,211,153,0.1)]"
+              className="group relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-2 py-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 hover:shadow-[0_6px_20px_rgba(52,211,153,0.1)]"
             >
               {/* Green shine */}
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Avatar */}
               <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#34D399]/15 text-sm font-semibold text-[#34D399] ring-1 ring-[#34D399]/20 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#34D399]/20 group-hover:text-[#6EE7B7] group-hover:ring-[#34D399]/40 group-hover:shadow-[0_0_18px_rgba(52,211,153,0.18)]">
@@ -182,7 +182,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
               Profile Dropdown
           ========================================================== */}
             <div
-              className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-2xl shadow-black/70 transition-all duration-200 ease-out ${
+              className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-2xl shadow-black/70 transition-all duration-200 ease-out ${
                 isProfileOpen
                   ? "translate-y-0 scale-100 opacity-100"
                   : "pointer-events-none -translate-y-2 scale-95 opacity-0"
@@ -191,7 +191,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
               {/* =====================================================
                 ADMIN INFO
             ====================================================== */}
-              <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
+              <div className="cursor-default border-b border-white/8 px-5 py-5">
                 <div className="flex items-center gap-3.5">
                   {/* Avatar */}
 
@@ -227,13 +227,13 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
                     setIsProfileOpen(false);
                     setShowLogoutConfirm(true);
                   }}
-                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/[0.06]"
+                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/6"
                 >
                   {/* Red shine */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   {/* Logout Icon */}
-                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400 transition-all duration-300 group-hover:scale-105 group-hover:bg-red-500/10 group-hover:text-red-300 group-hover:shadow-[0_0_16px_rgba(239,68,68,0.1)]">
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-500/6 text-red-400 transition-all duration-300 group-hover:scale-105 group-hover:bg-red-500/10 group-hover:text-red-300 group-hover:shadow-[0_0_16px_rgba(239,68,68,0.1)]">
                     <LogOut
                       className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-0.5"
                       strokeWidth={1.8}

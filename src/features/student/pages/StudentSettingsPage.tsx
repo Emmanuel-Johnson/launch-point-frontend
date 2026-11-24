@@ -162,9 +162,9 @@ const SectionHeader = ({
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[stSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[stSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -181,7 +181,7 @@ const SettingsSkeleton = () => {
       <div className="space-y-8">
         {/* PAGE HEADER */}
         <section>
-          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+          <div className="rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
             <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
               <Shimmer className="h-3 w-24" />
               <Shimmer className="mt-3 h-10 w-44" />
@@ -193,7 +193,7 @@ const SettingsSkeleton = () => {
         {/* SETTINGS LAYOUT */}
         <section className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* SIDEBAR */}
-          <aside className="h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+          <aside className="h-fit rounded-3xl border border-white/6 bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
             <div className="px-3 py-3">
               <Shimmer className="h-3 w-20" />
             </div>
@@ -213,7 +213,7 @@ const SettingsSkeleton = () => {
 
           {/* MAIN CONTENT */}
           <main className="min-w-0">
-            <div className="rounded-3xl bg-gradient-to-b from-white/[0.1] via-white/[0.04] to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
+            <div className="rounded-3xl bg-linear-to-b from-white/10 via-white/4 to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
               <div className="relative overflow-hidden rounded-[23px] bg-[#0A0A0A] p-5 sm:p-8">
                 {/* Section header */}
                 <div className="mb-8 flex items-start gap-4">
@@ -225,7 +225,7 @@ const SettingsSkeleton = () => {
                 </div>
 
                 {/* Card */}
-                <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-4 sm:p-6">
+                <div className="rounded-2xl border border-white/[0.07] bg-white/1.5 p-4 sm:p-6">
                   <div className="mb-6 flex items-center gap-3">
                     <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
                     <div>
@@ -512,7 +512,7 @@ const SettingsPage = () => {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-white/[0.08] bg-[#0F0F12] px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 hover:border-white/[0.14] focus:border-[#7C5CFF]/60 focus:bg-[#121216] focus:ring-4 focus:ring-[#7C5CFF]/[0.08]";
+    "w-full rounded-xl border border-white/8 bg-[#0F0F12] px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 hover:border-white/[0.14] focus:border-[#7C5CFF]/60 focus:bg-[#121216] focus:ring-4 focus:ring-[#7C5CFF]/8";
 
   /* ---------------------------------------------------------- loading */
 
@@ -530,7 +530,7 @@ const SettingsPage = () => {
           className="animate-page-item"
           style={{ animationDelay: "80ms" }}
         >
-          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+          <div className="rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
             <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
               <div
                 aria-hidden="true"
@@ -542,11 +542,11 @@ const SettingsPage = () => {
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -bottom-24 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
+                className="pointer-events-none absolute -bottom-24 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/5 blur-3xl"
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
               />
               <div
                 aria-hidden="true"
@@ -560,7 +560,7 @@ const SettingsPage = () => {
                 </p>
 
                 <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-                  <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                  <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                     Settings
                   </span>
                 </h1>
@@ -580,7 +580,7 @@ const SettingsPage = () => {
         <section className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* ---------------------------------------------- SIDEBAR */}
           <aside
-            className="animate-page-item h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+            className="animate-page-item h-fit rounded-3xl border border-white/6 bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
             style={{ animationDelay: "140ms" }}
           >
             <p className="px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">
@@ -600,19 +600,19 @@ const SettingsPage = () => {
                     aria-current={isActive ? "page" : undefined}
                     className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-xl p-3 text-left transition-all duration-300 ${
                       isActive
-                        ? "bg-[#7C5CFF]/[0.10] text-white ring-1 ring-inset ring-[#7C5CFF]/20"
+                        ? "bg-[#7C5CFF]/10 text-white ring-1 ring-inset ring-[#7C5CFF]/20"
                         : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.035] hover:text-white"
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-gradient-to-b from-[#7C5CFF] to-[#9D82FF]" />
+                      <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-linear-to-b from-[#7C5CFF] to-[#9D82FF]" />
                     )}
 
                     <div
                       className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
                         isActive
                           ? "bg-[#7C5CFF]/15 text-[#9D82FF]"
-                          : "bg-white/[0.04] text-white/45 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#9D82FF]"
+                          : "bg-white/4 text-white/45 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#9D82FF]"
                       }`}
                     >
                       <Icon size={19} strokeWidth={1.8} />
@@ -641,16 +641,16 @@ const SettingsPage = () => {
             className="animate-page-item min-w-0"
             style={{ animationDelay: "200ms" }}
           >
-            <div className="rounded-3xl bg-gradient-to-b from-white/[0.1] via-white/[0.04] to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
+            <div className="rounded-3xl bg-linear-to-b from-white/10 via-white/4 to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
               <div className="relative overflow-hidden rounded-[23px] bg-[#0A0A0A] p-5 sm:p-8">
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-24 right-0 h-56 w-56 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
+                  className="pointer-events-none absolute -top-24 right-0 h-56 w-56 rounded-full bg-[#7C5CFF]/8 blur-3xl"
                 />
 
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/40 to-transparent"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7C5CFF]/40 to-transparent"
                 />
 
                 <div className="relative">
@@ -666,7 +666,7 @@ const SettingsPage = () => {
                       </div>
 
                       {/* Change Password Card */}
-                      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-4 sm:p-6">
+                      <div className="rounded-2xl border border-white/[0.07] bg-white/1.5 p-4 sm:p-6">
                         <div className="mb-6 flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/15">
                             <LockKeyhole size={19} strokeWidth={1.8} />
@@ -816,7 +816,7 @@ const SettingsPage = () => {
                               type="submit"
                               disabled={isSavingPassword}
                               className="group/button inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl
-    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3
+    bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-6 py-3
     text-sm font-semibold text-white
     shadow-lg shadow-violet-950/40
     transition-all duration-300
@@ -860,7 +860,7 @@ const SettingsPage = () => {
                         />
                       </div>
 
-                      <div className="mb-5 flex items-center justify-between rounded-2xl border border-[#7C5CFF]/15 bg-[#7C5CFF]/[0.04] p-4">
+                      <div className="mb-5 flex items-center justify-between rounded-2xl border border-[#7C5CFF]/15 bg-[#7C5CFF]/4 p-4">
                         <div>
                           <p
                             className="text-sm font-medium text-white"
@@ -913,7 +913,7 @@ const SettingsPage = () => {
                                 onClick={() => toggleNotification(option.key)}
                                 className={`relative h-6 w-11 shrink-0 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#7C5CFF]/20 ${
                                   isEnabled
-                                    ? "bg-gradient-to-r from-[#7C5CFF] to-[#9D82FF] shadow-[0_0_14px_rgba(124,92,255,0.25)]"
+                                    ? "bg-linear-to-r from-[#7C5CFF] to-[#9D82FF] shadow-[0_0_14px_rgba(124,92,255,0.25)]"
                                     : "bg-white/15 hover:bg-white/25"
                                 }`}
                               >
@@ -938,7 +938,7 @@ const SettingsPage = () => {
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
                           className="group/button inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl
-    bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3
+    bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3
     text-sm font-semibold text-white
     shadow-lg shadow-violet-950/40
     transition-all duration-300

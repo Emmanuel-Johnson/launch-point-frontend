@@ -280,16 +280,16 @@ const CategoryFormModal = ({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 p-6 backdrop-blur-sm">
+    <div className="fixed inset-0 z-99999 flex items-center justify-center bg-black/75 p-6 backdrop-blur-sm">
       <div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] shadow-[0_25px_80px_rgba(0,0,0,0.85)]">
         {/* Top glow */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent"
         />
 
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5">
+        <div className="flex items-center justify-between border-b border-white/8 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
               <Tags className="h-5 w-5" strokeWidth={1.8} />
@@ -313,7 +313,7 @@ const CategoryFormModal = ({
             onClick={handleClose}
             disabled={isSubmitting}
             aria-label="Close"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition-all duration-200 hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition-all duration-200 hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
@@ -338,8 +338,8 @@ const CategoryFormModal = ({
                 disabled={isSubmitting}
                 {...register("name")}
                 className={`h-11 w-full rounded-xl border ${
-                  errors.name ? "border-red-400/60" : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
+                  errors.name ? "border-red-400/60" : "border-white/8"
+                } bg-white/3 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
 
               {errors.name && (
@@ -365,8 +365,8 @@ const CategoryFormModal = ({
                 disabled={isSubmitting}
                 {...register("slug")}
                 className={`h-11 w-full rounded-xl border ${
-                  errors.slug ? "border-red-400/60" : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
+                  errors.slug ? "border-red-400/60" : "border-white/8"
+                } bg-white/3 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
 
               {errors.slug && (
@@ -400,8 +400,8 @@ const CategoryFormModal = ({
                 className={`w-full resize-none rounded-xl border ${
                   errors.description
                     ? "border-red-400/60"
-                    : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
+                    : "border-white/8"
+                } bg-white/3 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10 disabled:cursor-not-allowed disabled:opacity-50`}
               />
 
               <div className="mt-1.5 flex items-center justify-between">
@@ -421,7 +421,7 @@ const CategoryFormModal = ({
 
             {/* Active Category - Only show when creating */}
             {!editingCategory && (
-              <div className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
+              <div className="flex items-center justify-between rounded-xl border border-white/8 bg-white/2 px-4 py-3">
                 <div>
                   <p className="text-sm font-medium text-white">
                     Active Category
@@ -456,7 +456,7 @@ const CategoryFormModal = ({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] px-6 py-4">
+          <div className="flex items-center justify-end gap-3 border-t border-white/8 px-6 py-4">
             <button
               type="submit"
               disabled={isSubmitting || (Boolean(editingCategory) && !isDirty)}

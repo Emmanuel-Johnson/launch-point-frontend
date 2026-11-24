@@ -47,9 +47,9 @@ interface SubscriptionPlanDetail {
 
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[spdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[spdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -65,7 +65,7 @@ const SubscriptionPlanDetailSkeleton = () => (
     <Shimmer className="h-4 w-16" />
 
     {/* Hero */}
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+    <div className="relative overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-center gap-4">
           <Shimmer className="h-16 w-16 shrink-0 rounded-2xl" />
@@ -91,14 +91,14 @@ const SubscriptionPlanDetailSkeleton = () => (
       {/* Left column */}
       <div className="space-y-6 lg:col-span-2">
         {/* Description */}
-        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+        <section className="rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6">
           <Shimmer className="h-3 w-24" />
           <Shimmer className="mt-4 h-4 w-full" />
           <Shimmer className="mt-2 h-4 w-[80%]" />
         </section>
 
         {/* Benefits */}
-        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+        <section className="rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6">
           <div className="flex items-center justify-between">
             <Shimmer className="h-3 w-20" />
             <Shimmer className="h-5 w-8 rounded-full" />
@@ -118,7 +118,7 @@ const SubscriptionPlanDetailSkeleton = () => (
       {/* Right column */}
       <div className="space-y-6">
         {/* Pricing */}
-        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+        <section className="rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6">
           <div className="flex items-center gap-3">
             <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
             <Shimmer className="h-3 w-20" />
@@ -131,7 +131,7 @@ const SubscriptionPlanDetailSkeleton = () => (
         </section>
 
         {/* Timeline */}
-        <section className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6">
+        <section className="rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6">
           <Shimmer className="h-3 w-24" />
 
           <div className="mt-4 space-y-4">
@@ -300,21 +300,21 @@ const SubscriptionPlanDetailPage = () => {
         </button>
 
         {/* ================= Hero ================= */}
-        <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
+        <div className="sp-item relative overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
           {/* ambient emerald glow */}
           <div className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#34D399]/10 blur-3xl" />
           {/* faint gold hairline */}
-          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
+          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
 
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             {/* Identity */}
             <div className="flex min-w-0 items-center gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_26px_-8px_rgba(52,211,153,0.6)]">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_26px_-8px_rgba(52,211,153,0.6)]">
                 <CreditCard size={28} className="text-[#34D399]" />
               </div>
 
               <div className="min-w-0">
-                <h1 className="text-2xl font-semibold tracking-tight [overflow-wrap:anywhere]">
+                <h1 className="text-2xl font-semibold tracking-tight wrap-anywhere">
                   {plan.name}
                 </h1>
 
@@ -360,7 +360,7 @@ const SubscriptionPlanDetailPage = () => {
               <button
                 type="button"
                 onClick={handleEditPlan}
-                className="group inline-flex h-12 w-30 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 text-xs font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
+                className="group inline-flex h-12 w-30 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/3 px-4 text-xs font-medium text-white/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
               >
                 <Pencil
                   size={14}
@@ -376,11 +376,11 @@ const SubscriptionPlanDetailPage = () => {
                 onClick={handleStatusClick}
                 className={`group/btn relative inline-flex h-12 w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
                   plan.is_active
-                    ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
-                    : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
+                    ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/16"
+                    : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/16"
                 }`}
               >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
                 {isUpdating ? (
                   <Loader2 size={15} className="relative z-10 animate-spin" />
@@ -410,19 +410,19 @@ const SubscriptionPlanDetailPage = () => {
           <div className="space-y-6 lg:col-span-2">
             {/* Description */}
             <section
-              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              className="sp-item rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
               style={{ animationDelay: "80ms" }}
             >
               <SectionTitle>Description</SectionTitle>
 
-              <p className="mt-3 text-sm leading-relaxed text-white/60 [overflow-wrap:anywhere]">
+              <p className="mt-3 text-sm leading-relaxed text-white/60 wrap-anywhere">
                 {plan.description || "No description provided."}
               </p>
             </section>
 
             {/* Benefits */}
             <section
-              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              className="sp-item rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
               style={{ animationDelay: "160ms" }}
             >
               <div className="flex items-center justify-between">
@@ -444,7 +444,7 @@ const SubscriptionPlanDetailPage = () => {
                         <Check size={12} className="text-[#34D399]" />
                       </span>
 
-                      <span className="min-w-0 [overflow-wrap:anywhere]">
+                      <span className="min-w-0 wrap-anywhere">
                         {benefit}
                       </span>
                     </li>
@@ -462,17 +462,17 @@ const SubscriptionPlanDetailPage = () => {
           <div className="space-y-6">
             {/* Pricing */}
             <section
-              className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              className="sp-item relative overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
               style={{ animationDelay: "120ms" }}
             >
               {/* faint gold hairline for the premium price */}
               {plan.plan_type === "premium" && (
-                <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
+                <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
               )}
 
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ring-1 ring-inset ${
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br ring-1 ring-inset ${
                     plan.plan_type === "premium"
                       ? "from-[#E8C67A]/20 to-[#E8C67A]/5 ring-[#E8C67A]/25"
                       : "from-[#34D399]/20 to-[#34D399]/5 ring-[#34D399]/20"
@@ -493,7 +493,7 @@ const SubscriptionPlanDetailPage = () => {
 
               <div className="mt-5">
                 <p
-                  className={`text-3xl font-semibold [overflow-wrap:anywhere] ${
+                  className={`text-3xl font-semibold wrap-anywhere ${
                     plan.plan_type === "premium"
                       ? "text-[#E8C67A]"
                       : "text-white"
@@ -511,7 +511,7 @@ const SubscriptionPlanDetailPage = () => {
 
             {/* Timeline */}
             <section
-              className="sp-item rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+              className="sp-item rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
               style={{ animationDelay: "200ms" }}
             >
               <SectionTitle>Timeline</SectionTitle>
@@ -594,7 +594,7 @@ interface MetaRowProps {
 const MetaRow = ({ icon: Icon, label, value }: MetaRowProps) => {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-white/45">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/6 bg-white/3 text-white/45">
         <Icon size={16} />
       </div>
 
@@ -602,7 +602,7 @@ const MetaRow = ({ icon: Icon, label, value }: MetaRowProps) => {
         <p className="text-[11px] uppercase tracking-wider text-white/35">
           {label}
         </p>
-        <p className="text-sm text-white/70 [overflow-wrap:anywhere]">
+        <p className="text-sm text-white/70 wrap-anywhere">
           {value}
         </p>
       </div>

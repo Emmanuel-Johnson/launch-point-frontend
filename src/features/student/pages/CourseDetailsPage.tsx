@@ -740,18 +740,18 @@ const reviews = [
 
 /* Standard content card — same base gradient + border everywhere */
 const CARD_BASE =
-  "relative overflow-hidden border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814]";
+  "relative overflow-hidden border border-violet-400/15 bg-linear-to-b from-[#130E24] to-[#0B0814]";
 
 /* Pill / ghost control surface (back button, badges, "view all", arrows) */
 const PILL =
-  "border border-white/[0.08] bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
+  "border border-white/8 bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
 
 /* Reusable hover shimmer — the SAME sheen used on every card so the whole
    page shimmers consistently on hover. Drop <CardSheen /> as the first child
    of any card that also has the `group` class and `relative overflow-hidden`
    (CARD_BASE already provides the latter two). */
 const CardSheen = () => (
-  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-linear-to-r from-transparent via-white/5 to-transparent" />
 );
 
 /* ──────────────────────────────────────────────────────────────────
@@ -837,7 +837,7 @@ const SectionHeading = ({
   caption?: string;
 }) => (
   <div className="flex items-start gap-3.5">
-    <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/15 to-violet-500/0 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+    <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-violet-400/20 bg-linear-to-br from-violet-500/15 to-violet-500/0 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
       <Icon className="h-5 w-5" />
     </span>
     <div>
@@ -859,7 +859,7 @@ const PlanBadge = ({
 }) =>
   plan === "Premium" ? (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md ${className}`}
     >
       <Crown className="h-3.5 w-3.5 text-amber-300" />
       Premium
@@ -1151,7 +1151,7 @@ const CourseDetailsPage = () => {
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
-          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/12 hover:text-white"
         >
           <span
             aria-hidden="true"
@@ -1183,7 +1183,7 @@ const CourseDetailsPage = () => {
             className="h-3.5 w-3.5 shrink-0 text-violet-300/50"
           /> */}
 
-          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+          <span className="min-w-0 truncate bg-linear-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-tight text-transparent">
             {course.title}
           </span>
         </nav>
@@ -1191,7 +1191,7 @@ const CourseDetailsPage = () => {
 
       <div className="mb-6 cursor-default">
         <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-          <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
             Course Overview
           </span>
         </h1>
@@ -1204,7 +1204,7 @@ const CourseDetailsPage = () => {
 
       {/* ── Hero — modern, premium refresh ─────────────────────────── */}
 
-      <section className="lp-hero-ease group group/hero relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
+      <section className="lp-hero-ease group group/hero relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-1100 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
         {/* Ambient radial base */}
         <div
           aria-hidden="true"
@@ -1214,7 +1214,7 @@ const CourseDetailsPage = () => {
         {/* Fine masked grid texture */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] [transform:translateZ(0)] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(80%_80%_at_20%_0%,#000_0%,transparent_75%)]"
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.07] transform-[translateZ(0)] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-size-[44px_44px] mask-[radial-gradient(80%_80%_at_20%_0%,#000_0%,transparent_75%)]"
         />
 
         {/* Animated color blooms (opacity-only, GPU-promoted — no flicker) */}
@@ -1242,12 +1242,12 @@ const CourseDetailsPage = () => {
           <div className="relative z-10 order-2 flex flex-col justify-center bg-[#100821] p-6 sm:p-8 lg:order-2 lg:-ml-px lg:bg-transparent lg:p-9 xl:p-10">
             {/* Category + level badges */}
             <div className="mb-7 flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-gradient-to-r from-violet-500/20 to-violet-500/[0.06] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-violet-400/30 bg-linear-to-r from-violet-500/20 to-violet-500/6 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
                 <Laptop className="h-3.5 w-3.5 text-violet-300" />
                 {course.category}
               </span>
 
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/25 bg-gradient-to-r from-cyan-500/15 to-cyan-500/[0.04] px-3 py-1.5 text-[11px] font-semibold tracking-wide text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/25 bg-linear-to-r from-cyan-500/15 to-cyan-500/4 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
                 <GraduationCap className="h-3.5 w-3.5 text-cyan-300" />
                 {course.level}
               </span>
@@ -1256,7 +1256,7 @@ const CourseDetailsPage = () => {
             </div>
 
             {/* Course title */}
-            <h1 className="max-w-2xl font-['Manrope'] text-2xl font-medium leading-[1.25] tracking-[-0.04em] text-white sm:text-3xl lg:text-[34px]">
+            <h1 className="max-w-2xl font-['Manrope'] text-2xl font-medium leading-tight tracking-[-0.04em] text-white sm:text-3xl lg:text-[34px]">
               {course.title}
             </h1>
             {/* Course subtitle */}
@@ -1266,7 +1266,7 @@ const CourseDetailsPage = () => {
 
             {/* Course statistics */}
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/3 px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
                 <Star className="h-4 w-4 shrink-0 fill-amber-400 text-amber-400" />
 
                 <strong className="text-white">
@@ -1278,7 +1278,7 @@ const CourseDetailsPage = () => {
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/3 px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
                 <Users className="h-4 w-4 shrink-0 text-violet-300" />
 
                 <strong className="text-white">{course.students}</strong>
@@ -1286,7 +1286,7 @@ const CourseDetailsPage = () => {
                 <span className="text-white/40">learners</span>
               </span>
 
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/3 px-3.5 py-2.5 text-xs text-white/55 backdrop-blur-sm">
                 <Clock3 className="h-4 w-4 shrink-0 text-cyan-300" />
 
                 <strong className="text-white">{course.duration}</strong>
@@ -1298,7 +1298,7 @@ const CourseDetailsPage = () => {
               <button
                 type="button"
                 onClick={handleLearningAction}
-                className="group/button inline-flex min-h-[58px] min-w-[270px] cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-12 py-4 text-[15px] font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
+                className="group/button inline-flex min-h-[58px] min-w-[270px] cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-12 py-4 text-[15px] font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
               >
                 {isPremium ? (
                   <>Enroll Now</>
@@ -1315,7 +1315,7 @@ const CourseDetailsPage = () => {
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-[58px] min-w-[200px] cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-8 py-4 text-[15px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
+                className="inline-flex min-h-[58px] min-w-[200px] cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/3 px-8 py-4 text-[15px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
               >
                 <BookOpen className="h-5 w-5 text-violet-300" />
                 View curriculum
@@ -1330,7 +1330,7 @@ const CourseDetailsPage = () => {
                 className={`flex h-[58px] w-[58px] shrink-0 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 ${
                   saved
                     ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_24px_-6px_rgba(167,139,250,0.8)]"
-                    : "border-white/10 bg-white/[0.03] text-white/55 hover:border-violet-400/30 hover:text-violet-200"
+                    : "border-white/10 bg-white/3 text-white/55 hover:border-violet-400/30 hover:text-violet-200"
                 }`}
               >
                 <Bookmark
@@ -1350,7 +1350,7 @@ const CourseDetailsPage = () => {
               decoding="async"
               draggable={false}
               onLoad={() => setHeroImageLoaded(true)}
-              className={`lp-hero-img absolute inset-0 block h-full w-full transform-gpu object-cover [backface-visibility:hidden] ${
+              className={`lp-hero-img absolute inset-0 block h-full w-full transform-gpu object-cover backface-hidden ${
                 heroImageLoaded ? "opacity-100" : "opacity-0"
               }`}
             />
@@ -1400,7 +1400,7 @@ const CourseDetailsPage = () => {
             {/* About — tightened, with a compact meta strip for better structure */}
             <div className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
               <CardSheen />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-400/40 to-transparent" />
               <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl" />
 
               <div className="relative">
@@ -1456,7 +1456,7 @@ const CourseDetailsPage = () => {
                   {course.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="cursor-default rounded-xl border border-white/[0.1] bg-white/[0.04] px-3.5 py-2 text-xs font-medium text-white/75 transition hover:-translate-y-0.5 hover:border-violet-300/30 hover:bg-violet-400/[0.1] hover:text-violet-200"
+                      className="cursor-default rounded-xl border border-white/10 bg-white/4 px-3.5 py-2 text-xs font-medium text-white/75 transition hover:-translate-y-0.5 hover:border-violet-300/30 hover:bg-violet-400/10 hover:text-violet-200"
                     >
                       {skill}
                     </span>
@@ -1489,7 +1489,7 @@ const CourseDetailsPage = () => {
                     value: totalModules,
                     label: "Modules",
                     Icon: Layers,
-                    tile: "bg-gradient-to-br from-violet-400/20 via-violet-500/12 to-purple-500/[0.06] hover:from-violet-400/25",
+                    tile: "bg-linear-to-br from-violet-400/20 via-violet-500/12 to-purple-500/6 hover:from-violet-400/25",
                     chip: "bg-violet-300/15 text-violet-200",
                     glow: "bg-violet-400/[0.07]",
                     valueColor: "text-violet-100",
@@ -1500,7 +1500,7 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.lesson,
                     label: "Lessons",
                     Icon: PlayCircle,
-                    tile: "bg-gradient-to-br from-sky-400/20 via-blue-500/12 to-cyan-500/[0.06] hover:from-sky-400/25",
+                    tile: "bg-linear-to-br from-sky-400/20 via-blue-500/12 to-cyan-500/6 hover:from-sky-400/25",
                     chip: "bg-sky-300/15 text-sky-200",
                     glow: "bg-sky-400/[0.07]",
                     valueColor: "text-sky-100",
@@ -1511,7 +1511,7 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.quiz,
                     label: "Quizzes",
                     Icon: FileQuestion,
-                    tile: "bg-gradient-to-br from-amber-300/20 via-orange-400/12 to-yellow-500/[0.06] hover:from-amber-300/25",
+                    tile: "bg-linear-to-br from-amber-300/20 via-orange-400/12 to-yellow-500/6 hover:from-amber-300/25",
                     chip: "bg-amber-300/15 text-amber-200",
                     glow: "bg-amber-300/[0.07]",
                     valueColor: "text-amber-100",
@@ -1522,7 +1522,7 @@ const CourseDetailsPage = () => {
                     value: curriculumTotals.assignment,
                     label: "Assignments",
                     Icon: ClipboardList,
-                    tile: "bg-gradient-to-br from-emerald-300/20 via-green-500/12 to-teal-500/[0.06] hover:from-emerald-300/25",
+                    tile: "bg-linear-to-br from-emerald-300/20 via-green-500/12 to-teal-500/6 hover:from-emerald-300/25",
                     chip: "bg-emerald-300/15 text-emerald-200",
                     glow: "bg-emerald-300/[0.07]",
                     valueColor: "text-emerald-100",
@@ -1535,7 +1535,7 @@ const CourseDetailsPage = () => {
                       .replace(" hour", "h"),
                     label: "Total length",
                     Icon: Clock3,
-                    tile: "bg-gradient-to-br from-cyan-300/20 via-teal-400/12 to-blue-500/[0.06] hover:from-cyan-300/25",
+                    tile: "bg-linear-to-br from-cyan-300/20 via-teal-400/12 to-blue-500/6 hover:from-cyan-300/25",
                     chip: "bg-cyan-300/15 text-cyan-200",
                     glow: "bg-cyan-300/[0.07]",
                     valueColor: "text-cyan-100",
@@ -1602,7 +1602,7 @@ const CourseDetailsPage = () => {
                 return (
                   <div
                     key={module.title}
-                    className={`group relative isolate overflow-hidden rounded-3xl border bg-gradient-to-b from-[#130E24] to-[#0B0814] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-[border-color,box-shadow] duration-500 ease-out ${
+                    className={`group relative isolate overflow-hidden rounded-3xl border bg-linear-to-b from-[#130E24] to-[#0B0814] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-[border-color,box-shadow] duration-500 ease-out ${
                       expanded
                         ? "border-violet-400/25 shadow-[0_8px_28px_-24px_rgba(124,58,237,0.20)]"
                         : "border-violet-400/15 hover:border-violet-400/25"
@@ -1631,7 +1631,7 @@ const CourseDetailsPage = () => {
                     />
 
                     {/* Existing hover shimmer */}
-                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
+                    <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-linear-to-r from-transparent via-white/5 to-transparent" />
 
                     {/* Module header */}
                     <button
@@ -1644,8 +1644,8 @@ const CourseDetailsPage = () => {
                       <span
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border text-xs font-semibold transition-colors duration-300 ${
                           expanded
-                            ? "border-violet-400/25 bg-violet-500/[0.12] text-violet-100"
-                            : "border-violet-400/20 bg-violet-500/[0.08] text-violet-200"
+                            ? "border-violet-400/25 bg-violet-500/12 text-violet-100"
+                            : "border-violet-400/20 bg-violet-500/8 text-violet-200"
                         }`}
                       >
                         {String(index + 1).padStart(2, "0")}
@@ -1687,7 +1687,7 @@ const CourseDetailsPage = () => {
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-colors duration-300 ${
                           expanded
                             ? "border-violet-400/20 bg-violet-500/[0.07] text-violet-200"
-                            : "border-white/[0.08] text-white/40"
+                            : "border-white/8 text-white/40"
                         }`}
                       >
                         <ChevronDown
@@ -1707,7 +1707,7 @@ const CourseDetailsPage = () => {
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="mx-4 border-t border-white/[0.06] sm:mx-5">
+                        <div className="mx-4 border-t border-white/6 sm:mx-5">
                           <div className="space-y-1 py-2.5">
                             {module.lessons.map((lesson, lessonIndex) => {
                               const type = lesson.type ?? "lesson";
@@ -1722,7 +1722,7 @@ const CourseDetailsPage = () => {
                               return (
                                 <div
                                   key={`${lesson.title}-${lessonIndex}`}
-                                  className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition-colors duration-300 hover:border-white/[0.06] hover:bg-white/[0.025] sm:px-3"
+                                  className="group/lesson flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2.5 transition-colors duration-300 hover:border-white/6 hover:bg-white/2.5 sm:px-3"
                                 >
                                   {/* Lesson, quiz, or assignment icon */}
                                   <span
@@ -1813,7 +1813,7 @@ const CourseDetailsPage = () => {
               </div>
             </div>
 
-            <div className="relative sm:border-l sm:border-white/[0.08] sm:pl-6">
+            <div className="relative sm:border-l sm:border-white/8 sm:pl-6">
               <SectionHeading icon={GraduationCap} title="Who this is for" />
               <div className="mt-5 space-y-3.5">
                 {course.audience.map((item) => (
@@ -1846,7 +1846,7 @@ const CourseDetailsPage = () => {
               <div className="relative">
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                   <div className="relative shrink-0">
-                    <span className="absolute -inset-1 rounded-full bg-gradient-to-br from-violet-500/40 to-indigo-500/15 blur-sm" />
+                    <span className="absolute -inset-1 rounded-full bg-linear-to-br from-violet-500/40 to-indigo-500/15 blur-sm" />
                     <img
                       src={course.instructorImage}
                       alt={course.instructor}
@@ -1876,7 +1876,7 @@ const CourseDetailsPage = () => {
                   </div>
                 </div>
 
-                <p className="mt-5 border-t border-white/[0.08] pt-5 text-sm leading-7 text-white/55">
+                <p className="mt-5 border-t border-white/8 pt-5 text-sm leading-7 text-white/55">
                   {course.instructorBio}
                 </p>
 
@@ -1948,9 +1948,9 @@ const CourseDetailsPage = () => {
                         {star}
                         <Star className="h-3 w-3 fill-amber-400/70 text-amber-400/70" />
                       </span>
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/8">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300"
+                          className="h-full rounded-full bg-linear-to-r from-amber-400 to-amber-300"
                           style={{ width: `${percentages[star]}%` }}
                         />
                       </div>
@@ -1971,7 +1971,7 @@ const CourseDetailsPage = () => {
                 >
                   <CardSheen />
                   <div className="relative flex items-start gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-violet-400/20 bg-gradient-to-br from-violet-500/20 to-violet-500/5 text-xs font-semibold text-violet-100">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-violet-400/20 bg-linear-to-br from-violet-500/20 to-violet-500/5 text-xs font-semibold text-violet-100">
                       {review.initials}
                     </div>
 
@@ -2029,7 +2029,7 @@ const CourseDetailsPage = () => {
             ────────────────────────────────────────────────────────── */}
 
         <aside className="xl:sticky xl:top-6 xl:self-start xl:mt-5">
-          <div className="lp-hero-ease group group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] font-['Inter'] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
+          <div className="lp-hero-ease group group/sidebar relative isolate overflow-hidden rounded-[28px] border border-violet-400/15 bg-[#0D071C] font-['Inter'] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] transition-[box-shadow,border-color] duration-1100 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-violet-400/30 hover:shadow-[0_45px_110px_-45px_rgba(91,33,182,0.35)]">
             {/* Dark violet base — glow originates from top right */}
             <div
               aria-hidden="true"
@@ -2045,13 +2045,13 @@ const CourseDetailsPage = () => {
             {/* Very subtle secondary glow */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 left-1/4 z-0 h-40 w-40 rounded-full bg-sky-500/[0.06] blur-[100px]"
+              className="pointer-events-none absolute -bottom-24 left-1/4 z-0 h-40 w-40 rounded-full bg-sky-500/6 blur-[100px]"
             />
 
             {/* Subtle top highlight */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-gradient-to-r from-transparent via-violet-200/20 to-transparent"
+              className="pointer-events-none absolute inset-x-8 top-0 z-20 h-px bg-linear-to-r from-transparent via-violet-200/20 to-transparent"
             />
 
             {/* Diagonal violet shimmer — travels from bottom-right to top-left. */}
@@ -2085,7 +2085,7 @@ const CourseDetailsPage = () => {
                       key={label}
                       className="flex items-center gap-2.5 font-['Inter'] text-[12px] font-normal leading-[1.6] text-white/65 transition-colors duration-300 hover:text-white/90"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-300/[0.12] bg-violet-400/[0.045] text-violet-200/80 transition-colors duration-300 hover:border-violet-300/25 hover:bg-violet-400/[0.09]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-violet-300/12 bg-violet-400/4.5 text-violet-200/80 transition-colors duration-300 hover:border-violet-300/25 hover:bg-violet-400/9">
                         <Icon className="h-3.5 w-3.5" />
                       </span>
 
@@ -2096,18 +2096,18 @@ const CourseDetailsPage = () => {
               </div>
 
               {/* Course details */}
-              <div className="mt-4 border-t border-white/[0.08] pt-4">
+              <div className="mt-4 border-t border-white/8 pt-4">
                 <dl className="grid grid-cols-2 gap-2">
                   {courseDetails.map(({ label, value }) => (
                     <div
                       key={label}
-                      className="min-w-0 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 transition-colors duration-300 hover:border-violet-300/[0.16] hover:bg-violet-400/[0.035]"
+                      className="min-w-0 rounded-xl border border-white/[0.07] bg-white/2 px-3 py-2.5 transition-colors duration-300 hover:border-violet-300/16 hover:bg-violet-400/[0.035]"
                     >
                       <dt className="font-['Inter'] text-[9px] font-medium uppercase tracking-[0.07em] text-white/40">
                         {label}
                       </dt>
 
-                      <dd className="mt-1 break-words font-['Inter'] text-[12px] font-medium leading-[1.5] text-white/85">
+                      <dd className="mt-1 wrap-break-word font-['Inter'] text-[12px] font-medium leading-normal text-white/85">
                         {value}
                       </dd>
                     </div>
@@ -2116,16 +2116,16 @@ const CourseDetailsPage = () => {
               </div>
 
               {/* Primary action */}
-              <div className="mt-4 border-t border-white/[0.08] pt-4">
+              <div className="mt-4 border-t border-white/8 pt-4">
                 <button
                   type="button"
                   onClick={handleLearningAction}
-                  className="group/button relative inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-300/20 bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 font-['Inter'] text-[13px] font-semibold text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.5)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#100821]"
+                  className="group/button relative inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-violet-300/20 bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 font-['Inter'] text-[13px] font-semibold text-white shadow-[0_8px_25px_-12px_rgba(124,58,237,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/40 hover:brightness-110 hover:shadow-[0_12px_30px_-12px_rgba(139,92,246,0.5)] focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#100821]"
                 >
                   {/* Button shimmer */}
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 translate-x-[-120%] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent transition-transform duration-700 group-hover/button:translate-x-[120%]"
+                    className="pointer-events-none absolute inset-0 translate-x-[-120%] bg-linear-to-r from-transparent via-white/12 to-transparent transition-transform duration-700 group-hover/button:translate-x-[120%]"
                   />
 
                   <span className="relative z-10 inline-flex items-center gap-2">
@@ -2152,7 +2152,7 @@ const CourseDetailsPage = () => {
           <div>
             <h2 className="text-2xl font-semibold tracking-[-0.03em] sm:text-[26px]">
               Related{" "}
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                 courses
               </span>
             </h2>
@@ -2175,7 +2175,7 @@ const CourseDetailsPage = () => {
                   behavior: "smooth",
                 });
               }}
-              className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.16] via-violet-500/[0.10] to-purple-500/[0.08] text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/[0.18] hover:to-purple-500/[0.16] hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/[0.16] disabled:hover:via-violet-500/[0.10] disabled:hover:to-purple-500/[0.08] disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
+              className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-linear-to-br from-violet-500/16 via-violet-500/10 to-purple-500/8 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/18 hover:to-purple-500/16 hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/16 disabled:hover:via-violet-500/10 disabled:hover:to-purple-500/8 disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
             >
               <ChevronLeft className="h-[17px] w-[17px] transition-transform duration-300 group-hover:-translate-x-0.5" />
             </button>
@@ -2196,7 +2196,7 @@ const CourseDetailsPage = () => {
                   behavior: "smooth",
                 });
               }}
-              className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.16] via-violet-500/[0.10] to-purple-500/[0.08] text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/[0.18] hover:to-purple-500/[0.16] hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/[0.16] disabled:hover:via-violet-500/[0.10] disabled:hover:to-purple-500/[0.08] disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
+              className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-linear-to-br from-violet-500/16 via-violet-500/10 to-purple-500/8 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/18 hover:to-purple-500/16 hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/16 disabled:hover:via-violet-500/10 disabled:hover:to-purple-500/8 disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
             >
               <ChevronRight className="h-[17px] w-[17px] transition-transform duration-300 group-hover:translate-x-0.5" />
             </button>
@@ -2214,7 +2214,7 @@ const CourseDetailsPage = () => {
                 element.scrollWidth - 4,
             );
           }}
-          className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-6 overflow-x-auto scroll-smooth pb-2 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {[
@@ -2241,10 +2241,10 @@ const CourseDetailsPage = () => {
               return (
                 <article
                   key={related.id}
-                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
+                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/9 bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
                 >
                   {/* Same glassy sheen and card structure as Explore Courses */}
-                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-linear-to-r from-transparent via-white/15 to-transparent" />
 
                   {/* Course image */}
                   <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
@@ -2304,7 +2304,7 @@ const CourseDetailsPage = () => {
                   {/* Course information — matches the Explore Courses card */}
                   <div className="flex flex-1 flex-col p-5">
                     <div className="mb-4 flex items-center justify-between gap-2">
-                      <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
+                      <span className="rounded-full border border-violet-400/20 bg-violet-400/8 px-3 py-1 text-[10px] font-medium text-violet-200">
                         {related.category}
                       </span>
                       <span className="text-[11px] text-white/35">
@@ -2328,7 +2328,7 @@ const CourseDetailsPage = () => {
                       {related.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
+                          className="rounded-lg border border-white/[0.07] bg-white/2.5 px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/5 group-hover:text-white/75"
                         >
                           {skill}
                         </span>
@@ -2369,7 +2369,7 @@ const CourseDetailsPage = () => {
                         onClick={() =>
                           navigate(`/student/courses/${related.id}`)
                         }
-                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                       >
                         View course
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/button:translate-x-0.5" />

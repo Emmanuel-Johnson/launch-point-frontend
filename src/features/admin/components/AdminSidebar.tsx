@@ -177,7 +177,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           SIDEBAR
       ====================================================== */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/8 bg-[#0A0A0A] transition-[width] duration-500 ease-in-out ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
@@ -185,7 +185,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             LOGO / TOGGLE
         ====================================================== */}
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/8 transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -207,7 +207,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
               />
 
               {/* Logo Shine */}
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </div>
 
             {/* Brand */}
@@ -238,14 +238,14 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/6 hover:text-white ${
               isCollapsed
-                ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/50"
+                ? "absolute -right-4 border border-white/8 bg-[#111111] shadow-lg shadow-black/50"
                 : "ml-auto"
             }`}
           >
             {/* Toggle Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {isCollapsed ? (
               <ChevronRight
@@ -308,7 +308,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                           } ${
                             isActive
                               ? "bg-[#34D399]/10 text-white ring-1 ring-inset ring-[#34D399]/20"
-                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/4 hover:text-white/90"
                           }`
                         }
                       >
@@ -316,7 +316,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                           <>
                             {/* Hover Shine */}
                             {!isActive && (
-                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                             )}
 
                             {/* Active Indicator */}
@@ -363,18 +363,18 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         {/* =====================================================
             LOGOUT
         ====================================================== */}
-        <div className="shrink-0 border-t border-white/[0.08] bg-[#0A0A0A] p-3">
+        <div className="shrink-0 border-t border-white/8 bg-[#0A0A0A] p-3">
           <button
             type="button"
             onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
             title={isCollapsed ? "Logout" : undefined}
-            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-white/55 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/[0.06] hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`group relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl py-3 text-sm font-medium text-white/55 transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/6 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50 ${
               isCollapsed ? "justify-center px-3" : "gap-3 px-3"
             }`}
           >
             {/* Logout Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/[0.07] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-red-400/[0.07] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
             <LogOut

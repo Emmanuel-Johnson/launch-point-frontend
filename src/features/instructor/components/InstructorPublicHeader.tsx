@@ -75,7 +75,7 @@ const InstructorPublicHeader = ({
         : "/student/dashboard";
 
   return (
-    <header className="relative z-20 border-b border-white/[0.08] bg-[#0A0E1A]">
+    <header className="relative z-20 border-b border-white/8 bg-[#0A0E1A]">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Back button + Logo (identical on every page) */}
         <div className="flex items-center gap-6 sm:gap-8">

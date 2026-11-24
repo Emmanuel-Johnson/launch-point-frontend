@@ -480,11 +480,11 @@ const CourseCard = ({
          same load-in entrance the stat tiles use. `transform-gpu` +
          backface-visibility keep the rounded corners crisp during the
          translate so no 1px light seam appears while the card animates. */
-      className="group animate-page-item relative flex min-w-0 transform-gpu flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0D0D] [backface-visibility:hidden] transition-transform duration-500 ease-in-out hover:-translate-y-1 hover:border-[#3B82F6]/25"
+      className="group animate-page-item relative flex min-w-0 transform-gpu flex-col overflow-hidden rounded-[1.35rem] border border-white/9 bg-[#0D0D0D] backface-hidden transition-transform duration-500 ease-in-out hover:-translate-y-1 hover:border-[#3B82F6]/25"
       style={{ animationDelay: `${delay}ms` }}
     >
       {/* Glassy sheen on hover */}
-      <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-linear-to-r from-transparent via-white/10 to-transparent" />
 
       {/* Cover image */}
       <div className="relative h-40 overflow-hidden bg-[#0D0D0D]">
@@ -494,12 +494,12 @@ const CourseCard = ({
           loading="lazy"
           className="block h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.04]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0D0D0D] via-[#0D0D0D]/20 to-transparent" />
 
         {/* Plan pill */}
         <div className="absolute left-3 top-3 z-20">
           {course.plan === "Premium" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
               <Crown className="h-3.5 w-3.5 text-amber-300" />
               Premium
             </span>
@@ -540,9 +540,9 @@ const CourseCard = ({
 
       {/* Body — pulled up 1px over its own solid background so the image/body
           junction never shows a light seam line on load. */}
-      <div className="relative z-[1] -mt-px flex flex-1 flex-col bg-[#0D0D0D] p-5">
+      <div className="relative z-1 -mt-px flex flex-1 flex-col bg-[#0D0D0D] p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <span className="rounded-full border border-[#3B82F6]/20 bg-[#3B82F6]/[0.08] px-3 py-1 text-[10px] font-medium text-[#8FBAFF]">
+          <span className="rounded-full border border-[#3B82F6]/20 bg-[#3B82F6]/8 px-3 py-1 text-[10px] font-medium text-[#8FBAFF]">
             {course.category}
           </span>
           <span className="text-[11px] text-white/35">
@@ -567,7 +567,7 @@ const CourseCard = ({
 
         {/* Metrics */}
         <div className="my-4 grid grid-cols-2 gap-2">
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-center">
+          <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2.5 text-center">
             <div className="flex items-center justify-center gap-1 text-[#60A5FA]">
               <Users className="h-3.5 w-3.5" />
             </div>
@@ -579,7 +579,7 @@ const CourseCard = ({
             </p>
           </div>
 
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-center">
+          <div className="rounded-xl border border-white/6 bg-white/2 px-3 py-2.5 text-center">
             <div className="flex items-center justify-center gap-1 text-amber-300">
               <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
             </div>
@@ -598,7 +598,7 @@ const CourseCard = ({
             <button
               type="button"
               onClick={onEdit}
-              className="group/button inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-3 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/60"
+              className="group/button inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-linear-to-r from-[#3B82F6] to-[#2563EB] px-3 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/60"
             >
               <PencilLine className="h-3.5 w-3.5" />
               Edit
@@ -610,7 +610,7 @@ const CourseCard = ({
               onClick={onDelete}
               aria-label="Delete course"
               title="Delete"
-              className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-red-500/15 bg-red-500/[0.05] text-red-400 transition-all duration-300 hover:border-red-400/35 hover:bg-red-500/[0.10] hover:text-red-300"
+              className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-red-500/15 bg-red-500/5 text-red-400 transition-all duration-300 hover:border-red-400/35 hover:bg-red-500/10 hover:text-red-300"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -625,8 +625,8 @@ const CourseCard = ({
                 aria-expanded={menuOpen}
                 className={`inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border transition-all duration-300 ${
                   menuOpen
-                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.10] text-[#8FBAFF]"
-                    : "border-white/[0.08] bg-white/[0.02] text-white/55 hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF]"
+                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#8FBAFF]"
+                    : "border-white/8 bg-white/2 text-white/55 hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/8 hover:text-[#8FBAFF]"
                 }`}
               >
                 <MoreVertical className="h-4 w-4" />
@@ -642,13 +642,13 @@ const CourseCard = ({
                   />
                   <div
                     role="menu"
-                    className="absolute bottom-[calc(100%+8px)] right-0 z-50 w-44 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0A0A0A] p-1.5 shadow-2xl shadow-black/60 ring-1 ring-white/[0.04]"
+                    className="absolute bottom-[calc(100%+8px)] right-0 z-50 w-44 overflow-hidden rounded-xl border border-white/8 bg-[#0A0A0A] p-1.5 shadow-2xl shadow-black/60 ring-1 ring-white/4"
                   >
                     <button
                       type="button"
                       role="menuitem"
                       onClick={onView}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                     >
                       <Eye className="h-3.5 w-3.5 text-[#60A5FA]" />
                       Preview
@@ -657,7 +657,7 @@ const CourseCard = ({
                       type="button"
                       role="menuitem"
                       onClick={onAnalytics}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                     >
                       <BarChart3 className="h-3.5 w-3.5 text-[#60A5FA]" />
                       Analytics
@@ -666,7 +666,7 @@ const CourseCard = ({
                       type="button"
                       role="menuitem"
                       onClick={onReviews}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                     >
                       <MessageSquare className="h-3.5 w-3.5 text-[#60A5FA]" />
                       Reviews
@@ -675,7 +675,7 @@ const CourseCard = ({
                       type="button"
                       role="menuitem"
                       onClick={onCommunity}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                     >
                       <UsersRound className="h-3.5 w-3.5 text-[#60A5FA]" />
                       Community
@@ -692,8 +692,8 @@ const CourseCard = ({
             onClick={onTogglePublish}
             className={`inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all duration-300 ${
               isPublished
-                ? "border-amber-400/25 bg-amber-500/[0.08] text-amber-300 hover:border-amber-400/40 hover:bg-amber-500/[0.14]"
-                : "border-emerald-400/25 bg-emerald-500/[0.08] text-emerald-300 hover:border-emerald-400/40 hover:bg-emerald-500/[0.14]"
+                ? "border-amber-400/25 bg-amber-500/8 text-amber-300 hover:border-amber-400/40 hover:bg-amber-500/[0.14]"
+                : "border-emerald-400/25 bg-emerald-500/8 text-emerald-300 hover:border-emerald-400/40 hover:bg-emerald-500/[0.14]"
             }`}
           >
             {isPublished ? (
@@ -955,7 +955,7 @@ const InstructorCoursesPage = () => {
 
       {/* ───────── Page header ───────── */}
       <section className="animate-page-item" style={{ animationDelay: "80ms" }}>
-        <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
+        <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/20 bg-linear-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
           {/* Blue ambient glow */}
           <div
             aria-hidden="true"
@@ -964,20 +964,20 @@ const InstructorCoursesPage = () => {
 
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#3B82F6]/[0.06] blur-3xl"
+            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#3B82F6]/6 blur-3xl"
           />
 
           {/* Top accent line */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#60A5FA]/60 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#60A5FA]/60 to-transparent"
           />
 
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             {/* Header content */}
             <div className="flex items-center gap-4 cursor-default">
               {/* Course icon */}
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3B82F6]/20 to-[#3B82F6]/[0.04] text-[#60A5FA] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#3B82F6]/25">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#3B82F6]/20 to-[#3B82F6]/4 text-[#60A5FA] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#3B82F6]/25">
                 <BookOpen className="h-5 w-5" strokeWidth={1.8} />
               </div>
 
@@ -999,7 +999,7 @@ const InstructorCoursesPage = () => {
               onClick={handleCreate}
               className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#3B82F6]/25 bg-[#3B82F6]/10 px-5 text-sm font-medium text-[#60A5FA] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3B82F6]/15 hover:shadow-[0_8px_24px_-6px_rgba(59,130,246,0.35)]"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#60A5FA]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#60A5FA]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               <PlusCircle
                 className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
@@ -1016,12 +1016,12 @@ const InstructorCoursesPage = () => {
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {/* Total Courses */}
         <div
-          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#93C5FD]/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#93C5FD]/40"
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#93C5FD]/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#93C5FD]/40"
           style={{ animationDelay: "160ms" }}
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#93C5FD]/50 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#93C5FD]/50 to-transparent"
           />
           <div
             aria-hidden="true"
@@ -1045,16 +1045,16 @@ const InstructorCoursesPage = () => {
 
         {/* Published */}
         <div
-          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-emerald-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-emerald-400/40"
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-emerald-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-emerald-400/40"
           style={{ animationDelay: "220ms" }}
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-400/50 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-400/[0.08] blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-400/8 blur-3xl"
           />
 
           <div className="relative flex items-center justify-between">
@@ -1074,16 +1074,16 @@ const InstructorCoursesPage = () => {
 
         {/* Drafts */}
         <div
-          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/30"
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/15 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/30"
           style={{ animationDelay: "280ms" }}
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/30 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/[0.04] blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/4 blur-3xl"
           />
 
           <div className="relative flex items-center justify-between">
@@ -1095,7 +1095,7 @@ const InstructorCoursesPage = () => {
                 {stats.drafts}
               </p>
             </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] text-white/65 ring-1 ring-inset ring-white/10">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/6 text-white/65 ring-1 ring-inset ring-white/10">
               <FileEdit className="h-5 w-5" strokeWidth={1.8} />
             </div>
           </div>
@@ -1103,16 +1103,16 @@ const InstructorCoursesPage = () => {
 
         {/* Under Review */}
         <div
-          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-amber-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-amber-400/35"
           style={{ animationDelay: "340ms" }}
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-400/40 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/[0.06] blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-amber-400/6 blur-3xl"
           />
 
           <div className="relative flex items-center justify-between">
@@ -1135,16 +1135,16 @@ const InstructorCoursesPage = () => {
 
         {/* Total Students */}
         <div
-          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-violet-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-violet-400/35"
+          className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-violet-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-violet-400/35"
           style={{ animationDelay: "400ms" }}
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-400/40 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-violet-400/[0.06] blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-violet-400/6 blur-3xl"
           />
 
           <div className="relative flex items-center justify-between">
@@ -1189,7 +1189,7 @@ const InstructorCoursesPage = () => {
               }}
               placeholder="Search your courses, categories, or skills..."
               aria-label="Search courses"
-              className="h-11 w-full rounded-2xl border border-white/[0.08] bg-[#0A0A0A] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-[#3B82F6]/40 focus:ring-2 focus:ring-[#3B82F6]/10"
+              className="h-11 w-full rounded-2xl border border-white/8 bg-[#0A0A0A] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-[#3B82F6]/40 focus:ring-2 focus:ring-[#3B82F6]/10"
             />
           </div>
 
@@ -1208,8 +1208,8 @@ const InstructorCoursesPage = () => {
                 aria-expanded={sortOpen}
                 className={`flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 text-left transition-all duration-200 ${
                   sortOpen
-                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.08]"
-                    : "border-white/[0.08] bg-[#0A0A0A] hover:border-white/[0.16]"
+                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/8"
+                    : "border-white/8 bg-[#0A0A0A] hover:border-white/16"
                 }`}
               >
                 <ArrowUpDown className="h-4 w-4 shrink-0 text-[#60A5FA]" />
@@ -1229,7 +1229,7 @@ const InstructorCoursesPage = () => {
                 <div
                   role="listbox"
                   aria-label="Sort courses by"
-                  className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
+                  className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/9 bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
                 >
                   <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
                     Sort courses
@@ -1251,8 +1251,8 @@ const InstructorCoursesPage = () => {
                         }}
                         className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-xs transition-colors ${
                           isActive
-                            ? "bg-[#3B82F6]/[0.12] font-medium text-[#8FBAFF]"
-                            : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                            ? "bg-[#3B82F6]/12 font-medium text-[#8FBAFF]"
+                            : "text-white/60 hover:bg-white/5 hover:text-white"
                         }`}
                       >
                         {option.label}
@@ -1283,7 +1283,7 @@ const InstructorCoursesPage = () => {
                 }}
                 className={`inline-flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all ${
                   isActive
-                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.12] text-white ring-1 ring-inset ring-[#3B82F6]/20"
+                    ? "border-[#3B82F6]/40 bg-[#3B82F6]/12 text-white ring-1 ring-inset ring-[#3B82F6]/20"
                     : "border-white/[0.07] bg-[#0A0A0A] text-white/55 hover:border-white/15 hover:text-white/85"
                 }`}
               >
@@ -1292,7 +1292,7 @@ const InstructorCoursesPage = () => {
                   className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-[3px] text-[10px] font-semibold tabular-nums ${
                     isActive
                       ? "bg-[#3B82F6]/20 text-[#8FBAFF]"
-                      : "bg-white/[0.06] text-white/45"
+                      : "bg-white/6 text-white/45"
                   }`}
                 >
                   {statusCounts[tab.value]}
@@ -1396,7 +1396,7 @@ const InstructorCoursesPage = () => {
                     onClick={() => goToPage(safePage - 1)}
                     disabled={safePage === 1}
                     aria-label="Previous page"
-                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/[0.08] disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/8 hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/8 disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
@@ -1421,7 +1421,7 @@ const InstructorCoursesPage = () => {
                         className={`inline-flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg border px-2 text-xs font-semibold tabular-nums transition-all ${
                           item === safePage
                             ? "border-[#3B82F6]/40 bg-[#3B82F6]/[0.14] text-white ring-1 ring-inset ring-[#3B82F6]/20"
-                            : "border-white/[0.08] bg-[#0A0A0A] text-white/60 hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF]"
+                            : "border-white/8 bg-[#0A0A0A] text-white/60 hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/8 hover:text-[#8FBAFF]"
                         }`}
                       >
                         {item}
@@ -1435,7 +1435,7 @@ const InstructorCoursesPage = () => {
                     onClick={() => goToPage(safePage + 1)}
                     disabled={safePage === totalPages}
                     aria-label="Next page"
-                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/[0.08] hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/[0.08] disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-[#0A0A0A] text-white/60 transition-all hover:border-[#3B82F6]/35 hover:bg-[#3B82F6]/8 hover:text-[#8FBAFF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/8 disabled:hover:bg-[#0A0A0A] disabled:hover:text-white/60"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>
@@ -1445,10 +1445,10 @@ const InstructorCoursesPage = () => {
           </>
         ) : (
           /* Empty state */
-          <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/15 bg-gradient-to-b from-[#3B82F6]/[0.06] to-transparent px-6 py-16 text-center">
-            <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[#3B82F6]/[0.12] blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl border border-[#3B82F6]/15 bg-linear-to-b from-[#3B82F6]/6 to-transparent px-6 py-16 text-center">
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[#3B82F6]/12 blur-3xl" />
             <div className="relative">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3B82F6]/25 bg-gradient-to-br from-[#3B82F6]/25 to-[#2563EB]/5 text-[#60A5FA] shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#3B82F6]/25 bg-linear-to-br from-[#3B82F6]/25 to-[#2563EB]/5 text-[#60A5FA] shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
                 <BookOpen className="h-7 w-7" />
               </div>
 
@@ -1471,7 +1471,7 @@ const InstructorCoursesPage = () => {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/70 transition hover:border-[#3B82F6]/30 hover:bg-[#3B82F6]/[0.08] hover:text-white"
+                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/8 bg-white/3 px-5 py-3 text-sm font-medium text-white/70 transition hover:border-[#3B82F6]/30 hover:bg-[#3B82F6]/8 hover:text-white"
                 >
                   Clear filters
                 </button>
@@ -1479,7 +1479,7 @@ const InstructorCoursesPage = () => {
                 <button
                   type="button"
                   onClick={handleCreate}
-                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-[#3B82F6] to-[#2563EB] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
                 >
                   <PlusCircle className="h-4 w-4" />
                   Create your first course

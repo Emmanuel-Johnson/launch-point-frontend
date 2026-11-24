@@ -87,7 +87,7 @@ const SubscriptionStatusConfirmModal = ({
 
       {/* Overlay (clicking outside closes the modal) */}
       <div
-        className="spc-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+        className="spc-overlay fixed inset-0 z-9999 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
         onClick={handleOverlayClick}
       >
         {/* Panel */}
@@ -95,7 +95,7 @@ const SubscriptionStatusConfirmModal = ({
           role="alertdialog"
           aria-modal="true"
           onClick={(event) => event.stopPropagation()}
-          className="spc-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
+          className="spc-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
         >
           {/* ambient glow tinted by the action */}
           <div
@@ -107,7 +107,7 @@ const SubscriptionStatusConfirmModal = ({
           {/* Icon */}
           <div className="relative flex justify-center">
             <div
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-inset ${
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br ring-1 ring-inset ${
                 deactivating
                   ? "from-red-500/20 to-red-500/5 shadow-[0_0_26px_-8px_rgba(239,68,68,0.6)] ring-red-500/25"
                   : "from-[#34D399]/20 to-[#34D399]/5 shadow-[0_0_26px_-8px_rgba(52,211,153,0.6)] ring-[#34D399]/25"
@@ -126,7 +126,7 @@ const SubscriptionStatusConfirmModal = ({
             <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
 
             {planName && (
-              <p className="mx-auto mt-1.5 max-w-[22rem] truncate text-sm font-medium text-white/80">
+              <p className="mx-auto mt-1.5 max-w-88 truncate text-sm font-medium text-white/80">
                 {planName}
               </p>
             )}
@@ -138,7 +138,7 @@ const SubscriptionStatusConfirmModal = ({
 
           {/* Caution note (only when deactivating) */}
           {deactivating && (
-            <div className="relative mt-4 flex items-start gap-2.5 rounded-xl border border-red-500/15 bg-red-500/[0.06] px-3.5 py-3">
+            <div className="relative mt-4 flex items-start gap-2.5 rounded-xl border border-red-500/15 bg-red-500/6 px-3.5 py-3">
               <AlertTriangle
                 size={15}
                 className="mt-0.5 shrink-0 text-red-400"
@@ -156,7 +156,7 @@ const SubscriptionStatusConfirmModal = ({
               type="button"
               onClick={onCancel}
               disabled={isLoading}
-              className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white disabled:pointer-events-none disabled:opacity-40"
+              className="inline-flex h-10 flex-1 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/2 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white disabled:pointer-events-none disabled:opacity-40"
             >
               Cancel
             </button>
@@ -167,11 +167,11 @@ const SubscriptionStatusConfirmModal = ({
               disabled={isLoading}
               className={`group relative inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-sm font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
                 deactivating
-                  ? "border-red-500/30 bg-gradient-to-br from-red-500/20 to-red-500/5 text-red-400 shadow-[0_0_20px_-8px_rgba(239,68,68,0.6)] hover:border-red-500/50 hover:from-red-500/25"
-                  : "border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] hover:border-[#34D399]/50 hover:from-[#34D399]/25"
+                  ? "border-red-500/30 bg-linear-to-br from-red-500/20 to-red-500/5 text-red-400 shadow-[0_0_20px_-8px_rgba(239,68,68,0.6)] hover:border-red-500/50 hover:from-red-500/25"
+                  : "border-[#34D399]/30 bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] hover:border-[#34D399]/50 hover:from-[#34D399]/25"
               }`}
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {isLoading ? (
                 <Loader2 size={18} className="relative z-10 animate-spin" />

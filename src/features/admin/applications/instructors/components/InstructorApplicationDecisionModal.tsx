@@ -89,7 +89,7 @@ const InstructorApplicationDecisionModal = ({
       aria-modal="true"
       aria-labelledby="application-decision-title"
       aria-describedby="application-decision-description"
-      className="instructor-decision-modal-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 px-4 py-6"
+      className="instructor-decision-modal-overlay fixed inset-0 z-9999 flex items-center justify-center bg-black/75 px-4 py-6"
       onClick={(event) => {
         if (event.target === event.currentTarget && !isSubmitting) {
           onClose();
@@ -133,20 +133,20 @@ const InstructorApplicationDecisionModal = ({
         }
       `}</style>
 
-      <section className="instructor-decision-modal-panel relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]">
+      <section className="instructor-decision-modal-panel relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]">
         {/* Top Status Bar */}
         <div
           className={`h-1 w-full ${isApproval ? "bg-[#34D399]" : "bg-red-500"}`}
         />
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 border-b border-white/[0.06] px-6 py-5">
+        <div className="flex items-start justify-between gap-4 border-b border-white/6 px-6 py-5">
           <div className="flex min-w-0 items-start gap-4">
             <div
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
                 isApproval
-                  ? "bg-[#34D399]/[0.08] text-[#34D399]"
-                  : "bg-red-500/[0.08] text-red-400"
+                  ? "bg-[#34D399]/8 text-[#34D399]"
+                  : "bg-red-500/8 text-red-400"
               }`}
             >
               <DecisionIcon className="h-5 w-5" strokeWidth={1.8} />
@@ -180,7 +180,7 @@ const InstructorApplicationDecisionModal = ({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Close modal"
-            className="shrink-0 rounded-lg p-2 text-white/35 transition-all duration-200 hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="shrink-0 rounded-lg p-2 text-white/35 transition-all duration-200 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
           >
             <X className="h-4 w-4" strokeWidth={1.8} />
           </button>
@@ -192,8 +192,8 @@ const InstructorApplicationDecisionModal = ({
           <div
             className={`rounded-xl border px-4 py-3 ${
               isApproval
-                ? "border-[#34D399]/10 bg-[#34D399]/[0.04]"
-                : "border-red-400/10 bg-red-500/[0.04]"
+                ? "border-[#34D399]/10 bg-[#34D399]/4"
+                : "border-red-400/10 bg-red-500/4"
             }`}
           >
             <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">
@@ -239,10 +239,10 @@ const InstructorApplicationDecisionModal = ({
                   ? "Write an approval message for the applicant..."
                   : "Explain why this application is being rejected..."
               }
-              className={`w-full resize-none rounded-xl border bg-white/[0.025] px-4 py-3 text-sm leading-6 text-white outline-none transition-all duration-200 placeholder:text-white/25 hover:border-white/[0.12] focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+              className={`w-full resize-none rounded-xl border bg-white/2.5 px-4 py-3 text-sm leading-6 text-white outline-none transition-all duration-200 placeholder:text-white/25 hover:border-white/12 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
                 messageError
-                  ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/[0.08]"
-                  : "border-white/[0.08] focus:border-[#34D399]/40 focus:ring-[#34D399]/[0.08]"
+                  ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/8"
+                  : "border-white/8 focus:border-[#34D399]/40 focus:ring-[#34D399]/8"
               }`}
             />
 
@@ -278,7 +278,7 @@ const InstructorApplicationDecisionModal = ({
               type="button"
               disabled={isSubmitting}
               onClick={onClose}
-              className="flex-1 cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex-1 cursor-pointer rounded-xl border border-white/8 bg-white/2.5 px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               Cancel
             </button>

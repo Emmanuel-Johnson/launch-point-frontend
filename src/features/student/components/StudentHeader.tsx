@@ -185,16 +185,16 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
   return (
     <>
       <header
-        className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/[0.08] bg-[#0A0A0A] px-8 transition-[left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/8 bg-[#0A0A0A] px-8 transition-[left] duration-500 ease-in-out ${
           isSidebarCollapsed ? "left-20" : "left-[280px]"
         }`}
       >
         {/* Search */}
         <div className="mx-8 flex max-w-lg flex-1">
           <div className="group relative w-full">
-            <div className="relative overflow-hidden rounded-full border border-white/[0.08] bg-[#0F0F12] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/25 hover:bg-[#121216] hover:shadow-[0_8px_30px_rgba(124,92,255,0.1)] focus-within:border-[#7C5CFF]/40 focus-within:bg-[#121216] focus-within:shadow-[0_0_0_4px_rgba(124,92,255,0.08)]">
+            <div className="relative overflow-hidden rounded-full border border-white/8 bg-[#0F0F12] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/25 hover:bg-[#121216] hover:shadow-[0_8px_30px_rgba(124,92,255,0.1)] focus-within:border-[#7C5CFF]/40 focus-within:bg-[#121216] focus-within:shadow-[0_0_0_4px_rgba(124,92,255,0.08)]">
               {/* Violet shine on hover */}
-              <span className="pointer-events-none absolute inset-0 z-20 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 z-20 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Search Icon */}
               <Search
@@ -219,10 +219,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
             type="button"
             aria-label="Saved"
             onClick={() => navigate("/student/saved")}
-            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
+            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
           >
             {/* Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
             <Bookmark
@@ -235,10 +235,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
           <button
             type="button"
             aria-label="Notifications"
-            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
+            className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 hover:text-white hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
           >
             {/* Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {/* Icon */}
             <Bell
@@ -251,7 +251,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
           </button>
 
           {/* Divider */}
-          <div className="mx-1 h-8 w-px bg-white/[0.08]" />
+          <div className="mx-1 h-8 w-px bg-white/8" />
 
           {/* Profile + Dropdown */}
           <div ref={profileRef} className="relative">
@@ -260,10 +260,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               type="button"
               onClick={() => setIsProfileOpen((prev) => !prev)}
               aria-expanded={isProfileOpen}
-              className="group relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-2 py-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.05] hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
+              className="group relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-2 py-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/5 hover:shadow-[0_6px_20px_rgba(124,92,255,0.1)]"
             >
               {/* Shine */}
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               {/* Avatar */}
               <div className="relative z-10 h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#7C5CFF]/20 text-sm font-semibold text-[#7C5CFF] ring-1 ring-[#7C5CFF]/20 transition-all duration-300 group-hover:scale-105">
@@ -305,7 +305,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
 
             {/* Profile Dropdown */}
             <div
-              className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-2xl shadow-black/60 transition-all duration-200 ease-out ${
+              className={`absolute right-0 top-[calc(100%+10px)] z-50 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-2xl shadow-black/60 transition-all duration-200 ease-out ${
                 isProfileOpen
                   ? "translate-y-0 scale-100 opacity-100"
                   : "pointer-events-none -translate-y-2 scale-95 opacity-0"
@@ -314,10 +314,10 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               {/* =====================================================
                 USER INFO
             ====================================================== */}
-              <div className="cursor-default border-b border-white/[0.08] px-5 py-5">
+              <div className="cursor-default border-b border-white/8 px-5 py-5">
                 <div className="flex items-center gap-3.5">
                   {/* Avatar */}
-                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[#7C5CFF] to-[#5B3FE0] text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20">
+                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-linear-to-br from-[#7C5CFF] to-[#5B3FE0] text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20">
                     {profileImage ? (
                       <img
                         src={profileImage}
@@ -364,13 +364,13 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                 <button
                   type="button"
                   onClick={() => navigate("/student/profile")}
-                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/[0.05]"
+                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/5"
                 >
                   {/* Shine */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   {/* Icon */}
-                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#7C5CFF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/45 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#7C5CFF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
                     <User
                       className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
                       strokeWidth={1.8}
@@ -405,7 +405,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               {/* =====================================================
                 DIVIDER
             ====================================================== */}
-              <div className="border-t border-white/[0.08]" />
+              <div className="border-t border-white/8" />
 
               {/* =====================================================
     INSTRUCTOR NAVIGATION
@@ -415,13 +415,13 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                   <button
                     type="button"
                     onClick={handleSwitchToInstructor}
-                    className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#7C5CFF]/[0.06]"
+                    className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-[#7C5CFF]/6"
                   >
                     {/* Shine */}
-                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                     {/* Icon */}
-                    <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7C5CFF]/[0.08] text-[#7C5CFF] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/[0.14] group-hover:text-[#9D82FF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
+                    <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7C5CFF]/8 text-[#7C5CFF] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/[0.14] group-hover:text-[#9D82FF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
                       {canSwitchToInstructor ? (
                         <ArrowRightLeft
                           className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
@@ -462,7 +462,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               {/* =====================================================
                 DIVIDER
             ====================================================== */}
-              <div className="border-t border-white/[0.08]" />
+              <div className="border-t border-white/8" />
 
               {/* =====================================================
     SETTINGS
@@ -474,13 +474,13 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                     setIsProfileOpen(false);
                     navigate("/student/settings");
                   }}
-                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/[0.05]"
+                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-white/5"
                 >
                   {/* Shine */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   {/* Icon */}
-                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#7C5CFF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/45 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#7C5CFF] group-hover:shadow-[0_0_16px_rgba(124,92,255,0.1)]">
                     <Settings
                       className="h-5 w-5 transition-transform duration-300 group-hover:rotate-45"
                       strokeWidth={1.8}
@@ -509,7 +509,7 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
               {/* =====================================================
                 DIVIDER
             ====================================================== */}
-              <div className="border-t border-white/[0.08]" />
+              <div className="border-t border-white/8" />
 
               {/* =====================================================
                 LOGOUT
@@ -521,13 +521,13 @@ const StudentHeader = ({ isSidebarCollapsed }: StudentHeaderProps) => {
                     setIsProfileOpen(false);
                     setShowLogoutConfirm(true);
                   }}
-                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/[0.06]"
+                  className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl px-3 py-3 text-left transition-all duration-300 hover:translate-x-0.5 hover:bg-red-500/6"
                 >
                   {/* Red Shine */}
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-red-400/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   {/* Icon */}
-                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400 transition-all duration-300 group-hover:scale-105 group-hover:bg-red-500/10 group-hover:text-red-300 group-hover:shadow-[0_0_16px_rgba(239,68,68,0.1)]">
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-500/6 text-red-400 transition-all duration-300 group-hover:scale-105 group-hover:bg-red-500/10 group-hover:text-red-300 group-hover:shadow-[0_0_16px_rgba(239,68,68,0.1)]">
                     <LogOut
                       className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-0.5"
                       strokeWidth={1.8}

@@ -77,7 +77,7 @@ const DetailSectionHeading = ({
   <div className="mb-4 flex items-center gap-3">
     <span
       aria-hidden="true"
-      className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+      className="h-5 w-1 rounded-full bg-linear-to-b from-[#34D399] to-[#34D399]/20"
     />
     <div>
       <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
@@ -95,14 +95,14 @@ const InfoCard = ({
   label: string;
   value: string;
 }) => (
-  <div className="group relative min-w-0 overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+  <div className="group relative min-w-0 overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
       {icon}
     </div>
     <p className="mt-4 text-xs uppercase tracking-wider text-white/35">
       {label}
     </p>
-    <p className="mt-1 break-words text-sm font-medium text-white">
+    <p className="mt-1 wrap-break-word text-sm font-medium text-white">
       {value || "Not added"}
     </p>
   </div>
@@ -128,13 +128,13 @@ const SocialCard = ({
       onClick={(event) => {
         if (!isValidUrl) event.preventDefault();
       }}
-      className={`group flex min-w-0 items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+      className={`group flex min-w-0 items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 ${
         isValidUrl
-          ? "cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03]"
+          ? "cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/25 hover:bg-[#34D399]/3"
           : "cursor-not-allowed opacity-50"
       }`}
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 ring-1 ring-inset ring-white/6 transition-colors group-hover:text-[#6EE7B7]">
         {icon}
       </div>
       <div className="min-w-0 flex-1">
@@ -178,9 +178,9 @@ const LinkedinMark = () => (
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[idSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[idSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -200,7 +200,7 @@ const InstructorDetailSkeleton = () => {
 
         {/* Hero */}
         <section>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-6 sm:p-8">
+          <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-linear-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-6 sm:p-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-start gap-4 sm:gap-5">
                 <Shimmer className="h-16 w-16 shrink-0 rounded-2xl sm:h-20 sm:w-20" />
@@ -233,7 +233,7 @@ const InstructorDetailSkeleton = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+          <div className="rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-6">
             <div className="flex items-start gap-4">
               <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1">
@@ -259,7 +259,7 @@ const InstructorDetailSkeleton = () => {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+                className="rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5"
               >
                 <Shimmer className="h-10 w-10 rounded-xl" />
                 <Shimmer className="mt-4 h-3 w-20" />
@@ -279,7 +279,7 @@ const InstructorDetailSkeleton = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 sm:p-6">
+          <div className="rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 sm:p-6">
             <div className="mb-4 flex items-center gap-3">
               <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
               <div>
@@ -311,7 +311,7 @@ const InstructorDetailSkeleton = () => {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+                className="flex items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5"
               >
                 <Shimmer className="h-11 w-11 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
@@ -333,12 +333,12 @@ const InstructorDetailSkeleton = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
+          <div className="overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808]">
             <div className="grid md:grid-cols-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="border-b border-white/[0.06] p-5 md:odd:border-r"
+                  className="border-b border-white/6 p-5 md:odd:border-r"
                 >
                   <div className="flex items-start gap-3">
                     <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
@@ -498,22 +498,22 @@ const InstructorDetailPage = () => {
           className="animate-page-item"
           style={{ animationDelay: "160ms" }}
         >
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/[0.18] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)] sm:p-8">
+          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/18 bg-linear-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)] sm:p-8">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/[0.18] blur-3xl"
+              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/18 blur-3xl"
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.05] blur-3xl"
+              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/5 blur-3xl"
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent"
             />
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-start gap-4 sm:gap-5">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#34D399]/[0.22] via-[#34D399]/[0.08] to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30 sm:h-20 sm:w-20">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-[#34D399]/22 via-[#34D399]/8 to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30 sm:h-20 sm:w-20">
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -529,7 +529,7 @@ const InstructorDetailPage = () => {
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="break-words text-2xl font-semibold leading-tight tracking-tight sm:text-[26px]">
+                    <h1 className="wrap-break-word text-2xl font-semibold leading-tight tracking-tight sm:text-[26px]">
                       {instructor.full_name}
                     </h1>
                     <span className="shrink-0 rounded-full border border-[#34D399]/20 bg-[#34D399]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#34D399]">
@@ -538,8 +538,8 @@ const InstructorDetailPage = () => {
                     <span
                       className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
                         isActive
-                          ? "bg-[#34D399]/[0.12] text-[#34D399] ring-[#34D399]/25"
-                          : "bg-red-400/[0.12] text-red-400 ring-red-400/25"
+                          ? "bg-[#34D399]/12 text-[#34D399] ring-[#34D399]/25"
+                          : "bg-red-400/12 text-red-400 ring-red-400/25"
                       }`}
                     >
                       <span
@@ -556,13 +556,13 @@ const InstructorDetailPage = () => {
                     {instructor.occupation || "Occupation not added"}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                    <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/3 px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/5">
                       <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
                       <span className="break-all">{instructor.email}</span>
                     </span>
-                    <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                    <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/3 px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/5">
                       <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
-                      <span className="break-words">
+                      <span className="wrap-break-word">
                         {instructor.location || "Location not added"}
                       </span>
                     </span>
@@ -581,12 +581,12 @@ const InstructorDetailPage = () => {
                   disabled={isUpdatingStatus}
                   className={`group/toggle relative inline-flex h-11 w-full min-w-[190px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
                     isActive
-                      ? "border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
-                      : "border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
+                      ? "border-red-400/25 bg-red-400/6 text-red-400 hover:bg-red-400/12 hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
+                      : "border-[#34D399]/25 bg-[#34D399]/6 text-[#34D399] hover:bg-[#34D399]/12 hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
                   }`}
                 >
                   <span
-                    className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
+                    className={`pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
                       isActive ? "via-red-400/12" : "via-[#34D399]/12"
                     }`}
                   />
@@ -629,10 +629,10 @@ const InstructorDetailPage = () => {
             title="About"
             description="Professional introduction provided by the instructor."
           />
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-6">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"
             />
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
@@ -642,7 +642,7 @@ const InstructorDetailPage = () => {
                 <p className="text-xs uppercase tracking-wider text-white/35">
                   Professional Bio
                 </p>
-                <p className="mt-2 max-w-3xl whitespace-pre-wrap break-words text-sm leading-7 text-white/70">
+                <p className="mt-2 max-w-3xl whitespace-pre-wrap wrap-break-word text-sm leading-7 text-white/70">
                   {instructor.professional_bio || "Not added"}
                 </p>
               </div>
@@ -700,7 +700,7 @@ const InstructorDetailPage = () => {
             title="Teaching Categories"
             description="Topics and areas the instructor can teach."
           />
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 sm:p-6">
+          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 sm:p-6">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                 <Code2 size={18} strokeWidth={1.8} />
@@ -768,39 +768,39 @@ const InstructorDetailPage = () => {
             title="Account Information"
             description="Instructor identity, role, status, and profile timestamps."
           />
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
+          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"
             />
             <div className="grid md:grid-cols-2">
-              <div className="border-b border-white/[0.06] p-5 md:border-r">
+              <div className="border-b border-white/6 p-5 md:border-r">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <Hash size={16} strokeWidth={1.8} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">Instructor ID</p>
-                    <p className="mt-1 break-words text-sm font-medium tabular-nums text-white">
+                    <p className="mt-1 wrap-break-word text-sm font-medium tabular-nums text-white">
                       #{instructor.id}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="border-b border-white/[0.06] p-5">
+              <div className="border-b border-white/6 p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <User size={16} strokeWidth={1.8} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">Role</p>
-                    <p className="mt-1 break-words text-sm font-medium text-white">
+                    <p className="mt-1 wrap-break-word text-sm font-medium text-white">
                       Instructor
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="border-b border-white/[0.06] p-5 md:border-r md:border-b-0">
+              <div className="border-b border-white/6 p-5 md:border-r md:border-b-0">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <Mail size={16} strokeWidth={1.8} />
@@ -813,7 +813,7 @@ const InstructorDetailPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="border-b border-white/[0.06] p-5 md:border-r md:border-b-0">
+              <div className="border-b border-white/6 p-5 md:border-r md:border-b-0">
                 <div className="flex items-start gap-3">
                   <div
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${
@@ -841,7 +841,7 @@ const InstructorDetailPage = () => {
                 </div>
               </div>
 
-              <div className="border-b border-white/[0.06] p-5">
+              <div className="border-b border-white/6 p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <CalendarDays size={16} strokeWidth={1.8} />
@@ -852,7 +852,7 @@ const InstructorDetailPage = () => {
                       Became an Instructor
                     </p>
 
-                    <p className="mt-1 break-words text-sm font-medium text-white">
+                    <p className="mt-1 wrap-break-word text-sm font-medium text-white">
                       {instructor.became_instructor_at
                         ? formatDate(instructor.became_instructor_at)
                         : "Not available"}
@@ -868,7 +868,7 @@ const InstructorDetailPage = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">Last Updated</p>
-                    <p className="mt-1 break-words text-sm font-medium text-white">
+                    <p className="mt-1 wrap-break-word text-sm font-medium text-white">
                       {formatDate(instructor.updated_at)}
                     </p>
                   </div>

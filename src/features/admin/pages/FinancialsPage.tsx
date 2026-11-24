@@ -17,13 +17,13 @@ export default function ComingSoonPage({
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
         {/* Ambient emerald glow */}
-        <div className="absolute left-1/2 top-[42%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#34D399]/[0.09] blur-[120px] sm:h-[500px] sm:w-[500px]" />
+        <div className="absolute left-1/2 top-[42%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#34D399]/9 blur-[120px] sm:h-[500px] sm:w-[500px]" />
 
         {/* Dark vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#000000_78%)]" />
 
         {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-[0.025] [background-image:linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] [background-size:72px_72px]" />
+        <div className="absolute inset-0 opacity-[0.025] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-size-[72px_72px]" />
       </div>
 
       {/* Top label */}
@@ -47,16 +47,16 @@ export default function ComingSoonPage({
         {/* Orbital centerpiece */}
         <div className="relative mb-8 flex h-28 w-28 items-center justify-center sm:mb-10 sm:h-36 sm:w-36 lg:h-40 lg:w-40">
           {/* Outer orbit */}
-          <div className="absolute inset-0 rounded-full border border-white/[0.055]" />
+          <div className="absolute inset-0 rounded-full border border-white/5.5" />
 
           {/* Middle orbit */}
-          <div className="absolute inset-[12px] rounded-full border border-[#34D399]/[0.16] sm:inset-[15px]" />
+          <div className="absolute inset-[12px] rounded-full border border-[#34D399]/16 sm:inset-[15px]" />
 
           {/* Inner orbit */}
           <div className="absolute inset-[24px] rounded-full border border-white/[0.07] sm:inset-[31px]" />
 
           {/* Orbital path */}
-          <div className="absolute inset-[6px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-[#34D399]/[0.22]" />
+          <div className="absolute inset-[6px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-[#34D399]/22" />
 
           {/* Orbiting point */}
           <div className="absolute inset-[6px] animate-[spin_18s_linear_infinite] rounded-full">
@@ -68,7 +68,7 @@ export default function ComingSoonPage({
 
           {/* Centerpiece */}
           <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[#34D399]/25 bg-[#07130F] shadow-[inset_0_0_25px_rgba(52,211,153,0.10),0_0_40px_rgba(52,211,153,0.10)] transition-all duration-300 hover:border-[#34D399]/40 sm:h-16 sm:w-16">
-            <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-white via-[#A7F3D0] to-[#34D399] shadow-[0_0_22px_rgba(52,211,153,0.8)]" />
+            <div className="h-2.5 w-2.5 rounded-full bg-linear-to-br from-white via-[#A7F3D0] to-[#34D399] shadow-[0_0_22px_rgba(52,211,153,0.8)]" />
           </div>
         </div>
 
@@ -86,7 +86,7 @@ export default function ComingSoonPage({
         {/* Headline */}
         <h1 className="max-w-3xl text-[38px] font-medium leading-[1.08] tracking-[-0.065em] text-white sm:text-6xl md:text-7xl lg:text-[76px]">
           {title}
-          <span className="mt-1 block bg-gradient-to-r from-white via-[#A7F3D0] to-[#34D399] bg-clip-text pb-2 text-transparent">
+          <span className="mt-1 block bg-linear-to-r from-white via-[#A7F3D0] to-[#34D399] bg-clip-text pb-2 text-transparent">
             different here.
           </span>
         </h1>
@@ -110,7 +110,7 @@ export default function ComingSoonPage({
           Learn Today, Lead Tomorrow.
         </p>
 
-        <p className="text-[9px] tracking-[0.1em] text-white/25 sm:text-[10px] sm:tracking-[0.12em]">
+        <p className="text-[9px] tracking-widest text-white/25 sm:text-[10px] sm:tracking-[0.12em]">
           A LITTLE MORE TO LOOK FORWARD TO.
         </p>
       </footer>

@@ -120,7 +120,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
           SIDEBAR
       ====================================================== */}
       <aside
-        className={`student-sidebar fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`student-sidebar fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/8 bg-[#0A0A0A] transition-[width] duration-500 ease-in-out ${
           isCollapsed ? "w-20" : "w-[280px]"
         }`}
       >
@@ -128,7 +128,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             LOGO / TOGGLE
         ====================================================== */}
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/8 transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -150,7 +150,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
               />
 
               {/* Logo Shine */}
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </div>
 
             {/* Brand */}
@@ -181,14 +181,14 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/6 hover:text-white ${
               isCollapsed
-                ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/40"
+                ? "absolute -right-4 border border-white/8 bg-[#111111] shadow-lg shadow-black/40"
                 : "ml-auto"
             }`}
           >
             {/* Toggle Shine */}
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {isCollapsed ? (
               <ChevronRight
@@ -247,7 +247,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
                           } ${
                             isActive
                               ? "bg-[#7C5CFF]/10 text-white ring-1 ring-inset ring-[#7C5CFF]/20"
-                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/4 hover:text-white/90"
                           }`
                         }
                       >
@@ -255,7 +255,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
                           <>
                             {/* Shine Effect */}
                             {!isActive && (
-                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                             )}
 
                             {/* Active Indicator */}
@@ -303,7 +303,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
             SETTINGS
         ====================================================== */}
 
-        <div className="shrink-0 border-t border-white/[0.08] p-3">
+        <div className="shrink-0 border-t border-white/8 p-3">
           <NavLink
             to="/student/settings"
             title={isCollapsed ? "Settings" : undefined}
@@ -313,7 +313,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
               } ${
                 isActive
                   ? "bg-[#7C5CFF]/10 text-white ring-1 ring-inset ring-[#7C5CFF]/20"
-                  : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                  : "text-white/55 hover:translate-x-0.5 hover:bg-white/4 hover:text-white/90"
               }`
             }
           >
@@ -321,7 +321,7 @@ const StudentSidebar = ({ isCollapsed, onToggle }: StudentSidebarProps) => {
               <>
                 {/* Shine Effect */}
                 {!isActive && (
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 )}
 
                 {/* Active Indicator */}

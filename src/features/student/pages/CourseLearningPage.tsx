@@ -32,15 +32,15 @@ import {
 
 /* Standard content card — same base gradient + border everywhere */
 const CARD_BASE =
-  "relative overflow-hidden border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814]";
+  "relative overflow-hidden border border-violet-400/15 bg-linear-to-b from-[#130E24] to-[#0B0814]";
 
 /* Pill / ghost control surface */
 const PILL =
-  "border border-white/[0.08] bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
+  "border border-white/8 bg-[#0E0A1A] text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100";
 
 /* Reusable hover shimmer shared by every card */
 const CardSheen = () => (
-  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-linear-to-r from-transparent via-white/5 to-transparent" />
 );
 
 /* ──────────────────────────────────────────────────────────────────
@@ -368,7 +368,7 @@ export default function CourseLearningPage() {
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
-          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/12 hover:text-white"
         >
           <span
             aria-hidden="true"
@@ -385,7 +385,7 @@ export default function CourseLearningPage() {
             My Learning
           </span>
           <ChevronRight className="hidden h-3.5 w-3.5 shrink-0 text-violet-300/50 sm:block" />
-          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+          <span className="min-w-0 truncate bg-linear-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-tight text-transparent">
             React Masterclass
           </span>
         </nav>
@@ -406,7 +406,7 @@ export default function CourseLearningPage() {
                 draggable={false}
                 className="absolute inset-0 h-full w-full object-cover opacity-60"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D071C] via-[#0D071C]/30 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-[#0D071C] via-[#0D071C]/30 to-transparent" />
 
               {/* Play button */}
               <button
@@ -422,7 +422,7 @@ export default function CourseLearningPage() {
                   aria-hidden="true"
                   className="lp-play-ring absolute h-[132px] w-[132px] rounded-full border border-white/10 [animation-delay:-1.5s]"
                 />
-                <span className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] shadow-[0_18px_50px_-10px_rgba(124,58,237,0.75)] transition-transform duration-500 ease-out group-hover/play:scale-110">
+                <span className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full bg-linear-to-br from-[#7C3AED] to-[#6D4AFF] shadow-[0_18px_50px_-10px_rgba(124,58,237,0.75)] transition-transform duration-500 ease-out group-hover/play:scale-110">
                   <PlayCircle
                     className="h-9 w-9 text-white"
                     strokeWidth={1.6}
@@ -435,7 +435,7 @@ export default function CourseLearningPage() {
           {/* Lesson title + meta + description */}
           <section className="cursor-default">
             <h1 className="text-[26px] font-semibold leading-[1.18] tracking-[-0.03em] sm:text-[30px]">
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                 {lesson.title}
               </span>
             </h1>
@@ -491,7 +491,7 @@ export default function CourseLearningPage() {
                         {resource.size}
                       </p>
                     </div>
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-white/55 transition-colors duration-300 group-hover:border-violet-400/35 group-hover:bg-violet-500/[0.08] group-hover:text-violet-200">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/8 bg-white/3 text-white/55 transition-colors duration-300 group-hover:border-violet-400/35 group-hover:bg-violet-500/8 group-hover:text-violet-200">
                       <Download className="h-4 w-4" />
                     </span>
                   </button>
@@ -517,8 +517,8 @@ export default function CourseLearningPage() {
                 aria-pressed={completed}
                 className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 ${
                   completed
-                    ? "bg-gradient-to-r from-emerald-600 to-teal-600"
-                    : "bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF]"
+                    ? "bg-linear-to-r from-emerald-600 to-teal-600"
+                    : "bg-linear-to-r from-[#7C3AED] to-[#6D4AFF]"
                 }`}
               >
                 {completed ? (
@@ -547,19 +547,19 @@ export default function CourseLearningPage() {
           {/* Questions & discussion */}
           <section className={`${CARD_BASE} group rounded-3xl p-6 sm:p-7`}>
             <CardSheen />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-400/40 to-transparent" />
 
             <div className="relative">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/15 to-violet-500/0 text-violet-200">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-violet-400/20 bg-linear-to-br from-violet-500/15 to-violet-500/0 text-violet-200">
                     <MessageCircle className="h-5 w-5" />
                   </span>
                   <h2 className="text-xl font-semibold tracking-[-0.015em] text-white">
                     Questions &amp; Discussion
                   </h2>
                 </div>
-                <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[11px] font-medium text-white/55">
+                <span className="rounded-full border border-white/8 bg-white/3 px-3 py-1 text-[11px] font-medium text-white/55">
                   {totalDoubts} Doubts
                 </span>
               </div>
@@ -579,13 +579,13 @@ export default function CourseLearningPage() {
                     onChange={(event) => setDraft(event.target.value)}
                     rows={3}
                     placeholder="Have a question or comment about this lesson?"
-                    className="w-full resize-none rounded-2xl border border-white/[0.08] bg-[#0B0B0F] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
+                    className="w-full resize-none rounded-2xl border border-white/8 bg-[#0B0B0F] px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
                   />
                   <div className="mt-3 flex justify-end">
                     <button
                       type="button"
                       onClick={postComment}
-                      className="group/button inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                      className="group/button inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                     >
                       <Send className="h-4 w-4 transition-transform group-hover/button:translate-x-0.5" />
                       Post Question
@@ -632,7 +632,7 @@ export default function CourseLearningPage() {
 
                     {/* Replies */}
                     {comment.replies && comment.replies.length > 0 && (
-                      <div className="mt-5 space-y-5 border-l border-white/[0.08] pl-5 sm:pl-6">
+                      <div className="mt-5 space-y-5 border-l border-white/8 pl-5 sm:pl-6">
                         {comment.replies.map((reply) => (
                           <div key={reply.id}>
                             <CommentHeader
@@ -687,7 +687,7 @@ export default function CourseLearningPage() {
         {/* ── RIGHT: progress + learning path + community ────────────── */}
         <aside className="space-y-6 xl:sticky xl:top-6">
           {/* Overall progress */}
-          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-linear-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
             <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
             <p className="relative text-[11px] font-semibold uppercase tracking-[0.16em] text-white/80">
               Overall Progress
@@ -707,7 +707,7 @@ export default function CourseLearningPage() {
                 className="relative h-full rounded-full bg-white"
                 style={{ width: `${progress}%` }}
               >
-                <span className="lp-progress-shine absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+                <span className="lp-progress-shine absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-transparent via-white/60 to-transparent" />
               </div>
             </div>
           </section>
@@ -727,7 +727,7 @@ export default function CourseLearningPage() {
                   return (
                     <div
                       key={module.id}
-                      className="flex items-center gap-3 rounded-xl border border-white/[0.05] bg-white/[0.015] px-3 py-3 text-white/35"
+                      className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/1.5 px-3 py-3 text-white/35"
                     >
                       <Lock className="h-4 w-4 shrink-0" />
                       <span className="truncate text-sm font-medium">
@@ -746,8 +746,8 @@ export default function CourseLearningPage() {
                       aria-expanded={isOpen}
                       className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors ${
                         isActive
-                          ? "border-violet-400/30 bg-violet-500/[0.08]"
-                          : "border-transparent hover:bg-white/[0.03]"
+                          ? "border-violet-400/30 bg-violet-500/8"
+                          : "border-transparent hover:bg-white/3"
                       }`}
                     >
                       <span
@@ -797,8 +797,8 @@ export default function CourseLearningPage() {
                               onClick={() => openLesson(item.id)}
                               className={`flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-left transition-colors ${
                                 isCurrent
-                                  ? "bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] shadow-lg shadow-violet-950/30"
-                                  : "hover:bg-white/[0.04]"
+                                  ? "bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] shadow-lg shadow-violet-950/30"
+                                  : "hover:bg-white/4"
                               }`}
                             >
                               <KindIcon

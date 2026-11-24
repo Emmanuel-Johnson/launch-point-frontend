@@ -219,7 +219,7 @@ const getInitials = (name: string): string => {
 };
 
 const inputClassName =
-  "mt-2 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#4D8DFF]/60 focus:ring-2 focus:ring-[#4D8DFF]/10";
+  "mt-2 w-full rounded-xl border border-white/8 bg-white/3 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#4D8DFF]/60 focus:ring-2 focus:ring-[#4D8DFF]/10";
 
 const labelClassName = "text-sm font-medium text-white/70";
 
@@ -547,9 +547,9 @@ const EditInstructorProfileModal = ({
   const initials = getInitials(form.full_name);
 
   return createPortal(
-    <div className="fixed inset-0 z-[10000] flex h-[100dvh] w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
+    <div className="fixed inset-0 z-10000 flex h-dvh w-screen items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
       <div
-        className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
+        className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/8 bg-[#0A0A0A] shadow-[0_25px_100px_rgba(0,0,0,0.75)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-instructor-profile-title"
@@ -560,7 +560,7 @@ const EditInstructorProfileModal = ({
         />
 
         {/* Header */}
-        <div className="relative flex shrink-0 items-center justify-between border-b border-white/[0.06] px-6 py-5 sm:px-7">
+        <div className="relative flex shrink-0 items-center justify-between border-b border-white/6 px-6 py-5 sm:px-7">
           <div>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.16em] text-[#4D8DFF]">
               Instructor Account
@@ -584,7 +584,7 @@ const EditInstructorProfileModal = ({
             onClick={onClose}
             disabled={isSaving}
             aria-label="Close edit instructor profile"
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] text-white/50 transition hover:border-white/[0.14] hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.07] bg-white/3 text-white/50 transition hover:border-white/[0.14] hover:bg-white/6 hover:text-white disabled:opacity-40"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
@@ -616,10 +616,10 @@ const EditInstructorProfileModal = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
-                <div className="shrink-0 rounded-full bg-gradient-to-br from-[#4D8DFF] to-[#38BDF8] p-[2px]">
+              <div className="flex items-center gap-5 rounded-2xl border border-white/6 bg-white/2 p-4">
+                <div className="shrink-0 rounded-full bg-linear-to-br from-[#4D8DFF] to-[#38BDF8] p-[2px]">
                   <div className="relative h-20 w-20 overflow-hidden rounded-full bg-[#0A0A0A]">
-                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#4D8DFF] to-[#1D4ED8] text-xl font-semibold text-white">
+                    <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#4D8DFF] to-[#1D4ED8] text-xl font-semibold text-white">
                       {initials}
                     </div>
 
@@ -861,7 +861,7 @@ const EditInstructorProfileModal = ({
                   aria-invalid={Boolean(validationErrors.professional_bio)}
                   className={`${getFieldClassName(
                     Boolean(validationErrors.professional_bio),
-                  )} resize-none overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20`}
+                  )} resize-none overflow-y-auto scrollbar-thin [scrollbar-color:rgba(255,255,255,0.2)_transparent] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20`}
                   placeholder="Introduce yourself and describe your expertise..."
                 />
                 <FieldError message={validationErrors.professional_bio} />
@@ -943,8 +943,8 @@ const EditInstructorProfileModal = ({
             {/* Editable teaching categories */}
             <section
               className={`rounded-xl border ${
-                categoryError ? "border-red-500" : "border-white/[0.06]"
-              } bg-white/[0.02] p-4`}
+                categoryError ? "border-red-500" : "border-white/6"
+              } bg-white/2 p-4`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -980,14 +980,14 @@ const EditInstructorProfileModal = ({
                         className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${
                           selected
                             ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-[0_0_14px_-4px_rgba(59,130,246,0.7)]"
-                            : "border-white/10 bg-white/[0.02] text-zinc-400 hover:border-blue-400/40 hover:bg-blue-500/[0.06] hover:text-white"
+                            : "border-white/10 bg-white/2 text-zinc-400 hover:border-blue-400/40 hover:bg-blue-500/6 hover:text-white"
                         }`}
                       >
                         <span
                           className={`flex h-4 w-4 items-center justify-center rounded-full border ${
                             selected
                               ? "border-blue-300/60 bg-blue-400/20"
-                              : "border-zinc-600 bg-white/[0.03]"
+                              : "border-zinc-600 bg-white/3"
                           }`}
                         >
                           {selected ? (
@@ -1017,12 +1017,12 @@ const EditInstructorProfileModal = ({
           </div>
 
           {/* Footer */}
-          <div className="relative flex shrink-0 flex-col-reverse gap-3 border-t border-white/[0.06] bg-[#0A0A0A] px-6 py-4 sm:flex-row sm:justify-end sm:px-7">
+          <div className="relative flex shrink-0 flex-col-reverse gap-3 border-t border-white/6 bg-[#0A0A0A] px-6 py-4 sm:flex-row sm:justify-end sm:px-7">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
+              className="cursor-pointer rounded-xl border border-white/8 bg-white/3 px-5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/6 hover:text-white disabled:opacity-40"
             >
               Cancel
             </button>

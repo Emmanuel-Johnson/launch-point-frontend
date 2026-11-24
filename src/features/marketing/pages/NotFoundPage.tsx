@@ -16,7 +16,7 @@ const NotFoundPage = () => {
             404
           </h1>
 
-          <div className="absolute inset-x-0 bottom-4 mx-auto h-px w-32 bg-gradient-to-r from-transparent via-[#6c63ff] to-transparent" />
+          <div className="absolute inset-x-0 bottom-4 mx-auto h-px w-32 bg-linear-to-r from-transparent via-[#6c63ff] to-transparent" />
         </div>
 
         {/* Message */}

@@ -651,20 +651,20 @@ const SubscriptionPlanFormModal = ({
       `}</style>
 
       {/* Overlay */}
-      <div className="sp-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="sp-overlay fixed inset-0 z-9999 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
         {/* Panel */}
         <div
           role="dialog"
           aria-modal="true"
-          className="sp-panel sp-font-body relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0B0B0B] to-[#080808] text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
+          className="sp-panel sp-font-body relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-[#0B0B0B] to-[#080808] text-white shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
         >
           {/* faint gold hairline */}
-          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
+          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#E8C67A]/25 to-transparent" />
 
           {/* Header */}
-          <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-6 py-5">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/6 px-6 py-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_22px_-8px_rgba(52,211,153,0.6)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_22px_-8px_rgba(52,211,153,0.6)]">
                 <CreditCard size={20} className="text-[#34D399]" />
               </div>
 
@@ -685,7 +685,7 @@ const SubscriptionPlanFormModal = ({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
             >
               <X size={17} />
             </button>
@@ -714,13 +714,13 @@ const SubscriptionPlanFormModal = ({
 
             {/* Plan Type */}
             <Field label="Plan Type">
-              <div className="relative flex w-full max-w-xs rounded-xl border border-white/[0.08] bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+              <div className="relative flex w-full max-w-xs rounded-xl border border-white/8 bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                 <span
                   aria-hidden="true"
-                  className={`absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg ring-1 ring-inset transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                  className={`absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg ring-1 ring-inset transition-all duration-300 ease-in-out ${
                     form.plan_type === "premium"
-                      ? "bg-gradient-to-br from-[#E8C67A]/25 to-[#E8C67A]/5 shadow-[0_0_18px_-6px_rgba(232,198,122,0.6)] ring-[#E8C67A]/30"
-                      : "bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 shadow-[0_0_18px_-6px_rgba(52,211,153,0.6)] ring-[#34D399]/30"
+                      ? "bg-linear-to-br from-[#E8C67A]/25 to-[#E8C67A]/5 shadow-[0_0_18px_-6px_rgba(232,198,122,0.6)] ring-[#E8C67A]/30"
+                      : "bg-linear-to-br from-[#34D399]/25 to-[#34D399]/5 shadow-[0_0_18px_-6px_rgba(52,211,153,0.6)] ring-[#34D399]/30"
                   }`}
                   style={{
                     transform: `translateX(${typeIndex * 100}%)`,
@@ -892,7 +892,7 @@ const SubscriptionPlanFormModal = ({
                         type="button"
                         onClick={() => removeBenefit(index)}
                         aria-label="Remove benefit"
-                        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.06] bg-white/[0.02] text-white/40 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/6 bg-white/2 text-white/40 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -908,7 +908,7 @@ const SubscriptionPlanFormModal = ({
                 <button
                   type="button"
                   onClick={addBenefit}
-                  className="group inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-[#34D399]/25 bg-[#34D399]/[0.04] px-3.5 py-2 text-xs font-medium text-[#34D399] transition-all duration-300 hover:border-[#34D399]/40 hover:bg-[#34D399]/10"
+                  className="group inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-[#34D399]/25 bg-[#34D399]/4 px-3.5 py-2 text-xs font-medium text-[#34D399] transition-all duration-300 hover:border-[#34D399]/40 hover:bg-[#34D399]/10"
                 >
                   <Plus
                     size={15}
@@ -921,7 +921,7 @@ const SubscriptionPlanFormModal = ({
 
             {/* Active */}
             {mode === "create" && (
-              <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3.5">
+              <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/2 px-4 py-3.5">
                 <div>
                   <p className="text-sm font-medium text-white">Active</p>
 
@@ -954,11 +954,11 @@ const SubscriptionPlanFormModal = ({
           </div>
 
           {/* Footer */}
-          <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/[0.06] px-6 py-4">
+          <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/6 px-6 py-4">
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] px-5 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/2 px-5 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
             >
               Cancel
             </button>
@@ -967,9 +967,9 @@ const SubscriptionPlanFormModal = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !hasChanges}
-              className="group relative inline-flex h-10 min-w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
+              className="group relative inline-flex h-10 min-w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#34D399]/30 bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 px-5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               <span className="relative z-10 flex items-center justify-center">
                 {isSubmitting ? (
@@ -1009,6 +1009,6 @@ const SubscriptionPlanFormModal = ({
 };
 
 const inputClass =
-  "w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-2.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/30 hover:border-white/[0.14] focus:border-[#34D399]/40 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.08)]";
+  "w-full rounded-xl border border-white/8 bg-black/30 px-4 py-2.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/30 hover:border-white/[0.14] focus:border-[#34D399]/40 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.08)]";
 
 export default SubscriptionPlanFormModal;

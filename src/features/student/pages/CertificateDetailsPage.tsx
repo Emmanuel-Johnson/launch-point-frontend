@@ -192,7 +192,7 @@ const CertificateDetailsPage = () => {
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
-          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/12 hover:text-white"
         >
           <span
             aria-hidden="true"
@@ -213,7 +213,7 @@ const CertificateDetailsPage = () => {
             Certificates
           </button>
           <span className="hidden h-3.5 w-px shrink-0 bg-violet-300/30 sm:block" />
-          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+          <span className="min-w-0 truncate bg-linear-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-tight text-transparent">
             {data.courseTitle}
           </span>
         </nav>
@@ -227,7 +227,7 @@ const CertificateDetailsPage = () => {
           </p>
           <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
             Certificate of{" "}
-            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
               Completion
             </span>
           </h1>
@@ -237,7 +237,7 @@ const CertificateDetailsPage = () => {
           </p>
         </div>
 
-        <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-2.5 text-xs font-semibold text-emerald-300 sm:self-auto">
+        <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-4 py-2.5 text-xs font-semibold text-emerald-300 sm:self-auto">
           <ShieldCheck className="h-4 w-4" />
           Authenticity verified
         </span>
@@ -247,9 +247,9 @@ const CertificateDetailsPage = () => {
       <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
         {/* ── LEFT: the printed certificate ──────────────────────────── */}
         <div className="min-w-0 space-y-8">
-          <section className="lp-cert-frame group relative isolate overflow-hidden rounded-[22px] bg-gradient-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-4 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-6">
+          <section className="lp-cert-frame group relative isolate overflow-hidden rounded-[22px] bg-linear-to-br from-[#17102D] via-[#120C22] to-[#0B0814] p-4 shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:p-6">
             {/* Hover sheen over the frame */}
-            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+            <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 bg-linear-to-r from-transparent via-white/[0.07] to-transparent" />
 
             {/* ── The paper ──────────────────────────────────────────── */}
             <article
@@ -370,7 +370,7 @@ const CertificateDetailsPage = () => {
                   <p className="lp-script mt-1 text-4xl leading-tight text-[#1f1a0f] sm:mt-2 sm:text-6xl">
                     {data.recipient}
                   </p>
-                  <div className="mt-1 h-px w-48 bg-gradient-to-r from-transparent via-[#9a7b16]/60 to-transparent sm:w-72" />
+                  <div className="mt-1 h-px w-48 bg-linear-to-r from-transparent via-[#9a7b16]/60 to-transparent sm:w-72" />
                 </div>
 
                 {/* Body */}
@@ -410,7 +410,7 @@ const CertificateDetailsPage = () => {
                     <span className="lp-script text-xl leading-none text-[#1f1a0f] sm:text-3xl">
                       {data.instructor}
                     </span>
-                    <span className="mt-1 h-px w-full max-w-[9rem] bg-[#2c2416]/70" />
+                    <span className="mt-1 h-px w-full max-w-36 bg-[#2c2416]/70" />
                     <span className="lp-serif mt-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#4a4332] sm:text-[10px]">
                       {data.instructor}
                     </span>
@@ -423,8 +423,8 @@ const CertificateDetailsPage = () => {
                   <div className="flex flex-col items-center">
                     <div className="relative flex h-14 w-14 items-center justify-center sm:h-20 sm:w-20">
                       {/* ribbon tails */}
-                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 -translate-x-[140%] rotate-[14deg] bg-gradient-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
-                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 -translate-x-[-40%] -rotate-[14deg] bg-gradient-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
+                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 translate-x-[-140%] rotate-14 bg-linear-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
+                      <span className="absolute -bottom-3 left-1/2 h-6 w-2.5 translate-x-[40%] rotate-[-14deg] bg-linear-to-b from-[#c9a227] to-[#9a7b16] [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)] sm:h-9 sm:w-3.5" />
                       {/* medallion */}
                       <svg
                         viewBox="0 0 100 100"
@@ -476,7 +476,7 @@ const CertificateDetailsPage = () => {
                     <span className="lp-script text-xl leading-none text-[#1f1a0f] sm:text-3xl">
                       {data.director}
                     </span>
-                    <span className="mt-1 h-px w-full max-w-[9rem] bg-[#2c2416]/70" />
+                    <span className="mt-1 h-px w-full max-w-36 bg-[#2c2416]/70" />
                     <span className="lp-serif mt-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#4a4332] sm:text-[10px]">
                       {data.director}
                     </span>
@@ -501,7 +501,7 @@ const CertificateDetailsPage = () => {
             <button
               type="button"
               onClick={printCertificate}
-              className="group/button inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+              className="group/button inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
             >
               <Download className="h-4 w-4 transition-transform group-hover/button:translate-y-0.5" />
               Download PDF
@@ -509,7 +509,7 @@ const CertificateDetailsPage = () => {
 
             <button
               type="button"
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/8 bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
             >
               {/* <Linkedin className="h-4 w-4" /> */}
               Add to LinkedIn
@@ -518,7 +518,7 @@ const CertificateDetailsPage = () => {
             <button
               type="button"
               onClick={printCertificate}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/8 bg-[#0E0A1A] px-5 py-3.5 text-sm font-medium text-white/65 transition-colors duration-300 hover:border-violet-400/35 hover:bg-violet-500/[0.07] hover:text-violet-100"
             >
               <Printer className="h-4 w-4" />
               Print
@@ -529,7 +529,7 @@ const CertificateDetailsPage = () => {
         {/* ── RIGHT: meta + verification ─────────────────────────────── */}
         <aside className="lp-no-print space-y-6 xl:sticky xl:top-6">
           {/* Completion summary */}
-          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/25 bg-linear-to-br from-[#7C3AED] to-[#6D4AFF] p-6 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.7)]">
             <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
             <p className="relative text-[11px] font-semibold uppercase tracking-[0.16em] text-white/80">
               Course Completed
@@ -551,8 +551,8 @@ const CertificateDetailsPage = () => {
           </section>
 
           {/* Credential details */}
-          <section className="relative overflow-hidden rounded-3xl border border-violet-400/15 bg-gradient-to-b from-[#130E24] to-[#0B0814] p-5">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+          <section className="relative overflow-hidden rounded-3xl border border-violet-400/15 bg-linear-to-b from-[#130E24] to-[#0B0814] p-5">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-400/40 to-transparent" />
             <h2 className="mb-4 flex items-center gap-2 px-1 text-sm font-semibold tracking-tight text-white">
               <Sparkles className="h-4 w-4 text-violet-300" />
               Credential Details
@@ -568,7 +568,7 @@ const CertificateDetailsPage = () => {
               ].map((row) => (
                 <div
                   key={row.label}
-                  className="flex items-center justify-between gap-4 rounded-xl px-2 py-2.5 transition-colors hover:bg-white/[0.025]"
+                  className="flex items-center justify-between gap-4 rounded-xl px-2 py-2.5 transition-colors hover:bg-white/2.5"
                 >
                   <dt className="shrink-0 text-xs text-white/45">
                     {row.label}
@@ -587,7 +587,7 @@ const CertificateDetailsPage = () => {
                 return (
                   <div
                     key={stat.label}
-                    className="rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5"
+                    className="rounded-xl border border-white/[0.07] bg-white/2 px-3 py-2.5"
                   >
                     <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-white/40">
                       <Icon className="h-3.5 w-3.5 text-violet-300" />
@@ -603,7 +603,7 @@ const CertificateDetailsPage = () => {
           </section>
 
           {/* Verification */}
-          <section className="relative overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-[#0B1A14] to-[#070D0B] p-5">
+          <section className="relative overflow-hidden rounded-3xl border border-emerald-400/20 bg-linear-to-b from-[#0B1A14] to-[#070D0B] p-5">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/10 text-emerald-300">
                 <ShieldCheck className="h-5 w-5" />
@@ -619,7 +619,7 @@ const CertificateDetailsPage = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 py-2.5">
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/8 bg-[#0B0B0F] px-3 py-2.5">
               <Link2 className="h-4 w-4 shrink-0 text-emerald-300/80" />
               <span className="min-w-0 flex-1 truncate text-[11px] text-white/60">
                 {data.credentialUrl}
@@ -631,7 +631,7 @@ const CertificateDetailsPage = () => {
                 className={`inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-colors ${
                   copied
                     ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
-                    : "border-white/[0.1] bg-white/[0.03] text-white/65 hover:border-emerald-400/35 hover:text-emerald-200"
+                    : "border-white/10 bg-white/3 text-white/65 hover:border-emerald-400/35 hover:text-emerald-200"
                 }`}
               >
                 {copied ? (
@@ -650,7 +650,7 @@ const CertificateDetailsPage = () => {
 
             <button
               type="button"
-              className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-2.5 text-xs font-semibold text-emerald-200 transition hover:border-emerald-400/45 hover:bg-emerald-500/[0.14] focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
+              className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-4 py-2.5 text-xs font-semibold text-emerald-200 transition hover:border-emerald-400/45 hover:bg-emerald-500/[0.14] focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
             >
               <Share2 className="h-3.5 w-3.5" />
               Share certificate
