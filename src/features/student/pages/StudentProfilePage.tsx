@@ -148,7 +148,7 @@ const ProfileAvatar = ({ src, initials, onClick }: AvatarProps) => {
       className="group/avatar relative shrink-0 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9D82FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
     >
       <div className="rounded-full bg-linear-to-br from-[#7C5CFF] via-[#8E72FF] to-[#B9A4FF] p-[2.5px] shadow-[0_0_55px_-4px_rgba(124,92,255,0.55)] transition-transform duration-300 group-hover/avatar:scale-[1.03]">
-        <div className="rounded-full bg-[#0A0A0A] p-[3px]">
+        <div className="rounded-full bg-[#0A0A0A] p-0.75">
           <div className="relative h-28 w-28 overflow-hidden rounded-full sm:h-32 sm:w-32">
             <div
               className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#7C5CFF] to-[#4D32C8] text-3xl font-semibold tracking-wide text-white"
@@ -314,12 +314,12 @@ const ImagePreviewModal = ({
               {/* Pulsing aura behind the image box */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[90%] w-[90%] rounded-[24px] bg-[#7C5CFF]/20 blur-2xl"
+                className="pointer-events-none absolute left-1/2 top-1/2 h-[90%] w-[90%] rounded-3xl bg-[#7C5CFF]/20 blur-2xl"
                 style={{ animation: "previewAura 5s ease-in-out infinite" }}
               />
 
               {/* Gradient-bordered image box (square) */}
-              <div className="relative rounded-[22px] bg-linear-to-br from-[#7C5CFF]/60 via-[#8E72FF]/30 to-[#B9A4FF]/50 p-[2px] shadow-[0_18px_50px_-15px_rgba(124,92,255,0.5)]">
+              <div className="relative rounded-[22px] bg-linear-to-br from-[#7C5CFF]/60 via-[#8E72FF]/30 to-[#B9A4FF]/50 p-0.5 shadow-[0_18px_50px_-15px_rgba(124,92,255,0.5)]">
                 <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-[#0A0A0A]">
                   {/* Initials fallback */}
                   <div
@@ -402,7 +402,7 @@ const DetailField = ({ icon: Icon, label, value }: DetailFieldProps) => {
         {label}
       </p>
 
-      <div className="flex min-h-[52px] items-start gap-3 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-colors duration-300 hover:border-white/10 hover:bg-white/3">
+      <div className="flex min-h-13 items-start gap-3 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-colors duration-300 hover:border-white/10 hover:bg-white/3">
         <Icon className="h-4 w-4 shrink-0 text-white/30" strokeWidth={1.8} />
 
         <span className="min-w-0 whitespace-normal wrap-break-word text-sm text-white/75">
@@ -549,13 +549,13 @@ const ProfileSkeleton = () => {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i}>
                   <Shimmer className="mb-2 h-3 w-24" />
-                  <Shimmer className="h-[52px] w-full rounded-xl" />
+                  <Shimmer className="h-13 w-full rounded-xl" />
                 </div>
               ))}
 
               <div className="sm:col-span-2">
                 <Shimmer className="mb-2 h-3 w-28" />
-                <Shimmer className="h-[52px] w-full rounded-xl" />
+                <Shimmer className="h-13 w-full rounded-xl" />
               </div>
             </div>
 
@@ -576,7 +576,7 @@ const ProfileSkeleton = () => {
 
             <div className="mt-7 space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Shimmer key={i} className="h-[68px] w-full rounded-xl" />
+                <Shimmer key={i} className="h-17 w-full rounded-xl" />
               ))}
             </div>
 
@@ -759,7 +759,7 @@ const ViewProfile = () => {
 
                     <div className="mt-7 w-full overflow-hidden">
                       <h2
-                        className="w-[260px] truncate text-2xl font-semibold tracking-tight text-white sm:w-[320px] sm:text-[30px]"
+                        className="w-65 truncate text-2xl font-semibold tracking-tight text-white sm:w-[320px] sm:text-[30px]"
                         style={{
                           fontFamily: DISPLAY_FONT,
                         }}

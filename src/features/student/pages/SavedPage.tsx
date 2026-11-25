@@ -139,7 +139,7 @@ const SavedPage = () => {
           aria-label={`${saved.length} ${saved.length === 1 ? "course" : "courses"} saved`}
           className="inline-flex shrink-0 items-center justify-center gap-2.5 self-start rounded-xl border border-violet-400/25 bg-linear-to-r from-violet-500/12 to-purple-500/8 px-5 py-3 text-sm font-semibold text-violet-200 shadow-sm shadow-violet-950/10 sm:self-center"
         >
-          <Bookmark className="h-[18px] w-[18px] text-violet-300" />
+          <Bookmark className="h-4.5 w-4.5 text-violet-300" />
 
           <span>Saved Courses</span>
 
@@ -194,7 +194,7 @@ const SavedPage = () => {
                     title="Remove from saved"
                   >
                     <Bookmark
-                      className="h-[17px] w-[17px] transition-transform duration-300 group-hover/save:scale-110"
+                      className="h-4.25 w-4.25 transition-transform duration-300 group-hover/save:scale-110"
                       fill="#A78BFA"
                       stroke="#A78BFA"
                       strokeWidth={1.8}
@@ -227,11 +227,11 @@ const SavedPage = () => {
                     {course.level} level
                   </p>
 
-                  <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                  <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                     {course.title}
                   </h3>
 
-                  <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                  <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                     {course.description}
                   </p>
 
@@ -300,7 +300,7 @@ const SavedPage = () => {
 
           {/* Minimal icon */}
           <div className="relative mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-300/20 bg-linear-to-br from-violet-400/[0.14] to-purple-500/6 text-violet-200 shadow-inner shadow-violet-300/4">
-            <Bookmark className="h-[22px] w-[22px]" strokeWidth={1.6} />
+            <Bookmark className="h-5.5 w-5.5" strokeWidth={1.6} />
           </div>
 
           <h2 className="relative mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
@@ -317,7 +317,7 @@ const SavedPage = () => {
             onClick={() => navigate("/student/courses")}
             className="group relative mt-7 inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-violet-300/20 bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/30 hover:shadow-xl hover:shadow-violet-900/30"
           >
-            <Compass className="h-[17px] w-[17px] transition-transform duration-300 group-hover:rotate-[-8deg]" />
+            <Compass className="h-4.25 w-4.25 transition-transform duration-300 group-hover:rotate-[-8deg]" />
             Explore courses
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </button>

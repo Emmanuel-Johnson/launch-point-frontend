@@ -555,13 +555,13 @@ const CourseCard = ({
         </p>
 
         <h3
-          className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-[#8FBAFF]"
+          className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-[#8FBAFF]"
           style={{ fontFamily: DISPLAY_FONT }}
         >
           {course.title}
         </h3>
 
-        <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+        <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
           {course.description}
         </p>
 
@@ -1194,7 +1194,7 @@ const InstructorCoursesPage = () => {
           </div>
 
           {/* Sort by */}
-          <div className="flex min-w-0 items-center gap-3 lg:w-[280px] lg:shrink-0">
+          <div className="flex min-w-0 items-center gap-3 lg:w-70 lg:shrink-0">
             <span className="shrink-0 text-xs font-medium text-white/45">
               Sort by
             </span>
@@ -1229,7 +1229,7 @@ const InstructorCoursesPage = () => {
                 <div
                   role="listbox"
                   aria-label="Sort courses by"
-                  className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-[200px] overflow-hidden rounded-xl border border-white/9 bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
+                  className="absolute right-0 top-[calc(100%+8px)] z-50 w-full min-w-50 overflow-hidden rounded-xl border border-white/9 bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/50"
                 >
                   <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
                     Sort courses
@@ -1289,7 +1289,7 @@ const InstructorCoursesPage = () => {
               >
                 {tab.label}
                 <span
-                  className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-[3px] text-[10px] font-semibold tabular-nums ${
+                  className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.75 text-[10px] font-semibold tabular-nums ${
                     isActive
                       ? "bg-[#3B82F6]/20 text-[#8FBAFF]"
                       : "bg-white/6 text-white/45"

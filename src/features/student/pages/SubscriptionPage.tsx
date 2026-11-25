@@ -196,7 +196,7 @@ const SubscriptionPage = () => {
         {loading ? (
           <PlansSkeleton />
         ) : plans.length === 0 ? (
-          <div className="flex min-h-[300px] items-center justify-center text-sm text-white/50">
+          <div className="flex min-h-75 items-center justify-center text-sm text-white/50">
             No subscription plans are currently available.
           </div>
         ) : (
@@ -275,7 +275,7 @@ const SubscriptionPage = () => {
 
                       {/* Plan description */}
 
-                      <p className="mx-auto min-h-[40px] max-w-xs text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
+                      <p className="mx-auto min-h-10 max-w-xs text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
                         {plan.description}
                       </p>
 

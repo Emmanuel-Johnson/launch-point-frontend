@@ -837,7 +837,7 @@ const SubscriptionPlanFormModal = ({
                 }
                 placeholder="Describe what this plan offers..."
                 rows={3}
-                className={`${inputClass} min-h-[88px] resize-y ${
+                className={`${inputClass} min-h-22 resize-y ${
                   typeof errors.description === "string"
                     ? "border-red-400/60 focus:border-red-400/60"
                     : ""

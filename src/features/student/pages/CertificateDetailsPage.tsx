@@ -254,7 +254,7 @@ const CertificateDetailsPage = () => {
             {/* ── The paper ──────────────────────────────────────────── */}
             <article
               id="lp-print-area"
-              className="lp-cert-paper lp-body relative mx-auto aspect-[1.414/1] w-full overflow-hidden rounded-[6px] text-[#2c2416] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.65)]"
+              className="lp-cert-paper lp-body relative mx-auto aspect-[1.414/1] w-full overflow-hidden rounded-md text-[#2c2416] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.65)]"
               style={{
                 background:
                   "radial-gradient(120% 120% at 50% 0%, #fffdf6 0%, #faf5e6 45%, #f3ead3 100%)",
@@ -312,9 +312,9 @@ const CertificateDetailsPage = () => {
               </div>
 
               {/* Ornamental gold double border */}
-              <div className="pointer-events-none absolute inset-[3%] rounded-[4px] border-[3px] border-[#c9a227]" />
-              <div className="pointer-events-none absolute inset-[3%] rounded-[4px] border border-[#8a6d1a]/60" />
-              <div className="pointer-events-none absolute inset-[5.2%] rounded-[2px] border border-[#c9a227]/50" />
+              <div className="pointer-events-none absolute inset-[3%] rounded-sm border-[3px] border-[#c9a227]" />
+              <div className="pointer-events-none absolute inset-[3%] rounded-sm border border-[#8a6d1a]/60" />
+              <div className="pointer-events-none absolute inset-[5.2%] rounded-xs border border-[#c9a227]/50" />
 
               {/* Corner flourishes */}
               {(

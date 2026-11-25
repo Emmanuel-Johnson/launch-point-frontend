@@ -228,7 +228,7 @@ const CertificatePage = () => {
           onClick={() => navigate("/student/courses")}
           className="group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 self-start rounded-xl border border-violet-400/25 bg-linear-to-r from-violet-500/12 to-purple-500/8 px-5 py-3 text-sm font-semibold text-violet-200 shadow-sm shadow-violet-950/10 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-400/45 hover:bg-violet-500/16 sm:self-center"
         >
-          <Compass className="h-[17px] w-[17px] text-violet-300 transition-transform duration-300 group-hover:rotate-[-8deg]" />
+          <Compass className="h-4.25 w-4.25 text-violet-300 transition-transform duration-300 group-hover:rotate-[-8deg]" />
           Earn more
         </button>
       </section>
@@ -265,7 +265,7 @@ const CertificatePage = () => {
           <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
           <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-amber-500/10 blur-[100px]" />
 
-          <div className="grid min-h-[300px] items-center md:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid min-h-75 items-center md:grid-cols-[1.1fr_0.9fr]">
             {/* Left side - text + credential */}
             <div className="relative z-10 px-6 py-8 sm:px-9 lg:px-11 lg:py-11">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-violet-200 sm:text-xs">
@@ -350,7 +350,7 @@ const CertificatePage = () => {
             </div>
 
             {/* Right side - certificate visual */}
-            <div className="relative hidden h-full min-h-[300px] md:block">
+            <div className="relative hidden h-full min-h-75 md:block">
               <img
                 src={latest.image}
                 alt={latest.title}
@@ -613,7 +613,7 @@ const CertificatePage = () => {
             <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-violet-500/10 blur-[80px]" />
 
             <div className="relative mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-300/20 bg-linear-to-br from-violet-400/[0.14] to-purple-500/6 text-violet-200 shadow-inner shadow-violet-300/4">
-              <Award className="h-[22px] w-[22px]" strokeWidth={1.6} />
+              <Award className="h-5.5 w-5.5" strokeWidth={1.6} />
             </div>
 
             <h2 className="relative mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
@@ -633,7 +633,7 @@ const CertificatePage = () => {
               onClick={() => navigate("/student/courses")}
               className="group relative mt-7 inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-violet-300/20 bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/30 hover:shadow-xl hover:shadow-violet-900/30"
             >
-              <Compass className="h-[17px] w-[17px] transition-transform duration-300 group-hover:rotate-[-8deg]" />
+              <Compass className="h-4.25 w-4.25 transition-transform duration-300 group-hover:rotate-[-8deg]" />
               Explore courses
             </button>
 

@@ -617,7 +617,7 @@ const EditInstructorProfileModal = ({
               </div>
 
               <div className="flex items-center gap-5 rounded-2xl border border-white/6 bg-white/2 p-4">
-                <div className="shrink-0 rounded-full bg-linear-to-br from-[#4D8DFF] to-[#38BDF8] p-[2px]">
+                <div className="shrink-0 rounded-full bg-linear-to-br from-[#4D8DFF] to-[#38BDF8] p-0.5">
                   <div className="relative h-20 w-20 overflow-hidden rounded-full bg-[#0A0A0A]">
                     <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#4D8DFF] to-[#1D4ED8] text-xl font-semibold text-white">
                       {initials}
@@ -1031,7 +1031,7 @@ const EditInstructorProfileModal = ({
               type="submit"
               disabled={isSaving}
               aria-label={isSaving ? "Saving changes" : "Save changes"}
-              className="inline-flex h-[46px] w-[150px] shrink-0 cursor-pointer items-center justify-center rounded-xl border border-[#4D8DFF]/30 bg-[#4D8DFF]/15 px-5 py-3 text-sm font-semibold text-[#8FBAFF] transition hover:border-[#4D8DFF]/50 hover:bg-[#4D8DFF]/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-11.5 w-37.5 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-[#4D8DFF]/30 bg-[#4D8DFF]/15 px-5 py-3 text-sm font-semibold text-[#8FBAFF] transition hover:border-[#4D8DFF]/50 hover:bg-[#4D8DFF]/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSaving ? (
                 <LoaderCircle

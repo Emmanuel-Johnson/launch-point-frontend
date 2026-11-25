@@ -353,7 +353,7 @@ const CourseReviewsPage = () => {
           <button
             type="button"
             onClick={() => navigate(`/student/courses/${courseId ?? "1"}`)}
-            className="max-w-[180px] truncate font-medium tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:max-w-[280px]"
+            className="max-w-45 truncate font-medium tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:max-w-70"
           >
             {course.title}
           </button>
@@ -550,7 +550,7 @@ const CourseReviewsPage = () => {
                           <span>Helpful</span>
 
                           <span
-                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                            className={`min-w-4.5 rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
                               isHelpful
                                 ? "bg-violet-400/15 text-violet-100"
                                 : "bg-white/4 text-violet-200/65 group-hover:bg-violet-400/8 group-hover:text-violet-100"
@@ -583,7 +583,7 @@ const CourseReviewsPage = () => {
                           />
 
                           <span
-                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                            className={`min-w-4.5 rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
                               isDisliked
                                 ? "bg-violet-400/15 text-violet-100"
                                 : "bg-white/4 text-violet-200/65 group-hover:bg-violet-400/8 group-hover:text-violet-100"

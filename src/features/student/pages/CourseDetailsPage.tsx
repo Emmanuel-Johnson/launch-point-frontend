@@ -1298,7 +1298,7 @@ const CourseDetailsPage = () => {
               <button
                 type="button"
                 onClick={handleLearningAction}
-                className="group/button inline-flex min-h-[58px] min-w-[270px] cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-12 py-4 text-[15px] font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
+                className="group/button inline-flex min-h-14.5 min-w-67.5 cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-12 py-4 text-[15px] font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60 focus:ring-offset-2 focus:ring-offset-[#0B0817]"
               >
                 {isPremium ? (
                   <>Enroll Now</>
@@ -1315,7 +1315,7 @@ const CourseDetailsPage = () => {
               <button
                 type="button"
                 onClick={scrollToCurriculum}
-                className="inline-flex min-h-[58px] min-w-[200px] cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/3 px-8 py-4 text-[15px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
+                className="inline-flex min-h-14.5 min-w-50 cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/3 px-8 py-4 text-[15px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-white"
               >
                 <BookOpen className="h-5 w-5 text-violet-300" />
                 View curriculum
@@ -1327,7 +1327,7 @@ const CourseDetailsPage = () => {
                 onClick={() => setSaved((current) => !current)}
                 aria-pressed={saved}
                 aria-label={saved ? "Remove saved course" : "Save course"}
-                className={`flex h-[58px] w-[58px] shrink-0 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 ${
+                className={`flex h-14.5 w-14.5 shrink-0 cursor-pointer items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 ${
                   saved
                     ? "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_24px_-6px_rgba(167,139,250,0.8)]"
                     : "border-white/10 bg-white/3 text-white/55 hover:border-violet-400/30 hover:text-violet-200"
@@ -1342,7 +1342,7 @@ const CourseDetailsPage = () => {
           </div>
 
           {/* Image — clean image with preview button */}
-          <div className="relative isolate order-1 min-h-[220px] overflow-hidden bg-[#100821] sm:min-h-[270px] lg:order-1 lg:min-h-[360px]">
+          <div className="relative isolate order-1 min-h-55 overflow-hidden bg-[#100821] sm:min-h-67.5 lg:order-1 lg:min-h-90">
             <img
               src={course.image}
               alt={`${course.title} course`}
@@ -1364,17 +1364,17 @@ const CourseDetailsPage = () => {
             >
               <span
                 aria-hidden="true"
-                className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
+                className="lp-play-ring absolute h-26 w-26 rounded-full border border-white/20"
               />
 
               <span
                 aria-hidden="true"
-                className="lp-play-ring absolute h-[128px] w-[128px] rounded-full border border-white/10 [animation-delay:-1.5s]"
+                className="lp-play-ring absolute h-32 w-32 rounded-full border border-white/10 [animation-delay:-1.5s]"
               />
 
-              <span className="lp-hero-disc relative flex h-[74px] w-[74px] items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-colors duration-700 ease-out group-hover/play:border-white/80 group-hover/play:bg-white/5">
+              <span className="lp-hero-disc relative flex h-18.5 w-18.5 items-center justify-center rounded-full border border-white/40 bg-transparent shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-colors duration-700 ease-out group-hover/play:border-white/80 group-hover/play:bg-white/5">
                 <Play
-                  className="relative h-7 w-7 translate-x-[2px] fill-white text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out group-hover/play:scale-105"
+                  className="relative h-7 w-7 translate-x-0.5 fill-white text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)] transition-transform duration-700 ease-out group-hover/play:scale-105"
                   strokeWidth={0}
                 />
               </span>
@@ -1387,7 +1387,7 @@ const CourseDetailsPage = () => {
               so this narrow strip is invisible and simply hides the seam. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-[3px] -translate-x-1/2 bg-[#100821] lg:block"
+            className="pointer-events-none absolute inset-y-0 left-[46%] z-20 hidden w-0.75 -translate-x-1/2 bg-[#100821] lg:block"
           />
         </div>
       </section>
@@ -2177,7 +2177,7 @@ const CourseDetailsPage = () => {
               }}
               className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-linear-to-br from-violet-500/16 via-violet-500/10 to-purple-500/8 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/18 hover:to-purple-500/16 hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/16 disabled:hover:via-violet-500/10 disabled:hover:to-purple-500/8 disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
             >
-              <ChevronLeft className="h-[17px] w-[17px] transition-transform duration-300 group-hover:-translate-x-0.5" />
+              <ChevronLeft className="h-4.25 w-4.25 transition-transform duration-300 group-hover:-translate-x-0.5" />
             </button>
 
             <button
@@ -2198,7 +2198,7 @@ const CourseDetailsPage = () => {
               }}
               className={`group flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-violet-400/20 bg-linear-to-br from-violet-500/16 via-violet-500/10 to-purple-500/8 text-violet-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-300 ease-out hover:border-violet-300/45 hover:from-violet-500/25 hover:via-violet-500/18 hover:to-purple-500/16 hover:text-white hover:shadow-[0_0_20px_rgba(139,92,246,0.16)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-violet-400/20 disabled:hover:from-violet-500/16 disabled:hover:via-violet-500/10 disabled:hover:to-purple-500/8 disabled:hover:text-violet-200 disabled:hover:shadow-none ${PILL}`}
             >
-              <ChevronRight className="h-[17px] w-[17px] transition-transform duration-300 group-hover:translate-x-0.5" />
+              <ChevronRight className="h-4.25 w-4.25 transition-transform duration-300 group-hover:translate-x-0.5" />
             </button>
           </div>
         </div>
@@ -2281,7 +2281,7 @@ const CourseDetailsPage = () => {
                       }`}
                     >
                       <Bookmark
-                        className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                        className={`h-4.25 w-4.25 transition-transform duration-300 ${
                           isRelatedSaved ? "scale-110" : "group-hover:scale-110"
                         }`}
                         fill={isRelatedSaved ? "#A78BFA" : "none"}
@@ -2316,11 +2316,11 @@ const CourseDetailsPage = () => {
                       {related.level} level
                     </p>
 
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                    <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {related.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                    <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                       {related.description}
                     </p>
 

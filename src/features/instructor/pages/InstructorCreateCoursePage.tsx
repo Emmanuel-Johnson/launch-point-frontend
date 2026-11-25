@@ -124,7 +124,7 @@ function FormCard({
       />
       <div className="flex items-start gap-3.5">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#60A5FA] ring-1 ring-inset ring-[#3B82F6]/25">
-          <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+          <Icon className="h-4.5 w-4.5" aria-hidden="true" />
         </div>
         <div className="min-w-0">
           <h2 className="text-base font-semibold tracking-[-0.01em] text-white">

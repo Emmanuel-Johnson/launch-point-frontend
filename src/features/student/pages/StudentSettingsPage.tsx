@@ -140,7 +140,7 @@ const SectionHeader = ({
   return (
     <div className="flex items-start gap-4">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#7C5CFF]/10 text-[#9D82FF] ring-1 ring-inset ring-[#7C5CFF]/20">
-        <Icon className="h-[23px] w-[23px]" strokeWidth={1.8} />
+        <Icon className="h-5.75 w-5.75" strokeWidth={1.8} />
       </div>
 
       <div>
@@ -238,7 +238,7 @@ const SettingsSkeleton = () => {
                     {Array.from({ length: 3 }).map((_, i) => (
                       <div key={i}>
                         <Shimmer className="mb-2 h-4 w-32" />
-                        <Shimmer className="h-[46px] w-full rounded-xl" />
+                        <Shimmer className="h-11.5 w-full rounded-xl" />
                       </div>
                     ))}
 
@@ -605,7 +605,7 @@ const SettingsPage = () => {
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-linear-to-b from-[#7C5CFF] to-[#9D82FF]" />
+                      <span className="absolute bottom-3 left-0 top-3 w-0.75 rounded-r-full bg-linear-to-b from-[#7C5CFF] to-[#9D82FF]" />
                     )}
 
                     <div

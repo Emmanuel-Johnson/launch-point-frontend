@@ -478,7 +478,7 @@ const StudentDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsStatusModalOpen(true)}
-                    className={`group/toggle relative inline-flex h-11 min-w-[168px] w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                    className={`group/toggle relative inline-flex h-11 min-w-42 w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
                       isActive
                         ? "border border-red-400/25 bg-red-400/6 text-red-400 hover:bg-red-400/12 hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
                         : "border border-[#34D399]/25 bg-[#34D399]/6 text-[#34D399] hover:bg-[#34D399]/12 hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"

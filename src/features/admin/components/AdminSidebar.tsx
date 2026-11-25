@@ -178,7 +178,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
       ====================================================== */}
       <aside
         className={`fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/8 bg-[#0A0A0A] transition-[width] duration-500 ease-in-out ${
-          isCollapsed ? "w-20" : "w-[280px]"
+          isCollapsed ? "w-20" : "w-70"
         }`}
       >
         {/* =====================================================
@@ -215,10 +215,10 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
               className={`grid overflow-hidden transition-all duration-500 ease-out ${
                 isCollapsed
                   ? "max-w-0 -translate-x-2 opacity-0"
-                  : "max-w-[180px] translate-x-0 opacity-100"
+                  : "max-w-45 translate-x-0 opacity-100"
               }`}
             >
-              <div className="group min-w-[170px] cursor-default">
+              <div className="group min-w-42.5 cursor-default">
                 <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-all duration-300 group-hover:text-white/80">
                   LAUNCH POINT
                 </span>
@@ -344,7 +344,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
                                 isCollapsed
                                   ? "max-w-0 translate-x-2 opacity-0"
-                                  : "max-w-[180px] translate-x-0 opacity-100"
+                                  : "max-w-45 translate-x-0 opacity-100"
                               }`}
                             >
                               {item.name}
@@ -388,7 +388,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ${
                 isCollapsed
                   ? "max-w-0 translate-x-2 opacity-0"
-                  : "max-w-[120px] translate-x-0 opacity-100"
+                  : "max-w-30 translate-x-0 opacity-100"
               }`}
             >
               {isLoggingOut ? "Logging out..." : "Logout"}

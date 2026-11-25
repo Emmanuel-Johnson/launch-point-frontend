@@ -416,13 +416,13 @@ export default function CourseLearningPage() {
               >
                 <span
                   aria-hidden="true"
-                  className="lp-play-ring absolute h-[104px] w-[104px] rounded-full border border-white/20"
+                  className="lp-play-ring absolute h-26 w-26 rounded-full border border-white/20"
                 />
                 <span
                   aria-hidden="true"
-                  className="lp-play-ring absolute h-[132px] w-[132px] rounded-full border border-white/10 [animation-delay:-1.5s]"
+                  className="lp-play-ring absolute h-33 w-33 rounded-full border border-white/10 [animation-delay:-1.5s]"
                 />
-                <span className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full bg-linear-to-br from-[#7C3AED] to-[#6D4AFF] shadow-[0_18px_50px_-10px_rgba(124,58,237,0.75)] transition-transform duration-500 ease-out group-hover/play:scale-110">
+                <span className="relative flex h-19 w-19 items-center justify-center rounded-full bg-linear-to-br from-[#7C3AED] to-[#6D4AFF] shadow-[0_18px_50px_-10px_rgba(124,58,237,0.75)] transition-transform duration-500 ease-out group-hover/play:scale-110">
                   <PlayCircle
                     className="h-9 w-9 text-white"
                     strokeWidth={1.6}

@@ -374,7 +374,7 @@ const ApplicationDetailsSkeleton = () => (
     `}</style>
 
     {/* Ambient blue backdrop */}
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
 
     <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
       <div className="mx-auto max-w-6xl">
@@ -609,7 +609,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
       ============================================================ */}
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
 
       <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
 
@@ -692,7 +692,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
             {/* Accent + glow */}
 
             <div
-              className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-linear-to-r ${status.accent}`}
+              className={`pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-linear-to-r ${status.accent}`}
             />
 
             <div

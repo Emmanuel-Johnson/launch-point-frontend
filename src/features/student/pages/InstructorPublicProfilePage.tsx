@@ -272,7 +272,7 @@ const DetailField = ({ icon: Icon, label, value }: DetailFieldProps) => (
       {label}
     </p>
 
-    <div className="flex min-h-[52px] items-start gap-3 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-colors duration-300 hover:border-violet-400/20 hover:bg-violet-500/3">
+    <div className="flex min-h-13 items-start gap-3 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-colors duration-300 hover:border-violet-400/20 hover:bg-violet-500/3">
       <Icon
         className="mt-0.5 h-4 w-4 shrink-0 text-violet-300/70"
         strokeWidth={1.8}
@@ -299,7 +299,7 @@ const ProfileAvatar = ({ src, initials, onClick }: AvatarProps) => (
     className="group/avatar relative shrink-0 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0812]"
   >
     <div className="rounded-full bg-linear-to-br from-violet-400 via-purple-500 to-fuchsia-400 p-[2.5px] shadow-[0_0_55px_-4px_rgba(139,92,246,0.55)] transition-transform duration-300 group-hover/avatar:scale-[1.03]">
-      <div className="rounded-full bg-[#0A0812] p-[3px]">
+      <div className="rounded-full bg-[#0A0812] p-0.75">
         <div className="relative h-28 w-28 overflow-hidden rounded-full sm:h-32 sm:w-32">
           <div
             className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-violet-500 to-purple-800 text-3xl font-semibold tracking-wide text-white"
@@ -449,7 +449,7 @@ const ImagePreviewModal = ({
             />
 
             <div className="relative p-5 sm:p-6">
-              <div className="relative rounded-[22px] bg-linear-to-br from-violet-400/60 via-purple-500/30 to-fuchsia-400/50 p-[2px] shadow-[0_18px_50px_-15px_rgba(139,92,246,0.5)]">
+              <div className="relative rounded-[22px] bg-linear-to-br from-violet-400/60 via-purple-500/30 to-fuchsia-400/50 p-0.5 shadow-[0_18px_50px_-15px_rgba(139,92,246,0.5)]">
                 <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-[#0A0812]">
                   <div
                     className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-violet-500 to-purple-800 text-7xl font-semibold tracking-wide text-white sm:text-8xl"
@@ -581,7 +581,7 @@ const InstructorCourseCard = ({
         }`}
       >
         <Bookmark
-          className={`h-[17px] w-[17px] transition-transform duration-300 ${
+          className={`h-4.25 w-4.25 transition-transform duration-300 ${
             isSaved ? "scale-110" : "group-hover:scale-110"
           }`}
           fill={isSaved ? "#A78BFA" : "none"}
@@ -613,11 +613,11 @@ const InstructorCourseCard = ({
       <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
         {course.level} level
       </p>
-      <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+      <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
         {course.title}
       </h3>
 
-      <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+      <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
         {course.description}
       </p>
 
@@ -728,7 +728,7 @@ const InstructorPublicProfilePage = () => {
                 className="hidden h-3.5 w-3.5 shrink-0 text-violet-300/50 sm:block"
               />
 
-              <span className="hidden max-w-[120px] shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
+              <span className="hidden max-w-30 shrink-0 truncate font-medium tracking-[-0.01em] text-white/45 sm:inline">
                 Javascript Mastery
               </span>
 
@@ -768,7 +768,7 @@ const InstructorPublicProfilePage = () => {
             >
               <span className="pointer-events-none absolute inset-0 bg-linear-to-r from-violet-500/6 via-purple-500/10 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
 
-              <BookOpen className="relative h-[18px] w-[18px] text-violet-300 transition-transform duration-300 group-hover:scale-110 group-hover:text-violet-200" />
+              <BookOpen className="relative h-4.5 w-4.5 text-violet-300 transition-transform duration-300 group-hover:scale-110 group-hover:text-violet-200" />
 
               <span className="relative">View Sarah&apos;s Courses</span>
 
@@ -824,7 +824,7 @@ const InstructorPublicProfilePage = () => {
 
                     <div className="mt-7 w-full min-w-0">
                       <h2
-                        className="mx-auto w-full max-w-[360px] wrap-break-word text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
+                        className="mx-auto w-full max-w-90 wrap-break-word text-2xl font-semibold tracking-tight text-white sm:text-[30px]"
                         style={{ fontFamily: DISPLAY_FONT }}
                         title={instructor.full_name}
                       >

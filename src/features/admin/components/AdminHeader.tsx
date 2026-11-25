@@ -83,7 +83,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
     <>
       <header
         className={`fixed right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/8 bg-[#0A0A0A] px-8 transition-[left] duration-500 ease-in-out ${
-          isSidebarCollapsed ? "left-20" : "left-[280px]"
+          isSidebarCollapsed ? "left-20" : "left-70"
         }`}
       >
         {/* =========================================================
@@ -97,7 +97,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
 
               {/* Search Icon */}
               <Search
-                className="absolute left-4 top-1/2 z-10 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-white/40 transition-all duration-300 group-hover:text-[#6EE7B7] group-focus-within:scale-105 group-focus-within:text-[#34D399]"
+                className="absolute left-4 top-1/2 z-10 h-4.5 w-4.5 -translate-y-1/2 cursor-pointer text-white/40 transition-all duration-300 group-hover:text-[#6EE7B7] group-focus-within:scale-105 group-focus-within:text-[#34D399]"
                 strokeWidth={1.8}
               />
 

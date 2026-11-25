@@ -218,7 +218,7 @@ const InstructorDetailSkeleton = () => {
                 </div>
               </div>
 
-              <Shimmer className="h-11 w-full min-w-[190px] rounded-xl sm:w-52" />
+              <Shimmer className="h-11 w-full min-w-47.5 rounded-xl sm:w-52" />
             </div>
           </div>
         </section>
@@ -579,7 +579,7 @@ const InstructorDetailPage = () => {
                     setIsStatusModalOpen(true);
                   }}
                   disabled={isUpdatingStatus}
-                  className={`group/toggle relative inline-flex h-11 w-full min-w-[190px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
+                  className={`group/toggle relative inline-flex h-11 w-full min-w-47.5 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
                     isActive
                       ? "border-red-400/25 bg-red-400/6 text-red-400 hover:bg-red-400/12 hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
                       : "border-[#34D399]/25 bg-[#34D399]/6 text-[#34D399] hover:bg-[#34D399]/12 hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
@@ -609,7 +609,7 @@ const InstructorDetailPage = () => {
                 </button>
                 {statusActionError && (
                   <p
-                    className="max-w-[240px] text-xs text-red-400"
+                    className="max-w-60 text-xs text-red-400"
                     role="alert"
                   >
                     {statusActionError}

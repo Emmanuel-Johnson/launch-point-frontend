@@ -17,7 +17,7 @@ export default function ComingSoonPage({
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
         {/* Ambient emerald glow */}
-        <div className="absolute left-1/2 top-[42%] h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#34D399]/9 blur-[120px] sm:h-[500px] sm:w-[500px]" />
+        <div className="absolute left-1/2 top-[42%] h-87.5 w-87.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#34D399]/9 blur-[120px] sm:h-125 sm:w-125" />
 
         {/* Dark vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#000000_78%)]" />
@@ -50,17 +50,17 @@ export default function ComingSoonPage({
           <div className="absolute inset-0 rounded-full border border-white/5.5" />
 
           {/* Middle orbit */}
-          <div className="absolute inset-[12px] rounded-full border border-[#34D399]/16 sm:inset-[15px]" />
+          <div className="absolute inset-3 rounded-full border border-[#34D399]/16 sm:inset-3.75" />
 
           {/* Inner orbit */}
-          <div className="absolute inset-[24px] rounded-full border border-white/[0.07] sm:inset-[31px]" />
+          <div className="absolute inset-6 rounded-full border border-white/[0.07] sm:inset-7.75" />
 
           {/* Orbital path */}
-          <div className="absolute inset-[6px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-[#34D399]/22" />
+          <div className="absolute inset-1.5 animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-[#34D399]/22" />
 
           {/* Orbiting point */}
-          <div className="absolute inset-[6px] animate-[spin_18s_linear_infinite] rounded-full">
-            <span className="absolute left-1/2 top-[-3px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#6EE7B7] shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+          <div className="absolute inset-1.5 animate-[spin_18s_linear_infinite] rounded-full">
+            <span className="absolute left-1/2 -top-0.75 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#6EE7B7] shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
           </div>
 
           {/* Core glow */}

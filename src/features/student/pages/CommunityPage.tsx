@@ -12,7 +12,7 @@ export default function ComingSoonPage({
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#08070D] px-6 py-20 text-white selection:bg-violet-500/30">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-[42%] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[150px]" />
+        <div className="absolute left-1/2 top-[42%] h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[150px]" />
 
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#08070D_78%)]" />
 
@@ -43,17 +43,17 @@ export default function ComingSoonPage({
           <div className="absolute inset-0 rounded-full border border-white/5.5" />
 
           {/* Middle orbit */}
-          <div className="absolute inset-[15px] rounded-full border border-violet-300/12" />
+          <div className="absolute inset-3.75 rounded-full border border-violet-300/12" />
 
           {/* Inner orbit */}
-          <div className="absolute inset-[31px] rounded-full border border-white/[0.07]" />
+          <div className="absolute inset-7.75 rounded-full border border-white/[0.07]" />
 
           {/* Orbital path */}
-          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-violet-300/16" />
+          <div className="absolute inset-1.75 animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-violet-300/16" />
 
           {/* Orbiting point */}
-          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full">
-            <span className="absolute left-1/2 top-[-3px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
+          <div className="absolute inset-1.75 animate-[spin_18s_linear_infinite] rounded-full">
+            <span className="absolute left-1/2 -top-0.75 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
           </div>
 
           {/* Core glow */}

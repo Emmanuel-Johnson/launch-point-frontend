@@ -19,7 +19,7 @@ const ApplicationLayout = () => {
           <NavLink
             to="/admin/applications/instructors"
             className={({ isActive }) =>
-              `group relative flex min-h-[120px] min-w-0 items-start gap-4 overflow-hidden p-4 transition-colors duration-300 sm:p-5 ${
+              `group relative flex min-h-30 min-w-0 items-start gap-4 overflow-hidden p-4 transition-colors duration-300 sm:p-5 ${
                 isActive ? "bg-[#34D399]/4.5" : "hover:bg-white/2.5"
               }`
             }
@@ -28,7 +28,7 @@ const ApplicationLayout = () => {
               <>
                 {/* Active Indicator */}
                 <span
-                  className={`absolute inset-x-0 top-0 h-[2px] transition-all duration-300 ${
+                  className={`absolute inset-x-0 top-0 h-0.5 transition-all duration-300 ${
                     isActive
                       ? "bg-linear-to-r from-transparent via-[#34D399] to-transparent opacity-100"
                       : "bg-linear-to-r from-transparent via-[#34D399]/50 to-transparent opacity-0 group-hover:opacity-100"
@@ -89,7 +89,7 @@ const ApplicationLayout = () => {
                     />
                   </span>
 
-                  <span className="mt-1.5 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
+                  <span className="mt-1.5 max-w-70 text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
                     Review applicant profiles and their teaching expertise.
                   </span>
                 </span>
@@ -101,7 +101,7 @@ const ApplicationLayout = () => {
           <NavLink
             to="/admin/applications/courses"
             className={({ isActive }) =>
-              `group relative flex min-h-[120px] min-w-0 items-start gap-4 overflow-hidden border-t border-white/[0.07] p-4 transition-colors duration-300 sm:border-l sm:border-t-0 sm:p-5 ${
+              `group relative flex min-h-30 min-w-0 items-start gap-4 overflow-hidden border-t border-white/[0.07] p-4 transition-colors duration-300 sm:border-l sm:border-t-0 sm:p-5 ${
                 isActive ? "bg-[#34D399]/4.5" : "hover:bg-white/2.5"
               }`
             }
@@ -110,7 +110,7 @@ const ApplicationLayout = () => {
               <>
                 {/* Active Indicator */}
                 <span
-                  className={`absolute inset-x-0 top-0 h-[2px] transition-all duration-300 ${
+                  className={`absolute inset-x-0 top-0 h-0.5 transition-all duration-300 ${
                     isActive
                       ? "bg-linear-to-r from-transparent via-[#34D399] to-transparent opacity-100"
                       : "bg-linear-to-r from-transparent via-[#34D399]/50 to-transparent opacity-0 group-hover:opacity-100"
@@ -171,7 +171,7 @@ const ApplicationLayout = () => {
                     />
                   </span>
 
-                  <span className="mt-1.5 max-w-[280px] text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
+                  <span className="mt-1.5 max-w-70 text-xs leading-[1.7] text-white/40 transition-colors duration-300 group-hover:text-white/55">
                     Review course submissions and manage their approval status.
                   </span>
                 </span>

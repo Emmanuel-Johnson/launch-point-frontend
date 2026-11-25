@@ -69,7 +69,7 @@ const ApplicationsSkeleton = () => (
         key={i}
         className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-blue-500/[0.07] via-white/2 to-transparent"
       >
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-white/10" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-0.75 bg-white/10" />
 
         <div className="relative p-5 sm:p-6">
           {/* Top row */}
@@ -137,7 +137,7 @@ const InstructorApplicationListPage = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
       {/* Ambient blue backdrop (sits below the shared header) */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
       <div className="pointer-events-none absolute -left-40 top-40 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
       <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 
@@ -207,7 +207,7 @@ const InstructorApplicationListPage = () => {
                   >
                     {/* Status accent bar */}
                     <div
-                      className={`pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-linear-to-b ${status.accent}`}
+                      className={`pointer-events-none absolute inset-y-0 left-0 w-0.75 bg-linear-to-b ${status.accent}`}
                     />
 
                     {/* Ambient hover glow */}

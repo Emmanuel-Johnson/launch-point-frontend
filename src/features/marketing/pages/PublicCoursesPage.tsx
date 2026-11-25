@@ -382,7 +382,7 @@ const PublicCoursesPage = () => {
                           }`}
                         >
                           <Bookmark
-                            className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                            className={`h-4.25 w-4.25 transition-transform duration-300 ${
                               isSaved ? "scale-110" : "group-hover:scale-110"
                             }`}
                             fill={isSaved ? "#A78BFA" : "none"}
@@ -420,11 +420,11 @@ const PublicCoursesPage = () => {
                           {course.level} level
                         </p>
 
-                        <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                        <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                           {course.title}
                         </h3>
 
-                        <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                        <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                           {course.description}
                         </p>
 

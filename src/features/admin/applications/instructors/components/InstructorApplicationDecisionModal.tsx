@@ -298,7 +298,7 @@ const InstructorApplicationDecisionModal = ({
                     ? "Approve application"
                     : "Reject application"
               }
-              className={`flex h-[42px] flex-1 cursor-pointer items-center justify-center rounded-xl px-4 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
+              className={`flex h-10.5 flex-1 cursor-pointer items-center justify-center rounded-xl px-4 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
                 isApproval
                   ? "bg-[#34D399] text-black hover:bg-[#6EE7B7]"
                   : "bg-red-500 text-white hover:bg-red-400"

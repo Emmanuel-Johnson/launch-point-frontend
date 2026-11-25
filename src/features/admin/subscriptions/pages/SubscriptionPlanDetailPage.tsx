@@ -190,7 +190,7 @@ const SubscriptionPlanDetailPage = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-white">
+      <div className="flex min-h-100 flex-col items-center justify-center gap-4 text-white">
         <p className="text-red-400">{error}</p>
 
         <button

@@ -114,7 +114,7 @@ const Hero = () => {
 
       <div className="absolute -right-40 top-40 h-96 w-96 rounded-full bg-violet-600/15 blur-3xl" />
 
-      <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/4 blur-3xl" />
+      <div className="absolute left-1/2 top-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/4 blur-3xl" />
 
       {/* ================= HERO CONTENT ================= */}
 
@@ -216,15 +216,15 @@ const Hero = () => {
               ========================================================= */}
 
           <Reveal delay={300}>
-            <div className="group relative flex min-h-[480px] items-center justify-center lg:min-h-[600px]">
+            <div className="group relative flex min-h-120 items-center justify-center lg:min-h-150">
               {/* =====================================================
                   AMBIENT GLOW
                   ===================================================== */}
 
-              <div className="absolute h-[360px] w-[360px] rounded-full bg-indigo-600/10 blur-[100px] transition-all duration-1200 ease-out group-hover:scale-125 group-hover:bg-violet-600/20 group-hover:blur-[120px]" />
+              <div className="absolute h-90 w-90 rounded-full bg-indigo-600/10 blur-[100px] transition-all duration-1200 ease-out group-hover:scale-125 group-hover:bg-violet-600/20 group-hover:blur-[120px]" />
 
               <div
-                className="absolute h-[260px] w-[260px] rounded-full bg-violet-500/8 blur-[80px]"
+                className="absolute h-65 w-65 rounded-full bg-violet-500/8 blur-[80px]"
                 style={{
                   animation: "portalGlow 4s ease-in-out infinite",
                 }}
@@ -246,10 +246,10 @@ const Hero = () => {
                   >
                     <div className="tech-logo group/logo relative">
                       {/* Outer glow */}
-                      <div className="absolute inset-[-12px] rounded-2xl bg-indigo-500/10 opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover/logo:bg-violet-500/30" />
+                      <div className="absolute -inset-3 rounded-2xl bg-indigo-500/10 opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100 group-hover/logo:bg-violet-500/30" />
 
                       {/* Logo container */}
-                      <div className="relative flex h-[54px] w-[54px] items-center justify-center rounded-2xl border border-white/10 bg-[#0d0d11]/90 shadow-[0_0_25px_rgba(99,102,241,0.08)] backdrop-blur-xl transition-all duration-700 group-hover:scale-125 group-hover:border-indigo-400/40 group-hover:bg-indigo-500/8 group-hover:shadow-[0_0_35px_rgba(139,92,246,0.35)]">
+                      <div className="relative flex h-13.5 w-13.5 items-center justify-center rounded-2xl border border-white/10 bg-[#0d0d11]/90 shadow-[0_0_25px_rgba(99,102,241,0.08)] backdrop-blur-xl transition-all duration-700 group-hover:scale-125 group-hover:border-indigo-400/40 group-hover:bg-indigo-500/8 group-hover:shadow-[0_0_35px_rgba(139,92,246,0.35)]">
                         <img
                           src={tech.logo}
                           alt={tech.name}
@@ -283,21 +283,21 @@ const Hero = () => {
                   ===================================================== */}
 
               <div
-                className="absolute h-[390px] w-[390px] rounded-full border border-indigo-400/[0.07]"
+                className="absolute h-97.5 w-97.5 rounded-full border border-indigo-400/[0.07]"
                 style={{
                   animation: "orbitSpin 25s linear infinite",
                 }}
               />
 
               <div
-                className="absolute h-[330px] w-[330px] rounded-full border border-violet-400/6"
+                className="absolute h-82.5 w-82.5 rounded-full border border-violet-400/6"
                 style={{
                   animation: "orbitSpinReverse 20s linear infinite",
                 }}
               />
 
               <div
-                className="absolute h-[250px] w-[250px] rounded-full border border-indigo-300/5"
+                className="absolute h-62.5 w-62.5 rounded-full border border-indigo-300/5"
                 style={{
                   animation: "orbitPulse 5s ease-in-out infinite",
                 }}
@@ -307,10 +307,10 @@ const Hero = () => {
                   CENTRAL PORTAL
                   ===================================================== */}
 
-              <div className="relative flex h-[420px] w-[420px] items-center justify-center transition-transform duration-1200 ease-out group-hover:scale-[1.06]">
+              <div className="relative flex h-105 w-105 items-center justify-center transition-transform duration-1200 ease-out group-hover:scale-[1.06]">
                 {/* Atmospheric glow */}
                 <div
-                  className="absolute h-[330px] w-[330px] rounded-full bg-indigo-600/10 blur-[80px] transition-all duration-1000 group-hover:scale-125 group-hover:bg-violet-600/20 group-hover:blur-[100px]"
+                  className="absolute h-82.5 w-82.5 rounded-full bg-indigo-600/10 blur-[80px] transition-all duration-1000 group-hover:scale-125 group-hover:bg-violet-600/20 group-hover:blur-[100px]"
                   style={{
                     animation: "portalGlow 4s ease-in-out infinite",
                   }}
@@ -318,7 +318,7 @@ const Hero = () => {
 
                 {/* Outer ring */}
                 <div
-                  className="absolute h-[350px] w-[350px] rounded-full border border-indigo-400/10 transition-all duration-1000 group-hover:border-violet-400/30"
+                  className="absolute h-87.5 w-87.5 rounded-full border border-indigo-400/10 transition-all duration-1000 group-hover:border-violet-400/30"
                   style={{
                     animation: "slowSpin 18s linear infinite",
                   }}
@@ -329,7 +329,7 @@ const Hero = () => {
                     ================================================= */}
 
                 <div
-                  className="absolute h-[300px] w-[300px] rounded-full transition-all duration-1000 group-hover:scale-110"
+                  className="absolute h-75 w-75 rounded-full transition-all duration-1000 group-hover:scale-110"
                   style={{
                     animation: "energyRotate 12s linear infinite",
                   }}
@@ -339,28 +339,28 @@ const Hero = () => {
 
                   {/* Energy particles */}
                   <span
-                    className="absolute left-1/2 top-[-12px] h-3 w-3 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_25px_rgba(167,139,250,0.9)]"
+                    className="absolute left-1/2 -top-3 h-3 w-3 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_25px_rgba(167,139,250,0.9)]"
                     style={{
                       animation: "energyDot 2s ease-in-out infinite",
                     }}
                   />
 
                   <span
-                    className="absolute right-[-2px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-indigo-300 shadow-[0_0_22px_rgba(129,140,248,0.9)]"
+                    className="absolute -right-0.5 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-indigo-300 shadow-[0_0_22px_rgba(129,140,248,0.9)]"
                     style={{
                       animation: "energyDot 2.4s ease-in-out infinite",
                     }}
                   />
 
                   <span
-                    className="absolute bottom-[-4px] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-purple-300 shadow-[0_0_22px_rgba(192,132,252,0.9)]"
+                    className="absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-purple-300 shadow-[0_0_22px_rgba(192,132,252,0.9)]"
                     style={{
                       animation: "energyDot 1.8s ease-in-out infinite reverse",
                     }}
                   />
 
                   <span
-                    className="absolute left-[-3px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-indigo-200 shadow-[0_0_22px_rgba(165,180,252,0.9)]"
+                    className="absolute -left-0.75 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-indigo-200 shadow-[0_0_22px_rgba(165,180,252,0.9)]"
                     style={{
                       animation: "energyDot 2.2s ease-in-out infinite reverse",
                     }}
@@ -368,7 +368,7 @@ const Hero = () => {
 
                   {/* Inner ring */}
                   <div
-                    className="absolute inset-[30px] rounded-full border-2 border-indigo-400/20 shadow-[0_0_40px_rgba(99,102,241,0.2),inset_0_0_40px_rgba(139,92,246,0.15)] transition-all duration-1000 group-hover:border-violet-300/50 group-hover:shadow-[0_0_65px_rgba(139,92,246,0.45),inset_0_0_55px_rgba(99,102,241,0.25)]"
+                    className="absolute inset-7.5 rounded-full border-2 border-indigo-400/20 shadow-[0_0_40px_rgba(99,102,241,0.2),inset_0_0_40px_rgba(139,92,246,0.15)] transition-all duration-1000 group-hover:border-violet-300/50 group-hover:shadow-[0_0_65px_rgba(139,92,246,0.45),inset_0_0_55px_rgba(99,102,241,0.25)]"
                     style={{
                       animation: "innerPulse 3s ease-in-out infinite",
                     }}
@@ -376,7 +376,7 @@ const Hero = () => {
 
                   {/* Inner dotted orbit */}
                   <div
-                    className="absolute inset-[48px] rounded-full border border-dashed border-violet-300/10"
+                    className="absolute inset-12 rounded-full border border-dashed border-violet-300/10"
                     style={{
                       animation: "slowSpinReverse 10s linear infinite",
                     }}
@@ -387,17 +387,17 @@ const Hero = () => {
                     CENTRAL CODE CORE
                     ================================================= */}
 
-                <div className="relative flex h-[155px] w-[155px] items-center justify-center rounded-full bg-linear-to-br from-indigo-500/20 via-violet-500/10 to-transparent shadow-[0_0_80px_rgba(99,102,241,0.35)] transition-all duration-1000 group-hover:scale-110 group-hover:shadow-[0_0_130px_rgba(139,92,246,0.65)]">
+                <div className="relative flex h-38.75 w-38.75 items-center justify-center rounded-full bg-linear-to-br from-indigo-500/20 via-violet-500/10 to-transparent shadow-[0_0_80px_rgba(99,102,241,0.35)] transition-all duration-1000 group-hover:scale-110 group-hover:shadow-[0_0_130px_rgba(139,92,246,0.65)]">
                   {/* Core glow */}
                   <div
-                    className="absolute h-[110px] w-[110px] rounded-full bg-indigo-500/20 blur-2xl transition-all duration-1000 group-hover:scale-125 group-hover:bg-violet-400/30"
+                    className="absolute h-27.5 w-27.5 rounded-full bg-indigo-500/20 blur-2xl transition-all duration-1000 group-hover:scale-125 group-hover:bg-violet-400/30"
                     style={{
                       animation: "corePulse 3s ease-in-out infinite",
                     }}
                   />
 
                   {/* Code symbol */}
-                  <div className="relative flex h-[82px] w-[82px] items-center justify-center rounded-3xl border border-indigo-300/20 bg-[#0c0c10]/80 shadow-[0_0_45px_rgba(129,140,248,0.35)] backdrop-blur-xl transition-all duration-1000 group-hover:scale-110 group-hover:border-violet-300/50">
+                  <div className="relative flex h-20.5 w-20.5 items-center justify-center rounded-3xl border border-indigo-300/20 bg-[#0c0c10]/80 shadow-[0_0_45px_rgba(129,140,248,0.35)] backdrop-blur-xl transition-all duration-1000 group-hover:scale-110 group-hover:border-violet-300/50">
                     <div className="flex items-center gap-1 font-mono text-2xl font-bold">
                       <span className="text-indigo-300">&lt;</span>
                       <span className="text-violet-300">/</span>
@@ -414,14 +414,14 @@ const Hero = () => {
                     ================================================= */}
 
                 <div
-                  className="absolute h-[410px] w-[410px] rounded-full border-t border-indigo-300/20 transition-all duration-1000 group-hover:border-violet-300/50"
+                  className="absolute h-102.5 w-102.5 rounded-full border-t border-indigo-300/20 transition-all duration-1000 group-hover:border-violet-300/50"
                   style={{
                     animation: "slowSpinReverse 14s linear infinite",
                   }}
                 />
 
                 <div
-                  className="absolute h-[440px] w-[440px] rounded-full border-b border-violet-300/15 transition-all duration-1000 group-hover:border-indigo-300/40"
+                  className="absolute h-110 w-110 rounded-full border-b border-violet-300/15 transition-all duration-1000 group-hover:border-indigo-300/40"
                   style={{
                     animation: "slowSpin 20s linear infinite",
                   }}

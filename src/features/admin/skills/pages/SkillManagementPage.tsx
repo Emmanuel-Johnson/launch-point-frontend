@@ -496,7 +496,7 @@ const SkillManagementPage = () => {
                     <button
                       type="button"
                       onClick={() => setStatusSkill(skill)}
-                      className={`inline-flex h-9 w-[125px] shrink-0 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${skill.is_active ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10" : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"}`}
+                      className={`inline-flex h-9 w-31.25 shrink-0 cursor-pointer items-center justify-center rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02] ${skill.is_active ? "border border-red-400/20 bg-red-400/5 text-red-400 hover:bg-red-400/10" : "border border-[#34D399]/20 bg-[#34D399]/5 text-[#34D399] hover:bg-[#34D399]/10"}`}
                     >
                       {skill.is_active ? "Disable" : "Enable"}
                     </button>

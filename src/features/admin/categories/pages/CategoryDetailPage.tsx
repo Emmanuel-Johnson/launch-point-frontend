@@ -406,7 +406,7 @@ const CategoryDetailPage = () => {
                   <button
                     type="button"
                     onClick={handleEditCategory}
-                    className="group/edit relative inline-flex h-11 min-w-[128px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/10 bg-white/4 px-6 text-sm font-medium text-white/75 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/35 hover:bg-[#34D399]/6 hover:text-[#34D399] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.35)]"
+                    className="group/edit relative inline-flex h-11 min-w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/10 bg-white/4 px-6 text-sm font-medium text-white/75 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/35 hover:bg-[#34D399]/6 hover:text-[#34D399] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.35)]"
                   >
                     <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/12 to-transparent transition-transform duration-700 group-hover/edit:translate-x-full" />
 
@@ -423,7 +423,7 @@ const CategoryDetailPage = () => {
                   <button
                     type="button"
                     onClick={handleToggleStatus}
-                    className={`group/toggle relative inline-flex h-11 min-w-[168px] cursor-pointer w-50 items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                    className={`group/toggle relative inline-flex h-11 min-w-42 cursor-pointer w-50 items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
                       category.is_active
                         ? "border border-red-400/25 bg-red-400/6 text-red-400 hover:bg-red-400/12 hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
                         : "border border-[#34D399]/25 bg-[#34D399]/6 text-[#34D399] hover:bg-[#34D399]/12 hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"

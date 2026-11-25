@@ -298,7 +298,7 @@ const MyLearningPage = () => {
           onClick={() => navigate("/student/courses")}
           className="group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 self-start rounded-xl border border-violet-400/25 bg-linear-to-r from-violet-500/12 to-purple-500/8 px-5 py-3 text-sm font-semibold text-violet-200 shadow-sm shadow-violet-950/10 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-400/45 hover:bg-violet-500/16 sm:self-center"
         >
-          <Compass className="h-[17px] w-[17px] text-violet-300 transition-transform duration-300 group-hover:rotate-[-8deg]" />
+          <Compass className="h-4.25 w-4.25 text-violet-300 transition-transform duration-300 group-hover:rotate-[-8deg]" />
           Explore more
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
@@ -336,7 +336,7 @@ const MyLearningPage = () => {
           <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
           <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
 
-          <div className="grid min-h-[300px] items-center md:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid min-h-75 items-center md:grid-cols-[1.1fr_0.9fr]">
             {/* Left side - text + progress */}
             <div className="relative z-10 px-6 py-8 sm:px-9 lg:px-11 lg:py-11">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-300/20 bg-violet-500/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-violet-200 sm:text-xs">
@@ -402,7 +402,7 @@ const MyLearningPage = () => {
             </div>
 
             {/* Right side - photo */}
-            <div className="relative hidden h-full min-h-[300px] md:block">
+            <div className="relative hidden h-full min-h-75 md:block">
               <img
                 src={continueCourse.image}
                 alt={continueCourse.title}
@@ -543,11 +543,11 @@ const MyLearningPage = () => {
                       {course.level} level
                     </p>
 
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                    <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {course.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                    <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                       {course.description}
                     </p>
 
@@ -626,7 +626,7 @@ const MyLearningPage = () => {
             <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-violet-500/10 blur-[80px]" />
 
             <div className="relative mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-300/20 bg-linear-to-br from-violet-400/[0.14] to-purple-500/6 text-violet-200 shadow-inner shadow-violet-300/4">
-              <GraduationCap className="h-[22px] w-[22px]" strokeWidth={1.6} />
+              <GraduationCap className="h-5.5 w-5.5" strokeWidth={1.6} />
             </div>
 
             <h2 className="relative mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
@@ -647,7 +647,7 @@ const MyLearningPage = () => {
               onClick={() => navigate("/student/courses")}
               className="group relative mt-7 inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-violet-300/20 bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200/30 hover:shadow-xl hover:shadow-violet-900/30"
             >
-              <Compass className="h-[17px] w-[17px] transition-transform duration-300 group-hover:rotate-[-8deg]" />
+              <Compass className="h-4.25 w-4.25 transition-transform duration-300 group-hover:rotate-[-8deg]" />
               Explore courses
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>

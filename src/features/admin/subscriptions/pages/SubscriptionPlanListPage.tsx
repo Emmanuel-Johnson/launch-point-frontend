@@ -490,7 +490,7 @@ const SubscriptionPlanListPage = () => {
           <div className="relative flex self-start rounded-xl border border-white/8 bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:self-auto">
             <span
               aria-hidden="true"
-              className="absolute bottom-1 left-1 top-1 w-[92px] rounded-lg bg-linear-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-in-out"
+              className="absolute bottom-1 left-1 top-1 w-23 rounded-lg bg-linear-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-in-out"
               style={{
                 transform: `translateX(${activeFilterIndex * 100}%)`,
               }}
@@ -507,7 +507,7 @@ const SubscriptionPlanListPage = () => {
                     setStatusFilter(key);
                     setCurrentPage(1);
                   }}
-                  className={`relative z-10 w-[92px] cursor-pointer rounded-lg py-1.5 text-xs font-medium capitalize transition-colors duration-300 ${
+                  className={`relative z-10 w-23 cursor-pointer rounded-lg py-1.5 text-xs font-medium capitalize transition-colors duration-300 ${
                     isActive
                       ? "text-[#34D399]"
                       : "text-white/50 hover:text-white/85"
@@ -523,7 +523,7 @@ const SubscriptionPlanListPage = () => {
         {/* ================= Table ================= */}
         <div className="sp-item overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_60px_-44px_rgba(0,0,0,0.95)]">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1080px] table-fixed">
+            <table className="w-full min-w-270 table-fixed">
               <colgroup>
                 <col className="w-[25%]" />
                 <col className="w-[14%]" />
@@ -656,12 +656,12 @@ const SubscriptionPlanListPage = () => {
                               {editingPlanId === plan.id ? (
                                 <Loader2
                                   size={15}
-                                  className="h-[15px] w-[15px] shrink-0 animate-spin"
+                                  className="h-3.75 w-3.75 shrink-0 animate-spin"
                                 />
                               ) : (
                                 <Pencil
                                   size={15}
-                                  className="h-[15px] w-[15px] shrink-0"
+                                  className="h-3.75 w-3.75 shrink-0"
                                 />
                               )}
                             </button>

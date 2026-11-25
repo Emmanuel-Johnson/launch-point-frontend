@@ -507,7 +507,7 @@ const CourseListPage = () => {
           <div className="overflow-x-auto">
             {/* table-fixed + explicit column widths keep every column in the
             exact same position across pages, regardless of cell content. */}
-            <table className="w-full min-w-[960px] table-fixed">
+            <table className="w-full min-w-240 table-fixed">
               <thead className="cursor-default">
                 <tr className="border-b border-white/6 bg-white/1.5 text-left">
                   <th className="w-[24%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">

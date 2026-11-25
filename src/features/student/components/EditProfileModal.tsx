@@ -535,8 +535,8 @@ const EditProfileForm = ({
                   {/* Avatar */}
 
                   <div className="relative shrink-0">
-                    <div className="rounded-full bg-linear-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-[2px]">
-                      <div className="rounded-full bg-[#0A0A0A] p-[3px]">
+                    <div className="rounded-full bg-linear-to-br from-[#7C5CFF] via-[#8E72FF] to-[#E8C67A] p-0.5">
+                      <div className="rounded-full bg-[#0A0A0A] p-0.75">
                         <div className="relative h-20 w-20 overflow-hidden rounded-full">
                           <div
                             className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#7C5CFF] to-[#4D32C8] text-xl font-semibold text-white"

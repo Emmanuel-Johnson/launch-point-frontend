@@ -182,7 +182,7 @@ function FilterSelect<T extends string>({
           onClick={onToggle}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
-          className={`flex h-10 w-[56%] max-w-[205px] cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 text-xs font-medium text-white shadow-inner shadow-black/20 outline-none transition duration-200 ${
+          className={`flex h-10 w-[56%] max-w-51.25 cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 text-xs font-medium text-white shadow-inner shadow-black/20 outline-none transition duration-200 ${
             isOpen
               ? "border-violet-400/60 bg-[#13101A] ring-2 ring-violet-500/15"
               : "border-white/10 bg-[#0B0B0F] hover:border-violet-300/25 hover:bg-[#13101A]"
@@ -659,9 +659,9 @@ const CoursesPage = () => {
         <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
         <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid min-h-[320px] items-center md:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid min-h-80 items-center md:grid-cols-[0.9fr_1.1fr]">
           {/* Left side - Photo */}
-          <div className="relative hidden min-h-[320px] h-full md:block">
+          <div className="relative hidden min-h-80 h-full md:block">
             <img
               src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
               alt="Learners building new skills with digital learning tools"
@@ -1088,7 +1088,7 @@ const CoursesPage = () => {
                             setCurrentPage(1);
                             setOpenFilterKey(null);
                           }}
-                          className="cursor-pointer inline-flex min-w-[140px] items-center justify-center rounded-xl border border-violet-400/25 bg-violet-500/8 px-6 py-2.5 text-xs font-semibold text-violet-200 transition hover:border-violet-400/45 hover:bg-violet-500/[0.14] focus:outline-none focus:ring-2 focus:ring-violet-400/30"
+                          className="cursor-pointer inline-flex min-w-35 items-center justify-center rounded-xl border border-violet-400/25 bg-violet-500/8 px-6 py-2.5 text-xs font-semibold text-violet-200 transition hover:border-violet-400/45 hover:bg-violet-500/[0.14] focus:outline-none focus:ring-2 focus:ring-violet-400/30"
                         >
                           Reset
                         </button>
@@ -1258,7 +1258,7 @@ const CoursesPage = () => {
                       }`}
                     >
                       <Bookmark
-                        className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                        className={`h-4.25 w-4.25 transition-transform duration-300 ${
                           isSaved ? "scale-110" : "group-hover:scale-110"
                         }`}
                         fill={isSaved ? "#A78BFA" : "none"}
@@ -1291,11 +1291,11 @@ const CoursesPage = () => {
                     <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
                       {course.level} level
                     </p>
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                    <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {course.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                    <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                       {course.description}
                     </p>
 
