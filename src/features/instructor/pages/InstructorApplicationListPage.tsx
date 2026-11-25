@@ -49,9 +49,9 @@ const getStatusConfig = (status: ApplicationStatus) => {
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[iaSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[iaSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -67,9 +67,9 @@ const ApplicationsSkeleton = () => (
     {Array.from({ length: 3 }).map((_, i) => (
       <article
         key={i}
-        className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent"
+        className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-blue-500/[0.07] via-white/2 to-transparent"
       >
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-white/10" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-0.75 bg-white/10" />
 
         <div className="relative p-5 sm:p-6">
           {/* Top row */}
@@ -93,10 +93,10 @@ const ApplicationsSkeleton = () => (
           </div>
 
           {/* Categories footer */}
-          <div className="mt-5 border-t border-white/[0.06] pt-4">
+          <div className="mt-5 border-t border-white/6 pt-4">
             <div className="flex items-center gap-2">
               <Shimmer className="h-3 w-44" />
-              <span className="h-px flex-1 bg-gradient-to-r from-blue-400/20 to-transparent" />
+              <span className="h-px flex-1 bg-linear-to-r from-blue-400/20 to-transparent" />
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ const InstructorApplicationListPage = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#070A12] text-zinc-100">
       {/* Ambient blue backdrop (sits below the shared header) */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
       <div className="pointer-events-none absolute -left-40 top-40 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
       <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px]" />
 
@@ -148,7 +148,7 @@ const InstructorApplicationListPage = () => {
           <div className="mb-8">
             <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               <span className="text-white">My </span>
-              <span className="bg-gradient-to-r from-[#DBEAFE] via-[#60A5FA] to-[#3B82F6] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#DBEAFE] via-[#60A5FA] to-[#3B82F6] bg-clip-text text-transparent">
                 Applications
               </span>
             </h1>
@@ -164,7 +164,7 @@ const InstructorApplicationListPage = () => {
             <ApplicationsSkeleton />
           ) : error ? (
             /* Error State */
-            <div className="relative overflow-hidden rounded-2xl border border-red-400/15 bg-gradient-to-b from-red-500/[0.06] to-transparent px-6 py-16 text-center">
+            <div className="relative overflow-hidden rounded-2xl border border-red-400/15 bg-linear-to-b from-red-500/6 to-transparent px-6 py-16 text-center">
               <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl" />
 
               <div className="relative">
@@ -183,7 +183,7 @@ const InstructorApplicationListPage = () => {
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50"
+                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50"
                 >
                   Try Again
                 </button>
@@ -203,11 +203,11 @@ const InstructorApplicationListPage = () => {
                 return (
                   <article
                     key={application.id}
-                    className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)]"
+                    className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-blue-500/[0.07] via-white/2 to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)]"
                   >
                     {/* Status accent bar */}
                     <div
-                      className={`pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b ${status.accent}`}
+                      className={`pointer-events-none absolute inset-y-0 left-0 w-0.75 bg-linear-to-b ${status.accent}`}
                     />
 
                     {/* Ambient hover glow */}
@@ -219,7 +219,7 @@ const InstructorApplicationListPage = () => {
                         {/* Left Content */}
                         <div className="flex min-w-0 items-start gap-4">
                           {/* Number tile */}
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-blue-400/20 bg-gradient-to-br from-blue-500/20 to-blue-600/5 text-base font-semibold text-blue-200 shadow-[0_0_20px_-8px_rgba(59,130,246,0.7)] transition-all duration-300 group-hover:border-blue-400/40 group-hover:text-blue-100">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-blue-400/20 bg-linear-to-br from-blue-500/20 to-blue-600/5 text-base font-semibold text-blue-200 shadow-[0_0_20px_-8px_rgba(59,130,246,0.7)] transition-all duration-300 group-hover:border-blue-400/40 group-hover:text-blue-100">
                             {numberLabel}
                           </div>
 
@@ -275,7 +275,7 @@ const InstructorApplicationListPage = () => {
                                 `/instructor/landing/applications/${application.id}`,
                               )
                             }
-                            className="flex h-9 cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.8)] active:scale-[0.98]"
+                            className="flex h-9 cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-linear-to-b from-blue-500/90 to-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.8)] active:scale-[0.98]"
                           >
                             View Details
                           </button>
@@ -283,19 +283,19 @@ const InstructorApplicationListPage = () => {
                       </div>
 
                       {/* Categories — labeled footer strip */}
-                      <div className="mt-5 border-t border-white/[0.06] pt-4">
+                      <div className="mt-5 border-t border-white/6 pt-4">
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200/70">
                             Areas applied to teach
                           </span>
-                          <span className="h-px flex-1 bg-gradient-to-r from-blue-400/20 to-transparent" />
+                          <span className="h-px flex-1 bg-linear-to-r from-blue-400/20 to-transparent" />
                         </div>
 
                         <div className="mt-3 flex flex-wrap gap-2">
                           {application.categories.map((category) => (
                             <span
                               key={category}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-400/15 bg-blue-500/[0.08] px-2.5 py-1.5 text-xs font-medium text-blue-100/90 transition-colors duration-200 group-hover:border-blue-400/30 hover:bg-blue-500/15"
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-400/15 bg-blue-500/8 px-2.5 py-1.5 text-xs font-medium text-blue-100/90 transition-colors duration-200 group-hover:border-blue-400/30 hover:bg-blue-500/15"
                             >
                               <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_6px_1px_rgba(59,130,246,0.7)]" />
                               {category}
@@ -310,11 +310,11 @@ const InstructorApplicationListPage = () => {
             </div>
           ) : (
             /* Empty State */
-            <div className="relative overflow-hidden rounded-2xl border border-blue-400/15 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-6 py-16 text-center">
+            <div className="relative overflow-hidden rounded-2xl border border-blue-400/15 bg-linear-to-b from-blue-500/6 to-transparent px-6 py-16 text-center">
               <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-blue-500/15 blur-3xl" />
 
               <div className="relative">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
                   <FileText className="h-7 w-7" />
                 </div>
 
@@ -331,7 +331,7 @@ const InstructorApplicationListPage = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/instructor/landing")}
-                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50"
+                  className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50"
                 >
                   Become an Instructor
                   <ArrowRight className="h-4 w-4" />

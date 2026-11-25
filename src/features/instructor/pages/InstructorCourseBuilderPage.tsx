@@ -35,13 +35,13 @@ import {
    ────────────────────────────────────────────────────────────────── */
 
 const CARD_BASE =
-  "relative overflow-hidden border border-blue-400/15 bg-gradient-to-b from-[#0D1117] to-[#080C10]";
+  "relative overflow-hidden border border-blue-400/15 bg-linear-to-b from-[#0D1117] to-[#080C10]";
 
 const PILL =
-  "border border-white/[0.08] bg-[#0A0D12] text-white/65 transition-colors duration-300 hover:border-blue-400/35 hover:bg-blue-500/[0.07] hover:text-blue-100";
+  "border border-white/8 bg-[#0A0D12] text-white/65 transition-colors duration-300 hover:border-blue-400/35 hover:bg-blue-500/[0.07] hover:text-blue-100";
 
 const CardSheen = () => (
-  <span className="lp-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+  <span className="lp-sheen pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-linear-to-r from-transparent via-white/5 to-transparent" />
 );
 
 /* ──────────────────────────────────────────────────────────────────
@@ -172,7 +172,7 @@ function LessonRow({ lesson }: { lesson: Lesson }) {
         className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
           isPublished
             ? "border border-emerald-400/20 bg-emerald-500/10 text-emerald-300"
-            : "border border-white/[0.07] bg-white/[0.03] text-white/35"
+            : "border border-white/[0.07] bg-white/3 text-white/35"
         }`}
       >
         {isPublished ? "Published" : "Draft"}
@@ -189,7 +189,7 @@ function LessonRow({ lesson }: { lesson: Lesson }) {
         <button
           type="button"
           aria-label="Delete lesson"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl border border-white/[0.08] bg-[#0A0D12] text-white/40 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl border border-white/8 bg-[#0A0D12] text-white/40 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -217,7 +217,7 @@ function SectionCard({
   return (
     <div className={`${CARD_BASE} rounded-3xl transition-all duration-300 hover:border-blue-400/20`}>
       <CardSheen />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-blue-400/30 to-transparent" />
 
       <button
         type="button"
@@ -241,7 +241,7 @@ function SectionCard({
           <button type="button" aria-label="Edit section" className={`${PILL} hidden cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:flex`}>
             <PencilLine className="h-3 w-3" />Edit
           </button>
-          <button type="button" aria-label="Delete section" className="hidden cursor-pointer items-center gap-1.5 rounded-xl border border-white/[0.08] bg-[#0A0D12] px-3 py-1.5 text-xs text-white/40 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300 sm:flex">
+          <button type="button" aria-label="Delete section" className="hidden cursor-pointer items-center gap-1.5 rounded-xl border border-white/8 bg-[#0A0D12] px-3 py-1.5 text-xs text-white/40 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300 sm:flex">
             <Trash2 className="h-3 w-3" />Delete
           </button>
         </div>
@@ -249,11 +249,11 @@ function SectionCard({
       </button>
 
       {expanded && (
-        <div className="space-y-2.5 border-t border-white/[0.05] px-6 pb-5 pt-4">
+        <div className="space-y-2.5 border-t border-white/5 px-6 pb-5 pt-4">
           {section.lessons.length > 0 ? (
             section.lessons.map((lesson) => <LessonRow key={lesson.id} lesson={lesson} />)
           ) : (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-white/[0.08] py-10 text-center">
+            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-white/8 py-10 text-center">
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-500/10 text-blue-300">
                 <FilePlus2 className="h-6 w-6" />
               </span>
@@ -263,7 +263,7 @@ function SectionCard({
               </div>
             </div>
           )}
-          <button type="button" className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-blue-400/20 py-3 text-sm font-medium text-blue-300/60 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.04] hover:text-blue-200">
+          <button type="button" className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-blue-400/20 py-3 text-sm font-medium text-blue-300/60 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/4 hover:text-blue-200">
             <Plus className="h-4 w-4" />Add Lesson
           </button>
         </div>
@@ -303,13 +303,13 @@ function ListEditor({
             value={item}
             onChange={(e) => onUpdate(index, e.target.value)}
             placeholder={placeholder}
-            className="min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-[#0B0E14] px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors hover:border-white/15 focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10"
+            className="min-w-0 flex-1 rounded-xl border border-white/8 bg-[#0B0E14] px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors hover:border-white/15 focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10"
           />
           <button
             type="button"
             aria-label="Remove item"
             onClick={() => onRemove(index)}
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/[0.06] bg-[#0A0D12] text-white/30 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/6 bg-[#0A0D12] text-white/30 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:border-rose-400/30 hover:bg-rose-500/[0.07] hover:text-rose-300"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -319,7 +319,7 @@ function ListEditor({
       <button
         type="button"
         onClick={onAdd}
-        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-blue-400/20 py-2.5 text-sm font-medium text-blue-300/60 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.04] hover:text-blue-200"
+        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-blue-400/20 py-2.5 text-sm font-medium text-blue-300/60 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/4 hover:text-blue-200"
       >
         <Plus className="h-4 w-4" />
         {addLabel}
@@ -349,7 +349,7 @@ function InfoCard({
   return (
     <div className={`${CARD_BASE} rounded-3xl transition-all duration-300 hover:border-blue-400/20`}>
       <CardSheen />
-      <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent ${accentClass} to-transparent`} />
+      <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent ${accentClass} to-transparent`} />
 
       {/* Header */}
       <button
@@ -367,7 +367,7 @@ function InfoCard({
 
       {/* Body */}
       {open && (
-        <div className="border-t border-white/[0.05] px-6 pb-6 pt-5">
+        <div className="border-t border-white/5 px-6 pb-6 pt-5">
           {children}
         </div>
       )}
@@ -452,7 +452,7 @@ export default function InstructorCourseBuilderPage() {
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
-          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/[0.12] hover:text-white"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/12 hover:text-white"
         >
           <span
             aria-hidden="true"
@@ -469,7 +469,7 @@ export default function InstructorCourseBuilderPage() {
             My Courses
           </span>
           <ChevronRight className="hidden h-3.5 w-3.5 shrink-0 text-blue-300/50 sm:block" />
-          <span className="min-w-0 truncate bg-gradient-to-r from-blue-100 via-sky-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+          <span className="min-w-0 truncate bg-linear-to-r from-blue-100 via-sky-200 to-indigo-200 bg-clip-text font-bold tracking-tight text-transparent">
             {mockCourse.title}
           </span>
           <ChevronRight className="hidden h-3.5 w-3.5 shrink-0 text-blue-300/50 sm:block" />
@@ -488,7 +488,7 @@ export default function InstructorCourseBuilderPage() {
           </button>
           <button
             type="button"
-            className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/50 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-400/60"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-[#3B82F6] to-[#2563EB] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/50 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-400/60"
           >
             <Save className="h-4 w-4" />
             Save
@@ -502,7 +502,7 @@ export default function InstructorCourseBuilderPage() {
         {/* ── Course thumbnail + title header ── */}
         <section className={`${CARD_BASE} group overflow-hidden rounded-[28px] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)]`}>
           <CardSheen />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-blue-400/40 to-transparent" />
 
           <div className="relative aspect-video w-full overflow-hidden bg-[#080C10]">
             <img
@@ -511,11 +511,11 @@ export default function InstructorCourseBuilderPage() {
               loading="eager"
               className="absolute inset-0 h-full w-full object-cover opacity-50"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-[#0D1117]/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#0D1117] via-[#0D1117]/40 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
               <button
                 type="button"
-                className="group/thumb flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-6 py-4 backdrop-blur-sm transition-all duration-300 hover:border-blue-400/35 hover:bg-blue-500/[0.12]"
+                className="group/thumb flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-6 py-4 backdrop-blur-sm transition-all duration-300 hover:border-blue-400/35 hover:bg-blue-500/12"
               >
                 <ImagePlus className="h-7 w-7 text-white/60 transition-colors group-hover/thumb:text-blue-200" />
                 <span className="text-xs font-medium text-white/60 transition-colors group-hover/thumb:text-blue-200">
@@ -523,14 +523,14 @@ export default function InstructorCourseBuilderPage() {
                 </span>
               </button>
             </div>
-            <span className="absolute left-4 top-4 rounded-full border border-white/[0.1] bg-black/50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/70 backdrop-blur-sm">
+            <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/70 backdrop-blur-sm">
               {mockCourse.status}
             </span>
           </div>
 
           <div className="p-6">
-            <h1 className="text-[22px] font-semibold leading-snug tracking-[-0.025em] sm:text-[26px]">
-              <span className="bg-gradient-to-r from-white via-[#E0EEFF] to-[#93C5FD] bg-clip-text text-transparent">
+            <h1 className="text-[22px] font-semibold leading-snug tracking-tight sm:text-[26px]">
+              <span className="bg-linear-to-r from-white via-[#E0EEFF] to-[#93C5FD] bg-clip-text text-transparent">
                 {mockCourse.title}
               </span>
             </h1>
@@ -581,7 +581,7 @@ export default function InstructorCourseBuilderPage() {
             onChange={(e) => setAbout(e.target.value)}
             rows={5}
             placeholder="Describe what this course is about, what students will achieve, and why they should take it…"
-            className="w-full resize-none rounded-2xl border border-white/[0.08] bg-[#0B0E14] px-4 py-3.5 text-sm leading-relaxed text-white outline-none placeholder:text-white/25 transition-colors hover:border-white/15 focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10"
+            className="w-full resize-none rounded-2xl border border-white/8 bg-[#0B0E14] px-4 py-3.5 text-sm leading-relaxed text-white outline-none placeholder:text-white/25 transition-colors hover:border-white/15 focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10"
           />
           <p className="mt-2 text-right text-[11px] text-white/30">
             {about.length} / 2000 characters
@@ -657,7 +657,7 @@ export default function InstructorCourseBuilderPage() {
               onClick={() => setActiveTab(tab)}
               className={`flex-1 cursor-pointer rounded-xl px-4 py-2.5 text-sm font-semibold capitalize transition-all duration-200 ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white shadow-lg shadow-blue-950/40"
+                  ? "bg-linear-to-r from-[#3B82F6] to-[#2563EB] text-white shadow-lg shadow-blue-950/40"
                   : "text-white/50 hover:text-white/80"
               }`}
             >
@@ -692,7 +692,7 @@ export default function InstructorCourseBuilderPage() {
 
             <button
               type="button"
-              className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-3xl border border-dashed border-blue-400/20 py-5 text-sm font-medium text-blue-300/60 transition-all duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.03] hover:text-blue-200"
+              className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-3xl border border-dashed border-blue-400/20 py-5 text-sm font-medium text-blue-300/60 transition-all duration-200 hover:border-blue-400/40 hover:bg-blue-500/3 hover:text-blue-200"
             >
               <PlusCircle className="h-5 w-5" />
               Add New Section
@@ -730,7 +730,7 @@ export default function InstructorCourseBuilderPage() {
                     <button
                       type="button"
                       aria-label="Delete resource"
-                      className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-white/35 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/[0.08] hover:text-rose-300"
+                      className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/3 text-white/35 transition-colors duration-300 hover:border-rose-400/30 hover:bg-rose-500/8 hover:text-rose-300"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -741,7 +741,7 @@ export default function InstructorCourseBuilderPage() {
 
             <button
               type="button"
-              className="flex w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-blue-400/20 py-10 text-center transition-all duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.03]"
+              className="flex w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-blue-400/20 py-10 text-center transition-all duration-200 hover:border-blue-400/40 hover:bg-blue-500/3"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-500/10 text-blue-300">
                 <Upload className="h-6 w-6" />

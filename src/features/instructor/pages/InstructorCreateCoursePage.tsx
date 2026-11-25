@@ -83,7 +83,7 @@ const courseSchema = z.object({
 type CourseFormValues = z.infer<typeof courseSchema>;
 
 const inputClassName =
-  "mt-2 w-full rounded-xl border border-white/[0.12] bg-white/[0.045] px-4 py-3 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] outline-none transition-all duration-200 placeholder:text-white/30 hover:border-white/20 hover:bg-white/[0.06] focus:border-[#3B82F6]/70 focus:bg-[#3B82F6]/[0.05] focus:ring-4 focus:ring-[#3B82F6]/10 disabled:opacity-50";
+  "mt-2 w-full rounded-xl border border-white/12 bg-white/4.5 px-4 py-3 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] outline-none transition-all duration-200 placeholder:text-white/30 hover:border-white/20 hover:bg-white/6 focus:border-[#3B82F6]/70 focus:bg-[#3B82F6]/5 focus:ring-4 focus:ring-[#3B82F6]/10 disabled:opacity-50";
 const labelClassName = "block text-sm font-medium text-white/75";
 
 const fieldClassName = () => inputClassName;
@@ -117,14 +117,14 @@ function FormCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.015] p-5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] sm:p-7">
+    <section className="relative rounded-2xl border border-white/8 bg-linear-to-b from-white/4 to-white/1.5 p-5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] sm:p-7">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/40 to-transparent"
+        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-[#3B82F6]/40 to-transparent"
       />
       <div className="flex items-start gap-3.5">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#60A5FA] ring-1 ring-inset ring-[#3B82F6]/25">
-          <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+          <Icon className="h-4.5 w-4.5" aria-hidden="true" />
         </div>
         <div className="min-w-0">
           <h2 className="text-base font-semibold tracking-[-0.01em] text-white">
@@ -194,8 +194,8 @@ function FormSelect({
         aria-invalid={hasError}
         className={`flex h-12 w-full cursor-pointer items-center gap-3 rounded-xl border px-4 text-left text-sm transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3B82F6]/10 ${
           open
-            ? "border-[#3B82F6]/70 bg-[#3B82F6]/[0.05] ring-4 ring-[#3B82F6]/10"
-            : "border-white/[0.12] bg-white/[0.045] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] hover:border-white/20 hover:bg-white/[0.06]"
+            ? "border-[#3B82F6]/70 bg-[#3B82F6]/5 ring-4 ring-[#3B82F6]/10"
+            : "border-white/12 bg-white/4.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)] hover:border-white/20 hover:bg-white/6"
         }`}
       >
         <Icon
@@ -219,7 +219,7 @@ function FormSelect({
         <div
           role="listbox"
           aria-label={placeholder}
-          className="absolute left-0 top-[calc(100%+8px)] z-50 max-h-64 w-full overflow-y-auto rounded-xl border border-white/[0.09] bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/60"
+          className="absolute left-0 top-[calc(100%+8px)] z-50 max-h-64 w-full overflow-y-auto rounded-xl border border-white/9 bg-[#0D0D0D] p-1.5 shadow-2xl shadow-black/60"
         >
           <button
             type="button"
@@ -231,13 +231,13 @@ function FormSelect({
             }}
             className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-xs transition-colors ${
               !value
-                ? "bg-white/[0.05] font-medium text-white/60"
-                : "text-white/35 hover:bg-white/[0.05] hover:text-white/70"
+                ? "bg-white/5 font-medium text-white/60"
+                : "text-white/35 hover:bg-white/5 hover:text-white/70"
             }`}
           >
             {placeholder}
           </button>
-          <div aria-hidden="true" className="mx-2 my-1 h-px bg-white/[0.06]" />
+          <div aria-hidden="true" className="mx-2 my-1 h-px bg-white/6" />
           {options.map((option) => {
             const isActive = option === value;
             return (
@@ -252,8 +252,8 @@ function FormSelect({
                 }}
                 className={`flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-xs transition-colors ${
                   isActive
-                    ? "bg-[#3B82F6]/[0.12] font-medium text-[#8FBAFF]"
-                    : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                    ? "bg-[#3B82F6]/12 font-medium text-[#8FBAFF]"
+                    : "text-white/60 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 {option}
@@ -398,7 +398,7 @@ export default function InstructorCreateCoursePage() {
     <section className="relative w-full text-white">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-[#3B82F6]/10 blur-3xl"
+        className="pointer-events-none absolute -top-24 left-1/2 h-72 w-xl -translate-x-1/2 rounded-full bg-[#3B82F6]/10 blur-3xl"
       />
 
       <motion.div
@@ -412,7 +412,7 @@ export default function InstructorCreateCoursePage() {
           <Link
             to="/instructor/courses"
             aria-label="Back to My Courses"
-            className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/[0.12] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50"
+            className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/12 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50"
           >
             <span
               aria-hidden="true"
@@ -440,7 +440,7 @@ export default function InstructorCreateCoursePage() {
             />
             <span
               aria-current="page"
-              className="min-w-0 truncate bg-gradient-to-r from-blue-100 via-sky-200 to-blue-300 bg-clip-text font-bold text-transparent"
+              className="min-w-0 truncate bg-linear-to-r from-blue-100 via-sky-200 to-blue-300 bg-clip-text font-bold text-transparent"
             >
               Create New Course
             </span>
@@ -452,7 +452,7 @@ export default function InstructorCreateCoursePage() {
             className="text-3xl font-semibold leading-[1.08] tracking-[-0.035em] sm:text-4xl"
             style={{ fontFamily: DISPLAY_FONT }}
           >
-            <span className="bg-gradient-to-r from-white via-[#DBEAFE] to-[#60A5FA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-white via-[#DBEAFE] to-[#60A5FA] bg-clip-text text-transparent">
               Create New Course
             </span>
           </h1>
@@ -599,14 +599,14 @@ export default function InstructorCreateCoursePage() {
                           className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/40 ${
                             selected
                               ? "border-[#3B82F6]/60 bg-[#3B82F6]/20 text-blue-100 shadow-[0_0_14px_-4px_rgba(59,130,246,0.7)]"
-                              : "border-white/[0.12] bg-white/[0.045] text-white/60 hover:border-[#3B82F6]/40 hover:bg-[#3B82F6]/[0.06] hover:text-white"
+                              : "border-white/12 bg-white/4.5 text-white/60 hover:border-[#3B82F6]/40 hover:bg-[#3B82F6]/6 hover:text-white"
                           }`}
                         >
                           <span
                             className={`flex h-4 w-4 items-center justify-center rounded-full border ${
                               selected
                                 ? "border-blue-300/60 bg-[#3B82F6]/20"
-                                : "border-white/25 bg-white/[0.03]"
+                                : "border-white/25 bg-white/3"
                             }`}
                           >
                             {selected ? (
@@ -646,7 +646,7 @@ export default function InstructorCreateCoursePage() {
                     className="aspect-video w-full rounded-2xl border border-blue-400/20 object-cover shadow-lg shadow-blue-950/40 ring-2 ring-blue-500/10"
                   />
                 ) : (
-                  <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-2xl border border-blue-400/20 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-200 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+                  <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-2xl border border-blue-400/20 bg-linear-to-br from-blue-500/25 to-blue-600/5 text-blue-200 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
                     <ImagePlus className="h-8 w-8" aria-hidden="true" />
                     <span className="text-xs text-blue-200/70">
                       No thumbnail selected
@@ -659,7 +659,7 @@ export default function InstructorCreateCoursePage() {
                 >
                   <label
                     htmlFor="thumbnail"
-                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#3B82F6]/30 bg-[#3B82F6]/10 px-4 text-xs font-semibold text-[#93C5FD] transition-all hover:border-[#3B82F6]/55 hover:bg-[#3B82F6]/20 hover:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#3B82F6]/40"
+                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#3B82F6]/30 bg-[#3B82F6]/10 px-4 text-xs font-semibold text-[#93C5FD] transition-all hover:border-[#3B82F6]/55 hover:bg-[#3B82F6]/20 hover:text-white has-focus-visible:ring-2 has-focus-visible:ring-[#3B82F6]/40"
                   >
                     {thumbnailPreview ? (
                       <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
@@ -672,7 +672,7 @@ export default function InstructorCreateCoursePage() {
                     <button
                       type="button"
                       onClick={removeThumbnail}
-                      className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/25 bg-red-500/[0.06] px-4 text-xs font-semibold text-red-300/90 transition-all hover:border-red-400/45 hover:bg-red-500/[0.12] hover:text-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40"
+                      className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-400/25 bg-red-500/6 px-4 text-xs font-semibold text-red-300/90 transition-all hover:border-red-400/45 hover:bg-red-500/12 hover:text-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40"
                     >
                       <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                       Remove
@@ -703,12 +703,12 @@ export default function InstructorCreateCoursePage() {
                     return (
                       <label
                         key={option}
-                        className={`relative flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-3 h-12 text-[13px] font-semibold transition-all duration-200 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#3B82F6]/40 ${
+                        className={`relative flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-3 h-12 text-[13px] font-semibold transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-[#3B82F6]/40 ${
                           selected
                             ? isPremium
-                              ? "border-amber-300/40 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)]"
+                              ? "border-amber-300/40 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)]"
                               : "border-emerald-400/35 bg-[#06251D]/90 text-emerald-300 shadow-lg"
-                            : "border-white/[0.12] bg-white/[0.045] text-white/50 hover:border-white/20 hover:text-white/80"
+                            : "border-white/12 bg-white/4.5 text-white/50 hover:border-white/20 hover:text-white/80"
                         }`}
                       >
                         <input
@@ -738,8 +738,8 @@ export default function InstructorCreateCoursePage() {
               <div
                 className={`flex items-start gap-3 rounded-xl border p-3.5 ${
                   plan === "premium"
-                    ? "border-amber-300/20 bg-amber-400/[0.05]"
-                    : "border-emerald-400/20 bg-emerald-400/[0.05]"
+                    ? "border-amber-300/20 bg-amber-400/5"
+                    : "border-emerald-400/20 bg-emerald-400/5"
                 }`}
               >
                 <span
@@ -771,7 +771,7 @@ export default function InstructorCreateCoursePage() {
                 type="button"
                 onClick={onContinue}
                 disabled={isSubmitting}
-                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 h-12 rounded-xl bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#0EA5E9] bg-[length:200%_100%] bg-left px-5 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_rgba(37,99,235,0.8)] transition-all duration-300 hover:bg-right hover:shadow-[0_10px_30px_-8px_rgba(14,165,233,0.7)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/40 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 h-12 rounded-xl bg-linear-to-r from-[#1D4ED8] via-[#2563EB] to-[#0EA5E9] bg-size-[200%_100%] bg-left px-5 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_rgba(37,99,235,0.8)] transition-all duration-300 hover:bg-right hover:shadow-[0_10px_30px_-8px_rgba(14,165,233,0.7)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/40 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting && submitAction === "builder" ? (
                   <LoaderCircle
@@ -792,7 +792,7 @@ export default function InstructorCreateCoursePage() {
                   type="button"
                   onClick={handleCancel}
                   disabled={isSubmitting}
-                  className="cursor-pointer h-12 rounded-xl border border-red-400/25 bg-red-500/[0.06] px-5 text-sm font-semibold text-red-300/90 transition hover:border-red-400/45 hover:bg-red-500/[0.12] hover:text-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="cursor-pointer h-12 rounded-xl border border-red-400/25 bg-red-500/6 px-5 text-sm font-semibold text-red-300/90 transition hover:border-red-400/45 hover:bg-red-500/12 hover:text-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/40 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Cancel
                 </button>

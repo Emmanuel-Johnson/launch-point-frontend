@@ -12,11 +12,11 @@ export default function ComingSoonPage({
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#08070D] px-6 py-20 text-white selection:bg-violet-500/30">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-[42%] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[150px]" />
+        <div className="absolute left-1/2 top-[42%] h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.07] blur-[150px]" />
 
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#08070D_78%)]" />
 
-        <div className="absolute inset-0 opacity-[0.025] [background-image:linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] [background-size:72px_72px]" />
+        <div className="absolute inset-0 opacity-[0.025] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-size-[72px_72px]" />
       </div>
 
       {/* Top label */}
@@ -40,20 +40,20 @@ export default function ComingSoonPage({
         {/* Orbital centerpiece */}
         <div className="relative mb-10 flex h-36 w-36 items-center justify-center sm:mb-12 sm:h-44 sm:w-44">
           {/* Outer orbit */}
-          <div className="absolute inset-0 rounded-full border border-white/[0.055]" />
+          <div className="absolute inset-0 rounded-full border border-white/5.5" />
 
           {/* Middle orbit */}
-          <div className="absolute inset-[15px] rounded-full border border-violet-300/[0.12]" />
+          <div className="absolute inset-3.75 rounded-full border border-violet-300/12" />
 
           {/* Inner orbit */}
-          <div className="absolute inset-[31px] rounded-full border border-white/[0.07]" />
+          <div className="absolute inset-7.75 rounded-full border border-white/[0.07]" />
 
           {/* Orbital path */}
-          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-violet-300/[0.16]" />
+          <div className="absolute inset-1.75 animate-[spin_18s_linear_infinite] rounded-full border border-dashed border-violet-300/16" />
 
           {/* Orbiting point */}
-          <div className="absolute inset-[7px] animate-[spin_18s_linear_infinite] rounded-full">
-            <span className="absolute left-1/2 top-[-3px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
+          <div className="absolute inset-1.75 animate-[spin_18s_linear_infinite] rounded-full">
+            <span className="absolute left-1/2 -top-0.75 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
           </div>
 
           {/* Core glow */}
@@ -61,7 +61,7 @@ export default function ComingSoonPage({
 
           {/* Centerpiece */}
           <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-violet-300/20 bg-[#100D19] shadow-[inset_0_0_25px_rgba(139,92,246,0.08),0_0_40px_rgba(139,92,246,0.08)] sm:h-16 sm:w-16">
-            <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-white via-violet-200 to-violet-500 shadow-[0_0_22px_rgba(167,139,250,0.7)]" />
+            <div className="h-2.5 w-2.5 rounded-full bg-linear-to-br from-white via-violet-200 to-violet-500 shadow-[0_0_22px_rgba(167,139,250,0.7)]" />
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export default function ComingSoonPage({
         {/* Headline */}
         <h1 className="max-w-3xl text-[42px] font-medium leading-[1.08] tracking-[-0.065em] text-white sm:text-6xl md:text-7xl lg:text-[84px]">
           The future looks
-          <span className="mt-1 block bg-gradient-to-r from-violet-200 via-purple-300 to-violet-400 bg-clip-text pb-2 text-transparent">
+          <span className="mt-1 block bg-linear-to-r from-violet-200 via-purple-300 to-violet-400 bg-clip-text pb-2 text-transparent">
             different here.
           </span>
         </h1>

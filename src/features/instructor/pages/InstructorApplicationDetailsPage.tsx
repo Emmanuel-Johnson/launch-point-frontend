@@ -114,7 +114,7 @@ const getStatusConfig = (status: ApplicationStatus) => {
         iconClass: "text-emerald-300",
 
         badgeClass:
-          "border-emerald-400/25 bg-emerald-500/[0.08] text-emerald-200",
+          "border-emerald-400/25 bg-emerald-500/8 text-emerald-200",
 
         dotClass: "bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.7)]",
 
@@ -134,7 +134,7 @@ const getStatusConfig = (status: ApplicationStatus) => {
 
         iconClass: "text-red-300",
 
-        badgeClass: "border-red-400/25 bg-red-500/[0.08] text-red-200",
+        badgeClass: "border-red-400/25 bg-red-500/8 text-red-200",
 
         dotClass: "bg-red-400 shadow-[0_0_10px_2px_rgba(248,113,113,0.7)]",
 
@@ -154,7 +154,7 @@ const getStatusConfig = (status: ApplicationStatus) => {
 
         iconClass: "text-amber-300",
 
-        badgeClass: "border-amber-400/25 bg-amber-500/[0.08] text-amber-200",
+        badgeClass: "border-amber-400/25 bg-amber-500/8 text-amber-200",
 
         dotClass: "bg-amber-400 shadow-[0_0_10px_2px_rgba(251,191,36,0.7)]",
 
@@ -341,14 +341,14 @@ const FileTypeIcon = ({
 
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[iadSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[iadSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
 const PanelSkeleton = ({ rows = 1 }: { rows?: number }) => (
-  <section className="min-w-0 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 sm:p-6">
+  <section className="min-w-0 rounded-2xl border border-white/8 bg-linear-to-br from-blue-500/[0.07] via-white/2 to-transparent p-5 sm:p-6">
     <div className="flex items-center gap-3">
       <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
       <div>
@@ -374,7 +374,7 @@ const ApplicationDetailsSkeleton = () => (
     `}</style>
 
     {/* Ambient blue backdrop */}
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
 
     <section className="relative z-10 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
       <div className="mx-auto max-w-6xl">
@@ -388,7 +388,7 @@ const ApplicationDetailsSkeleton = () => (
         </div>
 
         {/* Hero */}
-        <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.10] via-white/[0.02] to-transparent">
+        <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/8 bg-linear-to-br from-blue-500/10 via-white/2 to-transparent">
           <div className="relative flex flex-col gap-7 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
             {/* Identity */}
             <div className="flex min-w-0 items-center gap-5">
@@ -402,7 +402,7 @@ const ApplicationDetailsSkeleton = () => (
 
             {/* Status block */}
             <div className="w-full lg:max-w-md">
-              <div className="flex items-start gap-3 rounded-2xl border border-white/[0.08] p-4">
+              <div className="flex items-start gap-3 rounded-2xl border border-white/8 p-4">
                 <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <Shimmer className="h-4 w-28" />
@@ -609,7 +609,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
       ============================================================ */}
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-130 bg-[radial-gradient(120%_100%_at_50%_-20%,rgba(59,130,246,0.18),transparent_60%)]" />
 
       <div className="pointer-events-none absolute -left-40 top-60 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
 
@@ -642,7 +642,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
               <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-600" />
 
-              <div className="inline-flex items-center gap-2 rounded-lg border border-blue-400/10 bg-blue-400/[0.06] px-3 py-1.5">
+              <div className="inline-flex items-center gap-2 rounded-lg border border-blue-400/10 bg-blue-400/6 px-3 py-1.5">
                 <FileText className="h-3.5 w-3.5 text-blue-400" />
 
                 <span className="font-medium tracking-wide text-blue-100">
@@ -665,7 +665,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                   type="button"
                   onClick={handleOpenInstructorDashboard}
                   disabled={isOpeningDashboard}
-                  className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
+                  className="group inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-400/30 bg-linear-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_8px_30px_-10px_rgba(59,130,246,0.85)] active:scale-[0.98] sm:w-auto"
                 >
                   Open Instructor Dashboard
                 </button>
@@ -675,7 +675,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
               <button
                 type="button"
                 onClick={() => openApplication(application)}
-                className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-gradient-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
+                className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl border border-blue-400/30 bg-linear-to-b from-blue-500/90 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 ring-1 ring-inset ring-white/10 transition-all duration-200 hover:from-blue-400 hover:to-blue-500 active:scale-[0.98] sm:w-auto"
               >
                 Resubmit Application
               </button>
@@ -688,11 +688,11 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
 
           ======================================================== */}
 
-          <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.10] via-white/[0.02] to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_30px_80px_-40px_rgba(2,6,23,0.9)]">
+          <section className="relative mt-5 overflow-hidden rounded-[28px] border border-white/8 bg-linear-to-br from-blue-500/10 via-white/2 to-transparent shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_30px_80px_-40px_rgba(2,6,23,0.9)]">
             {/* Accent + glow */}
 
             <div
-              className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${status.accent}`}
+              className={`pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-linear-to-r ${status.accent}`}
             />
 
             <div
@@ -712,7 +712,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                     className="h-18 w-18 shrink-0 rounded-2xl border border-blue-400/25 object-cover shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]"
                   />
                 ) : (
-                  <div className="relative flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/30 to-blue-700/5 text-xl font-semibold text-blue-50 shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]">
+                  <div className="relative flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/30 to-blue-700/5 text-xl font-semibold text-blue-50 shadow-[0_0_40px_-12px_rgba(59,130,246,0.8)]">
                     <span className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(70%_70%_at_30%_20%,rgba(255,255,255,0.18),transparent)]" />
 
                     {initials}
@@ -773,7 +773,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                       <p className="text-sm font-semibold">{status.label}</p>
                     </div>
 
-                    <p className="mt-1.5 break-words text-xs leading-5 opacity-80">
+                    <p className="mt-1.5 wrap-break-word text-xs leading-5 opacity-80">
                       {application.admin_message ||
                         (application.status === "pending"
                           ? "Your application is currently under review by our team. We’ll notify you as soon as a decision has been made."
@@ -843,7 +843,7 @@ const ApplicationDetails = ({ applicationId }: ApplicationDetailsProps) => {
                   {application.categories_to_teach.map((category) => (
                     <span
                       key={category}
-                      className="inline-flex max-w-full items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/[0.08] px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
+                      className="inline-flex max-w-full items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-500/8 px-3.5 py-2 text-sm font-medium text-blue-100 transition-colors duration-200 hover:border-blue-400/40 hover:bg-blue-500/[0.14]"
                     >
                       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400 shadow-[0_0_7px_1px_rgba(59,130,246,0.7)]" />
 
@@ -1035,7 +1035,7 @@ type PanelProps = {
 };
 
 const Panel = ({ children }: PanelProps) => (
-  <section className="group min-w-0 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-blue-500/[0.07] via-white/[0.02] to-transparent p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)] sm:p-6">
+  <section className="group min-w-0 rounded-2xl border border-white/8 bg-linear-to-br from-blue-500/[0.07] via-white/2 to-transparent p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] transition-all duration-300 hover:border-blue-400/35 hover:shadow-[0_0_45px_-16px_rgba(59,130,246,0.7)] sm:p-6">
     {children}
   </section>
 );
@@ -1050,7 +1050,7 @@ type SectionHeaderProps = {
 
 const SectionHeader = ({ icon, title, description }: SectionHeaderProps) => (
   <div className="flex items-center gap-3">
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-linear-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]">
       {icon}
     </div>
 
@@ -1074,7 +1074,7 @@ type InfoRowProps = {
 
 const InfoRow = ({ icon, label, value }: InfoRowProps) => (
   <div className="flex min-w-0 items-start gap-3">
-    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] text-blue-300/70">
+    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/3 text-blue-300/70">
       {icon}
     </div>
 
@@ -1109,13 +1109,13 @@ const TextBlock = ({ label, value }: TextBlockProps) => {
   const isLong = value.length > TEXT_BLOCK_CLAMP_LENGTH;
 
   return (
-    <div className="min-w-0 rounded-xl border border-white/[0.06] bg-[#0B0D14]/70 p-5 transition-colors duration-200 hover:border-blue-400/15">
+    <div className="min-w-0 rounded-xl border border-white/6 bg-[#0B0D14]/70 p-5 transition-colors duration-200 hover:border-blue-400/15">
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-200/60">
         {label}
       </p>
 
       <p
-        className={`mt-3 whitespace-pre-line break-words text-sm leading-7 text-zinc-400 ${
+        className={`mt-3 whitespace-pre-line wrap-break-word text-sm leading-7 text-zinc-400 ${
           isLong && !expanded ? "line-clamp-6" : ""
         }`}
       >
@@ -1150,9 +1150,9 @@ const LinkCard = ({ icon, label, description, href }: LinkCardProps) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-blue-500/[0.06]"
+    className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-blue-500/6"
   >
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/[0.08] text-blue-300 transition-colors group-hover:border-blue-400/30">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-400/15 bg-blue-500/8 text-blue-300 transition-colors group-hover:border-blue-400/30">
       {icon}
     </div>
 
@@ -1200,7 +1200,7 @@ const DocumentCard = ({
   const previewable = isPreviewable(name);
 
   return (
-    <div className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/[0.04]">
+    <div className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-[#0B0D14]/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-blue-500/4">
       {/* File logo: clean thumbnail for images, white file-type icon otherwise */}
 
       {meta.image && thumbnailUrl ? (
@@ -1262,7 +1262,7 @@ const DocumentCard = ({
             type="button"
             onClick={onPreview}
             aria-label={`Preview ${name}`}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/8 text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
           >
             <Eye className="h-4 w-4" />
           </button>
@@ -1271,7 +1271,7 @@ const DocumentCard = ({
         <button
           type="button"
           onClick={() => downloadFile(name, href)}
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/8 text-zinc-500 transition-all hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
           aria-label={`Download ${name}`}
         >
           <Download className="h-4 w-4" />
@@ -1409,7 +1409,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-120 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
       role="presentation"
       onClick={onClose}
     >
@@ -1422,11 +1422,11 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
       >
         {/* Top gradient accent line */}
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-blue-400/70 to-transparent" />
 
         {/* Header */}
 
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-4">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-linear-to-b from-blue-500/6 to-transparent px-5 py-4">
           <div className="flex min-w-0 items-center gap-3">
             <FileTypeIcon
               meta={meta}

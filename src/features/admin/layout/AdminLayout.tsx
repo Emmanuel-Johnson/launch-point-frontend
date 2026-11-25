@@ -38,8 +38,8 @@ const AdminLayout = () => {
 
       {/* MAIN APPLICATION AREA */}
       <div
-        className={`relative h-screen transition-[margin-left] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isSidebarCollapsed ? "ml-20" : "ml-[280px]"
+        className={`relative h-screen transition-[margin-left] duration-500 ease-in-out ${
+          isSidebarCollapsed ? "ml-20" : "ml-70"
         }`}
       >
         {/* HEADER */}

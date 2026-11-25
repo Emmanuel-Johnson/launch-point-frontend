@@ -66,9 +66,9 @@ const LinkedinMark = () => (
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[sdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[sdSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -88,7 +88,7 @@ const StudentDetailSkeleton = () => {
 
         {/* Hero */}
         <section>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8">
+          <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-linear-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-start gap-5">
                 <Shimmer className="h-16 w-16 shrink-0 rounded-2xl" />
@@ -122,7 +122,7 @@ const StudentDetailSkeleton = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+          <div className="rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-6">
             <div className="flex items-start gap-4">
               <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1">
@@ -148,7 +148,7 @@ const StudentDetailSkeleton = () => {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+                className="rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5"
               >
                 <Shimmer className="h-10 w-10 rounded-xl" />
                 <Shimmer className="mt-4 h-3 w-20" />
@@ -172,7 +172,7 @@ const StudentDetailSkeleton = () => {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5"
+                className="flex items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5"
               >
                 <Shimmer className="h-11 w-11 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
@@ -194,12 +194,12 @@ const StudentDetailSkeleton = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808]">
+          <div className="overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808]">
             <div className="grid md:grid-cols-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="border-b border-white/[0.06] p-5 md:odd:border-r"
+                  className="border-b border-white/6 p-5 md:odd:border-r"
                 >
                   <div className="flex items-start gap-3">
                     <Shimmer className="h-9 w-9 shrink-0 rounded-lg" />
@@ -332,7 +332,7 @@ const StudentDetailPage = () => {
         <button
           type="button"
           onClick={() => navigate("/admin/students")}
-          className="mt-4 rounded-lg border border-white/[0.08] px-4 py-2 text-sm text-white/60 transition-colors hover:border-[#34D399]/30 hover:text-[#34D399]"
+          className="mt-4 rounded-lg border border-white/8 px-4 py-2 text-sm text-white/60 transition-colors hover:border-[#34D399]/30 hover:text-[#34D399]"
         >
           Back to Students
         </button>
@@ -371,22 +371,22 @@ const StudentDetailPage = () => {
             className="animate-page-item"
             style={{ animationDelay: "160ms" }}
           >
-            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/[0.18] bg-gradient-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)]">
+            <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/18 bg-linear-to-br from-[#0C0C0C] via-[#070707] to-[#040404] p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_24px_60px_-16px_rgba(0,0,0,0.85)]">
               {/* Glow */}
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/[0.18] blur-3xl"
+                className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/18 blur-3xl"
               />
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.05] blur-3xl"
+                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/5 blur-3xl"
               />
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent"
               />
 
               <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -396,7 +396,7 @@ const StudentDetailPage = () => {
                 <div className="flex min-w-0 items-start gap-5">
                   {/* Profile Image / Initials */}
 
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#34D399]/[0.22] via-[#34D399]/[0.08] to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-[#34D399]/22 via-[#34D399]/8 to-transparent text-lg font-semibold tracking-tight text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_24px_-8px_rgba(52,211,153,0.35)] ring-1 ring-inset ring-[#34D399]/30">
                     {student.profile_image &&
                     student.profile_image !==
                       "/media/profile_images/default_profile.png" ? (
@@ -416,7 +416,7 @@ const StudentDetailPage = () => {
                     {/* Name + Role + Status */}
 
                     <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-[26px] font-semibold leading-tight tracking-tight [overflow-wrap:anywhere]">
+                      <h1 className="text-[26px] font-semibold leading-tight tracking-tight wrap-anywhere">
                         {student.full_name}
                       </h1>
 
@@ -431,8 +431,8 @@ const StudentDetailPage = () => {
                       <span
                         className={`inline-flex h-7 items-center justify-center gap-1.5 rounded-full px-3 text-[11px] font-medium ring-1 ring-inset ${
                           isActive
-                            ? "bg-[#34D399]/[0.12] text-[#34D399] ring-[#34D399]/25"
-                            : "bg-red-400/[0.12] text-red-400 ring-red-400/25"
+                            ? "bg-[#34D399]/12 text-[#34D399] ring-[#34D399]/25"
+                            : "bg-red-400/12 text-red-400 ring-red-400/25"
                         }`}
                       >
                         <span
@@ -450,20 +450,20 @@ const StudentDetailPage = () => {
                     {/* Email */}
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/3 px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/5">
                         <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
 
-                        <span className="min-w-0 [overflow-wrap:anywhere]">
+                        <span className="min-w-0 wrap-anywhere">
                           {student.email}
                         </span>
                       </span>
 
                       {/* Location */}
 
-                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/[0.03] px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/[0.05]">
+                      <span className="inline-flex max-w-full items-start gap-2 rounded-lg bg-white/3 px-2.5 py-1 text-sm text-white/50 ring-1 ring-inset ring-white/5">
                         <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
 
-                        <span className="min-w-0 [overflow-wrap:anywhere]">
+                        <span className="min-w-0 wrap-anywhere">
                           {student.location || "Not added"}
                         </span>
                       </span>
@@ -478,14 +478,14 @@ const StudentDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsStatusModalOpen(true)}
-                    className={`group/toggle relative inline-flex h-11 min-w-[168px] w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
+                    className={`group/toggle relative inline-flex h-11 min-w-42 w-50 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:-translate-y-0.5 ${
                       isActive
-                        ? "border border-red-400/25 bg-red-400/[0.06] text-red-400 hover:bg-red-400/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
-                        : "border border-[#34D399]/25 bg-[#34D399]/[0.06] text-[#34D399] hover:bg-[#34D399]/[0.12] hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
+                        ? "border border-red-400/25 bg-red-400/6 text-red-400 hover:bg-red-400/12 hover:shadow-[0_10px_28px_-10px_rgba(248,113,113,0.4)]"
+                        : "border border-[#34D399]/25 bg-[#34D399]/6 text-[#34D399] hover:bg-[#34D399]/12 hover:shadow-[0_10px_28px_-10px_rgba(52,211,153,0.4)]"
                     }`}
                   >
                     <span
-                      className={`pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
+                      className={`pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent to-transparent transition-transform duration-700 group-hover/toggle:translate-x-full ${
                         isActive ? "via-red-400/12" : "via-[#34D399]/12"
                       }`}
                     />
@@ -527,7 +527,7 @@ const StudentDetailPage = () => {
             <div className="mb-4 flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+                className="h-5 w-1 rounded-full bg-linear-to-b from-[#34D399] to-[#34D399]/20"
               />
               <div>
                 <h2 className="text-lg font-semibold tracking-tight">About</h2>
@@ -537,10 +537,10 @@ const StudentDetailPage = () => {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-6">
+            <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-6">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"
               />
 
               <div className="flex items-start gap-4">
@@ -553,7 +553,7 @@ const StudentDetailPage = () => {
                     Bio
                   </p>
 
-                  <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70 [overflow-wrap:anywhere]">
+                  <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70 wrap-anywhere">
                     {student.bio || "Not added"}
                   </p>
                 </div>
@@ -571,7 +571,7 @@ const StudentDetailPage = () => {
             <div className="mb-4 flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+                className="h-5 w-1 rounded-full bg-linear-to-b from-[#34D399] to-[#34D399]/20"
               />
               <div>
                 <h2 className="text-lg font-semibold tracking-tight">
@@ -585,7 +585,7 @@ const StudentDetailPage = () => {
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {/* Email */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                   <Mail size={18} strokeWidth={1.8} />
                 </div>
@@ -594,13 +594,13 @@ const StudentDetailPage = () => {
                   Email
                 </p>
 
-                <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                <p className="mt-1 text-sm font-medium text-white wrap-anywhere">
                   {student.email}
                 </p>
               </div>
 
               {/* Location */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                   <MapPin size={18} strokeWidth={1.8} />
                 </div>
@@ -609,13 +609,13 @@ const StudentDetailPage = () => {
                   Location
                 </p>
 
-                <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                <p className="mt-1 text-sm font-medium text-white wrap-anywhere">
                   {student.location || "Not added"}
                 </p>
               </div>
 
               {/* Education */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                   <GraduationCap size={18} strokeWidth={1.8} />
                 </div>
@@ -624,13 +624,13 @@ const StudentDetailPage = () => {
                   Education
                 </p>
 
-                <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                <p className="mt-1 text-sm font-medium text-white wrap-anywhere">
                   {student.education || "Not added"}
                 </p>
               </div>
 
               {/* Occupation */}
-              <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
+              <div className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                   <BriefcaseBusiness size={18} strokeWidth={1.8} />
                 </div>
@@ -639,7 +639,7 @@ const StudentDetailPage = () => {
                   Occupation
                 </p>
 
-                <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                <p className="mt-1 text-sm font-medium text-white wrap-anywhere">
                   {student.occupation || "Not added"}
                 </p>
               </div>
@@ -656,7 +656,7 @@ const StudentDetailPage = () => {
             <div className="mb-4 flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+                className="h-5 w-1 rounded-full bg-linear-to-b from-[#34D399] to-[#34D399]/20"
               />
               <div>
                 <h2 className="text-lg font-semibold tracking-tight">
@@ -680,19 +680,19 @@ const StudentDetailPage = () => {
                     e.preventDefault();
                   }
                 }}
-                className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                className={`group flex items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 ${
                   student.github_url
-                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/3 motion-safe:hover:-translate-y-0.5"
                     : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 ring-1 ring-inset ring-white/6 transition-colors group-hover:text-[#6EE7B7]">
                   <GithubMark />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-white">GitHub</p>
-                  <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
+                  <p className="mt-1 text-xs text-white/35 wrap-anywhere">
                     {student.github_url || "Not added"}
                   </p>
                 </div>
@@ -714,19 +714,19 @@ const StudentDetailPage = () => {
                     e.preventDefault();
                   }
                 }}
-                className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                className={`group flex items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 ${
                   student.linkedin_url
-                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/3 motion-safe:hover:-translate-y-0.5"
                     : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 ring-1 ring-inset ring-white/6 transition-colors group-hover:text-[#6EE7B7]">
                   <LinkedinMark />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-white">LinkedIn</p>
-                  <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
+                  <p className="mt-1 text-xs text-white/35 wrap-anywhere">
                     {student.linkedin_url || "Not added"}
                   </p>
                 </div>
@@ -748,19 +748,19 @@ const StudentDetailPage = () => {
                     e.preventDefault();
                   }
                 }}
-                className={`group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 ${
+                className={`group flex items-start gap-4 rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 ${
                   student.portfolio_url
-                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/[0.03] motion-safe:hover:-translate-y-0.5"
+                    ? "cursor-pointer transition-all duration-300 hover:border-[#34D399]/25 hover:bg-[#34D399]/3 motion-safe:hover:-translate-y-0.5"
                     : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-inset ring-white/[0.06] transition-colors group-hover:text-[#6EE7B7]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 ring-1 ring-inset ring-white/6 transition-colors group-hover:text-[#6EE7B7]">
                   <Globe size={20} strokeWidth={1.8} />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-white">Portfolio</p>
-                  <p className="mt-1 text-xs text-white/35 [overflow-wrap:anywhere]">
+                  <p className="mt-1 text-xs text-white/35 wrap-anywhere">
                     {student.portfolio_url || "Not added"}
                   </p>
                 </div>
@@ -783,7 +783,7 @@ const StudentDetailPage = () => {
             <div className="mb-4 flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="h-5 w-1 rounded-full bg-gradient-to-b from-[#34D399] to-[#34D399]/20"
+                className="h-5 w-1 rounded-full bg-linear-to-b from-[#34D399] to-[#34D399]/20"
               />
               <div>
                 <h2 className="text-lg font-semibold tracking-tight">
@@ -795,22 +795,22 @@ const StudentDetailPage = () => {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"
               />
 
               <div className="grid md:grid-cols-2">
                 {/* Student ID */}
-                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                <div className="border-b border-white/6 p-5 md:border-r">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       <User size={16} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-white/35">Student ID</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      <p className="mt-1 text-sm font-medium tabular-nums text-white wrap-anywhere">
                         #{student.id}
                       </p>
                     </div>
@@ -818,14 +818,14 @@ const StudentDetailPage = () => {
                 </div>
 
                 {/* Role */}
-                <div className="border-b border-white/[0.06] p-5">
+                <div className="border-b border-white/6 p-5">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       <User size={16} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-white/35">Role</p>
-                      <p className="mt-1 text-sm font-medium capitalize text-white [overflow-wrap:anywhere]">
+                      <p className="mt-1 text-sm font-medium capitalize text-white wrap-anywhere">
                         {student.role}
                       </p>
                     </div>
@@ -833,14 +833,14 @@ const StudentDetailPage = () => {
                 </div>
 
                 {/* Email */}
-                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                <div className="border-b border-white/6 p-5 md:border-r">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       <Mail size={16} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-white/35">Email</p>
-                      <p className="mt-1 text-sm font-medium text-white [overflow-wrap:anywhere]">
+                      <p className="mt-1 text-sm font-medium text-white wrap-anywhere">
                         {student.email}
                       </p>
                     </div>
@@ -848,7 +848,7 @@ const StudentDetailPage = () => {
                 </div>
 
                 {/* Account Status */}
-                <div className="border-b border-white/[0.06] p-5">
+                <div className="border-b border-white/6 p-5">
                   <div className="flex items-start gap-3">
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${
@@ -878,14 +878,14 @@ const StudentDetailPage = () => {
                 </div>
 
                 {/* Date Joined */}
-                <div className="border-b border-white/[0.06] p-5 md:border-r">
+                <div className="border-b border-white/6 p-5 md:border-r">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       <CalendarDays size={16} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-white/35">Date Joined</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      <p className="mt-1 text-sm font-medium tabular-nums text-white wrap-anywhere">
                         {formatDate(student.date_joined)}
                       </p>
                     </div>
@@ -893,14 +893,14 @@ const StudentDetailPage = () => {
                 </div>
 
                 {/* Profile Created */}
-                {/* <div className="border-b border-white/[0.06] p-5">
+                {/* <div className="border-b border-white/6 p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                     <CalendarDays size={16} strokeWidth={1.8} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">Profile Created</p>
-                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white wrap-anywhere">
                       {formatDate(student.profile_created_at)}
                     </p>
                   </div>
@@ -908,14 +908,14 @@ const StudentDetailPage = () => {
               </div> */}
 
                 {/* Account Updated */}
-                <div className="border-b border-white/[0.06] p-5 md:border-r md:border-b-0">
+                <div className="border-b border-white/6 p-5 md:border-r md:border-b-0">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
                       <CalendarDays size={16} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-white/35">Account Updated</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                      <p className="mt-1 text-sm font-medium tabular-nums text-white wrap-anywhere">
                         {formatDate(student.updated_at)}
                       </p>
                     </div>
@@ -930,7 +930,7 @@ const StudentDetailPage = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs text-white/35">Profile Updated</p>
-                    <p className="mt-1 text-sm font-medium tabular-nums text-white [overflow-wrap:anywhere]">
+                    <p className="mt-1 text-sm font-medium tabular-nums text-white wrap-anywhere">
                       {formatDate(student.profile_updated_at)}
                     </p>
                   </div>
@@ -944,7 +944,7 @@ const StudentDetailPage = () => {
             FOOTER
         ====================================================== */}
           {/* <footer
-            className="animate-page-item mt-2 flex flex-col items-center gap-3 border-t border-white/[0.06] pb-4 pt-6 sm:flex-row sm:justify-between"
+            className="animate-page-item mt-2 flex flex-col items-center gap-3 border-t border-white/6 pb-4 pt-6 sm:flex-row sm:justify-between"
             style={{ animationDelay: "460ms" }}
           >
             <div className="flex items-center gap-2.5 text-xs text-white/40">

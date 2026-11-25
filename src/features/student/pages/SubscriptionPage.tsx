@@ -50,9 +50,9 @@ const INTERVAL_WORD: Record<string, string> = {
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[lpShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[lpShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -84,7 +84,7 @@ const PlansSkeleton = () => {
               </div>
 
               {/* Divider */}
-              <div className="mb-6 h-px w-full bg-white/[0.08]" />
+              <div className="mb-6 h-px w-full bg-white/8" />
 
               {/* Benefits */}
               <div className="mb-7 min-w-0 flex-1 sm:mb-8">
@@ -177,7 +177,7 @@ const SubscriptionPage = () => {
             </p>
 
             <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-              <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                 Subscription Plans
               </span>
             </h1>
@@ -196,7 +196,7 @@ const SubscriptionPage = () => {
         {loading ? (
           <PlansSkeleton />
         ) : plans.length === 0 ? (
-          <div className="flex min-h-[300px] items-center justify-center text-sm text-white/50">
+          <div className="flex min-h-75 items-center justify-center text-sm text-white/50">
             No subscription plans are currently available.
           </div>
         ) : (
@@ -220,7 +220,7 @@ const SubscriptionPage = () => {
                   {isPremium && (
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#A78BFA] to-transparent"
+                      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#A78BFA] to-transparent"
                     />
                   )}
 
@@ -239,14 +239,14 @@ const SubscriptionPage = () => {
 
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 -translate-x-full -translate-y-full rounded-2xl bg-gradient-to-br from-white/[0.08] via-transparent to-transparent transition-transform duration-500 group-hover:translate-x-0 group-hover:translate-y-0"
+                    className="pointer-events-none absolute inset-0 -translate-x-full -translate-y-full rounded-2xl bg-linear-to-br from-white/8 via-transparent to-transparent transition-transform duration-500 group-hover:translate-x-0 group-hover:translate-y-0"
                   />
 
                   {/* Premium badge with crown symbol */}
 
                   {isPremium && (
-                    <div className="absolute -top-0 left-1/2 z-10 -translate-x-1/2">
-                      <div className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-b-xl bg-gradient-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-2 text-[10px] font-semibold tracking-wide text-white shadow-lg shadow-[#7C5CFF]/20 sm:text-xs">
+                    <div className="absolute top-0 left-1/2 z-10 -translate-x-1/2">
+                      <div className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-b-xl bg-linear-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-2 text-[10px] font-semibold tracking-wide text-white shadow-lg shadow-[#7C5CFF]/20 sm:text-xs">
                         <Crown
                           aria-hidden="true"
                           className="h-3.5 w-3.5 shrink-0"
@@ -269,20 +269,20 @@ const SubscriptionPage = () => {
                     <div className="mb-6 text-center sm:mb-8">
                       {/* Plan name */}
 
-                      <h2 className="mb-2 break-words font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-white">
+                      <h2 className="mb-2 wrap-break-word font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-white">
                         {plan.name}
                       </h2>
 
                       {/* Plan description */}
 
-                      <p className="mx-auto min-h-[40px] max-w-xs text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
+                      <p className="mx-auto min-h-10 max-w-xs text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
                         {plan.description}
                       </p>
 
                       {/* Price */}
 
                       <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1">
-                        <span className="break-words bg-gradient-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
+                        <span className="wrap-break-word bg-linear-to-r from-[#C4B5FD] via-[#A78BFA] to-[#7C5CFF] bg-clip-text font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
                           {formatPrice(plan)}
                         </span>
 
@@ -299,8 +299,8 @@ const SubscriptionPage = () => {
                     <div
                       className={`mb-6 h-px w-full ${
                         isPremium
-                          ? "bg-gradient-to-r from-transparent via-[#7C5CFF]/30 to-transparent"
-                          : "bg-white/[0.08]"
+                          ? "bg-linear-to-r from-transparent via-[#7C5CFF]/30 to-transparent"
+                          : "bg-white/8"
                       }`}
                     />
 
@@ -327,7 +327,7 @@ const SubscriptionPage = () => {
                               <Check className="h-3 w-3" strokeWidth={2.8} />
                             </span>
 
-                            <span className="min-w-0 break-words text-sm leading-5 text-white/70 transition-colors duration-300 group-hover:text-white/90">
+                            <span className="min-w-0 wrap-break-word text-sm leading-5 text-white/70 transition-colors duration-300 group-hover:text-white/90">
                               {benefit}
                             </span>
                           </li>
@@ -341,7 +341,7 @@ const SubscriptionPage = () => {
                       <button
                         type="button"
                         disabled
-                        className="mt-auto flex w-full shrink-0 cursor-default items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/50"
+                        className="mt-auto flex w-full shrink-0 cursor-default items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/4 px-4 py-3 text-sm font-semibold text-white/50"
                       >
                         <Check className="h-4 w-4" strokeWidth={2.4} />
                         Current plan
@@ -349,7 +349,7 @@ const SubscriptionPage = () => {
                     ) : isPremium ? (
                       <button
                         type="button"
-                        className="group/btn mt-auto flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                        className="group/btn mt-auto flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#7C5CFF] to-[#4D32C8] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#7C5CFF]/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#7C5CFF]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                       >
                         Choose plan
                         <ArrowRight
@@ -360,11 +360,11 @@ const SubscriptionPage = () => {
                     ) : (
                       <button
                         type="button"
-                        className="group/btn relative mt-auto w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/35 hover:bg-[#7C5CFF]/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                        className="group/btn relative mt-auto w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/4 px-4 py-3 text-sm font-semibold text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#7C5CFF]/35 hover:bg-[#7C5CFF]/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                       >
                         <span
                           aria-hidden="true"
-                          className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full"
+                          className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#7C5CFF]/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full"
                         />
 
                         <span className="relative z-10 flex items-center justify-center gap-2">

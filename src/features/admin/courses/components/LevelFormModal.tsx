@@ -212,7 +212,7 @@ const LevelFormContent = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="level-form-title"
-      className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-99999 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSaving) {
           onClose();
@@ -222,11 +222,11 @@ const LevelFormContent = ({
       <div className="relative my-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] shadow-[0_25px_80px_rgba(0,0,0,0.85)]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent"
         />
 
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5">
+        <div className="flex items-center justify-between border-b border-white/8 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
               <GraduationCap className="h-5 w-5" strokeWidth={1.8} />
@@ -252,7 +252,7 @@ const LevelFormContent = ({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/[0.06] hover:text-white"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/6 hover:text-white"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
@@ -282,8 +282,8 @@ const LevelFormContent = ({
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? "level-name-error" : undefined}
                 className={`h-11 w-full rounded-xl border ${
-                  errors.name ? "border-red-400/60" : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
+                  errors.name ? "border-red-400/60" : "border-white/8"
+                } bg-white/3 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10`}
               />
 
               {errors.name && (
@@ -323,8 +323,8 @@ const LevelFormContent = ({
                 className={`w-full resize-none rounded-xl border ${
                   errors.description
                     ? "border-red-400/60"
-                    : "border-white/[0.08]"
-                } bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
+                    : "border-white/8"
+                } bg-white/3 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10`}
               />
 
               <div className="mt-1.5 flex items-start justify-between gap-3">
@@ -363,8 +363,8 @@ const LevelFormContent = ({
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
                       isActive
-                        ? "border-[#34D399]/40 bg-[#34D399]/[0.08]"
-                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                        ? "border-[#34D399]/40 bg-[#34D399]/8"
+                        : "border-white/8 bg-white/2 hover:bg-white/4"
                     }`}
                   >
                     <input
@@ -395,8 +395,8 @@ const LevelFormContent = ({
                   <label
                     className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${
                       !isActive
-                        ? "border-red-400/40 bg-red-500/[0.06]"
-                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+                        ? "border-red-400/40 bg-red-500/6"
+                        : "border-white/8 bg-white/2 hover:bg-white/4"
                     }`}
                   >
                     <input
@@ -428,12 +428,12 @@ const LevelFormContent = ({
           </div>
 
           {/* Footer */}
-          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] px-6 py-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/8 px-6 py-4 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="h-10 cursor-pointer rounded-xl disabled:cursor-not-allowed disabled:opacity-50 border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+              className="h-10 cursor-pointer rounded-xl disabled:cursor-not-allowed disabled:opacity-50 border border-white/8 px-5 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white"
             >
               Cancel
             </button>

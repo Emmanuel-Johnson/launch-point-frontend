@@ -38,7 +38,7 @@ function App() {
         theme="dark"
         toastClassName="admin-toast"
         progressClassName="admin-toast-progress"
-        className="!z-[100000]"
+        className="z-100000!"
       />
 
       {/* Instructor Toast */}
@@ -53,7 +53,7 @@ function App() {
         theme="dark"
         toastClassName="instructor-toast"
         progressClassName="instructor-toast-progress"
-        className="!z-[100000]"
+        className="z-100000!"
       />
     </>
   );

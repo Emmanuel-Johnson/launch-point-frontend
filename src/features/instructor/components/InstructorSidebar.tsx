@@ -163,8 +163,8 @@ const InstructorSidebar = ({
   return (
     <>
       <aside
-        className={`student-sidebar instructor-sidebar fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/[0.08] bg-[#0A0A0A] transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isCollapsed ? "w-20" : "w-[280px]"
+        className={`student-sidebar instructor-sidebar fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-white/8 bg-[#0A0A0A] transition-[width] duration-500 ease-in-out ${
+          isCollapsed ? "w-20" : "w-70"
         }`}
       >
         {/* =====================================================
@@ -174,7 +174,7 @@ const InstructorSidebar = ({
         \====================================================== */}
 
         <div
-          className={`relative flex h-20 shrink-0 items-center border-b border-white/[0.08] transition-all duration-500 ${
+          className={`relative flex h-20 shrink-0 items-center border-b border-white/8 transition-all duration-500 ${
             isCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -197,7 +197,7 @@ const InstructorSidebar = ({
 
               {/* Logo Shine */}
 
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#3B82F6]/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </div>
 
             {/* Brand */}
@@ -206,10 +206,10 @@ const InstructorSidebar = ({
               className={`grid overflow-hidden transition-all duration-500 ease-out ${
                 isCollapsed
                   ? "max-w-0 -translate-x-2 opacity-0"
-                  : "max-w-[180px] translate-x-0 opacity-100"
+                  : "max-w-45 translate-x-0 opacity-100"
               }`}
             >
-              <div className="group min-w-[160px] cursor-pointer">
+              <div className="group min-w-40 cursor-pointer">
                 <span className="block whitespace-nowrap text-sm font-semibold tracking-[3px] text-white transition-all duration-300 group-hover:text-white/80">
                   LAUNCH POINT
                 </span>
@@ -228,15 +228,15 @@ const InstructorSidebar = ({
             onClick={onToggle}
             aria-label={isCollapsed ? "Open sidebar" : "Close sidebar"}
             title={isCollapsed ? "Open sidebar" : "Close sidebar"}
-            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/[0.06] hover:text-white ${
+            className={`group relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg text-white/50 transition-all duration-300 hover:bg-white/6 hover:text-white ${
               isCollapsed
-                ? "absolute -right-4 border border-white/[0.08] bg-[#111111] shadow-lg shadow-black/50"
+                ? "absolute -right-4 border border-white/8 bg-[#111111] shadow-lg shadow-black/50"
                 : "ml-auto"
             }`}
           >
             {/* Toggle Shine */}
 
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
             {isCollapsed ? (
               <ChevronRight
@@ -300,7 +300,7 @@ const InstructorSidebar = ({
                           } ${
                             isActive
                               ? "bg-[#3B82F6]/10 text-white ring-1 ring-inset ring-[#3B82F6]/20"
-                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                              : "text-white/55 hover:translate-x-0.5 hover:bg-white/4 hover:text-white/90"
                           }`
                         }
                       >
@@ -309,7 +309,7 @@ const InstructorSidebar = ({
                             {/* Shine Effect */}
 
                             {!isActive && (
-                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                             )}
 
                             {/* Active Indicator */}
@@ -340,7 +340,7 @@ const InstructorSidebar = ({
                               className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ease-out ${
                                 isCollapsed
                                   ? "max-w-0 translate-x-2 opacity-0"
-                                  : "max-w-[180px] translate-x-0 opacity-100"
+                                  : "max-w-45 translate-x-0 opacity-100"
                               }`}
                             >
                               {item.name}
@@ -363,7 +363,7 @@ const InstructorSidebar = ({
         \====================================================== */}
 
         {/* SETTINGS */}
-        <div className="shrink-0 border-t border-white/[0.08] p-3">
+        <div className="shrink-0 border-t border-white/8 p-3">
           <NavLink
             to="/instructor/settings"
             title={isCollapsed ? "Settings" : undefined}
@@ -373,7 +373,7 @@ const InstructorSidebar = ({
               } ${
                 isActive
                   ? "bg-[#3B82F6]/10 text-white ring-1 ring-inset ring-[#3B82F6]/20"
-                  : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white/90"
+                  : "text-white/55 hover:translate-x-0.5 hover:bg-white/4 hover:text-white/90"
               }`
             }
           >
@@ -381,7 +381,7 @@ const InstructorSidebar = ({
               <>
                 {/* Shine Effect */}
                 {!isActive && (
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#3B82F6]/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 )}
 
                 {/* Active Indicator */}
@@ -407,7 +407,7 @@ const InstructorSidebar = ({
                   className={`relative z-10 overflow-hidden whitespace-nowrap transition-all duration-300 ${
                     isCollapsed
                       ? "max-w-0 translate-x-2 opacity-0"
-                      : "max-w-[180px] translate-x-0 opacity-100"
+                      : "max-w-45 translate-x-0 opacity-100"
                   }`}
                 >
                   Settings

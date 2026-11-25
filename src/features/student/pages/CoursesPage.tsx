@@ -171,7 +171,7 @@ function FilterSelect<T extends string>({
   const selected = options.find((option) => option.value === value);
 
   return (
-    <div className="group mb-2 rounded-xl border border-transparent px-3 py-2 transition-colors hover:border-white/[0.06] hover:bg-white/[0.025]">
+    <div className="group mb-2 rounded-xl border border-transparent px-3 py-2 transition-colors hover:border-white/6 hover:bg-white/2.5">
       <div className="flex items-center justify-between gap-4">
         <span className="w-[40%] shrink-0 text-xs font-medium text-white/65">
           {label}
@@ -182,10 +182,10 @@ function FilterSelect<T extends string>({
           onClick={onToggle}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
-          className={`flex h-10 w-[56%] max-w-[205px] cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 text-xs font-medium text-white shadow-inner shadow-black/20 outline-none transition duration-200 ${
+          className={`flex h-10 w-[56%] max-w-51.25 cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 text-xs font-medium text-white shadow-inner shadow-black/20 outline-none transition duration-200 ${
             isOpen
               ? "border-violet-400/60 bg-[#13101A] ring-2 ring-violet-500/15"
-              : "border-white/[0.10] bg-[#0B0B0F] hover:border-violet-300/25 hover:bg-[#13101A]"
+              : "border-white/10 bg-[#0B0B0F] hover:border-violet-300/25 hover:bg-[#13101A]"
           }`}
         >
           <span className="truncate text-left">
@@ -203,7 +203,7 @@ function FilterSelect<T extends string>({
         <div
           role="listbox"
           aria-label={label}
-          className="mt-2 grid gap-1 overflow-hidden rounded-xl border border-violet-400/20 bg-[#0B0A10] p-1.5 shadow-inner shadow-black/40 ring-1 ring-white/[0.04] animate-in fade-in slide-in-from-top-2 duration-150"
+          className="mt-2 grid gap-1 overflow-hidden rounded-xl border border-violet-400/20 bg-[#0B0A10] p-1.5 shadow-inner shadow-black/40 ring-1 ring-white/4 animate-in fade-in slide-in-from-top-2 duration-150"
         >
           {options.map((option) => {
             const isActive = option.value === value;
@@ -218,7 +218,7 @@ function FilterSelect<T extends string>({
                 className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors ${
                   isActive
                     ? "bg-violet-500/15 font-medium text-violet-200"
-                    : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+                    : "text-white/65 hover:bg-white/4 hover:text-white"
                 }`}
               >
                 <span className="truncate">{option.label}</span>
@@ -641,7 +641,7 @@ const CoursesPage = () => {
 
           <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
             Explore{" "}
-            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
@@ -655,13 +655,13 @@ const CoursesPage = () => {
 
       {/* Learning discovery hero */}
       <section className="group relative isolate overflow-hidden rounded-3xl border border-violet-400/20 bg-[#100C20]">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#17102D] via-[#100C20] to-[#11152B]" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-br from-[#17102D] via-[#100C20] to-[#11152B]" />
         <div className="absolute -right-16 -top-24 -z-10 h-80 w-80 rounded-full bg-violet-600/20 blur-[100px]" />
         <div className="absolute -bottom-32 left-1/3 -z-10 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
 
-        <div className="grid min-h-[320px] items-center md:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid min-h-80 items-center md:grid-cols-[0.9fr_1.1fr]">
           {/* Left side - Photo */}
-          <div className="relative hidden min-h-[320px] h-full md:block">
+          <div className="relative hidden min-h-80 h-full md:block">
             <img
               src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop"
               alt="Learners building new skills with digital learning tools"
@@ -669,8 +669,8 @@ const CoursesPage = () => {
               className="absolute inset-0 h-full w-full object-cover opacity-45"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-l from-[#100C20] via-[#100C20]/35 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
+            <div className="absolute inset-0 bg-linear-to-l from-[#100C20] via-[#100C20]/35 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#100C20]/70 via-transparent to-[#100C20]/10" />
 
             <div className="absolute left-7 top-7 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0B0D]/70 p-3.5 shadow-xl backdrop-blur-xl">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/20">
@@ -707,7 +707,7 @@ const CoursesPage = () => {
               YOUR LEARNING JOURNEY STARTS HERE
             </div>
 
-            <h2 className="max-w-xl text-2xl font-medium leading-[1.25] tracking-[-0.04em] sm:text-3xl lg:text-[34px]">
+            <h2 className="max-w-xl text-2xl font-medium leading-tight tracking-[-0.04em] sm:text-3xl lg:text-[34px]">
               One new skill can
               <br />
               open new possibilities.
@@ -728,13 +728,13 @@ const CoursesPage = () => {
                     block: "start",
                   })
                 }
-                className="cursor-pointer group/button inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                className="cursor-pointer group/button inline-flex items-center gap-3 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
               >
                 Explore courses
                 <ArrowRight className="h-4 w-4 transition-transform group-hover/button:translate-x-1" />
               </button>
 
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/60">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/3 px-4 py-3 text-sm text-white/60">
                 <BookOpen className="h-4 w-4 text-violet-300" />
                 Learn at your own pace
               </span>
@@ -760,7 +760,7 @@ const CoursesPage = () => {
               }}
               placeholder="Search courses, skills, or instructors..."
               aria-label="Search courses"
-              className="h-16 w-full rounded-2xl border border-white/[0.08] bg-[#0B0B0F] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
+              className="h-16 w-full rounded-2xl border border-white/8 bg-[#0B0B0F] pl-14 pr-5 text-sm text-white outline-none transition placeholder:text-white/30 hover:border-white/15 focus:border-violet-500/40 focus:ring-2 focus:ring-violet-500/10"
             />
           </div>
 
@@ -779,8 +779,8 @@ const CoursesPage = () => {
                 aria-haspopup="listbox"
                 className={`flex h-16 w-full cursor-pointer items-center gap-3 rounded-2xl border bg-[#0B0B0F] px-4 text-left transition-all duration-200 ${
                   sortOpen
-                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-lg shadow-violet-950/10"
-                    : "border-white/[0.08] hover:border-violet-400/30"
+                    ? "border-violet-400/40 bg-violet-500/6 shadow-lg shadow-violet-950/10"
+                    : "border-white/8 hover:border-violet-400/30"
                 }`}
               >
                 <ArrowDownUp className="h-4 w-4 shrink-0 text-violet-300" />
@@ -814,7 +814,7 @@ const CoursesPage = () => {
                   <div
                     role="listbox"
                     aria-label="Sort courses by"
-                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(290px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-violet-400/20 bg-[#111016] p-2 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04] animate-in fade-in slide-in-from-top-2 duration-150"
+                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(290px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-violet-400/20 bg-[#111016] p-2 shadow-2xl shadow-black/50 ring-1 ring-white/4 animate-in fade-in slide-in-from-top-2 duration-150"
                   >
                     <div className="px-3 pb-2 pt-2">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300/80">
@@ -825,7 +825,7 @@ const CoursesPage = () => {
                       </p>
                     </div>
 
-                    <div className="mb-1 h-px bg-white/[0.06]" />
+                    <div className="mb-1 h-px bg-white/6" />
 
                     {sortOptions.map((option) => {
                       const isActive = sortBy === option.label;
@@ -844,14 +844,14 @@ const CoursesPage = () => {
                           className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
                             isActive
                               ? "bg-violet-500/15 text-violet-200"
-                              : "text-white/70 hover:bg-white/[0.04] hover:text-white"
+                              : "text-white/70 hover:bg-white/4 hover:text-white"
                           }`}
                         >
                           <span
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
                               isActive
                                 ? "border-violet-400/20 bg-violet-500/15 text-violet-300"
-                                : "border-white/[0.06] bg-white/[0.025] text-white/40"
+                                : "border-white/6 bg-white/2.5 text-white/40"
                             }`}
                           >
                             {option.label === "Latest" && (
@@ -911,8 +911,8 @@ const CoursesPage = () => {
                 }}
                 className={`flex h-16 w-full cursor-pointer items-center gap-3 rounded-2xl border bg-[#0B0B0F] px-4 text-left transition-all duration-200 ${
                   filterOpen
-                    ? "border-violet-400/40 bg-violet-500/[0.06] shadow-lg shadow-violet-950/10"
-                    : "border-white/[0.08] hover:border-violet-400/30"
+                    ? "border-violet-400/40 bg-violet-500/6 shadow-lg shadow-violet-950/10"
+                    : "border-white/8 hover:border-violet-400/30"
                 }`}
               >
                 <SlidersHorizontal className="h-4 w-4 shrink-0 text-violet-300" />
@@ -961,9 +961,9 @@ const CoursesPage = () => {
                   <div
                     role="dialog"
                     aria-label="Filter courses by plan, level, category, rating, and duration"
-                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(400px,calc(100vw-2rem))] max-h-[min(75vh,680px)] overflow-y-auto rounded-3xl border border-violet-400/20 bg-[#100E16] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.05] animate-in fade-in slide-in-from-top-2 duration-150"
+                    className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(400px,calc(100vw-2rem))] max-h-[min(75vh,680px)] overflow-y-auto rounded-3xl border border-violet-400/20 bg-[#100E16] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.65)] ring-1 ring-white/5 animate-in fade-in slide-in-from-top-2 duration-150"
                   >
-                    <div className="relative mb-4 overflow-hidden rounded-2xl border border-violet-300/10 bg-gradient-to-br from-violet-500/[0.12] via-white/[0.025] to-transparent px-4 py-4">
+                    <div className="relative mb-4 overflow-hidden rounded-2xl border border-violet-300/10 bg-linear-to-br from-violet-500/12 via-white/2.5 to-transparent px-4 py-4">
                       <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-violet-500/15 blur-2xl" />
                       <div className="relative flex items-start gap-3">
                         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-300/15 bg-violet-500/10 text-violet-200 shadow-inner shadow-violet-300/5">
@@ -1071,7 +1071,7 @@ const CoursesPage = () => {
                       }}
                     />
 
-                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
+                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/8 pt-4">
                       <p className="text-xs text-white/40">
                         {filteredCourses.length} matching course
                         {filteredCourses.length === 1 ? "" : "s"}
@@ -1088,7 +1088,7 @@ const CoursesPage = () => {
                             setCurrentPage(1);
                             setOpenFilterKey(null);
                           }}
-                          className="cursor-pointer inline-flex min-w-[140px] items-center justify-center rounded-xl border border-violet-400/25 bg-violet-500/[0.08] px-6 py-2.5 text-xs font-semibold text-violet-200 transition hover:border-violet-400/45 hover:bg-violet-500/[0.14] focus:outline-none focus:ring-2 focus:ring-violet-400/30"
+                          className="cursor-pointer inline-flex min-w-35 items-center justify-center rounded-xl border border-violet-400/25 bg-violet-500/8 px-6 py-2.5 text-xs font-semibold text-violet-200 transition hover:border-violet-400/45 hover:bg-violet-500/[0.14] focus:outline-none focus:ring-2 focus:ring-violet-400/30"
                         >
                           Reset
                         </button>
@@ -1119,7 +1119,7 @@ const CoursesPage = () => {
                   behavior: "smooth",
                 });
               }}
-              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/8 bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/6 hover:text-white"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -1129,7 +1129,7 @@ const CoursesPage = () => {
           <div
             id="course-category-list"
             ref={categoryListRef}
-            className="flex min-w-0 flex-1 items-stretch gap-2 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex min-w-0 flex-1 items-stretch gap-2 overflow-x-auto overscroll-x-contain scroll-smooth scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {categories.map(({ name }) => {
@@ -1169,7 +1169,7 @@ const CoursesPage = () => {
                   behavior: "smooth",
                 });
               }}
-              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/[0.08] bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/[0.06] hover:text-white"
+              className="cursor-pointer flex shrink-0 items-center justify-center self-stretch rounded-xl border border-white/8 bg-[#0B0B0F] px-3 text-white/55 transition hover:border-violet-400/30 hover:bg-violet-500/6 hover:text-white"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -1215,10 +1215,10 @@ const CoursesPage = () => {
               return (
                 <article
                   key={`${course.id}-${startIndex + courseIndex}`}
-                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
+                  className="group relative flex min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/9 bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]"
                 >
                   {/* Glassy sheen — animates only while hovering, invisible on un-hover */}
-                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                  <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-linear-to-r from-transparent via-white/15 to-transparent" />
 
                   {/* Course image */}
                   <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
@@ -1230,7 +1230,7 @@ const CoursesPage = () => {
                     />
                     <div className="absolute left-3 top-3 z-20">
                       {course.plan === "Premium" ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
                           <Crown className="h-3.5 w-3.5 text-amber-300" />
                           Premium
                         </span>
@@ -1258,7 +1258,7 @@ const CoursesPage = () => {
                       }`}
                     >
                       <Bookmark
-                        className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                        className={`h-4.25 w-4.25 transition-transform duration-300 ${
                           isSaved ? "scale-110" : "group-hover:scale-110"
                         }`}
                         fill={isSaved ? "#A78BFA" : "none"}
@@ -1280,7 +1280,7 @@ const CoursesPage = () => {
                   {/* Course information */}
                   <div className="flex flex-1 flex-col p-5">
                     <div className="mb-4 flex items-center justify-between gap-2">
-                      <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
+                      <span className="rounded-full border border-violet-400/20 bg-violet-400/8 px-3 py-1 text-[10px] font-medium text-violet-200">
                         {course.category}
                       </span>
                       <span className="text-[11px] text-white/35">
@@ -1291,11 +1291,11 @@ const CoursesPage = () => {
                     <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/40">
                       {course.level} level
                     </p>
-                    <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                    <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                       {course.title}
                     </h3>
 
-                    <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                    <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                       {course.description}
                     </p>
 
@@ -1303,7 +1303,7 @@ const CoursesPage = () => {
                       {course.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
+                          className="rounded-lg border border-white/[0.07] bg-white/2.5 px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/5 group-hover:text-white/75"
                         >
                           {skill}
                         </span>
@@ -1344,7 +1344,7 @@ const CoursesPage = () => {
                         onClick={() =>
                           navigate(`/student/courses/${course.id}`)
                         }
-                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                        className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                       >
                         View course
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/button:translate-x-0.5" />
@@ -1414,7 +1414,7 @@ const CoursesPage = () => {
                     className={`cursor-pointer inline-flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-medium transition ${
                       safeCurrentPage === page
                         ? "border-violet-400/50 bg-violet-500/20 text-violet-200 shadow-[0_4px_16px_rgba(124,92,255,0.12)]"
-                        : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
+                        : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/3 hover:text-white"
                     }`}
                   >
                     {page}
@@ -1436,7 +1436,7 @@ const CoursesPage = () => {
         )}
       </section>
 
-      {/* <section className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-r from-[#120C22] via-[#100D19] to-[#0D0D12] p-6 sm:p-8">
+      {/* <section className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-r from-[#120C22] via-[#100D19] to-[#0D0D12] p-6 sm:p-8">
         <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-violet-600/10 blur-[70px]" />
 
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

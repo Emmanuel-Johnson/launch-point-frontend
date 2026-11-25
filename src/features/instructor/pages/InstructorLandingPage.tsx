@@ -126,9 +126,9 @@ const InstructorLandingPage = () => {
       <section className="group relative overflow-hidden border-b border-white/10">
         {/* Background glow + subtle grid */}
 
-        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-[2200ms] ease-in-out group-hover:scale-125 group-hover:bg-blue-500/30" />
+        <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl transition-all duration-2200 ease-in-out group-hover:scale-125 group-hover:bg-blue-500/30" />
 
-        <div className="pointer-events-none absolute -right-32 top-40 h-[28rem] w-[28rem] rounded-full bg-sky-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:scale-125 group-hover:bg-sky-400/25" />
+        <div className="pointer-events-none absolute -right-32 top-40 h-112 w-md rounded-full bg-sky-500/10 blur-3xl transition-all duration-2500 ease-in-out group-hover:scale-125 group-hover:bg-sky-400/25" />
 
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.15]"
@@ -175,9 +175,9 @@ const InstructorLandingPage = () => {
 
           <Reveal delay={300}>
             <div className="relative">
-              <div className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-blue-500/10 blur-3xl transition-all duration-[2500ms] ease-in-out group-hover:bg-blue-500/20 group-hover:scale-105" />
+              <div className="pointer-events-none absolute -inset-6 rounded-[2.5rem] bg-blue-500/10 blur-3xl transition-all duration-2500 ease-in-out group-hover:bg-blue-500/20 group-hover:scale-105" />
 
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F12] p-8 shadow-2xl shadow-black/40 transition-all duration-[1800ms] ease-in-out hover:border-blue-400/20 hover:shadow-blue-500/10">
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0F0F12] p-8 shadow-2xl shadow-black/40 transition-all duration-1800 ease-in-out hover:border-blue-400/20 hover:shadow-blue-500/10">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
                   Everything you need
                 </p>
@@ -193,10 +193,10 @@ const InstructorLandingPage = () => {
                     return (
                       <div
                         key={item.title}
-                        className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all duration-[1400ms] ease-in-out hover:translate-x-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
+                        className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/2 p-4 transition-all duration-1400 ease-in-out hover:translate-x-1 hover:border-blue-400/30 hover:bg-white/4"
                       >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-[1600ms] ease-in-out group-hover:bg-blue-500/15 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                          <Icon className="h-5 w-5 transition-transform duration-[1600ms] ease-in-out group-hover:scale-110" />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 transition-all duration-1600 ease-in-out group-hover:bg-blue-500/15 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                          <Icon className="h-5 w-5 transition-transform duration-1600 ease-in-out group-hover:scale-110" />
                         </div>
 
                         <div>
@@ -246,7 +246,7 @@ const InstructorLandingPage = () => {
 
               return (
                 <Reveal key={benefit.title} delay={300 + index * 120}>
-                  <div className="group h-full bg-[#0F0F12] p-8 transition-all duration-700 ease-out hover:-translate-y-1 hover:bg-white/[0.04] hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)]">
+                  <div className="group h-full bg-[#0F0F12] p-8 transition-all duration-700 ease-out hover:-translate-y-1 hover:bg-white/4 hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)]">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-blue-500/10 text-blue-400 transition-all duration-700 ease-out group-hover:border-blue-400/40 group-hover:bg-blue-500/15 group-hover:shadow-[0_0_24px_rgba(59,130,246,0.35)]">
                       <Icon className="h-6 w-6" />
                     </div>
@@ -296,7 +296,7 @@ const InstructorLandingPage = () => {
               {steps.map((step, index) => (
                 <Reveal key={step.number} delay={300 + index * 150}>
                   <div className="group relative">
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-sm transition-all duration-1000 ease-out group-hover:scale-[1.04] group-hover:border-blue-400/70 group-hover:bg-blue-500/10 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]">
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/3 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-sm transition-all duration-1000 ease-out group-hover:scale-[1.04] group-hover:border-blue-400/70 group-hover:bg-blue-500/10 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]">
                       <span className="absolute inset-1.5 rounded-full border border-blue-500/30 transition-all duration-1000 ease-out group-hover:scale-105 group-hover:border-blue-400/80 group-hover:shadow-[inset_0_0_14px_rgba(59,130,246,0.25)]" />
 
                       <span className="relative z-10">{step.number}</span>

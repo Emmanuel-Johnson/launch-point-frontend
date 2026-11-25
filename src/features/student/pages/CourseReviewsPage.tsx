@@ -326,7 +326,7 @@ const CourseReviewsPage = () => {
           type="button"
           onClick={() => navigate(`/student/courses/${courseId ?? "1"}`)}
           aria-label="Back to course overview"
-          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/[0.12] hover:text-white"
+          className="group relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/4 text-white/70 backdrop-blur-md transition-all duration-300 hover:border-violet-400/40 hover:bg-violet-500/12 hover:text-white"
         >
           <span
             aria-hidden="true"
@@ -353,14 +353,14 @@ const CourseReviewsPage = () => {
           <button
             type="button"
             onClick={() => navigate(`/student/courses/${courseId ?? "1"}`)}
-            className="max-w-[180px] truncate font-medium tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:max-w-[280px]"
+            className="max-w-45 truncate font-medium tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:text-white/75 sm:max-w-70"
           >
             {course.title}
           </button>
 
           <ChevronRight className="h-3.5 w-3.5 shrink-0 text-violet-300/50" />
 
-          <span className="min-w-0 truncate bg-gradient-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-[-0.025em] text-transparent">
+          <span className="min-w-0 truncate bg-linear-to-r from-violet-100 via-purple-200 to-indigo-200 bg-clip-text font-bold tracking-tight text-transparent">
             Reviews
           </span>
         </nav>
@@ -370,7 +370,7 @@ const CourseReviewsPage = () => {
       <section className="flex flex-col gap-4">
         <div>
           <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-            <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
               Reviews & Ratings
             </span>
           </h1>
@@ -439,9 +439,9 @@ const CourseReviewsPage = () => {
 
                       <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
 
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/8">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-300 transition-[width] duration-500"
+                          className="h-full rounded-full bg-linear-to-r from-amber-500 to-yellow-300 transition-[width] duration-500"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -454,7 +454,7 @@ const CourseReviewsPage = () => {
                 })}
               </div>
 
-              <div className="mt-6 border-t border-white/[0.08] pt-4">
+              <div className="mt-6 border-t border-white/8 pt-4">
                 <p className="text-xs font-medium text-white/65">
                   {course.title}
                 </p>
@@ -478,11 +478,11 @@ const CourseReviewsPage = () => {
                   key={review.id}
                   className={`${CARD_BASE} reviews-card group rounded-3xl p-5 hover:border-violet-300/30 hover:bg-[#171027] focus-within:border-violet-300/30 sm:p-6`}
                 >
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-violet-600/[0.07] blur-[65px] transition-colors duration-1000 group-hover:bg-violet-500/[0.12]" />
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-violet-600/[0.07] blur-[65px] transition-colors duration-1000 group-hover:bg-violet-500/12" />
 
                   <div className="relative">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-300/20 bg-gradient-to-br from-violet-400/25 via-violet-500/10 to-indigo-400/[0.12] text-sm font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-1000 ease-out group-hover:rotate-[-3deg] group-hover:scale-105 group-hover:border-violet-300/35 group-hover:from-violet-400/35">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-violet-300/20 bg-linear-to-br from-violet-400/25 via-violet-500/10 to-indigo-400/12 text-sm font-semibold tracking-wide text-violet-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-all duration-1000 ease-out group-hover:-rotate-3 group-hover:scale-105 group-hover:border-violet-300/35 group-hover:from-violet-400/35">
                         {review.initials}
                       </div>
 
@@ -517,7 +517,7 @@ const CourseReviewsPage = () => {
                       {review.text}
                     </p>
 
-                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-4">
+                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-4">
                       <span className="text-[11px] font-medium tracking-wide text-white/35">
                         {review.date}
                       </span>
@@ -536,7 +536,7 @@ const CourseReviewsPage = () => {
                           className={`reviews-helpful-button group inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-[11px] font-semibold tracking-wide outline-none transition-colors duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-violet-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0715] ${
                             isHelpful
                               ? "border-violet-400/40 bg-violet-500/15 text-violet-100 shadow-[0_0_12px_-8px_rgba(139,92,246,0.5)]"
-                              : "border-violet-300/15 bg-white/[0.04] text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-violet-100"
+                              : "border-violet-300/15 bg-white/4 text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/8 hover:text-violet-100"
                           }`}
                         >
                           <ThumbsUp
@@ -550,10 +550,10 @@ const CourseReviewsPage = () => {
                           <span>Helpful</span>
 
                           <span
-                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                            className={`min-w-4.5 rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
                               isHelpful
                                 ? "bg-violet-400/15 text-violet-100"
-                                : "bg-white/[0.04] text-violet-200/65 group-hover:bg-violet-400/[0.08] group-hover:text-violet-100"
+                                : "bg-white/4 text-violet-200/65 group-hover:bg-violet-400/8 group-hover:text-violet-100"
                             }`}
                           >
                             {review.helpful + (isHelpful ? 1 : 0)}
@@ -571,7 +571,7 @@ const CourseReviewsPage = () => {
                           className={`reviews-helpful-button group inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-[11px] font-semibold tracking-wide outline-none transition-colors duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-violet-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0715] ${
                             isDisliked
                               ? "border-violet-400/40 bg-violet-500/15 text-violet-100 shadow-[0_0_12px_-8px_rgba(139,92,246,0.5)]"
-                              : "border-violet-300/15 bg-white/[0.04] text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/[0.08] hover:text-violet-100"
+                              : "border-violet-300/15 bg-white/4 text-violet-200/80 hover:border-violet-400/30 hover:bg-violet-500/8 hover:text-violet-100"
                           }`}
                         >
                           <ThumbsDown
@@ -583,10 +583,10 @@ const CourseReviewsPage = () => {
                           />
 
                           <span
-                            className={`min-w-[18px] rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
+                            className={`min-w-4.5 rounded-md px-1 py-0.5 text-center tabular-nums transition-colors duration-300 ${
                               isDisliked
                                 ? "bg-violet-400/15 text-violet-100"
-                                : "bg-white/[0.04] text-violet-200/65 group-hover:bg-violet-400/[0.08] group-hover:text-violet-100"
+                                : "bg-white/4 text-violet-200/65 group-hover:bg-violet-400/8 group-hover:text-violet-100"
                             }`}
                           >
                             {(review.dislikes ?? 0) + (isDisliked ? 1 : 0)}

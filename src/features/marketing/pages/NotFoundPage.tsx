@@ -7,7 +7,7 @@ const NotFoundPage = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6 text-white">
       {/* Background glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6c63ff]/10 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6c63ff]/10 blur-[120px]" />
 
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
         {/* 404 */}
@@ -16,7 +16,7 @@ const NotFoundPage = () => {
             404
           </h1>
 
-          <div className="absolute inset-x-0 bottom-4 mx-auto h-px w-32 bg-gradient-to-r from-transparent via-[#6c63ff] to-transparent" />
+          <div className="absolute inset-x-0 bottom-4 mx-auto h-px w-32 bg-linear-to-r from-transparent via-[#6c63ff] to-transparent" />
         </div>
 
         {/* Message */}

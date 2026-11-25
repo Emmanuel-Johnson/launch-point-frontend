@@ -144,12 +144,12 @@ export const GRADE_META: Record<
   { wrap: string; tint: string; icon: "Trophy" | "Medal" | "BadgeCheck" }
 > = {
   Distinction: {
-    wrap: "border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95",
+    wrap: "border-amber-300/35 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95",
     tint: "text-amber-200",
     icon: "Trophy",
   },
   Merit: {
-    wrap: "border-violet-400/30 bg-violet-500/[0.12]",
+    wrap: "border-violet-400/30 bg-violet-500/12",
     tint: "text-violet-200",
     icon: "Medal",
   },

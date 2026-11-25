@@ -147,11 +147,11 @@ const ProfileAvatar = ({ src, initials, onClick }: AvatarProps) => {
       aria-label="View profile picture"
       className="group/avatar relative shrink-0 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9D82FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
     >
-      <div className="rounded-full bg-gradient-to-br from-[#7C5CFF] via-[#8E72FF] to-[#B9A4FF] p-[2.5px] shadow-[0_0_55px_-4px_rgba(124,92,255,0.55)] transition-transform duration-300 group-hover/avatar:scale-[1.03]">
-        <div className="rounded-full bg-[#0A0A0A] p-[3px]">
+      <div className="rounded-full bg-linear-to-br from-[#7C5CFF] via-[#8E72FF] to-[#B9A4FF] p-[2.5px] shadow-[0_0_55px_-4px_rgba(124,92,255,0.55)] transition-transform duration-300 group-hover/avatar:scale-[1.03]">
+        <div className="rounded-full bg-[#0A0A0A] p-0.75">
           <div className="relative h-28 w-28 overflow-hidden rounded-full sm:h-32 sm:w-32">
             <div
-              className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-3xl font-semibold tracking-wide text-white"
+              className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#7C5CFF] to-[#4D32C8] text-3xl font-semibold tracking-wide text-white"
               style={{ fontFamily: DISPLAY_FONT }}
             >
               {initials}
@@ -239,7 +239,7 @@ const ImagePreviewModal = ({
       aria-modal="true"
       aria-label="Profile picture preview"
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6"
     >
       {/* Keyframes for the modal entrance + ambient motion */}
       <style>{`
@@ -281,14 +281,14 @@ const ImagePreviewModal = ({
           type="button"
           onClick={onClose}
           aria-label="Close preview"
-          className="absolute -top-3 right-0 z-30 flex h-10 w-10 -translate-y-full cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/70 backdrop-blur transition-all duration-300 hover:rotate-90 hover:border-[#7C5CFF]/45 hover:bg-[#7C5CFF]/20 hover:text-white"
+          className="absolute -top-3 right-0 z-30 flex h-10 w-10 -translate-y-full cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/6 text-white/70 backdrop-blur transition-all duration-300 hover:rotate-90 hover:border-[#7C5CFF]/45 hover:bg-[#7C5CFF]/20 hover:text-white"
         >
           <X className="h-5 w-5" strokeWidth={2} />
         </button>
 
         {/* Card — the image sits inside this framed box */}
-        <div className="relative w-full overflow-hidden rounded-[30px] bg-gradient-to-b from-white/[0.16] via-white/[0.05] to-transparent p-px shadow-[0_40px_120px_-25px_rgba(0,0,0,0.95)]">
-          <div className="relative overflow-hidden rounded-[29px] bg-gradient-to-b from-[#121016] to-[#0A0A0A]">
+        <div className="relative w-full overflow-hidden rounded-[30px] bg-linear-to-b from-white/16 via-white/5 to-transparent p-px shadow-[0_40px_120px_-25px_rgba(0,0,0,0.95)]">
+          <div className="relative overflow-hidden rounded-[29px] bg-linear-to-b from-[#121016] to-[#0A0A0A]">
             {/* Ambient glows */}
             <div
               aria-hidden="true"
@@ -301,7 +301,7 @@ const ImagePreviewModal = ({
             {/* Top hairline accent */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/60 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7C5CFF]/60 to-transparent"
             />
             {/* Film grain */}
             <div
@@ -314,16 +314,16 @@ const ImagePreviewModal = ({
               {/* Pulsing aura behind the image box */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[90%] w-[90%] rounded-[24px] bg-[#7C5CFF]/20 blur-2xl"
+                className="pointer-events-none absolute left-1/2 top-1/2 h-[90%] w-[90%] rounded-3xl bg-[#7C5CFF]/20 blur-2xl"
                 style={{ animation: "previewAura 5s ease-in-out infinite" }}
               />
 
               {/* Gradient-bordered image box (square) */}
-              <div className="relative rounded-[22px] bg-gradient-to-br from-[#7C5CFF]/60 via-[#8E72FF]/30 to-[#B9A4FF]/50 p-[2px] shadow-[0_18px_50px_-15px_rgba(124,92,255,0.5)]">
+              <div className="relative rounded-[22px] bg-linear-to-br from-[#7C5CFF]/60 via-[#8E72FF]/30 to-[#B9A4FF]/50 p-0.5 shadow-[0_18px_50px_-15px_rgba(124,92,255,0.5)]">
                 <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-[#0A0A0A]">
                   {/* Initials fallback */}
                   <div
-                    className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#7C5CFF] to-[#4D32C8] text-7xl font-semibold tracking-wide text-white sm:text-8xl"
+                    className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#7C5CFF] to-[#4D32C8] text-7xl font-semibold tracking-wide text-white sm:text-8xl"
                     style={{ fontFamily: DISPLAY_FONT }}
                   >
                     {initials}
@@ -402,10 +402,10 @@ const DetailField = ({ icon: Icon, label, value }: DetailFieldProps) => {
         {label}
       </p>
 
-      <div className="flex min-h-[52px] items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 transition-colors duration-300 hover:border-white/[0.1] hover:bg-white/[0.03]">
+      <div className="flex min-h-13 items-start gap-3 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-colors duration-300 hover:border-white/10 hover:bg-white/3">
         <Icon className="h-4 w-4 shrink-0 text-white/30" strokeWidth={1.8} />
 
-        <span className="min-w-0 whitespace-normal break-words text-sm text-white/75">
+        <span className="min-w-0 whitespace-normal wrap-break-word text-sm text-white/75">
           {value || "Not provided"}
         </span>
       </div>
@@ -429,13 +429,13 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
       href={url || undefined}
       target="_blank"
       rel="noreferrer noopener"
-      className={`group flex items-center gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 transition-all duration-300 ${
+      className={`group flex items-center gap-4 rounded-xl border border-white/6 bg-white/2 px-4 py-3 transition-all duration-300 ${
         url
-          ? "hover:-translate-y-0.5 hover:border-[#7C5CFF]/25 hover:bg-[#7C5CFF]/[0.05]"
+          ? "hover:-translate-y-0.5 hover:border-[#7C5CFF]/25 hover:bg-[#7C5CFF]/5"
           : "pointer-events-none opacity-60"
       }`}
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] text-white/50 transition-all duration-300 group-hover:border-[#7C5CFF]/20 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#9D82FF]">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-white/3 text-white/50 transition-all duration-300 group-hover:border-[#7C5CFF]/20 group-hover:bg-[#7C5CFF]/10 group-hover:text-[#9D82FF]">
         <Icon className="h-5 w-5" />
       </div>
 
@@ -464,9 +464,9 @@ const SocialRow = ({ icon: Icon, label, url }: SocialRowProps) => {
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-skeleton-shimmer bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-skeleton-shimmer bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -499,7 +499,7 @@ const ProfileSkeleton = () => {
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1fr_3fr]">
           {/* HERO */}
           <section>
-            <div className="h-full rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px">
+            <div className="h-full rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px">
               <div className="relative h-full overflow-hidden rounded-[25px] bg-[#0A0A0A]">
                 <div className="relative flex h-full flex-col items-center px-6 py-12 text-center sm:px-10 sm:py-14">
                   {/* Avatar */}
@@ -516,7 +516,7 @@ const ProfileSkeleton = () => {
           </section>
 
           {/* ABOUT */}
-          <section className="flex min-w-0 flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+          <section className="flex min-w-0 flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 sm:p-8">
             <div className="flex items-start gap-4">
               <Shimmer className="h-11 w-11 rounded-xl" />
               <div>
@@ -536,7 +536,7 @@ const ProfileSkeleton = () => {
         {/* DETAILS + SOCIAL */}
         <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
           {/* PERSONAL INFORMATION */}
-          <section className="flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+          <section className="flex flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 sm:p-8">
             <div className="flex items-start gap-4">
               <Shimmer className="h-11 w-11 rounded-xl" />
               <div>
@@ -549,23 +549,23 @@ const ProfileSkeleton = () => {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i}>
                   <Shimmer className="mb-2 h-3 w-24" />
-                  <Shimmer className="h-[52px] w-full rounded-xl" />
+                  <Shimmer className="h-13 w-full rounded-xl" />
                 </div>
               ))}
 
               <div className="sm:col-span-2">
                 <Shimmer className="mb-2 h-3 w-28" />
-                <Shimmer className="h-[52px] w-full rounded-xl" />
+                <Shimmer className="h-13 w-full rounded-xl" />
               </div>
             </div>
 
-            <div className="mt-6 border-t border-white/[0.06] pt-5">
+            <div className="mt-6 border-t border-white/6 pt-5">
               <Shimmer className="h-3 w-40" />
             </div>
           </section>
 
           {/* SOCIAL LINKS */}
-          <section className="flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 sm:p-8">
+          <section className="flex flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 sm:p-8">
             <div className="flex items-start gap-4">
               <Shimmer className="h-11 w-11 rounded-xl" />
               <div>
@@ -576,12 +576,12 @@ const ProfileSkeleton = () => {
 
             <div className="mt-7 space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Shimmer key={i} className="h-[68px] w-full rounded-xl" />
+                <Shimmer key={i} className="h-17 w-full rounded-xl" />
               ))}
             </div>
 
             <div className="flex flex-1 items-end">
-              <div className="mt-6 w-full border-t border-white/[0.06] pt-5">
+              <div className="mt-6 w-full border-t border-white/6 pt-5">
                 <Shimmer className="h-3 w-36" />
               </div>
             </div>
@@ -675,7 +675,7 @@ const ViewProfile = () => {
               </p>
 
               <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.035em]">
-                <span className="bg-gradient-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-white via-[#E9E2FF] to-[#A78BFA] bg-clip-text text-transparent">
                   My Profile
                 </span>
               </h1>
@@ -709,7 +709,7 @@ const ViewProfile = () => {
               className="animate-page-item"
               style={{ animationDelay: "150ms" }}
             >
-              <div className="h-full rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+              <div className="h-full rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
                 <div className="relative h-full overflow-hidden rounded-[25px] bg-[#0A0A0A]">
                   <div
                     aria-hidden="true"
@@ -718,17 +718,17 @@ const ViewProfile = () => {
 
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/[0.08] blur-3xl"
+                    className="pointer-events-none absolute -bottom-28 -left-16 h-60 w-60 rounded-full bg-[#7C5CFF]/8 blur-3xl"
                   />
 
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#9D82FF]/[0.05] blur-3xl"
+                    className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-52 rounded-full bg-[#9D82FF]/5 blur-3xl"
                   />
 
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7C5CFF]/50 to-transparent"
                   />
 
                   <div
@@ -759,7 +759,7 @@ const ViewProfile = () => {
 
                     <div className="mt-7 w-full overflow-hidden">
                       <h2
-                        className="w-[260px] truncate text-2xl font-semibold tracking-tight text-white sm:w-[320px] sm:text-[30px]"
+                        className="w-65 truncate text-2xl font-semibold tracking-tight text-white sm:w-[320px] sm:text-[30px]"
                         style={{
                           fontFamily: DISPLAY_FONT,
                         }}
@@ -773,7 +773,7 @@ const ViewProfile = () => {
 
                     {/* Joined */}
 
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/3 px-4 py-2 text-sm text-white/55 transition-colors duration-300 hover:border-[#7C5CFF]/25 hover:text-white/75">
                       <CalendarDays
                         className="h-4 w-4 text-[#9D82FF]"
                         strokeWidth={1.8}
@@ -789,7 +789,7 @@ const ViewProfile = () => {
             {/* ABOUT */}
 
             <section
-              className="animate-page-item flex min-w-0 flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              className="animate-page-item flex min-w-0 flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
               style={{ animationDelay: "230ms" }}
             >
               <SectionHeader
@@ -810,7 +810,7 @@ const ViewProfile = () => {
                 </span>
 
                 <blockquote
-                  className="w-full min-w-0 whitespace-normal break-words text-lg italic leading-relaxed text-white/70 sm:text-xl"
+                  className="w-full min-w-0 whitespace-normal wrap-break-word text-lg italic leading-relaxed text-white/70 sm:text-xl"
                   style={{
                     fontFamily: SERIF_FONT,
                   }}
@@ -829,7 +829,7 @@ const ViewProfile = () => {
             {/* PERSONAL INFORMATION */}
 
             <section
-              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              className="animate-page-item flex flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
               style={{ animationDelay: "310ms" }}
             >
               <SectionHeader
@@ -872,7 +872,7 @@ const ViewProfile = () => {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
+              <div className="mt-6 flex items-center gap-2 border-t border-white/6 pt-5 text-[11px] text-white/35">
                 <Clock3 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
                 Last updated {formatFullDate(profile.updated_at)}
               </div>
@@ -881,7 +881,7 @@ const ViewProfile = () => {
             {/* SOCIAL LINKS */}
 
             <section
-              className="animate-page-item flex flex-col rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
+              className="animate-page-item flex flex-col rounded-3xl border border-white/6 bg-[#0A0A0A] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.4)] sm:p-8"
               style={{ animationDelay: "390ms" }}
             >
               <SectionHeader
@@ -911,7 +911,7 @@ const ViewProfile = () => {
               </div>
 
               <div className="flex flex-1 items-end">
-                <div className="mt-6 flex w-full items-center gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-white/35">
+                <div className="mt-6 flex w-full items-center gap-2 border-t border-white/6 pt-5 text-[11px] text-white/35">
                   <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.8} />
                   Links open in a new tab
                 </div>

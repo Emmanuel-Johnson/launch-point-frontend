@@ -305,7 +305,7 @@ const InfoItem = ({
     <div className="min-w-0">
       <p className="text-xs text-white/45">{label}</p>
 
-      <p className="mt-1 break-words text-sm font-medium text-white/90">
+      <p className="mt-1 wrap-break-word text-sm font-medium text-white/90">
         {value || "Not provided"}
       </p>
     </div>
@@ -326,7 +326,7 @@ const SectionHeading = ({
   description?: string;
 }) => (
   <div className="mb-6 flex items-start gap-3">
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#34D399]/20 bg-gradient-to-br from-[#34D399]/15 to-[#34D399]/[0.04] shadow-[0_0_18px_-8px_rgba(52,211,153,0.7)]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#34D399]/20 bg-linear-to-br from-[#34D399]/15 to-[#34D399]/4 shadow-[0_0_18px_-8px_rgba(52,211,153,0.7)]">
       <Icon size={19} className="text-[#34D399]" />
     </div>
 
@@ -345,7 +345,7 @@ const SectionHeading = ({
 /** Shared premium card surface — layered shadow + a faint top highlight. */
 
 const cardSurface =
-  "rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_48px_-28px_rgba(0,0,0,0.9)]";
+  "rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_48px_-28px_rgba(0,0,0,0.9)]";
 
 /* ================================================================
 
@@ -355,9 +355,9 @@ const cardSurface =
 
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[apSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[apSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -453,7 +453,7 @@ const ApplicationDetailSkeleton = () => (
               <Shimmer className="mt-3 h-4 w-full" />
               <Shimmer className="mt-2 h-4 w-full max-w-[90%]" />
             </div>
-            <div className="border-t border-white/[0.08] pt-5">
+            <div className="border-t border-white/8 pt-5">
               <Shimmer className="h-4 w-56 max-w-full" />
               <Shimmer className="mt-3 h-4 w-full" />
               <Shimmer className="mt-2 h-4 w-full max-w-[80%]" />
@@ -473,7 +473,7 @@ const ApplicationDetailSkeleton = () => (
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Shimmer key={i} className="h-[58px] w-full rounded-xl" />
+              <Shimmer key={i} className="h-14.5 w-full rounded-xl" />
             ))}
           </div>
         </section>
@@ -488,7 +488,7 @@ const ApplicationDetailSkeleton = () => (
             </div>
           </div>
 
-          <Shimmer className="h-[80px] w-full rounded-xl" />
+          <Shimmer className="h-20 w-full rounded-xl" />
         </section>
 
         {/* Supporting Documents */}
@@ -503,7 +503,7 @@ const ApplicationDetailSkeleton = () => (
 
           <div className="space-y-3">
             {Array.from({ length: 2 }).map((_, i) => (
-              <Shimmer key={i} className="h-[80px] w-full rounded-xl" />
+              <Shimmer key={i} className="h-20 w-full rounded-xl" />
             ))}
           </div>
         </section>
@@ -516,7 +516,7 @@ const ApplicationDetailSkeleton = () => (
           <Shimmer className="mt-3 h-3 w-full" />
           <Shimmer className="mt-2 h-3 w-[80%]" />
 
-          <div className="my-5 border-t border-white/[0.08]" />
+          <div className="my-5 border-t border-white/8" />
 
           <Shimmer className="h-12 w-full rounded-xl" />
           <Shimmer className="mt-3 h-12 w-full rounded-xl" />
@@ -558,7 +558,7 @@ const DocumentCard = ({
   const previewable = isPreviewable(name);
 
   return (
-    <div className="group flex items-center gap-3.5 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04] hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]">
+    <div className="group flex items-center gap-3.5 rounded-xl border border-white/8 bg-white/2 p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/4 hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]">
       {/* File logo: clean thumbnail for images, tinted sheet otherwise */}
 
       {meta.image && thumbnailUrl ? (
@@ -618,7 +618,7 @@ const DocumentCard = ({
             type="button"
             onClick={onPreview}
             aria-label={`Preview ${name}`}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-white/55 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/8 text-white/55 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
           >
             <Eye size={16} />
           </button>
@@ -628,7 +628,7 @@ const DocumentCard = ({
           type="button"
           onClick={() => downloadFile(name, href)}
           aria-label={`Download ${name}`}
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] text-white/55 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/8 text-white/55 transition hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399]"
         >
           <Download size={16} />
         </button>
@@ -638,7 +638,7 @@ const DocumentCard = ({
 };
 
 const EmptyDocuments = ({ text }: { text: string }) => (
-  <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-5 py-8 text-center">
+  <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/1 px-5 py-8 text-center">
     <Paperclip size={22} className="text-white/25" />
 
     <p className="text-sm text-white/45">{text}</p>
@@ -883,12 +883,12 @@ const InstructorApplicationAdminDetailPage = () => {
         <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-[#34D399]/[0.07] blur-3xl" />
 
         {status !== "rejected" && (
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/40 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/40 to-transparent" />
         )}
 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 items-start gap-4">
-            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-br from-[#34D399]/25 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7] ring-1 ring-[#34D399]/10 shadow-[0_0_30px_-8px_rgba(52,211,153,0.5)]">
+            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#34D399]/25 bg-linear-to-br from-[#34D399]/25 to-[#059669]/10 text-xl font-semibold text-[#6EE7B7] ring-1 ring-[#34D399]/10 shadow-[0_0_30px_-8px_rgba(52,211,153,0.5)]">
               {/* Fallback initials */}
 
               {application.full_name
@@ -1040,7 +1040,7 @@ const InstructorApplicationAdminDetailPage = () => {
               {application.categories.map((category) => (
                 <span
                   key={category}
-                  className="rounded-lg border border-[#34D399]/20 bg-[#34D399]/[0.08] px-3 py-2 text-sm text-[#6EE7B7] transition hover:border-[#34D399]/40 hover:bg-[#34D399]/[0.12]"
+                  className="rounded-lg border border-[#34D399]/20 bg-[#34D399]/8 px-3 py-2 text-sm text-[#6EE7B7] transition hover:border-[#34D399]/40 hover:bg-[#34D399]/12"
                 >
                   {category}
                 </span>
@@ -1068,7 +1068,7 @@ const InstructorApplicationAdminDetailPage = () => {
                 </p>
               </div>
 
-              <div className="border-t border-white/[0.08] pt-5">
+              <div className="border-t border-white/8 pt-5">
                 <h3 className="text-sm font-medium text-white/90">
                   Motivation to Become an Instructor
                 </h3>
@@ -1096,7 +1096,7 @@ const InstructorApplicationAdminDetailPage = () => {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.04] hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]"
+                  className="group flex items-center justify-between gap-3 rounded-xl border border-white/8 bg-white/2 p-4 transition-all duration-200 hover:border-[#34D399]/30 hover:bg-[#34D399]/4 hover:shadow-[0_0_24px_-14px_rgba(52,211,153,0.7)]"
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <Icon size={18} className="shrink-0 text-[#34D399]" />
@@ -1181,7 +1181,7 @@ const InstructorApplicationAdminDetailPage = () => {
 
         <aside className="space-y-6 xl:sticky xl:top-6">
           <section className={`relative overflow-hidden p-5 ${cardSurface}`}>
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/40 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/40 to-transparent" />
 
             {status === "pending" && (
               <>
@@ -1198,7 +1198,7 @@ const InstructorApplicationAdminDetailPage = () => {
 
             {status === "pending" ? (
               <>
-                <div className="my-5 border-t border-white/[0.08]" />
+                <div className="my-5 border-t border-white/8" />
 
                 <button
                   type="button"
@@ -1212,7 +1212,7 @@ const InstructorApplicationAdminDetailPage = () => {
                 <button
                   type="button"
                   onClick={handleRejectApplication}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/[0.04] px-4 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500/10 active:scale-[0.99]"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/4 px-4 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500/10 active:scale-[0.99]"
                 >
                   <XCircle size={17} />
                   Reject application
@@ -1415,7 +1415,7 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
       role="presentation"
       onClick={onClose}
     >
@@ -1426,11 +1426,11 @@ const FilePreviewModal = ({ name, url, onClose }: FilePreviewModalProps) => {
         onClick={(event) => event.stopPropagation()}
         className="relative flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] ring-1 ring-[#34D399]/10"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent" />
 
         {/* Header — preview only, so just a close button */}
 
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-[#34D399]/[0.06] to-transparent px-5 py-4">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-linear-to-b from-[#34D399]/6 to-transparent px-5 py-4">
           <div className="flex min-w-0 items-center gap-3">
             <FileTypeIcon
               meta={meta}

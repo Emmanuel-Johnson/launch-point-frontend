@@ -44,7 +44,7 @@ const ConfirmPasswordModal = ({
       aria-modal="true"
       aria-labelledby="confirm-password-title"
       aria-describedby="confirm-password-description"
-      className="confirm-password-modal-overlay fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/75 px-4"
+      className="confirm-password-modal-overlay fixed inset-0 z-2147483647 flex items-center justify-center bg-black/75 px-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isLoading) {
           onCancel();
@@ -78,13 +78,13 @@ const ConfirmPasswordModal = ({
         }
       `}</style>
 
-      <div className="confirm-password-modal-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]">
+      <div className="confirm-password-modal-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-white/8 bg-[#0A0A0A] shadow-[0_25px_70px_rgba(0,0,0,0.65)]">
         {/* Top Accent Bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-[#3B82F6] to-[#60A5FA]" />
+        <div className="h-1 w-full bg-linear-to-r from-[#3B82F6] to-[#60A5FA]" />
 
         {/* Header */}
-        <div className="flex items-start gap-4 border-b border-white/[0.06] px-6 py-5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/[0.1] text-[#93C5FD]">
+        <div className="flex items-start gap-4 border-b border-white/6 px-6 py-5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#93C5FD]">
             <LockKeyhole className="h-5 w-5" strokeWidth={1.8} />
           </div>
 
@@ -105,7 +105,7 @@ const ConfirmPasswordModal = ({
         {/* Content */}
         <div className="px-6 py-6">
           {/* Description */}
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+          <div className="rounded-xl border border-white/6 bg-white/2.5 px-4 py-3">
             <p
               id="confirm-password-description"
               className="text-sm leading-6 text-white/60"
@@ -117,7 +117,7 @@ const ConfirmPasswordModal = ({
           </div>
 
           {/* Warning */}
-          <div className="mt-4 flex gap-3 rounded-xl border border-[#E8C67A]/15 bg-[#E8C67A]/[0.05] px-4 py-3">
+          <div className="mt-4 flex gap-3 rounded-xl border border-[#E8C67A]/15 bg-[#E8C67A]/5 px-4 py-3">
             <AlertTriangle
               className="mt-0.5 h-4 w-4 shrink-0 text-[#E8C67A]/80"
               strokeWidth={1.8}
@@ -135,7 +135,7 @@ const ConfirmPasswordModal = ({
               type="button"
               disabled={isLoading}
               onClick={onCancel}
-              className="flex-1 cursor-pointer rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex-1 cursor-pointer rounded-xl border border-white/8 bg-white/2.5 px-4 py-2.5 text-sm font-medium text-white/55 transition-all duration-200 hover:border-white/[0.14] hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               Cancel
             </button>
@@ -144,7 +144,7 @@ const ConfirmPasswordModal = ({
               type="button"
               disabled={isLoading}
               onClick={onConfirm}
-              className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:from-[#2563EB] hover:to-[#60A5FA] disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#3B82F6] to-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:from-[#2563EB] hover:to-[#60A5FA] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isLoading ? (
                 <svg

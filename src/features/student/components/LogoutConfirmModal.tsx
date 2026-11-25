@@ -48,7 +48,7 @@ const LogoutConfirmModal = ({
       aria-modal="true"
       aria-labelledby="logout-modal-title"
       aria-describedby="logout-modal-description"
-      className="lpc-backdrop fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-black/70 px-4 backdrop-blur-md supports-[backdrop-filter]:bg-black/60"
+      className="lpc-backdrop fixed inset-0 z-9999 flex items-center justify-center overflow-hidden bg-black/70 px-4 backdrop-blur-md supports-backdrop-filter:bg-black/60"
       onClick={() => {
         if (!isLoading) {
           onCancel();
@@ -57,7 +57,7 @@ const LogoutConfirmModal = ({
     >
       {/* Ambient red aurora glow */}
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 -rotate-[14deg] rounded-[42%] blur-[150px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-112 w-184 -translate-x-1/2 -translate-y-1/2 rotate-[-14deg] rounded-[42%] blur-[150px]"
         style={{
           background:
             "conic-gradient(from 200deg at 50% 50%, rgba(239,68,68,0.20), rgba(244,63,94,0.10), rgba(220,38,38,0.18), rgba(244,63,94,0.10), rgba(239,68,68,0.20))",
@@ -65,10 +65,10 @@ const LogoutConfirmModal = ({
       />
 
       {/* Directional light beam */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[40rem] w-44 -translate-x-1/2 -translate-y-1/2 rotate-[38deg] rounded-full bg-gradient-to-b from-transparent via-rose-500/20 to-transparent blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-160 w-44 -translate-x-1/2 -translate-y-1/2 rotate-38 rounded-full bg-linear-to-b from-transparent via-rose-500/20 to-transparent blur-[100px]" />
 
       {/* Warm accent glow */}
-      <div className="pointer-events-none absolute left-[40%] top-[34%] h-40 w-72 -translate-x-1/2 -translate-y-1/2 -rotate-[20deg] rounded-[45%] bg-red-600/15 blur-[110px]" />
+      <div className="pointer-events-none absolute left-[40%] top-[34%] h-40 w-72 -translate-x-1/2 -translate-y-1/2 rotate-[-20deg] rounded-[45%] bg-red-600/15 blur-[110px]" />
 
       {/* Modal animations */}
       <style>{`
@@ -135,9 +135,9 @@ const LogoutConfirmModal = ({
         className="lpc-card relative w-full max-w-md"
       >
         {/* Gradient hairline border */}
-        <div className="relative overflow-hidden rounded-[1.25rem] bg-gradient-to-b from-white/[0.16] via-white/[0.05] to-white/[0.015] p-px shadow-[0_40px_120px_-24px_rgba(0,0,0,0.95)]">
+        <div className="relative overflow-hidden rounded-[1.25rem] bg-linear-to-b from-white/16 via-white/5 to-white/1.5 p-px shadow-[0_40px_120px_-24px_rgba(0,0,0,0.95)]">
           {/* Inner surface */}
-          <div className="relative overflow-hidden rounded-[calc(1.25rem-1px)] bg-gradient-to-b from-[#0d0d0d] to-[#050505] p-7">
+          <div className="relative overflow-hidden rounded-[calc(1.25rem-1px)] bg-linear-to-b from-[#0d0d0d] to-[#050505] p-7">
             {/* Fine grain texture */}
             <div
               className="pointer-events-none absolute inset-0 opacity-[0.12] mix-blend-soft-light"
@@ -148,16 +148,16 @@ const LogoutConfirmModal = ({
             />
 
             {/* Sweeping sheen on mount */}
-            <div className="lpc-card-sheen pointer-events-none absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+            <div className="lpc-card-sheen pointer-events-none absolute inset-y-0 -left-1/3 w-1/2 bg-linear-to-r from-transparent via-white/[0.07] to-transparent" />
 
             {/* Soft spotlight */}
             <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-white/[0.07] blur-3xl" />
 
             {/* Top hairline highlight */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/25 to-transparent" />
 
             {/* Logout Icon */}
-            <div className="relative mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-b from-red-500/20 to-red-500/5 text-red-300 ring-1 ring-inset ring-red-400/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_8px_24px_-8px_rgba(239,68,68,0.5)]">
+            <div className="relative mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-b from-red-500/20 to-red-500/5 text-red-300 ring-1 ring-inset ring-red-400/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_8px_24px_-8px_rgba(239,68,68,0.5)]">
               <div className="pointer-events-none absolute inset-0 rounded-2xl bg-red-500/20 blur-md" />
 
               <svg
@@ -185,14 +185,14 @@ const LogoutConfirmModal = ({
             <div className="relative mt-5 cursor-default text-center">
               <h3
                 id="logout-modal-title"
-                className="bg-gradient-to-b from-white via-white to-white/55 bg-clip-text font-['Space_Grotesk'] text-2xl font-light tracking-tight text-transparent"
+                className="bg-linear-to-b from-white via-white to-white/55 bg-clip-text font-['Space_Grotesk'] text-2xl font-light tracking-tight text-transparent"
               >
                 Log out, {user?.full_name || "your account"}?
               </h3>
 
               <p
                 id="logout-modal-description"
-                className="mx-auto mt-3 max-w-[22rem] text-[0.9375rem] font-light leading-relaxed tracking-wide text-white/50"
+                className="mx-auto mt-3 max-w-88 text-[0.9375rem] font-light leading-relaxed tracking-wide text-white/50"
               >
                 You'll be signed out of your account and returned to the sign-in
                 page.
@@ -206,10 +206,10 @@ const LogoutConfirmModal = ({
                 type="button"
                 disabled={isLoading}
                 onClick={onConfirm}
-                className="group relative flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-b from-red-500/25 to-red-600/15 px-4 py-2.5 text-sm font-medium text-red-100 ring-1 ring-inset ring-red-400/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300 ease-out hover:from-red-500/35 hover:to-red-600/25 hover:text-white hover:ring-red-400/50 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_8px_24px_-10px_rgba(239,68,68,0.65)] motion-safe:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
+                className="group relative flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl bg-linear-to-b from-red-500/25 to-red-600/15 px-4 py-2.5 text-sm font-medium text-red-100 ring-1 ring-inset ring-red-400/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300 ease-out hover:from-red-500/35 hover:to-red-600/25 hover:text-white hover:ring-red-400/50 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_8px_24px_-10px_rgba(239,68,68,0.65)] motion-safe:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
               >
                 {/* Glass Shine */}
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full motion-reduce:hidden" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full motion-reduce:hidden" />
 
                 {isLoading ? (
                   <svg
@@ -234,10 +234,10 @@ const LogoutConfirmModal = ({
                 autoFocus
                 disabled={isLoading}
                 onClick={onCancel}
-                className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm font-medium text-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-300 ease-out hover:border-white/20 hover:bg-white/[0.06] hover:text-white motion-safe:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
+                className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/2 px-4 py-2.5 text-sm font-medium text-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-300 ease-out hover:border-white/20 hover:bg-white/6 hover:text-white motion-safe:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
               >
                 {/* Glass Shine */}
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.1] to-transparent transition-transform duration-1000 group-hover:translate-x-full motion-reduce:hidden" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full motion-reduce:hidden" />
 
                 <span className="relative z-10">Cancel</span>
               </button>

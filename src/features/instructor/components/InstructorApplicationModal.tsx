@@ -365,7 +365,7 @@ const FilePreviewModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-120 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
       role="presentation"
       onClick={onClose}
     >
@@ -377,10 +377,10 @@ const FilePreviewModal = ({
         className="relative flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0B10] shadow-2xl shadow-blue-950/40 ring-1 ring-blue-500/10"
       >
         {/* Top gradient accent line */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-blue-400/70 to-transparent" />
 
         {/* Header */}
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-4">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-linear-to-b from-blue-500/6 to-transparent px-5 py-4">
           <div className="flex min-w-0 items-center gap-3">
             <FileTypeIcon
               meta={meta}
@@ -489,7 +489,7 @@ const SupportingFileCard = ({
   const previewable = isPreviewable(file);
 
   return (
-    <div className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40">
+    <div className="group/file flex flex-col rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/8 to-white/2 p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40">
       <div className="flex items-start gap-3">
         {/* File logo: clean thumbnail for images, file-type icon otherwise */}
         {meta.image && thumbnail ? (
@@ -1279,10 +1279,10 @@ const InstructorApplicationModal = ({
     ) : null;
 
   const sectionClass =
-    "flex flex-col rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.01] p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6";
+    "flex flex-col rounded-2xl border border-white/[0.07] bg-linear-to-b from-white/[0.035] to-white/1 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] sm:p-6";
 
   const iconTileClass =
-    "flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/25 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]";
+    "flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/25 bg-linear-to-br from-blue-500/25 to-blue-600/5 text-blue-300 shadow-[0_0_20px_-6px_rgba(59,130,246,0.6)]";
 
   const profileImageUrl =
     form.profile_image && form.profile_image !== DEFAULT_PROFILE_IMAGE
@@ -1293,7 +1293,7 @@ const InstructorApplicationModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-0 backdrop-blur-md sm:p-5"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-0 backdrop-blur-md sm:p-5"
       role="presentation"
     >
       <section
@@ -1308,9 +1308,9 @@ const InstructorApplicationModal = ({
         <div className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-blue-600/15 blur-3xl" />
 
         {/* Top gradient accent line */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-blue-400/70 to-transparent" />
 
-        <header className="relative flex shrink-0 items-center justify-between border-b border-white/10 bg-gradient-to-b from-blue-500/[0.06] to-transparent px-5 py-5 sm:px-8">
+        <header className="relative flex shrink-0 items-center justify-between border-b border-white/10 bg-linear-to-b from-blue-500/6 to-transparent px-5 py-5 sm:px-8">
           <div className="flex items-center gap-3.5">
             <div className={iconTileClass}>
               <BriefcaseBusiness className="h-4.5 w-4.5" />
@@ -1434,7 +1434,7 @@ const InstructorApplicationModal = ({
                       setIsLoading(false);
                     });
                 }}
-                className="mt-5 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition hover:from-blue-400 hover:to-blue-500"
+                className="mt-5 rounded-xl bg-linear-to-b from-blue-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition hover:from-blue-400 hover:to-blue-500"
               >
                 Try again
               </button>
@@ -1474,7 +1474,7 @@ const InstructorApplicationModal = ({
                         className="h-24 w-24 rounded-2xl border border-blue-400/20 object-cover shadow-lg shadow-blue-950/40 ring-2 ring-blue-500/10"
                       />
                     ) : (
-                      <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-blue-400/20 bg-gradient-to-br from-blue-500/25 to-blue-600/5 text-2xl font-semibold text-blue-200 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
+                      <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-blue-400/20 bg-linear-to-br from-blue-500/25 to-blue-600/5 text-2xl font-semibold text-blue-200 shadow-[0_0_30px_-10px_rgba(59,130,246,0.7)]">
                         {form.full_name
                           ? form.full_name
                               .split(" ")
@@ -1608,7 +1608,7 @@ const InstructorApplicationModal = ({
                         inputMode="numeric"
                         pattern="[0-9]*"
                         autoComplete="off"
-                        className={`${getInputClass("experience_years")} !mt-0 pr-16`}
+                        className={`${getInputClass("experience_years")} mt-0! pr-16`}
                         value={form.experience_years}
                         onChange={(e) =>
                           updateField("experience_years", e.target.value)
@@ -1632,7 +1632,7 @@ const InstructorApplicationModal = ({
                         inputMode="numeric"
                         pattern="[0-9]*"
                         autoComplete="off"
-                        className={`${getInputClass("experience_months")} !mt-0 pr-20`}
+                        className={`${getInputClass("experience_months")} mt-0! pr-20`}
                         value={form.experience_months}
                         onChange={(e) =>
                           updateField("experience_months", e.target.value)
@@ -1663,7 +1663,7 @@ const InstructorApplicationModal = ({
 
                 <div
                   id="categories-section"
-                  className="mt-6 rounded-xl border border-white/[0.06] bg-[#0D0F15]/60 p-4"
+                  className="mt-6 rounded-xl border border-white/6 bg-[#0D0F15]/60 p-4"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <label className={labelClass}>
@@ -1727,14 +1727,14 @@ const InstructorApplicationModal = ({
                           className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${
                             selected
                               ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-[0_0_14px_-4px_rgba(59,130,246,0.7)]"
-                              : "border-white/10 bg-white/[0.02] text-zinc-400 hover:border-blue-400/40 hover:bg-blue-500/[0.06] hover:text-white"
+                              : "border-white/10 bg-white/2 text-zinc-400 hover:border-blue-400/40 hover:bg-blue-500/6 hover:text-white"
                           }`}
                         >
                           <span
                             className={`flex h-4 w-4 items-center justify-center rounded-full border ${
                               selected
                                 ? "border-blue-300/60 bg-blue-400/20"
-                                : "border-zinc-600 bg-white/[0.03]"
+                                : "border-zinc-600 bg-white/3"
                             }`}
                           >
                             {selected ? (
@@ -1921,7 +1921,7 @@ const InstructorApplicationModal = ({
                     </div>
 
                     {existingResume && !resume && (
-                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
+                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/8 to-white/2 p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
                         <div className="flex items-center gap-4">
                           <FileTypeIcon
                             meta={getFileMeta(existingResume.name)}
@@ -1973,7 +1973,7 @@ const InstructorApplicationModal = ({
                         </div>
                         <label
                           htmlFor="existing-resume-upload"
-                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/3 px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
                         >
                           Change resume
                         </label>
@@ -1992,7 +1992,7 @@ const InstructorApplicationModal = ({
 
                     {resume ? (
                       /* Selected resume */
-                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
+                      <div className="mt-3 rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/8 to-white/2 p-4 shadow-[0_0_25px_-12px_rgba(59,130,246,0.5)]">
                         <div className="flex items-center gap-4">
                           {/* File logo */}
                           <FileTypeIcon
@@ -2061,7 +2061,7 @@ const InstructorApplicationModal = ({
                         {/* Change resume */}
                         <label
                           htmlFor="resume-upload"
-                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
+                          className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/3 px-4 py-2 text-xs font-medium text-zinc-300 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
                         >
                           Change resume
                         </label>
@@ -2104,10 +2104,10 @@ const InstructorApplicationModal = ({
                         }}
                         className={`group mt-3 flex flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-8 text-center transition ${
                           resumeError
-                            ? "border-rose-400/50 bg-rose-400/[0.03]"
+                            ? "border-rose-400/50 bg-rose-400/3"
                             : isDraggingResume
-                              ? "border-blue-400 bg-blue-500/[0.08] shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
-                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
+                              ? "border-blue-400 bg-blue-500/8 shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
+                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/5"
                         }`}
                       >
                         {/* Upload icon */}
@@ -2115,7 +2115,7 @@ const InstructorApplicationModal = ({
                           className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
                             isDraggingResume
                               ? "border-blue-400/50 bg-blue-500/20 text-blue-200"
-                              : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                              : "border-white/10 bg-white/4 text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
                           }`}
                         >
                           <UploadCloud className="h-5 w-5" />
@@ -2162,7 +2162,7 @@ const InstructorApplicationModal = ({
                   </div>
 
                   {/* Divider */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                  <div className="h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
 
                   {/* SUPPORTING FILES */}
                   <div id="supporting-files-section" className="flex flex-col">
@@ -2214,10 +2214,10 @@ const InstructorApplicationModal = ({
                         }}
                         className={`group mt-3 flex flex-col items-center justify-center rounded-2xl border border-dashed px-5 py-7 text-center transition ${
                           supportingFilesError
-                            ? "border-rose-400/50 bg-rose-400/[0.03]"
+                            ? "border-rose-400/50 bg-rose-400/3"
                             : isDraggingSupporting
-                              ? "border-blue-400 bg-blue-500/[0.08] shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
-                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/[0.05]"
+                              ? "border-blue-400 bg-blue-500/8 shadow-[0_0_25px_-8px_rgba(59,130,246,0.8)]"
+                              : "border-white/15 bg-[#0D0F15] hover:border-blue-400/60 hover:bg-blue-500/5"
                         }`}
                       >
                         {/* Upload icon */}
@@ -2225,7 +2225,7 @@ const InstructorApplicationModal = ({
                           className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
                             isDraggingSupporting
                               ? "border-blue-400/50 bg-blue-500/20 text-blue-200"
-                              : "border-white/10 bg-white/[0.04] text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
+                              : "border-white/10 bg-white/4 text-blue-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10"
                           }`}
                         >
                           <UploadCloud className="h-5 w-5" />
@@ -2280,7 +2280,7 @@ const InstructorApplicationModal = ({
                         {existingSupportingFiles.map((file) => (
                           <div
                             key={`existing-${file.id}`}
-                            className="flex min-w-0 flex-col rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.08] to-white/[0.02] p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40"
+                            className="flex min-w-0 flex-col rounded-2xl border border-blue-400/25 bg-linear-to-br from-blue-500/8 to-white/2 p-4 shadow-[0_0_25px_-14px_rgba(59,130,246,0.5)] transition hover:border-blue-400/40"
                           >
                             <div className="flex min-w-0 items-start gap-3">
                               <FileTypeIcon
@@ -2358,7 +2358,7 @@ const InstructorApplicationModal = ({
               {/* TERMS */}
               <label
                 id="terms-section"
-                className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-gradient-to-b from-blue-500/[0.05] to-white/[0.01] p-4 transition hover:border-blue-400/25"
+                className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/8 bg-linear-to-b from-blue-500/5 to-white/1 p-4 transition hover:border-blue-400/25"
               >
                 <input
                   type="checkbox"
@@ -2384,7 +2384,7 @@ const InstructorApplicationModal = ({
 
             {/* FOOTER */}
 
-            <footer className="flex shrink-0 flex-col-reverse gap-3 border-t border-white/10 bg-gradient-to-t from-blue-500/[0.05] to-[#0A0B10]/95 px-5 py-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
+            <footer className="flex shrink-0 flex-col-reverse gap-3 border-t border-white/10 bg-linear-to-t from-blue-500/5 to-[#0A0B10]/95 px-5 py-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
               <p className="text-center text-[11px] text-zinc-500 sm:text-left">
                 Make sure your details are accurate. Our team will review your
                 application and notify you of the outcome.
@@ -2403,9 +2403,9 @@ const InstructorApplicationModal = ({
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="w-60 group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                  className="w-60 group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-b from-blue-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/30 transition hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-900/50 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
-                  <span className="flex h-5 min-w-[150px] items-center justify-center">
+                  <span className="flex h-5 min-w-37.5 items-center justify-center">
                     {isSubmitting ? (
                       <span
                         className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"

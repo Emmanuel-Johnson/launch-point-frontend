@@ -140,7 +140,7 @@ const SectionHeader = ({
   return (
     <div className="flex items-start gap-4">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#60A5FA] ring-1 ring-inset ring-[#3B82F6]/20">
-        <Icon className="h-[23px] w-[23px]" strokeWidth={1.8} />
+        <Icon className="h-5.75 w-5.75" strokeWidth={1.8} />
       </div>
 
       <div>
@@ -162,9 +162,9 @@ const SectionHeader = ({
 /* A tiny shimmering block used as the skeleton primitive. */
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[isSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[isSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -181,7 +181,7 @@ const SettingsSkeleton = () => {
       <div className="space-y-8">
         {/* PAGE HEADER */}
         <section>
-          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+          <div className="rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
             <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
               <Shimmer className="h-4 w-24" />
               <Shimmer className="mt-3 h-9 w-44" />
@@ -193,7 +193,7 @@ const SettingsSkeleton = () => {
         {/* SETTINGS LAYOUT */}
         <section className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* SIDEBAR */}
-          <aside className="h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+          <aside className="h-fit rounded-3xl border border-white/6 bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
             <div className="px-3 py-3">
               <Shimmer className="h-3 w-20" />
             </div>
@@ -213,7 +213,7 @@ const SettingsSkeleton = () => {
 
           {/* MAIN CONTENT */}
           <main className="min-w-0">
-            <div className="rounded-3xl bg-gradient-to-b from-white/[0.1] via-white/[0.04] to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
+            <div className="rounded-3xl bg-linear-to-b from-white/10 via-white/4 to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
               <div className="relative overflow-hidden rounded-[23px] bg-[#0A0A0A] p-5 sm:p-8">
                 {/* Section header */}
                 <div className="mb-8 flex items-start gap-4">
@@ -225,7 +225,7 @@ const SettingsSkeleton = () => {
                 </div>
 
                 {/* Card */}
-                <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-4 sm:p-6">
+                <div className="rounded-2xl border border-white/[0.07] bg-white/1.5 p-4 sm:p-6">
                   <div className="mb-6 flex items-center gap-3">
                     <Shimmer className="h-10 w-10 shrink-0 rounded-xl" />
                     <div>
@@ -238,7 +238,7 @@ const SettingsSkeleton = () => {
                     {Array.from({ length: 3 }).map((_, i) => (
                       <div key={i}>
                         <Shimmer className="mb-2 h-4 w-32" />
-                        <Shimmer className="h-[46px] w-full rounded-xl" />
+                        <Shimmer className="h-11.5 w-full rounded-xl" />
                       </div>
                     ))}
 
@@ -512,7 +512,7 @@ const InstructorSettingsPage = () => {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-white/[0.08] bg-[#0F0F12] px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 hover:border-white/[0.14] focus:border-[#3B82F6]/60 focus:bg-[#121216] focus:ring-4 focus:ring-[#3B82F6]/[0.08]";
+    "w-full rounded-xl border border-white/8 bg-[#0F0F12] px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/25 hover:border-white/[0.14] focus:border-[#3B82F6]/60 focus:bg-[#121216] focus:ring-4 focus:ring-[#3B82F6]/8";
 
   /* ---------------------------------------------------------- loading */
 
@@ -530,7 +530,7 @@ const InstructorSettingsPage = () => {
           className="animate-page-item"
           style={{ animationDelay: "80ms" }}
         >
-          <div className="rounded-[26px] bg-gradient-to-b from-white/[0.14] via-white/[0.05] to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
+          <div className="rounded-[26px] bg-linear-to-b from-white/[0.14] via-white/5 to-transparent p-px shadow-[0_24px_70px_-20px_rgba(0,0,0,0.85)]">
             <div className="relative overflow-hidden rounded-[25px] bg-[#0A0A0A] p-6 sm:p-8">
               <div
                 aria-hidden="true"
@@ -544,12 +544,12 @@ const InstructorSettingsPage = () => {
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -bottom-24 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/[0.05] blur-3xl"
+                className="pointer-events-none absolute -bottom-24 -right-16 h-52 w-52 rounded-full bg-[#E8C67A]/5 blur-3xl"
               />
 
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/50 to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#3B82F6]/50 to-transparent"
               />
 
               <div
@@ -593,7 +593,7 @@ const InstructorSettingsPage = () => {
         <section className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* ---------------------------------------------- SIDEBAR */}
           <aside
-            className="animate-page-item h-fit rounded-3xl border border-white/[0.06] bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+            className="animate-page-item h-fit rounded-3xl border border-white/6 bg-[#0A0A0A] p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
             style={{ animationDelay: "140ms" }}
           >
             <p className="px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">
@@ -613,19 +613,19 @@ const InstructorSettingsPage = () => {
                     aria-current={isActive ? "page" : undefined}
                     className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-xl p-3 text-left transition-all duration-300 ${
                       isActive
-                        ? "bg-[#3B82F6]/[0.10] text-white ring-1 ring-inset ring-[#3B82F6]/20"
+                        ? "bg-[#3B82F6]/10 text-white ring-1 ring-inset ring-[#3B82F6]/20"
                         : "text-white/55 hover:translate-x-0.5 hover:bg-white/[0.035] hover:text-white"
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute bottom-3 left-0 top-3 w-[3px] rounded-r-full bg-gradient-to-b from-[#3B82F6] to-[#60A5FA]" />
+                      <span className="absolute bottom-3 left-0 top-3 w-0.75 rounded-r-full bg-linear-to-b from-[#3B82F6] to-[#60A5FA]" />
                     )}
 
                     <div
                       className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
                         isActive
                           ? "bg-[#3B82F6]/15 text-[#60A5FA]"
-                          : "bg-white/[0.04] text-white/45 group-hover:bg-[#3B82F6]/10 group-hover:text-[#60A5FA]"
+                          : "bg-white/4 text-white/45 group-hover:bg-[#3B82F6]/10 group-hover:text-[#60A5FA]"
                       }`}
                     >
                       <Icon size={19} strokeWidth={1.8} />
@@ -654,16 +654,16 @@ const InstructorSettingsPage = () => {
             className="animate-page-item min-w-0"
             style={{ animationDelay: "200ms" }}
           >
-            <div className="rounded-3xl bg-gradient-to-b from-white/[0.1] via-white/[0.04] to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
+            <div className="rounded-3xl bg-linear-to-b from-white/10 via-white/4 to-transparent p-px shadow-[0_18px_60px_-24px_rgba(0,0,0,0.8)]">
               <div className="relative overflow-hidden rounded-[23px] bg-[#0A0A0A] p-5 sm:p-8">
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-24 right-0 h-56 w-56 rounded-full bg-[#3B82F6]/[0.08] blur-3xl"
+                  className="pointer-events-none absolute -top-24 right-0 h-56 w-56 rounded-full bg-[#3B82F6]/8 blur-3xl"
                 />
 
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/40 to-transparent"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#3B82F6]/40 to-transparent"
                 />
 
                 <div className="relative">
@@ -679,7 +679,7 @@ const InstructorSettingsPage = () => {
                       </div>
 
                       {/* Change Password Card */}
-                      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-4 sm:p-6">
+                      <div className="rounded-2xl border border-white/[0.07] bg-white/1.5 p-4 sm:p-6">
                         <div className="mb-6 flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B82F6]/10 text-[#60A5FA] ring-1 ring-inset ring-[#3B82F6]/15">
                             <LockKeyhole size={19} strokeWidth={1.8} />
@@ -828,9 +828,9 @@ const InstructorSettingsPage = () => {
                             <button
                               type="submit"
                               disabled={isSavingPassword}
-                              className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255_/_0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                              className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255/0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                             >
-                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                               {isSavingPassword ? (
                                 <>
@@ -871,7 +871,7 @@ const InstructorSettingsPage = () => {
                         />
                       </div>
 
-                      <div className="mb-5 flex items-center justify-between rounded-2xl border border-[#3B82F6]/15 bg-[#3B82F6]/[0.04] p-4">
+                      <div className="mb-5 flex items-center justify-between rounded-2xl border border-[#3B82F6]/15 bg-[#3B82F6]/4 p-4">
                         <div>
                           <p
                             className="text-sm font-medium text-white"
@@ -924,7 +924,7 @@ const InstructorSettingsPage = () => {
                                 onClick={() => toggleNotification(option.key)}
                                 className={`relative h-6 w-11 shrink-0 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#3B82F6]/20 ${
                                   isEnabled
-                                    ? "bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] shadow-[0_0_14px_rgba(59,130,246,0.25)]"
+                                    ? "bg-linear-to-r from-[#3B82F6] to-[#60A5FA] shadow-[0_0_14px_rgba(59,130,246,0.25)]"
                                     : "bg-white/15 hover:bg-white/25"
                                 }`}
                               >
@@ -948,9 +948,9 @@ const InstructorSettingsPage = () => {
                           type="button"
                           onClick={handleNotificationSave}
                           disabled={isSavingNotifications}
-                          className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255_/_0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                          className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[oklch(54%_0.20_255)]/30 bg-[oklch(54%_0.20_255)]/10 px-5 text-sm font-medium text-[oklch(72%_0.15_255)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[oklch(54%_0.20_255)]/15 hover:shadow-[0_8px_24px_-6px_oklch(54%_0.20_255/0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                         >
-                          <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                          <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[oklch(54%_0.20_255)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                           <Save
                             size={16}

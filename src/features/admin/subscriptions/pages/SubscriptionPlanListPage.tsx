@@ -54,9 +54,9 @@ interface SubscriptionPlanListItem {
 
 const Shimmer = ({ className = "" }: { className?: string }) => (
   <div
-    className={`relative overflow-hidden rounded-md bg-white/[0.06] ${className}`}
+    className={`relative overflow-hidden rounded-md bg-white/6 ${className}`}
   >
-    <div className="absolute inset-0 -translate-x-full animate-[spSkeletonShimmer_1.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+    <div className="absolute inset-0 -translate-x-full animate-[spSkeletonShimmer_1.6s_ease-in-out_infinite] bg-linear-to-r from-transparent via-white/8 to-transparent" />
   </div>
 );
 
@@ -65,7 +65,7 @@ const PlanRowsSkeleton = () => {
   return (
     <>
       {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
-        <tr key={`skeleton-${index}`} className="border-b border-white/[0.04]">
+        <tr key={`skeleton-${index}`} className="border-b border-white/4">
           {/* Plan */}
           <td className="px-6 py-5">
             <div className="flex items-center gap-3">
@@ -390,14 +390,14 @@ const SubscriptionPlanListPage = () => {
 
       <div className="sp-font-body space-y-6 text-white">
         {/* ================= Hero ================= */}
-        <div className="sp-item relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
+        <div className="sp-item relative overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_60px_-40px_rgba(0,0,0,0.95)]">
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#34D399]/10 blur-3xl" />
 
-          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
+          <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#E8C67A]/20 to-transparent" />
 
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_22px_-8px_rgba(52,211,153,0.6)]">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/25 shadow-[0_0_22px_-8px_rgba(52,211,153,0.6)]">
                 <CreditCard size={22} className="text-[#34D399]" />
               </div>
 
@@ -416,9 +416,9 @@ const SubscriptionPlanListPage = () => {
             <button
               type="button"
               onClick={handleCreatePlan}
-              className="group relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start overflow-hidden rounded-xl border border-[#34D399]/30 bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 px-4 py-2.5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] sm:self-auto"
+              className="group relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start overflow-hidden rounded-xl border border-[#34D399]/30 bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 px-4 py-2.5 text-sm font-medium text-[#34D399] shadow-[0_0_20px_-8px_rgba(52,211,153,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/50 hover:from-[#34D399]/25 hover:shadow-[0_12px_30px_-12px_rgba(52,211,153,0.7)] sm:self-auto"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
               <Plus
                 size={17}
@@ -466,7 +466,7 @@ const SubscriptionPlanListPage = () => {
         </div>
 
         {/* ================= Filters ================= */}
-        <div className="sp-item flex flex-col gap-3 rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:flex-row md:items-center md:justify-between">
+        <div className="sp-item flex flex-col gap-3 rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:flex-row md:items-center md:justify-between">
           {/* Search */}
           <div className="group relative w-full md:max-w-sm">
             <Search
@@ -482,15 +482,15 @@ const SubscriptionPlanListPage = () => {
                 setSearchQuery(event.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-xl border border-white/[0.08] bg-black/30 py-2.5 pl-11 pr-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/30 hover:border-white/[0.14] focus:border-[#34D399]/40 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.08)]"
+              className="w-full rounded-xl border border-white/8 bg-black/30 py-2.5 pl-11 pr-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/30 hover:border-white/[0.14] focus:border-[#34D399]/40 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.08)]"
             />
           </div>
 
           {/* Segmented Status Filter */}
-          <div className="relative flex self-start rounded-xl border border-white/[0.08] bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:self-auto">
+          <div className="relative flex self-start rounded-xl border border-white/8 bg-black/40 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] md:self-auto">
             <span
               aria-hidden="true"
-              className="absolute bottom-1 left-1 top-1 w-[92px] rounded-lg bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              className="absolute bottom-1 left-1 top-1 w-23 rounded-lg bg-linear-to-br from-[#34D399]/25 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)] transition-transform duration-300 ease-in-out"
               style={{
                 transform: `translateX(${activeFilterIndex * 100}%)`,
               }}
@@ -507,7 +507,7 @@ const SubscriptionPlanListPage = () => {
                     setStatusFilter(key);
                     setCurrentPage(1);
                   }}
-                  className={`relative z-10 w-[92px] cursor-pointer rounded-lg py-1.5 text-xs font-medium capitalize transition-colors duration-300 ${
+                  className={`relative z-10 w-23 cursor-pointer rounded-lg py-1.5 text-xs font-medium capitalize transition-colors duration-300 ${
                     isActive
                       ? "text-[#34D399]"
                       : "text-white/50 hover:text-white/85"
@@ -521,9 +521,9 @@ const SubscriptionPlanListPage = () => {
         </div>
 
         {/* ================= Table ================= */}
-        <div className="sp-item overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_60px_-44px_rgba(0,0,0,0.95)]">
+        <div className="sp-item overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_60px_-44px_rgba(0,0,0,0.95)]">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1080px] table-fixed">
+            <table className="w-full min-w-270 table-fixed">
               <colgroup>
                 <col className="w-[25%]" />
                 <col className="w-[14%]" />
@@ -534,7 +534,7 @@ const SubscriptionPlanListPage = () => {
               </colgroup>
 
               <thead>
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left text-[11px] uppercase tracking-[0.14em] text-white/40">
+                <tr className="border-b border-white/6 bg-white/1.5 text-left text-[11px] uppercase tracking-[0.14em] text-white/40">
                   <th className="px-6 py-4 font-medium">Plan</th>
                   <th className="px-6 py-4 font-medium">Type</th>
                   <th className="px-6 py-4 text-center font-medium">Price</th>
@@ -561,7 +561,7 @@ const SubscriptionPlanListPage = () => {
                     {paginatedPlans.map((plan) => (
                       <tr
                         key={plan.id}
-                        className="border-b border-white/[0.04] transition-colors duration-300 hover:bg-white/[0.025]"
+                        className="border-b border-white/4 transition-colors duration-300 hover:bg-white/2.5"
                       >
                         {/* Plan */}
                         <td className="px-6 py-5">
@@ -572,7 +572,7 @@ const SubscriptionPlanListPage = () => {
                             }
                             className="group flex w-full min-w-0 cursor-pointer items-center gap-3 text-left"
                           >
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#34D399]/20 to-[#34D399]/5 ring-1 ring-inset ring-[#34D399]/20 transition-transform duration-300 group-hover:scale-105">
                               <CreditCard
                                 size={18}
                                 className="text-[#34D399]"
@@ -651,17 +651,17 @@ const SubscriptionPlanListPage = () => {
                               onClick={() => handleEditPlan(plan)}
                               title="Edit plan"
                               aria-label="Edit plan"
-                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
+                              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               {editingPlanId === plan.id ? (
                                 <Loader2
                                   size={15}
-                                  className="h-[15px] w-[15px] shrink-0 animate-spin"
+                                  className="h-3.75 w-3.75 shrink-0 animate-spin"
                                 />
                               ) : (
                                 <Pencil
                                   size={15}
-                                  className="h-[15px] w-[15px] shrink-0"
+                                  className="h-3.75 w-3.75 shrink-0"
                                 />
                               )}
                             </button>
@@ -673,11 +673,11 @@ const SubscriptionPlanListPage = () => {
                               onClick={() => handleStatusClick(plan)}
                               className={`group/btn relative inline-flex h-9 w-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border text-xs font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${
                                 plan.is_active
-                                  ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/[0.16]"
-                                  : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/[0.16]"
+                                  ? "border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/16"
+                                  : "border-[#34D399]/20 bg-[#34D399]/10 text-[#34D399] hover:bg-[#34D399]/16"
                               }`}
                             >
-                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
+                              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover/btn:translate-x-full" />
 
                               {updatingPlanId === plan.id ? (
                                 <Loader2
@@ -711,7 +711,7 @@ const SubscriptionPlanListPage = () => {
                         <tr
                           key={`placeholder-${index}`}
                           aria-hidden="true"
-                          className="border-b border-white/[0.03]"
+                          className="border-b border-white/3"
                         >
                           <td colSpan={6} className="px-6 py-5">
                             <div className="h-10" />
@@ -727,7 +727,7 @@ const SubscriptionPlanListPage = () => {
 
           {/* Pagination */}
           {!isLoading && filteredPlans.length > 0 && (
-            <div className="flex flex-col gap-3 border-t border-white/[0.06] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 border-t border-white/6 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-white/40">
                 Showing{" "}
                 <span className="text-white/70">
@@ -747,7 +747,7 @@ const SubscriptionPlanListPage = () => {
                   onClick={() =>
                     setCurrentPage((page) => Math.max(1, page - 1))
                   }
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:pointer-events-none disabled:opacity-30"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:pointer-events-none disabled:opacity-30"
                 >
                   <ChevronLeft size={17} />
                 </button>
@@ -767,8 +767,8 @@ const SubscriptionPlanListPage = () => {
                       onClick={() => setCurrentPage(entry)}
                       className={`sp-font-display flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-sm transition-all duration-300 ${
                         entry === currentPage
-                          ? "bg-gradient-to-br from-[#34D399]/25 to-[#34D399]/5 font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)]"
-                          : "border border-white/[0.08] bg-white/[0.02] font-medium text-white/55 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)]"
+                          ? "bg-linear-to-br from-[#34D399]/25 to-[#34D399]/5 font-semibold text-[#34D399] ring-1 ring-inset ring-[#34D399]/30 shadow-[0_0_18px_-6px_rgba(52,211,153,0.7)]"
+                          : "border border-white/8 bg-white/2 font-medium text-white/55 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)]"
                       }`}
                     >
                       {entry}
@@ -782,7 +782,7 @@ const SubscriptionPlanListPage = () => {
                   onClick={() =>
                     setCurrentPage((page) => Math.min(totalPages, page + 1))
                   }
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:pointer-events-none disabled:opacity-30"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/10 hover:text-[#34D399] hover:shadow-[0_8px_18px_-8px_rgba(52,211,153,0.6)] disabled:pointer-events-none disabled:opacity-30"
                 >
                   <ChevronRight size={17} />
                 </button>
@@ -910,7 +910,7 @@ const STAT_ACCENTS: Record<
     value: "text-[#E8C67A]",
   },
   slate: {
-    tile: "from-white/10 to-white/[0.02] ring-white/10",
+    tile: "from-white/10 to-white/2 ring-white/10",
     icon: "text-white/55",
     glow: "bg-white/10",
     border: "hover:border-white/15",
@@ -929,17 +929,17 @@ const StatCard = ({
 
   return (
     <div
-      className={`sp-item group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(0,0,0,0.95)] ${styles.border}`}
+      className={`sp-item group relative overflow-hidden rounded-2xl border border-white/6 bg-linear-to-br from-[#0B0B0B] to-[#080808] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(0,0,0,0.95)] ${styles.border}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <div
         className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${styles.glow}`}
       />
 
-      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/4 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
       <div
-        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ring-1 ring-inset transition-transform duration-500 group-hover:scale-110 ${styles.tile}`}
+        className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br ring-1 ring-inset transition-transform duration-500 group-hover:scale-110 ${styles.tile}`}
       >
         <Icon size={18} className={styles.icon} />
       </div>
@@ -978,7 +978,7 @@ const billingChipClass = (
     case "yearly":
       return "border-[#E8C67A]/25 bg-[#E8C67A]/10 text-[#E8C67A]";
     default:
-      return "border-white/[0.07] bg-white/[0.03] text-white/55";
+      return "border-white/[0.07] bg-white/3 text-white/55";
   }
 };
 

@@ -252,7 +252,7 @@ const CourseListPage = () => {
           className="animate-page-item"
           style={{ animationDelay: "80ms" }}
         >
-          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-gradient-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
+          <div className="relative overflow-hidden rounded-3xl border border-[#34D399]/20 bg-linear-to-br from-[#0B0B0B] via-[#080808] to-[#050505] p-7 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.8)]">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#34D399]/15 blur-3xl"
@@ -260,17 +260,17 @@ const CourseListPage = () => {
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/[0.06] blur-3xl"
+              className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#34D399]/6 blur-3xl"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/60 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/60 to-transparent"
             />
 
             <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-4 cursor-default">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#34D399]/20 to-[#34D399]/[0.04] text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#34D399]/25">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-[#34D399]/20 to-[#34D399]/4 text-[#34D399] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] ring-1 ring-inset ring-[#34D399]/25">
                   <BookOpen className="h-5 w-5" strokeWidth={1.8} />
                 </div>
 
@@ -293,7 +293,7 @@ const CourseListPage = () => {
                   onClick={() => navigate("/admin/courses/course-levels")}
                   className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-4 text-sm font-medium text-[#34D399] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34D399]/15 hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.35)]"
                 >
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   <SlidersHorizontal
                     className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
@@ -307,9 +307,9 @@ const CourseListPage = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/admin/courses/skills")}
-                  className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/[0.10] bg-white/[0.03] px-4 text-sm font-medium text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/[0.06] hover:text-[#34D399] hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.25)]"
+                  className="group relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/10 bg-white/3 px-4 text-sm font-medium text-white/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#34D399]/30 hover:bg-[#34D399]/6 hover:text-[#34D399] hover:shadow-[0_8px_24px_-6px_rgba(52,211,153,0.25)]"
                 >
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-[#34D399]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
                   <Tags
                     className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:scale-110"
@@ -327,12 +327,12 @@ const CourseListPage = () => {
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {/* Total Courses */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
             style={{ animationDelay: "160ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/12 to-transparent"
             />
 
             <div className="flex items-center justify-between">
@@ -354,17 +354,17 @@ const CourseListPage = () => {
 
           {/* Active Courses */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-[#34D399]/25 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-[#34D399]/40"
             style={{ animationDelay: "220ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/50 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/50 to-transparent"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#34D399]/[0.08] blur-3xl"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#34D399]/8 blur-3xl"
             />
 
             <div className="relative flex items-center justify-between">
@@ -386,17 +386,17 @@ const CourseListPage = () => {
 
           {/* Inactive Courses */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-red-400/20 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-red-400/35"
             style={{ animationDelay: "280ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-400/40 to-transparent"
             />
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-red-400/[0.06] blur-3xl"
+              className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-red-400/6 blur-3xl"
             />
 
             <div className="relative flex items-center justify-between">
@@ -418,12 +418,12 @@ const CourseListPage = () => {
 
           {/* Showing */}
           <div
-            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
+            className="animate-page-item group relative cursor-default overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] p-5 transition-colors duration-300 hover:border-white/[0.14]"
             style={{ animationDelay: "340ms" }}
           >
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/12 to-transparent"
             />
 
             <div className="flex items-center justify-between">
@@ -437,7 +437,7 @@ const CourseListPage = () => {
                 </p>
               </div>
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] text-white/60">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/4 text-white/60">
                 <Search className="h-5 w-5" strokeWidth={1.8} />
               </div>
             </div>
@@ -447,11 +447,11 @@ const CourseListPage = () => {
         {/* Course Table */}
         <section
           ref={coursesListRef}
-          className="animate-page-item overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
+          className="animate-page-item overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-[#0B0B0B] to-[#080808] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.6)]"
           style={{ animationDelay: "420ms" }}
         >
           {/* Table Header */}
-          <div className="flex flex-col gap-4 border-b border-white/[0.08] p-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4 border-b border-white/8 p-5 md:flex-row md:items-center md:justify-between">
             <div className="cursor-default">
               <h2 className="text-lg font-semibold tracking-tight">
                 All Courses
@@ -464,7 +464,7 @@ const CourseListPage = () => {
 
             <div className="flex w-full min-w-0 flex-col gap-3 md:ml-6 md:flex-1 md:flex-row">
               {/* Status Filter */}
-              <div className="flex h-10 items-center rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
+              <div className="flex h-10 items-center rounded-xl border border-white/8 bg-white/3 p-1">
                 {(["all", "active", "inactive"] as const).map((filter) => (
                   <button
                     key={filter}
@@ -476,8 +476,8 @@ const CourseListPage = () => {
                           ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
                           : filter === "inactive"
                             ? "bg-red-400/10 text-red-400 ring-1 ring-inset ring-red-400/20"
-                            : "bg-white/[0.08] text-white"
-                        : "text-white/40 hover:bg-white/[0.04] hover:text-white/70"
+                            : "bg-white/8 text-white"
+                        : "text-white/40 hover:bg-white/4 hover:text-white/70"
                     }`}
                   >
                     {filter}
@@ -497,7 +497,7 @@ const CourseListPage = () => {
                   value={searchQuery}
                   onChange={(event) => handleSearchChange(event.target.value)}
                   placeholder="Search courses..."
-                  className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/15"
+                  className="h-10 w-full rounded-xl border border-white/8 bg-white/3 pl-10 pr-4 text-sm text-white outline-none transition-all placeholder:text-white/30 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/15"
                 />
               </div>
             </div>
@@ -507,9 +507,9 @@ const CourseListPage = () => {
           <div className="overflow-x-auto">
             {/* table-fixed + explicit column widths keep every column in the
             exact same position across pages, regardless of cell content. */}
-            <table className="w-full min-w-[960px] table-fixed">
+            <table className="w-full min-w-240 table-fixed">
               <thead className="cursor-default">
-                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
+                <tr className="border-b border-white/6 bg-white/1.5 text-left">
                   <th className="w-[24%] px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
                     Course
                   </th>
@@ -547,7 +547,7 @@ const CourseListPage = () => {
                   <tr
                     key={course.id}
                     onClick={() => navigate(`/admin/courses/${course.id}`)}
-                    className="group cursor-pointer border-b border-white/[0.06] transition-colors duration-200 hover:bg-[#34D399]/[0.04]"
+                    className="group cursor-pointer border-b border-white/6 transition-colors duration-200 hover:bg-[#34D399]/4"
                   >
                     {/* Course */}
                     <td className="relative px-6 py-4">
@@ -641,7 +641,7 @@ const CourseListPage = () => {
                   <tr
                     key={`placeholder-${index}`}
                     aria-hidden="true"
-                    className="border-b border-white/[0.03]"
+                    className="border-b border-white/3"
                   >
                     <td className="px-6 py-4">
                       <div className="h-11" />
@@ -659,7 +659,7 @@ const CourseListPage = () => {
 
           {/* Pagination */}
           {filteredCourses.length > 0 && totalPages > 1 && (
-            <div className="flex cursor-default flex-col gap-4 border-t border-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex cursor-default flex-col gap-4 border-t border-white/6 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               {/* Showing range */}
               <p className="text-xs text-white/40">
                 Showing{" "}
@@ -684,7 +684,7 @@ const CourseListPage = () => {
                   type="button"
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/8 disabled:hover:bg-white/2 disabled:hover:text-white/50"
                   aria-label="Previous page"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -699,7 +699,7 @@ const CourseListPage = () => {
                     className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-lg px-2 text-xs font-medium tabular-nums transition-all ${
                       currentPage === page
                         ? "bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20"
-                        : "text-white/45 hover:bg-white/[0.04] hover:text-white"
+                        : "text-white/45 hover:bg-white/4 hover:text-white"
                     }`}
                   >
                     {page}
@@ -711,7 +711,7 @@ const CourseListPage = () => {
                   type="button"
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/[0.08] disabled:hover:bg-white/[0.02] disabled:hover:text-white/50"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/8 bg-white/2 text-white/50 transition-all hover:border-[#34D399]/30 hover:bg-[#34D399]/5 hover:text-[#34D399] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/8 disabled:hover:bg-white/2 disabled:hover:text-white/50"
                   aria-label="Next page"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -723,7 +723,7 @@ const CourseListPage = () => {
           {/* Empty State */}
           {filteredCourses.length === 0 && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-white/30">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/4 text-white/30">
                 <BookOpen className="h-6 w-6" />
               </div>
 

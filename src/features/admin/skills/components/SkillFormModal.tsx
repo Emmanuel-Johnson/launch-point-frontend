@@ -130,7 +130,7 @@ const SkillFormContent = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="skill-form-title"
-      className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-99999 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSaving) onClose();
       }}
@@ -138,10 +138,10 @@ const SkillFormContent = ({
       <div className="relative my-auto w-full max-w-2xl overflow-hidden rounded-3xl border border-[#34D399]/20 bg-[#0A0A0A] shadow-[0_25px_80px_rgba(0,0,0,0.85)]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#34D399]/70 to-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#34D399]/70 to-transparent"
         />
 
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5">
+        <div className="flex items-center justify-between border-b border-white/8 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#34D399]/10 text-[#34D399] ring-1 ring-inset ring-[#34D399]/20">
               <Tags className="h-5 w-5" strokeWidth={1.8} />
@@ -165,7 +165,7 @@ const SkillFormContent = ({
             onClick={onClose}
             disabled={isSaving}
             aria-label="Close modal"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/40 transition hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <X className="h-5 w-5" strokeWidth={1.8} />
           </button>
@@ -189,7 +189,7 @@ const SkillFormContent = ({
                 {...register("name")}
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? "skill-name-error" : undefined}
-                className={`h-11 w-full rounded-xl border ${errors.name ? "border-red-400/60" : "border-white/[0.08]"} bg-white/[0.03] px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
+                className={`h-11 w-full rounded-xl border ${errors.name ? "border-red-400/60" : "border-white/8"} bg-white/3 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10`}
               />
               {errors.name && (
                 <p
@@ -221,7 +221,7 @@ const SkillFormContent = ({
                     ? "skill-description-error"
                     : "skill-description-hint"
                 }
-                className={`w-full resize-none rounded-xl border ${errors.description ? "border-red-400/60" : "border-white/[0.08]"} bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34D399]/10`}
+                className={`w-full resize-none rounded-xl border ${errors.description ? "border-red-400/60" : "border-white/8"} bg-white/3 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-white/25 focus:border-[#34D399]/40 focus:bg-white/5 focus:ring-2 focus:ring-[#34D399]/10`}
               />
               <div className="mt-1.5 flex items-start justify-between gap-3">
                 {errors.description ? (
@@ -253,7 +253,7 @@ const SkillFormContent = ({
                 </legend>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <label
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${isActive ? "border-[#34D399]/40 bg-[#34D399]/[0.08]" : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"}`}
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${isActive ? "border-[#34D399]/40 bg-[#34D399]/8" : "border-white/8 bg-white/2 hover:bg-white/4"}`}
                   >
                     <input
                       type="radio"
@@ -277,7 +277,7 @@ const SkillFormContent = ({
                     </span>
                   </label>
                   <label
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${!isActive ? "border-red-400/40 bg-red-500/[0.06]" : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"}`}
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition ${!isActive ? "border-red-400/40 bg-red-500/6" : "border-white/8 bg-white/2 hover:bg-white/4"}`}
                   >
                     <input
                       type="radio"
@@ -305,12 +305,12 @@ const SkillFormContent = ({
             )}
           </div>
 
-          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] px-6 py-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/8 px-6 py-4 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="h-10 cursor-pointer rounded-xl border border-white/[0.08] px-5 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-10 cursor-pointer rounded-xl border border-white/8 px-5 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>

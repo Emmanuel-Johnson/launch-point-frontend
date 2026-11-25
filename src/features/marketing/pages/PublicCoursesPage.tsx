@@ -338,9 +338,9 @@ const PublicCoursesPage = () => {
                     key={`${course.id}-${startIndex + courseIndex}`}
                     delay={Math.min(courseIndex * 100, 500)}
                   >
-                    <article className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]">
+                    <article className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-white/9 bg-[#0D0C12] transition-transform duration-700 ease-in-out hover:scale-[1.02]">
                       {/* Glassy sheen */}
-                      <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                      <span className="lp-card-sheen pointer-events-none absolute inset-y-0 left-0 z-30 w-1/2 bg-linear-to-r from-transparent via-white/15 to-transparent" />
 
                       {/* Course image */}
                       <div className="relative h-44 overflow-hidden bg-[#14101D] sm:h-48">
@@ -353,7 +353,7 @@ const PublicCoursesPage = () => {
 
                         <div className="absolute left-3 top-3 z-20">
                           {course.plan === "Premium" ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-gradient-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-linear-to-r from-[#3A2A0B]/95 via-[#2B210D]/95 to-[#17140B]/95 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_4px_18px_rgba(245,158,11,0.18)] backdrop-blur-md">
                               <Crown className="h-3.5 w-3.5 text-amber-300" />
                               Premium
                             </span>
@@ -382,7 +382,7 @@ const PublicCoursesPage = () => {
                           }`}
                         >
                           <Bookmark
-                            className={`h-[17px] w-[17px] transition-transform duration-300 ${
+                            className={`h-4.25 w-4.25 transition-transform duration-300 ${
                               isSaved ? "scale-110" : "group-hover:scale-110"
                             }`}
                             fill={isSaved ? "#A78BFA" : "none"}
@@ -407,7 +407,7 @@ const PublicCoursesPage = () => {
                       {/* Course information */}
                       <div className="flex flex-1 flex-col p-5">
                         <div className="mb-4 flex items-center justify-between gap-2">
-                          <span className="rounded-full border border-violet-400/20 bg-violet-400/[0.08] px-3 py-1 text-[10px] font-medium text-violet-200">
+                          <span className="rounded-full border border-violet-400/20 bg-violet-400/8 px-3 py-1 text-[10px] font-medium text-violet-200">
                             {course.category}
                           </span>
 
@@ -420,11 +420,11 @@ const PublicCoursesPage = () => {
                           {course.level} level
                         </p>
 
-                        <h3 className="line-clamp-2 min-h-[48px] text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
+                        <h3 className="line-clamp-2 min-h-12 text-[15px] font-semibold leading-6 tracking-[-0.015em] text-white transition-colors duration-300 group-hover:text-violet-100">
                           {course.title}
                         </h3>
 
-                        <p className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-[1.65] text-white/50">
+                        <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-[1.65] text-white/50">
                           {course.description}
                         </p>
 
@@ -433,7 +433,7 @@ const PublicCoursesPage = () => {
                           {course.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/[0.05] group-hover:text-white/75"
+                              className="rounded-lg border border-white/[0.07] bg-white/2.5 px-2.5 py-1.5 text-[10px] text-white/55 transition-colors duration-300 group-hover:border-violet-300/15 group-hover:bg-violet-400/5 group-hover:text-white/75"
                             >
                               {skill}
                             </span>
@@ -477,7 +477,7 @@ const PublicCoursesPage = () => {
                           <button
                             type="button"
                             onClick={() => navigate(`/courses/${course.id}`)}
-                            className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
+                            className="group/button inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-linear-to-r from-[#7C3AED] to-[#6D4AFF] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-400/60"
                           >
                             View course
                             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/button:translate-x-0.5" />
@@ -548,7 +548,7 @@ const PublicCoursesPage = () => {
                       className={`inline-flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-xl border px-3 text-sm font-medium transition ${
                         safeCurrentPage === page
                           ? "border-violet-400/50 bg-violet-500/20 text-violet-200 shadow-[0_4px_16px_rgba(124,92,255,0.12)]"
-                          : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
+                          : "border-white/10 bg-[#0A0A0C] text-white/55 hover:border-white/20 hover:bg-white/3 hover:text-white"
                       }`}
                     >
                       {page}
